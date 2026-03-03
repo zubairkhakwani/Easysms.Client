@@ -1,0 +1,38 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 22px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 28px 60px;
+  align-items: start;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 26px;
+}
+.card-header {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+.card-icon {
+  font-size: 1.9rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.card-title {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.card-sub {
+  font-size: 0.78rem;
+  color: var(--dim);
+  font-weight: 300;
+}

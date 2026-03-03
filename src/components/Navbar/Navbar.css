@@ -1,0 +1,105 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 80px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(12px);
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #fff;
+}
+
+.logo span {
+  color: var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+/* Auth Button Container */
+.nav-auth {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+/* Login Button (Outline Style) */
+.nav-login {
+  background: transparent;
+  border: 2px solid var(--border);
+  color: rgba(255, 255, 255, 0.75);
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-login:hover {
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Signup Button (Primary Accent Style) */
+.nav-signup {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+
+.nav-signup:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.nav-logout {
+  background: var(--accent-logout);
+  color: #000;
+  border: none;
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+
+.nav-logout:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}

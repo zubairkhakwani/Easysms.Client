@@ -1,0 +1,15 @@
+.page-header {
+  text-align: center;
+  padding: 44px 20px 28px;
+}
+.page-header h1 {
+  font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 10px;
+}
+.page-header p {
+  font-size: 0.98rem;
+  color: var(--dim);
+  font-weight: 300;
+}
