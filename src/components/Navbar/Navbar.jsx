@@ -52,12 +52,10 @@ export default function Navbar() {
         <li>
           <a href="#">Pricing</a>
         </li>
-        <li>
-          <a href="#">API</a>
-        </li>
-        <li>
-          <a href="#">Blog</a>
-        </li>
+        <Link to="/history">
+          <span>History</span>
+        </Link>
+        <li></li>
       </ul>
       <div className="nav-auth">{authButtons}</div>
     </nav>

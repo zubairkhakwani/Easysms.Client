@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../../services/Auth/AuthService";
+import { connectSignalR } from "../../services/SignalR/SignalRService";
 import "./Login.css";
 
 export default function Login() {
@@ -34,6 +35,7 @@ export default function Login() {
       var responseMessage = response.message;
 
       if (response.isSuccess) {
+        await connectSignalR(response.data.userId);
         login(response.data.token);
         navigate("/get-number");
       } else {

@@ -1,49 +1,185 @@
+import { useState } from "react";
+import { toast, Slide } from "react-toastify";
+import { cancel, complete } from "../../../services/Number/NumberService";
+
 import "./RecentOrders.css";
 
-export default function RecentOrders() {
+export default function RecentOrders({ incomingOrders, onCancelNumber }) {
+  const [copied, setCopied] = useState(null);
+
+  function handleCopy(activationId, number) {
+    navigator.clipboard.writeText(number).catch(() => {});
+    setCopied(activationId);
+    setTimeout(() => setCopied(null), 500);
+  }
+
+  async function handleCancel(activationId) {
+    var response = await cancel(activationId);
+
+    var responseMessage = response.message;
+
+    if (response.isSuccess) {
+      toast(responseMessage, {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Slide,
+      });
+      onCancelNumber(activationId);
+    } else {
+      toast.error(responseMessage, {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Slide,
+      });
+    }
+  }
+
+  async function handleComplete(activationId) {
+    var response = await complete(activationId);
+
+    var responseMessage = response.message;
+
+    if (response.isSuccess) {
+      toast(responseMessage, {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Slide,
+      });
+    } else {
+      toast.error(responseMessage, {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Slide,
+      });
+    }
+  }
+
   return (
     <div className="card">
       <div className="card-header">
-        <div className="orders-top" style={{ width: "100%" }}>
-          <div
-            style={{
-              display: "flex",
-              gap: "14px",
-              alignItems: "flex-start",
-            }}
-          >
-            <span className="card-icon">🕐</span>
-            <div>
-              <div className="card-title">Recent Orders</div>
-              <div className="card-sub" id="ordersSub">
-                Your orders will appear here
-              </div>
+        <div className="orders-top">
+          <span className="card-icon">🕐</span>
+          <div>
+            <div className="card-title">Recent Orders</div>
+            <div className="card-sub">
+              Showing numbers requested in the last 30 minutes.
             </div>
           </div>
-          <span
-            className="orders-badge"
-            id="ordersBadge"
-            style={{ display: "none" }}
-          >
-            0
-          </span>
         </div>
+        {incomingOrders.length > 0 ? (
+          <span className="orders-badge">{incomingOrders.length}</span>
+        ) : (
+          ""
+        )}
       </div>
 
-      <div id="emptyState" className="empty-state">
-        <div className="empty-icon">📭</div>
-        <div className="empty-text">No orders yet</div>
-        <div className="empty-hint">
-          Numbers you purchase will show up here instantly — no need to navigate
-          away.
-        </div>
-      </div>
+      <div className="orders-list">
+        {incomingOrders.map((order) => (
+          <div className="order-row" key={order.activationId}>
+            <div className="order-row-top">
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <span className="order-service">{order.provider}</span>
+                <span className="order-service">-</span>
+                <span className="order-service">{order.service}</span>
+                <span className="order-service">-</span>
+                <span className="order-country">{order.country}</span>
+              </div>
 
-      <div
-        id="ordersList"
-        className="orders-list"
-        style={{ display: "none" }}
-      ></div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <span className="order-price">$ {order.activationCost}</span>
+              </div>
+            </div>
+
+            <div className="order-number">
+              +{order.countryPhoneCode} {order.phoneNumber}
+            </div>
+
+            <div className="order-expiry">
+              Expires in ~{order.activationLimit} min
+            </div>
+
+            {/* SMS Block (initially hidden until sms arrives) */}
+            {order.hasSms && (
+              <div className="sms-block">
+                <div className="sms-label">
+                  <span className="sms-label-dot"></span>
+                  SMS Received
+                </div>
+
+                <div className="sms-body">{order.sms.text}</div>
+
+                <div className="sms-code">
+                  <span className="sms-code-label">Code</span>
+                  <span className="sms-code-value">{order.sms.code}</span>
+
+                  <button
+                    className="sms-copy-btn"
+                    title="Copy code"
+                    onClick={() =>
+                      navigator.clipboard.writeText(order.sms.code)
+                    }
+                  >
+                    📋
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="order-actions">
+              <button
+                className="btn-action"
+                onClick={() =>
+                  handleCopy(order.activationId, order.phoneNumber)
+                }
+              >
+                {copied != order.activationId ? "📋 Copy" : "Copying"}
+              </button>
+
+              <button
+                className="btn-action"
+                onClick={() => handleComplete(order.activationId)}
+              >
+                ✓ Done
+              </button>
+
+              <button
+                className="btn-action btn-cancel"
+                onClick={() => handleCancel(order.activationId)}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

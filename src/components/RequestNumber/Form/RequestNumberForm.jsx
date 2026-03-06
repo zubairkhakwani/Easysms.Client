@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
+import { toast, Slide } from "react-toastify";
 import {
   getProviders,
   getServices,
-  getCountries,
-  getOperators_Pricings,
+  getCountriesMetaData,
+  requestNumber,
 } from "../../../services/Provider/ProviderService";
-
 import "./RequestNumberForm.css";
 
-export default function RequestNumber() {
+export default function RequestNumber({ onNewNumber }) {
   const [providers, setProviders] = useState([]);
   const [services, setServices] = useState([]);
+  const [countriesMetadata, setCountriesMetadata] = useState([]);
   const [countries, setCountries] = useState([]);
   const [operators_pricings, setOperators_Pricing] = useState([]);
+  const [requestedNumber, setRequestedNumber] = useState({});
+  const [requestNumberText, setRequestNumberText] = useState("⚡ Get Number");
 
   const [selectedProvider, setSelectedProvider] = useState("");
   const [selectedService, setSelectedService] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
+
+  const [canPurchaseNumber, setPurchaseState] = useState(true);
 
   const fetchProviders = async () => {
     try {
@@ -35,30 +41,97 @@ export default function RequestNumber() {
 
     setSelectedProvider(providerId);
 
-    let services = await getServices(providerId);
-    setServices(services);
-
-    let countries = await getCountries(providerId);
-    setCountries(countries);
+    let servicesResponse = await getServices(providerId);
+    console.log(servicesResponse);
+    setServices(servicesResponse);
   };
 
-  const handleServiceChange = (e) => {
+  const handleServiceChange = async (e) => {
     let serviceId = e.target.value;
 
     setSelectedService(serviceId);
+
+    let countriesMetaData = await getCountriesMetaData(
+      selectedProvider,
+      serviceId,
+    );
+
+    let countriesData = countriesMetaData.map((item) => ({
+      id: item.countryId,
+      name: item.name,
+      total: item.total,
+    }));
+
+    setCountries(countriesData);
+    setCountriesMetadata(countriesMetaData);
   };
 
   const handleCountryChange = async (e) => {
     let countryId = e.target.value;
 
-    let operators_pricings = await getOperators_Pricings(
-      selectedProvider,
-      selectedService,
-      countryId,
+    const selectedCountry = countriesMetadata.find(
+      (item) => item.countryId === Number(countryId),
     );
 
-    console.log("Operators_Pricings:", operators_pricings);
-    setOperators_Pricing(operators_pricings);
+    setOperators_Pricing(selectedCountry.metaData);
+    setSelectedCountry(countryId);
+  };
+
+  const handleOperators_PricingChange = async (e) => {
+    let id = e.target.value;
+    if (!id) return;
+
+    var operator_pricing = operators_pricings.find((item) => item.id == id);
+
+    setRequestedNumber({
+      id,
+      price: operator_pricing.price,
+    });
+
+    setPurchaseState(false);
+  };
+
+  const handleRequestNumber = async () => {
+    setRequestNumberText("Getting Number..");
+    setPurchaseState(true);
+
+    var response = await requestNumber(
+      selectedProvider,
+      selectedService,
+      selectedCountry,
+      requestedNumber,
+    );
+
+    var responseMessage = response.message;
+    if (response.isSuccess) {
+      toast(responseMessage, {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Slide,
+      });
+      onNewNumber(response.data);
+    } else {
+      toast.warn(responseMessage, {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Slide,
+      });
+    }
+
+    setPurchaseState(false);
+    setRequestNumberText("⚡ Get Number");
   };
 
   return (
@@ -107,14 +180,24 @@ export default function RequestNumber() {
         </div>
         <div className="field">
           <label>📡 Operator / Pricing</label>
-          <select id="operator" className="operator-select">
+          <select
+            id="operator"
+            className="operator-select"
+            onChange={handleOperators_PricingChange}
+          >
             <option value="">Select operator / pricing</option>
-            {operators_pricings.map((s) => (
-              <option value={s.id}>
-                {s.name && s.name.trim() !== "" ? `${s.name} - ` : ""}$
-                {s.cost.toFixed(3)} ({s.count} available)
+            {operators_pricings && operators_pricings.length > 0 ? (
+              operators_pricings.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name && s.name.trim() !== "" ? `${s.name} - ` : ""}$
+                  {(s.price ?? 0).toFixed(3)} ({s.count ?? 0} available)
+                </option>
+              ))
+            ) : (
+              <option value="" disabled>
+                Operators / Pricing not found
               </option>
-            ))}
+            )}
           </select>
         </div>
       </div>
@@ -130,16 +213,14 @@ export default function RequestNumber() {
         </span>
       </div>
 
-      <button className="get-btn" id="getBtn" disabled>
-        ⚡ Get Number
+      <button
+        className="get-btn"
+        id="getBtn"
+        onClick={handleRequestNumber}
+        disabled={canPurchaseNumber}
+      >
+        {requestNumberText}
       </button>
-
-      <div id="resultBox" style={{ display: "none" }} className="result-box">
-        <div className="result-eyebrow">Your number is ready</div>
-        <div className="result-number" id="resultNum"></div>
-        <div className="result-meta" id="resultMeta"></div>
-        <button className="copy-btn">📋 Copy Number</button>
-      </div>
     </div>
   );
 }

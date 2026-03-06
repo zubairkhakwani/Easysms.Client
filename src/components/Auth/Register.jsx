@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { registerUser } from "../../services/Auth/AuthService";
 import { toast, Slide } from "react-toastify";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import "./Register.css";
 
 export default function Register() {
+  var navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,6 +28,7 @@ export default function Register() {
       setLoading(true);
 
       const response = await registerUser(formData);
+
       var responseMessage = response.message;
       if (response.isSuccess) {
         toast(responseMessage, {
@@ -40,6 +42,7 @@ export default function Register() {
           theme: "dark",
           transition: Slide,
         });
+        navigate("/login");
       } else {
         toast.error(responseMessage, {
           position: "top-right",

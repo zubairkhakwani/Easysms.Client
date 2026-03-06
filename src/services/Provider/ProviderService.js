@@ -15,6 +15,13 @@ export const getCountries = async (providerId) => {
   return response.data.data;
 };
 
+export const getCountriesMetaData = async (providerId, serviceId) => {
+  const response = await httpClient.get(
+    `/providers/${providerId}/services/${serviceId}/countries`,
+  );
+  return response.data.data;
+};
+
 export const getOperators_Pricings = async (
   providerId,
   serviceId,
@@ -24,4 +31,17 @@ export const getOperators_Pricings = async (
     `/providers/${providerId}/services/${serviceId}/countries/${countryId}/current-prices`,
   );
   return response.data.data;
+};
+
+export const requestNumber = async (
+  providerId,
+  serviceId,
+  countryId,
+  payload,
+) => {
+  const response = await httpClient.post(
+    `/providers/${providerId}/services/${serviceId}/countries/${countryId}/request-number`,
+    payload,
+  );
+  return response.data;
 };

@@ -1,148 +1,275 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Syne:wght@400;600;700;800&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #07070f;
+  font-family: "Syne", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: #0c0c1a;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+}
+
 .orders-top {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  gap: 10px;
 }
+.card-icon {
+  font-size: 1.1rem;
+}
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+.card-sub {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 2px;
+}
+
 .orders-badge {
-  background: rgba(0, 229, 255, 0.15);
-  border: 1px solid rgba(0, 229, 255, 0.3);
-  color: var(--accent);
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.28);
+  color: #00e5ff;
   border-radius: 20px;
   padding: 2px 10px;
   font-size: 0.72rem;
   font-weight: 700;
 }
-.empty-state {
-  text-align: center;
-  padding: 38px 16px;
-}
-.empty-icon {
-  font-size: 2.4rem;
-  margin-bottom: 12px;
-}
-.empty-text {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.35);
-  margin-bottom: 6px;
-}
-.empty-hint {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.22);
-  font-weight: 300;
-  line-height: 1.6;
-}
 
 .orders-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  padding: 14px;
 }
+
 .order-row {
-  background: var(--inner);
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  padding: 15px 17px;
-  animation: fadeIn 0.3s ease;
+  background: #0f0f18;
+  border: 1px solid rgba(0, 229, 255, 0.18);
+  border-radius: 12px;
+  padding: 14px 16px;
 }
+
 .order-row-top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
+  align-items: center;
+  margin-bottom: 8px;
 }
+
 .order-service {
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #fff;
 }
+.order-country {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.order-price {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #00e5ff;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.18);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
 .order-time {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   color: rgba(255, 255, 255, 0.28);
 }
 .order-number {
-  font-size: 1.08rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: -0.3px;
-  margin-bottom: 6px;
-}
-.order-meta {
-  display: flex;
-  gap: 6px;
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.32);
-  margin-bottom: 11px;
-}
-.order-price {
-  color: var(--accent);
-}
-.order-expiry {
-  color: #fbbf24;
-}
-.wait-btn {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.55);
-  border-radius: 8px;
-  padding: 9px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--font);
-  transition: background 0.2s;
-}
-.wait-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
-}
-.wait-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.sms-code-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0, 229, 255, 0.06);
-  border: 1px solid rgba(0, 229, 255, 0.2);
-  border-radius: 8px;
-  padding: 10px 14px;
-  animation: fadeIn 0.3s ease;
-}
-.sms-label {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.42);
-  font-weight: 600;
-}
-.sms-code {
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   font-weight: 800;
-  color: var(--accent);
-  letter-spacing: 4px;
+  color: #00e5ff;
+  letter-spacing: -0.3px;
+  margin-bottom: 5px;
+  font-family: "JetBrains Mono", monospace;
 }
 
-/* ANIMATIONS */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.order-expiry {
+  font-size: 0.72rem;
+  color: #fbbf24;
+  margin-bottom: 10px;
 }
-@keyframes fadeIn {
+
+/* ── SMS Message Block ── */
+.sms-block {
+  margin: 10px 0;
+  background: rgba(0, 229, 255, 0.04);
+  border: 1px solid rgba(0, 229, 255, 0.14);
+  border-radius: 9px;
+  padding: 10px 12px;
+  position: relative;
+  overflow: hidden;
+  animation: smsSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sms-block::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #00e5ff, #0070ff);
+  border-radius: 3px 0 0 3px;
+}
+
+@keyframes smsSlideIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
+.sms-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: rgba(0, 229, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sms-label-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #00e5ff;
+  box-shadow: 0 0 6px #00e5ff;
+  animation: pulse 1.8s infinite;
+}
+
 @keyframes pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.28);
+    opacity: 1;
   }
   50% {
-    box-shadow: 0 0 0 7px rgba(0, 229, 255, 0);
+    opacity: 0.3;
   }
+}
+
+.sms-body {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Extracted OTP code highlight */
+.sms-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 7px;
+  padding: 5px 10px;
+}
+
+.sms-code-label {
+  font-size: 0.65rem;
+  color: rgba(0, 229, 255, 0.5);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: "Syne", sans-serif;
+}
+
+.sms-code-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #00e5ff;
+  letter-spacing: 0.12em;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.sms-copy-btn {
+  background: none;
+  border: none;
+  color: rgba(0, 229, 255, 0.45);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.75rem;
+  transition: color 0.15s;
+}
+.sms-copy-btn:hover {
+  color: #00e5ff;
+}
+
+/* ── */
+
+.order-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-action {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 7px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.btn-action:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-cancel {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+.btn-cancel:hover {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* card without SMS for comparison */
+.order-row.no-sms {
+  opacity: 0.85;
 }

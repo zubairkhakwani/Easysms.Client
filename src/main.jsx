@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 
 import RequestNumberContainer from "./components/RequestNumber/Container/RequestNumberContainer.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
+import purchasedNumberHistory from "./components/Navbar/PurchasedNumberHistory.jsx";
 import Register from "./components/Auth/Register.jsx";
 import Login from "./components/Auth/Login.jsx";
 import PrivateRoute from "./components/Route/PrivateRoute.jsx";
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="/get-number" element={<RequestNumberContainer />} />
           </Route>
 
+          <Route path="/history" element={<purchasedNumberHistory />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Routes>
