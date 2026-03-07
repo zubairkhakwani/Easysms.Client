@@ -3,7 +3,7 @@ import * as signalR from "@microsoft/signalr";
 let connection;
 let userId;
 
-export const connectSignalR = async (id) => {
+export const connectSignalR = async (id, addSms) => {
   try {
     userId = id;
 
@@ -15,7 +15,7 @@ export const connectSignalR = async (id) => {
       .withAutomaticReconnect()
       .build();
 
-    addEventListeners();
+    addEventListeners(addSms);
 
     await connection.start();
     await connection.send("RegisterUser", userId);
@@ -36,7 +36,8 @@ async function disconnectAsync() {
 
   connection = null;
 }
-function addEventListeners() {
+
+function addEventListeners(addSms) {
   connection.onreconnected(async () => {
     if (userId) {
       await connection.send("RegisterUser", userId);
@@ -46,5 +47,6 @@ function addEventListeners() {
   // Handle ReceiveSms messages from the hub
   connection.on("ReceiveSms", (sms) => {
     console.log("SMS received:", sms);
+    addSms(sms);
   });
 }

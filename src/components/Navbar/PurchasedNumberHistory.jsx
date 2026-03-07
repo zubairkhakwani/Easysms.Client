@@ -1,1 +1,1 @@
-export default function purchasedNumberHistory() {}
+export default function PurchasedNumberHistory() {}

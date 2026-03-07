@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 import { toast, Slide } from "react-toastify";
 import {
   getProviders,
@@ -9,6 +10,8 @@ import {
 import "./RequestNumberForm.css";
 
 export default function RequestNumber({ onNewNumber }) {
+  const { balanceDebit } = useContext(AuthContext);
+
   const [providers, setProviders] = useState([]);
   const [services, setServices] = useState([]);
   const [countriesMetadata, setCountriesMetadata] = useState([]);
@@ -42,7 +45,6 @@ export default function RequestNumber({ onNewNumber }) {
     setSelectedProvider(providerId);
 
     let servicesResponse = await getServices(providerId);
-    console.log(servicesResponse);
     setServices(servicesResponse);
   };
 
@@ -103,6 +105,7 @@ export default function RequestNumber({ onNewNumber }) {
     );
 
     var responseMessage = response.message;
+    var responseData = response.data;
     if (response.isSuccess) {
       toast(responseMessage, {
         position: "top-right",
@@ -115,7 +118,8 @@ export default function RequestNumber({ onNewNumber }) {
         theme: "dark",
         transition: Slide,
       });
-      onNewNumber(response.data);
+      onNewNumber(responseData);
+      balanceDebit(responseData.activationCost);
     } else {
       toast.warn(responseMessage, {
         position: "top-right",

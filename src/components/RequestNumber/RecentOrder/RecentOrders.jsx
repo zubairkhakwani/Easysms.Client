@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { toast, Slide } from "react-toastify";
 import { cancel, complete } from "../../../services/Number/NumberService";
-
+import { AuthContext } from "../../../context/AuthContext";
 import "./RecentOrders.css";
 
 export default function RecentOrders({ incomingOrders, onCancelNumber }) {
+  const { balanceCredit } = useContext(AuthContext);
   const [copied, setCopied] = useState(null);
 
   function handleCopy(activationId, number) {
@@ -16,6 +17,7 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
   async function handleCancel(activationId) {
     var response = await cancel(activationId);
 
+    console.log(response);
     var responseMessage = response.message;
 
     if (response.isSuccess) {
@@ -31,6 +33,7 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
         transition: Slide,
       });
       onCancelNumber(activationId);
+      balanceCredit(response.data.refundAmount);
     } else {
       toast.error(responseMessage, {
         position: "top-right",

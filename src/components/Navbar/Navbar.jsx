@@ -9,9 +9,11 @@ import "./Navbar.css";
 export default function Navbar() {
   var navigate = useNavigate();
 
-  const { isAuthenticated, logout } = useContext(AuthContext);
+  const { isAuthenticated, isAdminUser, currentUser, logout } =
+    useContext(AuthContext);
 
   let authButtons;
+  let adminActionButtons;
 
   function handleLogout() {
     logout();
@@ -31,9 +33,35 @@ export default function Navbar() {
     );
   } else {
     authButtons = (
-      <button className="nav-logout" onClick={handleLogout}>
-        Logout
-      </button>
+      <>
+        {currentUser && (
+          <div className="nav-user-badge">
+            <div className="nav-user-avatar">{currentUser?.avatar}</div>
+            <div className="nav-user-info">
+              <span className="nav-user-name">{currentUser?.name}</span>
+              <span className="nav-user-balance">
+                ${currentUser?.balance ?? 0}
+              </span>
+            </div>
+            <div className="nav-user-divider" />
+            <span className="nav-user-arrow">▾</span>
+          </div>
+        )}
+
+        <button className="nav-logout" onClick={handleLogout}>
+          Logout
+        </button>
+      </>
+    );
+  }
+
+  if (isAuthenticated && isAdminUser) {
+    adminActionButtons = (
+      <li>
+        <Link to="/manage-users">
+          <span>Manage User</span>
+        </Link>
+      </li>
     );
   }
 
@@ -52,10 +80,12 @@ export default function Navbar() {
         <li>
           <a href="#">Pricing</a>
         </li>
-        <Link to="/history">
-          <span>History</span>
-        </Link>
-        <li></li>
+        {adminActionButtons}
+        <li>
+          <Link to="/history">
+            <span>History</span>
+          </Link>
+        </li>
       </ul>
       <div className="nav-auth">{authButtons}</div>
     </nav>
