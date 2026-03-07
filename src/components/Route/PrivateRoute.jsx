@@ -1,15 +1,18 @@
 import { Navigate, Outlet } from "react-router-dom";
-import TokenService from "../../services/Token/TokenService";
+import {
+  isAdminUser,
+  isAuthenticated,
+} from "../../services/User/CurrentUserService";
 
 const PrivateRoute = ({ requireAdmin = false }) => {
-  const isAuthenticated = TokenService.isAuthenticated();
-  const isAdminUser = TokenService.isAdminUser();
+  const isAuth = isAuthenticated();
+  const isAdmin = isAdminUser();
 
-  if (!isAuthenticated) {
+  if (!isAuth) {
     return <Navigate to="/login" />;
   }
 
-  if (requireAdmin && !isAdminUser) {
+  if (requireAdmin && !isAdmin) {
     return <Navigate to="/login" />;
   }
 

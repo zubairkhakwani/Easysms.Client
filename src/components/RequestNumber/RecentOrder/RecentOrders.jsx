@@ -137,11 +137,11 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
                   SMS Received
                 </div>
 
-                <div className="sms-body">{order.sms.text}</div>
+                <div className="sms-body">{order.text}</div>
 
                 <div className="sms-code">
                   <span className="sms-code-label">Code</span>
-                  <span className="sms-code-value">{order.sms.code}</span>
+                  <span className="sms-code-value">{order.code}</span>
 
                   <button
                     className="sms-copy-btn"

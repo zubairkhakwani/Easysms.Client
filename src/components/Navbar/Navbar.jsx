@@ -9,8 +9,7 @@ import "./Navbar.css";
 export default function Navbar() {
   var navigate = useNavigate();
 
-  const { isAuthenticated, isAdminUser, currentUser, logout } =
-    useContext(AuthContext);
+  const { isAuth, isAdmin, currentUser, logout } = useContext(AuthContext);
 
   let authButtons;
   let adminActionButtons;
@@ -20,7 +19,7 @@ export default function Navbar() {
     navigate("/");
   }
 
-  if (!isAuthenticated) {
+  if (!isAuth) {
     authButtons = (
       <>
         <Link to="/login">
@@ -55,7 +54,7 @@ export default function Navbar() {
     );
   }
 
-  if (isAuthenticated && isAdminUser) {
+  if (isAuth && isAdmin) {
     adminActionButtons = (
       <li>
         <Link to="/manage-users">

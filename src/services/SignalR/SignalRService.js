@@ -1,52 +1,74 @@
 import * as signalR from "@microsoft/signalr";
+import { Await } from "react-router-dom";
 
-let connection;
+let hubConnection;
 let userId;
 
 export const connectSignalR = async (id, addSms) => {
   try {
     userId = id;
 
-    if (connection) {
+    // Disconnect from the previous connection if connected and we have the hubConnection
+    if (
+      hubConnection?.state === signalR.HubConnectionState.Connected &&
+      hubConnection
+    ) {
+      console.log("Attepting to close the previos connection");
       await disconnectAsync();
     }
-    connection = new signalR.HubConnectionBuilder()
+
+    hubConnection = new signalR.HubConnectionBuilder()
       .withUrl("https://localhost:7265/hub")
-      .withAutomaticReconnect()
       .build();
 
     addEventListeners(addSms);
-
-    await connection.start();
-    await connection.send("RegisterUser", userId);
+    console.log(userId);
+    await hubConnection.start();
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // wait 5 seconds
+    await hubConnection.send("RegisterUser", userId);
   } catch (err) {
-    console.error("Connection failed:", err);
+    console.log("Connection failed:", err);
   }
 };
 
 async function disconnectAsync() {
-  if (!connection) return;
-
-  console.log("Disconnecting previous connection manually.");
+  if (!hubConnection) return;
   try {
-    await connection.stop();
+    await hubConnection.stop();
+    console.log("Disconnecting previous connection manually.");
   } catch (err) {
-    console.error(err);
+    console.log(err);
   }
 
-  connection = null;
+  hubConnection = null;
 }
 
 function addEventListeners(addSms) {
-  connection.onreconnected(async () => {
-    if (userId) {
-      await connection.send("RegisterUser", userId);
-    }
+  hubConnection.onclose(async () => {
+    await attemptReconnect();
   });
 
-  // Handle ReceiveSms messages from the hub
-  connection.on("ReceiveSms", (sms) => {
+  hubConnection.on("ReceiveSms", (sms) => {
     console.log("SMS received:", sms);
     addSms(sms);
   });
+}
+
+async function attemptReconnect() {
+  while (hubConnection?.state !== "Connected") {
+    try {
+      console.log("Reconnecting...");
+
+      await hubConnection.start();
+      await hubConnection.send("RegisterUser", userId);
+
+      console.log("Reconnected successfully!");
+      return;
+    } catch (ex) {
+      console.log(
+        `Reconnection failed: ${ex.message}, retrying in 5 seconds...`,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // wait 5 seconds
+    }
+  }
 }

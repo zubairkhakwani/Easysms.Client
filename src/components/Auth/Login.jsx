@@ -1,18 +1,16 @@
 import { toast, Slide } from "react-toastify";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { SmsContext } from "../../context/SmsContext";
 
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../../services/Auth/AuthService";
-import { connectSignalR } from "../../services/SignalR/SignalRService";
+
 import "./Login.css";
 
 export default function Login() {
   var navigate = useNavigate();
 
   const { login } = useContext(AuthContext);
-  const { addSms } = useContext(SmsContext);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -33,13 +31,12 @@ export default function Login() {
     try {
       setLoading(true);
 
-      const response = await loginUser(formData);
-
+      let response = await loginUser(formData);
+      let data = response.data;
       var responseMessage = response.message;
 
       if (response.isSuccess) {
-        await connectSignalR(response.data.userId, addSms);
-        login(response.data.token);
+        await login(data.token);
         navigate("/get-number");
       } else {
         toast.error(responseMessage, {

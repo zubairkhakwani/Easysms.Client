@@ -1,22 +1,34 @@
+//React
 import { createContext, useState, useEffect } from "react";
+
+//Services
 import TokenService from "../services/Token/TokenService";
+
 import { getCurrentUser } from "../services/User/UserService";
+
+import {
+  isAuthenticated,
+  isAdminUser,
+} from "../services/User/CurrentUserService";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdminUser, setAdminUser] = useState(false);
+  const [isAuth, setIsAuthenticated] = useState(false);
+  const [isAdmin, setAdminUser] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    setIsAuthenticated(TokenService.isAuthenticated());
-    setAdminUser(TokenService.isAdminUser());
+    setIsAuthenticated(isAuthenticated());
+    setAdminUser(isAdminUser());
 
     const fetchCurrentUser = async () => {
       try {
-        const res = await getCurrentUser();
-        setCurrentUser(res.data);
+        if (isAuthenticated()) {
+          const res = await getCurrentUser();
+          //console.log(res);
+          setCurrentUser(res.data);
+        }
       } catch (error) {
         console.error("Failed to fetch current user data:", error);
       }
@@ -24,16 +36,20 @@ export const AuthProvider = ({ children }) => {
     fetchCurrentUser();
   }, []);
 
-  const login = (token) => {
+  const login = async (token) => {
     TokenService.setToken(token);
     setIsAuthenticated(true);
-    setAdminUser(TokenService.isAdminUser());
+    setAdminUser(isAdminUser());
+
+    const res = await getCurrentUser();
+    setCurrentUser(res.data);
   };
 
   const logout = () => {
     TokenService.removeToken();
     setIsAuthenticated(false);
-    setAdminUser(TokenService.isAdminUser());
+    setAdminUser(isAdminUser());
+    setCurrentUser(null);
   };
 
   const balanceCredit = (amount) => {
@@ -52,8 +68,8 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated,
-        isAdminUser,
+        isAuth,
+        isAdmin,
         currentUser,
         login,
         logout,

@@ -1,15 +1,26 @@
+//React
 import { useEffect, useState, useContext } from "react";
+
+//Context
 import { SmsContext } from "../../../context/SmsContext";
-import { getMyRecentNumbers } from "../../../services/Number/NumberService";
+
+//Components
 import RecentOrders from "../RecentOrder/RecentOrders";
 import RequestNumber from "../Form/RequestNumberForm";
+
+//Services
+import { getMyRecentNumbers } from "../../../services/Number/NumberService";
 import RequestNumberContainerHeader from "../Header/RequestNumberHeader";
 import RequestNumberGuideline from "../Guideline/RequestNumberGuideline";
+import { connectSignalR } from "../../../services/SignalR/SignalRService";
+import { getCurrentUser } from "../../../services/User/CurrentUserService";
+
+//Css
 import "./RequestNumberContainer.css";
 
 export default function RequestNumberContainer() {
+  const { latestSms, addSms } = useContext(SmsContext);
   const [recentOrders, setRecentOrders] = useState([]);
-  const { latestSms } = useContext(SmsContext);
 
   const addNewNumber = (newNumber) => {
     setRecentOrders((prev) => [newNumber, ...prev]);
@@ -21,6 +32,17 @@ export default function RequestNumberContainer() {
     );
   };
 
+  //Connect to signalR
+  useEffect(() => {
+    try {
+      let currentUser = getCurrentUser();
+      connectSignalR(currentUser.id, addSms);
+    } catch (error) {
+      console.error("Failed to connect and register user:", error);
+    }
+  }, []);
+
+  //Get Recent Numbers
   useEffect(() => {
     const fetchMyRecentNumbers = async () => {
       try {
@@ -30,9 +52,11 @@ export default function RequestNumberContainer() {
         console.error("Failed to fetch recent numbers:", error);
       }
     };
+
     fetchMyRecentNumbers();
   }, []);
 
+  //Update the UI when sms code receives
   useEffect(() => {
     if (!latestSms) return;
 
@@ -41,7 +65,7 @@ export default function RequestNumberContainer() {
         if (order.activationId === latestSms.activationId) {
           return {
             ...order,
-            hasSms: true, 
+            hasSms: true,
             code: latestSms.code,
             text: latestSms.text,
           };
