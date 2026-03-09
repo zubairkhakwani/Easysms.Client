@@ -13,7 +13,6 @@ export const connectSignalR = async (id, addSms) => {
       hubConnection?.state === signalR.HubConnectionState.Connected &&
       hubConnection
     ) {
-      console.log("Attepting to close the previos connection");
       await disconnectAsync();
     }
 
@@ -22,7 +21,6 @@ export const connectSignalR = async (id, addSms) => {
       .build();
 
     addEventListeners(addSms);
-    console.log(userId);
     await hubConnection.start();
     await new Promise((resolve) => setTimeout(resolve, 5000)); // wait 5 seconds
     await hubConnection.send("RegisterUser", userId);
@@ -35,7 +33,6 @@ async function disconnectAsync() {
   if (!hubConnection) return;
   try {
     await hubConnection.stop();
-    console.log("Disconnecting previous connection manually.");
   } catch (err) {
     console.log(err);
   }
@@ -49,7 +46,6 @@ function addEventListeners(addSms) {
   });
 
   hubConnection.on("ReceiveSms", (sms) => {
-    console.log("SMS received:", sms);
     addSms(sms);
   });
 }
@@ -57,12 +53,8 @@ function addEventListeners(addSms) {
 async function attemptReconnect() {
   while (hubConnection?.state !== "Connected") {
     try {
-      console.log("Reconnecting...");
-
       await hubConnection.start();
       await hubConnection.send("RegisterUser", userId);
-
-      console.log("Reconnected successfully!");
       return;
     } catch (ex) {
       console.log(

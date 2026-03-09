@@ -1,14 +1,18 @@
+//React
 import axios from "axios";
+
+//Services
 import TokenService from "../Token/TokenService";
+import { Base_Url } from "../../data/Static";
 
 const httpClient = axios.create({
-  baseURL: "https://localhost:7265/api",
+  baseURL: Base_Url,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Attach token to every request 
+// Attach token to every request
 httpClient.interceptors.request.use(
   (config) => {
     const token = TokenService.getToken();

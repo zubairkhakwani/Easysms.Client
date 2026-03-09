@@ -1,4 +1,6 @@
 export const TOKEN_KEY = "auth_token";
+export const Base_Url = "https://localhost:7265/api";
+
 export const services = [
   { name: "WhatsApp", color: "#25D366", icon: "💬" },
   { name: "Telegram", color: "#229ED9", icon: "✈️" },
