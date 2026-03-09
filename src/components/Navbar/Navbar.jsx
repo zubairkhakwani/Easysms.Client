@@ -12,6 +12,7 @@ export default function Navbar() {
   const { isAuth, isAdmin, currentUser, logout } = useContext(AuthContext);
 
   let authButtons;
+  let authActionButtons;
   let adminActionButtons;
 
   function handleLogout() {
@@ -64,27 +65,36 @@ export default function Navbar() {
     );
   }
 
+  if (isAuth) {
+    authActionButtons = (
+      <li>
+        <Link to="/history">
+          <span>History</span>
+        </Link>
+      </li>
+    );
+  }
+
   return (
     <nav className="nav">
       <Link to="/">
         <div className="logo">
-          sms<span>verify</span>
+          <span>Easy</span>sms
         </div>
       </Link>
 
       <ul className="nav-links">
         <li>
-          <a href="#">Services</a>
+          <a href="/#Services">Services</a>
         </li>
         <li>
-          <a href="#">Pricing</a>
+          <a href="/#how-it-works">How it works</a>
+        </li>
+        <li>
+          <a href="/#why-us">Why us</a>
         </li>
         {adminActionButtons}
-        <li>
-          <Link to="/history">
-            <span>History</span>
-          </Link>
-        </li>
+        {authActionButtons}
       </ul>
       <div className="nav-auth">{authButtons}</div>
     </nav>

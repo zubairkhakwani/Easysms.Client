@@ -76,7 +76,6 @@ select option {
   transition:
     opacity 0.2s,
     transform 0.2s;
-  animation: pulse 2.5s infinite;
 }
 .get-btn:hover:not(:disabled) {
   transform: translateY(-1px);
@@ -84,7 +83,6 @@ select option {
 .get-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  animation: none;
 }
 
 .loading-row {

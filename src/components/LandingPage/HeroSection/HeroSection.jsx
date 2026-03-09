@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { stats } from "../../data";
+import { stats } from "../../../data";
 import "./HeroSection.css";
 
 export default function HeroSection() {

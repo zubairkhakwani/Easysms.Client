@@ -206,17 +206,6 @@ export default function RequestNumber({ onNewNumber }) {
         </div>
       </div>
 
-      <div
-        className="price-preview"
-        id="pricePreview"
-        style={{ display: "none" }}
-      >
-        <span className="price-label">Estimated Cost</span>
-        <span className="price-value" id="priceVal">
-          $0.00
-        </span>
-      </div>
-
       <button
         className="get-btn"
         id="getBtn"

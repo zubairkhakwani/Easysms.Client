@@ -82,7 +82,7 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
   }
 
   return (
-    <div className="card">
+    <div className="recent-card">
       <div className="card-header">
         <div className="orders-top">
           <span className="card-icon">🕐</span>

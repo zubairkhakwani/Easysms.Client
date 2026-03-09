@@ -10,6 +10,9 @@
   background: rgba(10, 10, 15, 0.85);
   backdrop-filter: blur(12px);
 }
+.nav a {
+  text-decoration: none;
+}
 
 .logo {
   font-size: 1.4rem;
