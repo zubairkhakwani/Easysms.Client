@@ -8,7 +8,7 @@ import "./Navbar.css";
 
 export default function Navbar() {
   var navigate = useNavigate();
-
+  const [menuOpen, setMenuOpen] = useState(false);
   const { isAuth, isAdmin, currentUser, logout } = useContext(AuthContext);
 
   let authButtons;
@@ -19,6 +19,11 @@ export default function Navbar() {
     logout();
     navigate("/");
   }
+
+  const handleNavClick = () => {
+    setMenuOpen(false);
+    navigate("/");
+  };
 
   if (!isAuth) {
     authButtons = (
@@ -59,7 +64,7 @@ export default function Navbar() {
     adminActionButtons = (
       <li>
         <Link to="/manage-users">
-          <span>Manage User</span>
+          <span onClick={() => handleNavClick()}>Manage User</span>
         </Link>
       </li>
     );
@@ -69,29 +74,47 @@ export default function Navbar() {
     authActionButtons = (
       <li>
         <Link to="/history">
-          <span>History</span>
+          <span onClick={() => handleNavClick()}>History</span>
         </Link>
       </li>
     );
   }
 
   return (
-    <nav className="nav">
-      <Link to="/">
-        <div className="logo">
-          <span>Easy</span>sms
+    <nav className={`nav${menuOpen ? " open" : ""}`}>
+      <div className="nav-inner">
+        <Link to="/">
+          <div className="logo">
+            <span>Easy</span>otps
+          </div>
+        </Link>
+
+        <div
+          className={`hamburger${menuOpen ? " open" : ""}`}
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Toggle menu"
+        >
+          <span className="bar" />
+          <span className="bar" />
+          <span className="bar" />
         </div>
-      </Link>
+      </div>
 
       <ul className="nav-links">
         <li>
-          <a href="/#Services">Services</a>
+          <a href="#Services" onClick={() => handleNavClick()}>
+            Services
+          </a>
         </li>
         <li>
-          <a href="/#how-it-works">How it works</a>
+          <a href="#how-it-works" onClick={() => handleNavClick()}>
+            How it works
+          </a>
         </li>
         <li>
-          <a href="/#why-us">Why us</a>
+          <a href="#why-us" onClick={() => handleNavClick()}>
+            Why us
+          </a>
         </li>
         {adminActionButtons}
         {authActionButtons}

@@ -9,7 +9,7 @@ import RecentOrders from "../RecentOrder/RecentOrders";
 import RequestNumber from "../Form/RequestNumberForm";
 
 //Services
-import { getMyRecentNumbers } from "../../../services/Number/NumberService";
+import { getMyNumbers } from "../../../services/Number/NumberService";
 import RequestNumberContainerHeader from "../Header/RequestNumberHeader";
 import RequestNumberGuideline from "../Guideline/RequestNumberGuideline";
 import { connectSignalR } from "../../../services/SignalR/SignalRService";
@@ -46,7 +46,7 @@ export default function RequestNumberContainer() {
   useEffect(() => {
     const fetchMyRecentNumbers = async () => {
       try {
-        const res = await getMyRecentNumbers();
+        const res = await getMyNumbers(true);
         setRecentOrders(res.data);
       } catch (error) {
         console.error("Failed to fetch recent numbers:", error);

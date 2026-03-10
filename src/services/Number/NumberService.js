@@ -1,7 +1,7 @@
 import httpClient from "../Base/HttpClient";
 
-export const getMyRecentNumbers = async () => {
-  const response = await httpClient.get("/numbers/recent");
+export const getMyNumbers = async (recent = false) => {
+  const response = await httpClient.get(`/numbers?recent=${recent}`);
   return response.data;
 };
 
