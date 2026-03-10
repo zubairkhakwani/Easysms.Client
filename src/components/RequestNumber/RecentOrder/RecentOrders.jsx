@@ -17,7 +17,6 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
   async function handleCancel(activationId) {
     var response = await cancel(activationId);
 
-    console.log(response);
     var responseMessage = response.message;
 
     if (response.isSuccess) {
@@ -117,7 +116,9 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
               <div
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
-                <span className="order-price">$ {order.activationCost}</span>
+                <span className="order-price">
+                  $ {Math.trunc(order.activationCost * 10000) / 10000}
+                </span>
               </div>
             </div>
 

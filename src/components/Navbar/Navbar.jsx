@@ -1,9 +1,11 @@
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+//React
+import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
-import TokenService from "../../services/Token/TokenService";
 
+//Context
+import { AuthContext } from "../../context/AuthContext";
+
+//Css
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -45,7 +47,7 @@ export default function Navbar() {
             <div className="nav-user-info">
               <span className="nav-user-name">{currentUser?.name}</span>
               <span className="nav-user-balance">
-                ${currentUser?.balance ?? 0}
+                ${Math.trunc(currentUser.balance * 10000) / 10000}
               </span>
             </div>
             <div className="nav-user-divider" />

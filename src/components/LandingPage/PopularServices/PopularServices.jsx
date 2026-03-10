@@ -55,7 +55,13 @@ export default function PopularServices() {
             onMouseEnter={() => setHoveredService(i)}
             onMouseLeave={() => setHoveredService(null)}
           >
-            <span className="service-icon">{s.icon}</span>
+            <span className="service-icon">
+              <i className={s.icon} st
+              
+              
+              
+              yle={{ "--hover-color": "red" }}></i>
+            </span>
             <div className="service-name">{s.name}</div>
             <div className="service-price">from $0.05</div>
           </div>

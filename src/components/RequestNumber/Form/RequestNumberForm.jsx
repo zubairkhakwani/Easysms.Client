@@ -77,6 +77,8 @@ export default function RequestNumber({ onNewNumber }) {
 
     setOperators_Pricing(selectedCountry.metaData);
     setSelectedCountry(countryId);
+
+    console.log(selectedCountry.metaData);
   };
 
   const handleOperators_PricingChange = async (e) => {
@@ -194,7 +196,8 @@ export default function RequestNumber({ onNewNumber }) {
               operators_pricings.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name && s.name.trim() !== "" ? `${s.name} - ` : ""}$
-                  {(s.price ?? 0).toFixed(3)} ({s.count ?? 0} available)
+                  {Math.trunc((s.price ?? 0) * 10000) / 10000} ({s.count ?? 0}{" "}
+                  available)
                 </option>
               ))
             ) : (

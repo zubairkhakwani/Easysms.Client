@@ -2,18 +2,30 @@ export const TOKEN_KEY = "auth_token";
 export const Base_Url = "https://localhost:7265/api";
 
 export const services = [
-  { name: "WhatsApp", color: "#25D366", icon: "💬" },
-  { name: "Telegram", color: "#229ED9", icon: "✈️" },
-  { name: "Facebook", color: "#1877F2", icon: "📘" },
-  { name: "Instagram", color: "#E1306C", icon: "📷" },
-  { name: "YouTube", color: "#FF0000", icon: "▶️" },
-  { name: "Twitter / X", color: "#000000", icon: "𝕏" },
-  { name: "TikTok", color: "#010101", icon: "🎵" },
-  { name: "Gmail", color: "#EA4335", icon: "✉️" },
-  { name: "Discord", color: "#5865F2", icon: "🎮" },
-  { name: "Snapchat", color: "#FFFC00", icon: "👻" },
-  { name: "Amazon", color: "#FF9900", icon: "📦" },
-  { name: "Uber", color: "#000000", icon: "🚗" },
+  {
+    name: "WhatsApp",
+    color: "#25D366",
+    icon: "fa-brands fa-whatsapp",
+  },
+  { name: "Telegram", color: "#229ED9", icon: "fa-brands fa-telegram" },
+  { name: "Facebook", color: "#1877F2", icon: "fa-brands fa-facebook" },
+  {
+    name: "Instagram",
+    color: "#E1306C",
+    icon: "fa-brands fa-square fa-instagram",
+  },
+  { name: "YouTube", color: "#FF0000", icon: "fa-brands fa-youtube" },
+  {
+    name: "Twitter / X",
+    color: "#000000",
+    icon: "fa-brands fa-x-twitter",
+  },
+  { name: "TikTok", color: "#010101", icon: "fa-brands fa-tiktok" },
+  { name: "Gmail", color: "#EA4335", icon: "fa-brands fa-google" },
+  { name: "Discord", color: "#5865F2", icon: "fa-brands fa-discord" },
+  { name: "Snapchat", color: "#FFFC00", icon: "fa-brands fa-snapchat" },
+  { name: "Amazon", color: "#FF9900", icon: "fa-brands fa-amazon" },
+  { name: "Uber", color: "#000000", icon: "fa-brands fa-uber" },
 ];
 
 export const steps = [

@@ -17,17 +17,46 @@ export default function Login() {
     password: "",
   });
 
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
+    const updatedFormData = {
       ...formData,
       [e.target.name]: e.target.value,
-    });
+    };
+
+    setFormData(updatedFormData);
+
+    validateRequest(updatedFormData);
   };
+
+  function validateRequest(data) {
+    let errors = {};
+
+    if (data.email.length === 0) {
+      errors.email = "Email is required";
+    }
+
+    if (data.password.length === 0) {
+      errors.password = "Password is required";
+    }
+
+    setErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let result = validateRequest(formData);
+    if (!result) return;
+
     try {
       setLoading(true);
 
@@ -73,7 +102,29 @@ export default function Login() {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              className={errors.email ? "input-error" : ""}
             />
+            {errors.email && (
+              <span className="error-msg">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <circle
+                    cx="6"
+                    cy="6"
+                    r="5.25"
+                    stroke="#ff5f7e"
+                    strokeWidth="1.5"
+                  />
+                  <path
+                    d="M6 3.5v3"
+                    stroke="#ff5f7e"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="6" cy="8.25" r="0.6" fill="#ff5f7e" />
+                </svg>
+                {errors.email}
+              </span>
+            )}
           </div>
 
           <div className="form-group">
@@ -84,7 +135,29 @@ export default function Login() {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              className={errors.password ? "input-error" : ""}
             />
+            {errors.password && (
+              <span className="error-msg">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <circle
+                    cx="6"
+                    cy="6"
+                    r="5.25"
+                    stroke="#ff5f7e"
+                    strokeWidth="1.5"
+                  />
+                  <path
+                    d="M6 3.5v3"
+                    stroke="#ff5f7e"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="6" cy="8.25" r="0.6" fill="#ff5f7e" />
+                </svg>
+                {errors.password}
+              </span>
+            )}
           </div>
 
           <button type="submit" className="login-btn" disabled={loading}>
