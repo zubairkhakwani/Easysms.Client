@@ -1,7 +1,19 @@
+//React
 import { useState, useEffect, useContext } from "react";
+
+//Toaster
 import { toast, Slide } from "react-toastify";
+
+//Context
 import { AuthContext } from "../../context/AuthContext";
+
+//Services
 import { getAll, topUpBalance } from "../../services/User/UserService";
+
+//Helper
+import { FormatterHelper } from "../../helper/FormatterHelper";
+
+//Css
 import "./UserManagement.css";
 
 function ActionDropdown({ user, onAction }) {
@@ -196,7 +208,9 @@ export default function UserManagement() {
     { label: "In-Active", val: users.filter((u) => !u.isActive).length },
     {
       label: "Total Balance",
-      val: `$${users.reduce((s, u) => s + u.balance, 0).toFixed(2)}`,
+      val: FormatterHelper.formatCurrency(
+        users.reduce((s, u) => s + u.balance, 0),
+      ),
     },
   ];
 
@@ -260,7 +274,9 @@ export default function UserManagement() {
                   </span>
                 </td>
                 <td className="um-td">
-                  <span className="um-balance">${user.balance}</span>
+                  <span className="um-balance">
+                    {FormatterHelper.formatCurrency(user.balance)}
+                  </span>
                 </td>
                 <td className="um-td">
                   <span

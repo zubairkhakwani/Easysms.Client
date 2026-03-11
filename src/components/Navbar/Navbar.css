@@ -82,10 +82,14 @@
   font-size: 0.9rem;
   transition: color 0.2s;
 }
-
-.nav-links a:hover {
+.nav-links a .cyan {
+  color: var(--accent);
+}
+.nav-links a:hover,
+.nav-links a .cyan:hover {
   color: #fff;
 }
+
 /* Auth Button Container */
 .nav-auth {
   display: flex;
@@ -241,7 +245,11 @@
     max-height: 500px;
     opacity: 1;
     transform: translateY(0);
-    margin: 2rem 0;
+  }
+
+  .nav.open .nav-links,
+  .nav.open {
+    margin: 1rem 0 2rem 0;
   }
 
   /* ── Staggered links ── */
@@ -277,13 +285,23 @@
     transform: none;
     transition-delay: 0.31s;
   }
+  .nav.open .nav-links li:nth-child(6) {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.37s;
+  }
 
+  .nav.open .nav-links li:nth-child(7) {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.43s;
+  }
   .nav-auth {
     opacity: 0;
     transform: translateY(14px);
     transition:
-      opacity 0.3s ease 0.33s,
-      transform 0.3s ease 0.33s;
+      opacity 0.3s ease 0.4s,
+      transform 0.3s ease 0.4s;
   }
   .nav.open .nav-auth {
     opacity: 1;

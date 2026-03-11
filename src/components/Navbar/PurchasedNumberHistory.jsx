@@ -3,6 +3,11 @@ import { useState, useEffect } from "react";
 
 //Services
 import { getMyNumbers } from "../../services/Number/NumberService";
+
+//Helper
+import { FormatterHelper } from "../../helper/FormatterHelper";
+
+//Css
 import "./PurchasedNumberHistory.css";
 
 export default function PurchasedNumberHistory() {
@@ -35,6 +40,27 @@ export default function PurchasedNumberHistory() {
 
   const stats = [
     { label: "Total numbers", val: numbers.length },
+    {
+      label: "Total Active",
+      val: numbers.filter((num) => num.status == "Active").length,
+    },
+    {
+      label: "Total Completed",
+      val: numbers.filter((num) => num.status == "Completed").length,
+    },
+    {
+      label: "Total Cancelled",
+      val: numbers.filter((num) => num.status == "Cancelled").length,
+    },
+    {
+      label: "Total Spent",
+      val: FormatterHelper.formatCurrency(
+        numbers
+          .filter((num) => num.status == "Active")
+          .reduce((sum, u) => sum + u.activationCost, 0),
+      ),
+    },
+
     {
       label: "Total Otps",
       val: numbers.reduce((sum, u) => sum + u.totalVerificationCode, 0),
@@ -79,7 +105,9 @@ export default function PurchasedNumberHistory() {
                 "Provider",
                 "Service",
                 "Country",
+                "Price",
                 "Total Otps",
+                "Status",
                 "Purchased At",
               ].map((h) => (
                 <th key={h} className="um-th">
@@ -93,7 +121,9 @@ export default function PurchasedNumberHistory() {
               <tr key={number.id} className="um-tr">
                 <td className="um-td">
                   <div className="um-user-cell">
-                    <div className="">{number.phoneNumber}</div>
+                    <div className="">
+                      {FormatterHelper.formatPhoneNumber(number.phoneNumber)}
+                    </div>
                   </div>
                 </td>
 
@@ -102,13 +132,19 @@ export default function PurchasedNumberHistory() {
                 <td className="um-td">{number.service}</td>
 
                 <td className="um-td">{number.country}</td>
-
+                <td className="um-td">
+                  {FormatterHelper.formatCurrency(number.activationCost)}
+                </td>
                 <td className="um-td">
                   <span className="um-role-badge">
                     {number.totalVerificationCode}
                   </span>
                 </td>
-
+                <td className="um-td">
+                  <span className={`um-status-badge ${number.status}`}>
+                    {number.status}
+                  </span>
+                </td>
                 <td className="um-td um-joined">{number.purchasedAt}</td>
               </tr>
             ))}

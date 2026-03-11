@@ -1,8 +1,13 @@
+//React
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+//Toaster
 import { ToastContainer } from "react-toastify";
 
+//Components
+import App from "./App.jsx";
 import RequestNumberContainer from "./components/RequestNumber/Container/RequestNumberContainer.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import UserManagement from "./components/User/UserManagement.jsx";
@@ -10,10 +15,13 @@ import PurchasedNumberHistory from "./components/Navbar/PurchasedNumberHistory.j
 import Register from "./components/Auth/Register.jsx";
 import Login from "./components/Auth/Login.jsx";
 import PrivateRoute from "./components/Route/PrivateRoute.jsx";
+import TopUp from "./components/LandingPage/TopUp/TopUp.jsx";
+
+//Context
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { SmsProvider } from "./context/SmsContext.jsx";
 
-import App from "./App.jsx";
+//Css
 import "./index.css";
 
 createRoot(document.getElementById("root")).render(
@@ -30,8 +38,10 @@ createRoot(document.getElementById("root")).render(
             <Route element={<PrivateRoute requireAdmin={true} />}>
               <Route path="/manage-users" element={<UserManagement />} />
             </Route>
-
-            <Route path="/history" element={<PurchasedNumberHistory />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/history" element={<PurchasedNumberHistory />} />
+            </Route>
+            <Route path="/topup" element={<TopUp />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
           </Routes>

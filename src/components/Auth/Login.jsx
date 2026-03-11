@@ -25,15 +25,35 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     const updatedFormData = {
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     };
 
     setFormData(updatedFormData);
 
-    validateRequest(updatedFormData);
+    validateField(name, value);
   };
+
+  function validateField(name, value) {
+    setErrors((prevErrors) => {
+      const newErrors = { ...prevErrors };
+
+      if (name === "email") {
+        if (!value) newErrors.email = "Email is required";
+        else delete newErrors.email;
+      }
+
+      if (name === "password") {
+        if (!value) newErrors.password = "Password is required";
+        else delete newErrors.password;
+      }
+
+      return newErrors;
+    });
+  }
 
   function validateRequest(data) {
     let errors = {};
@@ -41,7 +61,6 @@ export default function Login() {
     if (data.email.length === 0) {
       errors.email = "Email is required";
     }
-
     if (data.password.length === 0) {
       errors.password = "Password is required";
     }

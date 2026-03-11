@@ -20,7 +20,9 @@ export default function HowItWorks() {
           {steps.map((step, i) => (
             <div key={i} className="step-card">
               <div className="step-num">Step {step.number}</div>
-              <div className="step-icon-wrap">{step.icon}</div>
+              <div className="step-icon-wrap">
+                <i className={step.icon}></i>
+              </div>
               <div className="step-title">{step.title}</div>
               <div className="step-desc">{step.desc}</div>
             </div>

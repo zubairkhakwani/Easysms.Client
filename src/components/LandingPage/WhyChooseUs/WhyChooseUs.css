@@ -22,6 +22,7 @@
   font-size: 2rem;
   margin-bottom: 16px;
   display: block;
+  color: var(--accent);
 }
 .why-title {
   font-size: 1.05rem;

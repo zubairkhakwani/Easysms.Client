@@ -5,7 +5,7 @@ import { useEffect, useState, useContext } from "react";
 import { SmsContext } from "../../../context/SmsContext";
 
 //Components
-import RecentOrders from "../RecentOrder/RecentOrders";
+import ActiveOrders from "../ActiveOrder/ActiveOrders";
 import RequestNumber from "../Form/RequestNumberForm";
 
 //Services
@@ -20,14 +20,14 @@ import "./RequestNumberContainer.css";
 
 export default function RequestNumberContainer() {
   const { latestSms, addSms } = useContext(SmsContext);
-  const [recentOrders, setRecentOrders] = useState([]);
+  const [activeOrders, setActiveOrders] = useState([]);
 
   const addNewNumber = (newNumber) => {
-    setRecentOrders((prev) => [newNumber, ...prev]);
+    setActiveOrders((prev) => [newNumber, ...prev]);
   };
 
   const cancelNumber = (activationIid) => {
-    setRecentOrders((prev) =>
+    setActiveOrders((prev) =>
       prev.filter((order) => order.activationId !== activationIid),
     );
   };
@@ -47,7 +47,7 @@ export default function RequestNumberContainer() {
     const fetchMyRecentNumbers = async () => {
       try {
         const res = await getMyNumbers(true);
-        setRecentOrders(res.data);
+        setActiveOrders(res.data);
       } catch (error) {
         console.error("Failed to fetch recent numbers:", error);
       }
@@ -60,7 +60,7 @@ export default function RequestNumberContainer() {
   useEffect(() => {
     if (!latestSms) return;
 
-    setRecentOrders((prevOrders) =>
+    setActiveOrders((prevOrders) =>
       prevOrders.map((order) => {
         if (order.activationId === latestSms.activationId) {
           return {
@@ -81,8 +81,8 @@ export default function RequestNumberContainer() {
       <div className="grid">
         <RequestNumberGuideline />
         <RequestNumber onNewNumber={addNewNumber} />
-        <RecentOrders
-          incomingOrders={recentOrders}
+        <ActiveOrders
+          incomingOrders={activeOrders}
           onCancelNumber={cancelNumber}
         />
       </div>

@@ -1,10 +1,22 @@
+//React
 import { useState, useContext } from "react";
-import { toast, Slide } from "react-toastify";
-import { cancel, complete } from "../../../services/Number/NumberService";
-import { AuthContext } from "../../../context/AuthContext";
-import "./RecentOrders.css";
 
-export default function RecentOrders({ incomingOrders, onCancelNumber }) {
+//Toaster
+import { toast, Slide } from "react-toastify";
+
+//Services
+import { cancel, complete } from "../../../services/Number/NumberService";
+
+//Context
+import { AuthContext } from "../../../context/AuthContext";
+
+//Helper
+import { FormatterHelper } from "../../../helper/FormatterHelper";
+
+//Css
+import "./ActiveOrders.css";
+
+export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
   const { balanceCredit } = useContext(AuthContext);
   const [copied, setCopied] = useState(null);
 
@@ -65,6 +77,7 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
         theme: "dark",
         transition: Slide,
       });
+      onCancelNumber(activationId);
     } else {
       toast.error(responseMessage, {
         position: "top-right",
@@ -80,15 +93,20 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
     }
   }
 
+  function startTimer(){
+    
+  }
+
   return (
     <div className="recent-card">
       <div className="card-header">
         <div className="orders-top">
           <span className="card-icon">🕐</span>
           <div>
-            <div className="card-title">Recent Orders</div>
+            <div className="card-title">Active Orders</div>
             <div className="card-sub">
-              Showing numbers requested in the last 30 minutes.
+              Numbers that are currently active — excluding completed and
+              cancelled orders.
             </div>
           </div>
         </div>
@@ -117,20 +135,20 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
                 <span className="order-price">
-                  $ {Math.trunc(order.activationCost * 10000) / 10000}
+                  {FormatterHelper.formatCurrency(order.activationCost)}
                 </span>
               </div>
             </div>
 
             <div className="order-number">
-              +{order.countryPhoneCode} {order.phoneNumber}
+              {FormatterHelper.formatPhoneNumber(order.phoneNumber)}
             </div>
 
             <div className="order-expiry">
-              Expires in ~{order.activationLimit} min
+              Expires in ~{order.activationTime} min
             </div>
 
-            {/* SMS Block (initially hidden until sms arrives) */}
+            {/* SMS Block ( hidden until sms arrives) */}
             {order.hasSms && (
               <div className="sms-block">
                 <div className="sms-label">
@@ -171,7 +189,7 @@ export default function RecentOrders({ incomingOrders, onCancelNumber }) {
                 className="btn-action"
                 onClick={() => handleComplete(order.activationId)}
               >
-                ✓ Done
+                ✓ Complete
               </button>
 
               <button

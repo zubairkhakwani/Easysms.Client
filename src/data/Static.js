@@ -1,5 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-export const Base_Url = "https://localhost:7265/api";
+//export const Base_Url = "https://api.easyotps.com";
+export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -33,57 +34,87 @@ export const steps = [
     number: "01",
     title: "Create Your Account",
     desc: "Sign up in seconds. No personal info required — just an email and you're in.",
-    icon: "👤",
+    icon: "fa-solid fa-user",
   },
   {
     number: "02",
     title: "Top Up Your Balance",
     desc: "Add credits instantly. Numbers start from as low as $0.05 per verification.",
-    icon: "💳",
+    icon: "fa-solid fa-credit-card",
   },
   {
     number: "03",
     title: "Choose Service & Country",
     desc: "Pick the app you need a number for and select your preferred country.",
-    icon: "🌍",
+    icon: "fa-solid fa-globe",
   },
   {
     number: "04",
     title: "Receive Your SMS Code",
     desc: "Your temporary number is ready. Get the OTP code instantly on your screen.",
-    icon: "📩",
+    icon: "fa-solid fa-key",
   },
 ];
 
 export const WhyUs = [
   {
-    icon: "⚡",
+    icon: "fa-solid fa-bolt-lightning",
     title: "Instant Delivery",
     desc: "Numbers are issued within seconds. SMS codes arrive in real-time — no refreshing, no waiting.",
   },
   {
-    icon: "🔒",
+    icon: "fa-solid fa-lock",
     title: "100% Anonymous",
     desc: "We never ask for your real phone number. No KYC, no ID — just sign up and go.",
   },
   {
-    icon: "🌍",
+    icon: "fa-solid fa-globe",
     title: "Global Coverage",
     desc: "Choose from numbers in 100+ countries across 6 continents. Always find the right number for your target service.",
   },
   {
-    icon: "💰",
+    icon: "fa-solid fa-sack-dollar",
     title: "Pay As You Go",
     desc: "No monthly fees. Recharge only what you need, starting from $0.05 per verification.",
   },
   {
-    icon: "🔁",
+    icon: "fa-solid fa-repeat",
     title: "Unlimited Numbers",
     desc: "Need 10 verifications or 10,000? Scale freely. Each number is fresh, clean, and ready to use.",
   },
   {
-    icon: "🛡️",
+    icon: "fa-solid fa-shield",
     title: "Trusted Platform",
     desc: "Over 12 million numbers issued. Trusted by developers, marketers, and privacy-conscious users worldwide.",
   },
+];
+
+export const features = [
+  {
+    icon: "fa-solid fa-bolt-lightning",
+    title: "Instant Activation",
+    desc: "Your balance is live the moment payment clears.",
+  },
+  {
+    icon: "fa-solid fa-lock",
+    title: "Secure & Private",
+    desc: "Every transaction is encrypted end-to-end.",
+  },
+  {
+    icon: "fa-solid fa-mobile-retro",
+    title: "Numbers On Demand",
+    desc: "Access any number worldwide, anytime.",
+  },
+  {
+    icon: "fa-solid fa-infinity",
+    title: "Never Expire",
+    desc: "Your balance stays until you use it. No hidden fees.",
+  },
+];
+
+export const punchlines = [
+  "Don't let an empty balance cost you a deal.",
+  "Top up once. Verify forever.",
+  "Your next number is one top-up away.",
+  "Stay ready. Stay verified.",
 ];

@@ -11,7 +11,9 @@ export default function WhyChooseUs() {
       <div className="why-grid">
         {WhyUs.map((item, i) => (
           <div key={i} className="why-card">
-            <span className="why-icon">{item.icon}</span>
+            <span className="why-icon">
+              <i className={item.icon}></i>
+            </span>
             <div className="why-title">{item.title}</div>
             <div className="why-desc">{item.desc}</div>
           </div>

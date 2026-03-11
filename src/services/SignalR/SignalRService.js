@@ -1,5 +1,8 @@
+//SignalR
 import * as signalR from "@microsoft/signalr";
-import { Await } from "react-router-dom";
+
+//Static
+import { Base_Url } from "../../data/Static";
 
 let hubConnection;
 let userId;
@@ -17,7 +20,7 @@ export const connectSignalR = async (id, addSms) => {
     }
 
     hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl("https://localhost:7265/hub")
+      .withUrl(`${Base_Url}/hub`)
       .build();
 
     addEventListeners(addSms);

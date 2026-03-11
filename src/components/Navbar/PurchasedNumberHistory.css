@@ -177,7 +177,35 @@
   font-size: 0.68rem;
   font-weight: 700;
 }
+.um-status-badge.Active {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+}
 
+.um-status-badge.Cancelled {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+.um-status-badge.Completed {
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: var(--accent);
+}
+
+.um-status-badge.TimeOut {
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  color: #fbbf24;
+}
+
+.um-status-badge.Expired {
+  background: rgba(156, 163, 175, 0.1);
+  border: 1px solid rgba(156, 163, 175, 0.25);
+  color: #9ca3af;
+}
 .um-joined {
   color: rgba(255, 255, 255, 0.35);
   font-size: 0.75rem;

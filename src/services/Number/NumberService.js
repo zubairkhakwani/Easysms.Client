@@ -1,16 +1,18 @@
 import httpClient from "../Base/HttpClient";
 
-export const getMyNumbers = async (recent = false) => {
-  const response = await httpClient.get(`/numbers?recent=${recent}`);
+export const getMyNumbers = async (active = false) => {
+  const response = await httpClient.get(`/api/numbers?active=${active}`);
   return response.data;
 };
 
 export const cancel = async (activationId) => {
-  const response = await httpClient.get(`/numbers/${activationId}/cancel`);
+  const response = await httpClient.get(`/api/numbers/${activationId}/cancel`);
   return response.data;
 };
 
 export const complete = async (activationId) => {
-  const response = await httpClient.get(`/numbers/${activationId}/complete`);
+  const response = await httpClient.get(
+    `/api/numbers/${activationId}/complete`,
+  );
   return response.data;
 };

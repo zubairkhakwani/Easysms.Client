@@ -5,6 +5,9 @@ import { useNavigate, Link } from "react-router-dom";
 //Context
 import { AuthContext } from "../../context/AuthContext";
 
+//Helper
+import { FormatterHelper } from "../../helper/FormatterHelper";
+
 //Css
 import "./Navbar.css";
 
@@ -47,7 +50,7 @@ export default function Navbar() {
             <div className="nav-user-info">
               <span className="nav-user-name">{currentUser?.name}</span>
               <span className="nav-user-balance">
-                ${Math.trunc(currentUser.balance * 10000) / 10000}
+                {FormatterHelper.formatCurrency(currentUser.balance)}
               </span>
             </div>
             <div className="nav-user-divider" />
@@ -120,6 +123,20 @@ export default function Navbar() {
         </li>
         {adminActionButtons}
         {authActionButtons}
+        <li>
+          <Link to="/topup">
+            <span className="cyan" onClick={() => handleNavClick()}>
+              Topup
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/get-number">
+            <span className="cyan" onClick={() => handleNavClick()}>
+              Get number
+            </span>
+          </Link>
+        </li>
       </ul>
       <div className="nav-auth">{authButtons}</div>
     </nav>

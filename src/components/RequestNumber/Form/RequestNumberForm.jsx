@@ -77,8 +77,6 @@ export default function RequestNumber({ onNewNumber }) {
 
     setOperators_Pricing(selectedCountry.metaData);
     setSelectedCountry(countryId);
-
-    console.log(selectedCountry.metaData);
   };
 
   const handleOperators_PricingChange = async (e) => {

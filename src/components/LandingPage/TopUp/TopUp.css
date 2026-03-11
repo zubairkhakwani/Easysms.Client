@@ -1,0 +1,405 @@
+/* ── TopUpPage.css ─────────────────────────────────────────────── */
+
+:root {
+  --accent: #00e5ff;
+  --accent2: #7c3aed;
+  --accent-logout: #ff5c5c;
+  --error: #ff5f7e;
+  --bg: #0a0a0f;
+  --card: #13131a;
+  --border: rgba(255, 255, 255, 0.07);
+  --text-dim: rgba(255, 255, 255, 0.45);
+  --font: "Sora", "Segoe UI", sans-serif;
+}
+
+/* ── Root & Background ── */
+.topup-root {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: var(--font);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.topup-bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.topup-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+.topup-glow-1 {
+  width: clamp(300px, 50vw, 600px);
+  height: clamp(300px, 50vw, 600px);
+  background: radial-gradient(
+    circle,
+    rgba(0, 229, 255, 0.07) 0%,
+    transparent 70%
+  );
+  top: -10%;
+  right: -10%;
+}
+.topup-glow-2 {
+  width: clamp(250px, 40vw, 500px);
+  height: clamp(250px, 40vw, 500px);
+  background: radial-gradient(
+    circle,
+    rgba(124, 58, 237, 0.08) 0%,
+    transparent 70%
+  );
+  bottom: 10%;
+  left: -5%;
+}
+
+/* ── Container ── */
+.topup-container {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 5rem) clamp(1rem, 4vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* ── Hero ── */
+.topup-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.topup-badge {
+  display: inline-block;
+  padding: 0.35em 1em;
+  border-radius: 100px;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  background: rgba(0, 229, 255, 0.07);
+  color: var(--accent);
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.topup-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.topup-accent {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.topup-subtitle {
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+  color: var(--text-dim);
+  font-style: italic;
+  max-width: 520px;
+  margin: 0;
+  animation: topup-fade-in 0.5s ease;
+}
+
+@keyframes topup-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Cards ── */
+.topup-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: clamp(12px, 2vw, 20px);
+  padding: clamp(1.25rem, 4vw, 2rem);
+  transition: border-color 0.3s;
+}
+.topup-card:hover {
+  border-color: rgba(0, 229, 255, 0.18);
+}
+
+.topup-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: clamp(1rem, 3vw, 1.75rem);
+}
+.topup-card-header h2 {
+  font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+  font-weight: 700;
+  margin: 0;
+}
+.topup-card-icon {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  color: var(--accent);
+}
+
+/* ── Steps ── */
+.topup-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 3vw, 1.5rem);
+}
+.topup-steps li {
+  display: flex;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  align-items: flex-start;
+}
+.topup-step-num {
+  flex-shrink: 0;
+  font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+  font-weight: 800;
+  color: var(--accent);
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.3em 0.55em;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+.topup-steps li strong {
+  display: block;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  margin-bottom: 0.25rem;
+}
+.topup-steps li p {
+  margin: 0;
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+.topup-highlight {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ── Row (Contact + Min) ── */
+.topup-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 3vw, 1.5rem);
+}
+@media (max-width: 640px) {
+  .topup-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Contact Card ── */
+.topup-contact-label {
+  font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.4rem;
+}
+.topup-phone {
+  display: block;
+  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+  font-weight: 800;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.35rem;
+  transition: opacity 0.2s;
+}
+.topup-phone:hover {
+  opacity: 0.8;
+}
+
+.topup-contact-hours {
+  font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+  color: var(--text-dim);
+  margin: 0 0 clamp(1rem, 3vw, 1.5rem);
+}
+
+.topup-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: clamp(0.55rem, 1.5vw, 0.7rem) clamp(1rem, 3vw, 1.5rem);
+  border-radius: 10px;
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.25s,
+    border-color 0.25s,
+    transform 0.2s;
+}
+.topup-whatsapp-btn:hover {
+  background: rgba(0, 229, 255, 0.18);
+  border-color: rgba(0, 229, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+/* ── Minimum Balance Card ── */
+.topup-amount-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1.1rem);
+}
+.topup-currency {
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.topup-amount {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+.topup-min-desc {
+  font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin: 0 0 clamp(0.75rem, 2vw, 1rem);
+}
+.topup-min-desc strong {
+  color: #fff;
+}
+
+.topup-warning {
+  font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+  background: rgba(255, 92, 92, 0.08);
+  border: 1px solid rgba(255, 92, 92, 0.2);
+  color: #ff5c5c;
+  border-radius: 8px;
+  padding: 0.6em 0.9em;
+  font-weight: 600;
+}
+
+/* ── Features Grid ── */
+.topup-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+}
+@media (max-width: 800px) {
+  .topup-features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 420px) {
+  .topup-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+.topup-feature-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: clamp(10px, 2vw, 16px);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition:
+    border-color 0.3s,
+    transform 0.25s;
+}
+.topup-feature-card:hover {
+  border-color: rgba(0, 229, 255, 0.2);
+  transform: translateY(-3px);
+}
+.topup-feature-icon {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  color: var(--accent);
+}
+.topup-feature-card h3 {
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  font-weight: 700;
+  margin: 0;
+}
+.topup-feature-card p {
+  font-size: clamp(0.75rem, 1.8vw, 0.83rem);
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── CTA ── */
+.topup-cta {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 229, 255, 0.07),
+    rgba(124, 58, 237, 0.07)
+  );
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: clamp(12px, 2vw, 20px);
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 1.5rem);
+  text-align: center;
+}
+.topup-cta p {
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+  color: var(--text-dim);
+  margin: 0;
+}
+.topup-cta p strong {
+  color: #fff;
+}
+
+.topup-cta-btn {
+  display: inline-block;
+  padding: clamp(0.65rem, 2vw, 0.85rem) clamp(1.75rem, 5vw, 2.75rem);
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-family: var(--font);
+  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition:
+    opacity 0.25s,
+    transform 0.25s,
+    box-shadow 0.25s;
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+}
+.topup-cta-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-3px);
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.3);
+}
