@@ -256,6 +256,10 @@ body {
   background: rgba(255, 255, 255, 0.08);
 }
 
+.btn-action:disabled {
+  cursor: not-allowed;
+}
+
 .btn-cancel {
   background: rgba(239, 68, 68, 0.06);
   border-color: rgba(239, 68, 68, 0.2);

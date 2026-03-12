@@ -1,11 +1,14 @@
 //React
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 
 //Toaster
 import { toast, Slide } from "react-toastify";
 
 //Services
-import { cancel, complete } from "../../../services/Number/NumberService";
+import {
+  cancelNumber,
+  completeNumber,
+} from "../../../services/Number/NumberService";
 
 //Context
 import { AuthContext } from "../../../context/AuthContext";
@@ -16,9 +19,63 @@ import { FormatterHelper } from "../../../helper/FormatterHelper";
 //Css
 import "./ActiveOrders.css";
 
+const InfoIcon = ({ tooltip, btn }) => {
+  const [visible, setVisible] = useState(false);
+  return (
+    <span
+      className="info-icon-wrapper"
+      onMouseEnter={() => setVisible(true)}
+      onMouseLeave={() => setVisible(false)}
+    >
+      {btn ? (
+        btn
+      ) : (
+        <svg
+          className="info-icon"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="10"
+            cy="10"
+            r="9"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M10 9v5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <circle cx="10" cy="6.5" r="0.75" fill="currentColor" />
+        </svg>
+      )}
+
+      {visible && (
+        <span className="tooltip">
+          <span className="tooltip-arrow" />
+          {tooltip}
+        </span>
+      )}
+    </span>
+  );
+};
 export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
   const { balanceCredit } = useContext(AuthContext);
   const [copied, setCopied] = useState(null);
+  const [now, setNow] = useState(Date.now());
+  const [cancel, setCancel] = useState(false);
+  const [complete, setComplete] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   function handleCopy(activationId, number) {
     navigator.clipboard.writeText(number).catch(() => {});
@@ -27,7 +84,9 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
   }
 
   async function handleCancel(activationId) {
-    var response = await cancel(activationId);
+    setCancel(activationId);
+
+    var response = await cancelNumber(activationId);
 
     var responseMessage = response.message;
 
@@ -58,10 +117,13 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
         transition: Slide,
       });
     }
+
+    setCancel(null);
   }
 
   async function handleComplete(activationId) {
-    var response = await complete(activationId);
+    setComplete(activationId);
+    var response = await completeNumber(activationId);
 
     var responseMessage = response.message;
 
@@ -91,10 +153,25 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
         transition: Slide,
       });
     }
+
+    setComplete(null);
   }
 
-  function startTimer(){
-    
+  function getRemainingTime(order) {
+    if (!order.activationStartTime || !order.activationLimit) return "Invalid";
+
+    const startTime = new Date(order.activationStartTime).getTime();
+    if (isNaN(startTime)) return "Invalid date";
+
+    const expiryTime = startTime + order.activationLimit * 60 * 1000;
+    const remaining = expiryTime - Date.now();
+
+    if (remaining <= 0) return "Expired";
+
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   }
 
   return (
@@ -145,7 +222,7 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
             </div>
 
             <div className="order-expiry">
-              Expires in ~{order.activationTime} min
+              Expires in {getRemainingTime(order)}
             </div>
 
             {/* SMS Block ( hidden until sms arrives) */}
@@ -176,28 +253,44 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
             )}
 
             <div className="order-actions">
-              <button
-                className="btn-action"
-                onClick={() =>
-                  handleCopy(order.activationId, order.phoneNumber)
+              <InfoIcon
+                tooltip={"Copy number"}
+                btn={
+                  <button
+                    className="btn-action"
+                    onClick={() =>
+                      handleCopy(order.activationId, order.phoneNumber)
+                    }
+                  >
+                    {copied == order.activationId ? "Copying" : "📋"}
+                  </button>
                 }
-              >
-                {copied != order.activationId ? "📋 Copy" : "Copying"}
-              </button>
+              />
 
-              <button
-                className="btn-action"
-                onClick={() => handleComplete(order.activationId)}
-              >
-                ✓ Complete
-              </button>
-
-              <button
-                className="btn-action btn-cancel"
-                onClick={() => handleCancel(order.activationId)}
-              >
-                ✕
-              </button>
+              <InfoIcon
+                tooltip={"Mark this number as complete"}
+                btn={
+                  <button
+                    disabled={complete == order.activationId}
+                    className="btn-action"
+                    onClick={() => handleComplete(order.activationId)}
+                  >
+                    ✓
+                  </button>
+                }
+              />
+              <InfoIcon
+                tooltip={"You can cancel the number after 2 minutes"}
+                btn={
+                  <button
+                    disabled={cancel == order.activationId}
+                    className="btn-action btn-cancel"
+                    onClick={() => handleCancel(order.activationId)}
+                  >
+                    ✕
+                  </button>
+                }
+              />
             </div>
           </div>
         ))}
