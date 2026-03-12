@@ -131,18 +131,19 @@ export default function RequestNumber({ onNewNumber }) {
     if (!id) return;
 
     var operator_pricing = operators_pricings.find((item) => item.id == id);
-
+    console.log(operator_pricing);
     setOperator_Pricings(id);
     setPurchaseState(false);
     setRequestedNumber({
       id,
       price: operator_pricing.price,
+      operator: operator_pricing.operator,
     });
   };
 
   const handleRequestNumber = async () => {
     setRequestNumberText("Getting Number..");
-
+    setPurchaseState(true);
     var response = await requestNumber(
       selectedProvider,
       selectedService,
@@ -181,6 +182,7 @@ export default function RequestNumber({ onNewNumber }) {
     }
 
     setRequestNumberText("⚡ Get Number");
+    setPurchaseState(false);
   };
 
   return (

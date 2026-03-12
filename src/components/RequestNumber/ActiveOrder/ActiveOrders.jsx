@@ -174,6 +174,17 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   }
 
+  function canMakeCancelRequest(order) {
+    if (!order.activationStartTime) return false;
+
+    const startTime = new Date(order.activationStartTime).getTime();
+    if (isNaN(startTime)) return false;
+
+    const now = Date.now();
+
+    return now >= startTime + 2 * 60 * 1000;
+  }
+
   return (
     <div className="recent-card">
       <div className="card-header">
@@ -283,7 +294,7 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
                 tooltip={"You can cancel the number after 2 minutes"}
                 btn={
                   <button
-                    disabled={cancel == order.activationId}
+                    disabled={!canMakeCancelRequest(order)}
                     className="btn-action btn-cancel"
                     onClick={() => handleCancel(order.activationId)}
                   >
