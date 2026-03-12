@@ -66,8 +66,8 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
   const { balanceCredit } = useContext(AuthContext);
   const [copied, setCopied] = useState(null);
   const [now, setNow] = useState(Date.now());
-  const [cancel, setCancel] = useState(false);
-  const [complete, setComplete] = useState(false);
+  const [cancel, setCancel] = useState([]);
+  const [complete, setComplete] = useState([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -84,7 +84,7 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
   }
 
   async function handleCancel(activationId) {
-    setCancel(activationId);
+    setCancel((prev) => [...prev, activationId]);
 
     var response = await cancelNumber(activationId);
 
@@ -118,11 +118,12 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
       });
     }
 
-    setCancel(null);
+    setCancel((prev) => prev.filter((id) => id !== activationId));
   }
 
   async function handleComplete(activationId) {
-    setComplete(activationId);
+    setComplete((prev) => [...prev, activationId]);
+
     var response = await completeNumber(activationId);
 
     var responseMessage = response.message;
@@ -154,7 +155,7 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
       });
     }
 
-    setComplete(null);
+    setComplete((prev) => prev.filter((id) => id !== activationId));
   }
 
   function getRemainingTime(order) {
@@ -282,7 +283,7 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
                 tooltip={"Mark this number as complete"}
                 btn={
                   <button
-                    disabled={complete == order.activationId}
+                    disabled={complete.includes(order.activationId)}
                     className="btn-action"
                     onClick={() => handleComplete(order.activationId)}
                   >
@@ -294,7 +295,10 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
                 tooltip={"You can cancel the number after 2 minutes"}
                 btn={
                   <button
-                    disabled={!canMakeCancelRequest(order)}
+                    disabled={
+                      !canMakeCancelRequest(order) ||
+                      cancel.includes(order.activationId)
+                    }
                     className="btn-action btn-cancel"
                     onClick={() => handleCancel(order.activationId)}
                   >
