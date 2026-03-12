@@ -34,11 +34,40 @@ select:focus {
   border-color: rgba(0, 229, 255, 0.4);
 }
 select:disabled {
-  opacity: 0.35;
   cursor: not-allowed;
 }
 select option {
   background: #1a1a26;
+}
+
+/* Skeleton */
+.select-skeleton {
+  height: 38px;
+  width: 100%;
+  border-radius: 6px;
+
+  background: linear-gradient(
+    90deg,
+    #2b2b2b 0%,
+    #3a3a3a 25%,
+    #555555 50%,
+    #3a3a3a 75%,
+    #2b2b2b 100%
+  );
+
+  background-size: 300% 100%;
+  animation: skeleton-loading 1.6s infinite linear;
+
+  border: 1px solid #444;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .price-preview {
@@ -83,6 +112,7 @@ select option {
 .get-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+  animation: none;
 }
 
 .loading-row {

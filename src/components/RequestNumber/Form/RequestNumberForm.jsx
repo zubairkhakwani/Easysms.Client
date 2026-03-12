@@ -14,17 +14,24 @@ export default function RequestNumber({ onNewNumber }) {
 
   const [providers, setProviders] = useState([]);
   const [services, setServices] = useState([]);
-  const [countriesMetadata, setCountriesMetadata] = useState([]);
   const [countries, setCountries] = useState([]);
+  const [countriesMetadata, setCountriesMetadata] = useState([]);
   const [operators_pricings, setOperators_Pricing] = useState([]);
+
   const [requestedNumber, setRequestedNumber] = useState({});
   const [requestNumberText, setRequestNumberText] = useState("⚡ Get Number");
 
-  const [selectedProvider, setSelectedProvider] = useState("");
-  const [selectedService, setSelectedService] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedOperator_Pricings, setOperator_Pricings] = useState(null);
 
-  const [canPurchaseNumber, setPurchaseState] = useState(true);
+  const [isServiceLoading, setServiceLoading] = useState(false);
+  const [isCountryLoadinig, setCountryLoading] = useState(false);
+  const [isCountryMetadataLoadinig, setCountryMetadataLoading] =
+    useState(false);
+
+  const [pruchaseState, setPurchaseState] = useState(true);
 
   const fetchProviders = async () => {
     try {
@@ -39,19 +46,50 @@ export default function RequestNumber({ onNewNumber }) {
     fetchProviders();
   }, []);
 
+  function resetServices() {
+    setServices([]);
+    setSelectedService(null);
+  }
+
+  function resetCountries() {
+    setCountries([]);
+    setSelectedCountry(null);
+  }
+
+  function resetOperators_pricing() {
+    setOperators_Pricing([]);
+    setOperator_Pricings(null);
+    setPurchaseState(true);
+  }
+
   const handleProviderChange = async (e) => {
     let providerId = e.target.value;
 
     setSelectedProvider(providerId);
 
+    setServiceLoading(true);
+
+    resetServices(); //When provider changes we default back to services
+
+    resetCountries(); //When provider changes we default back to countries
+
+    resetOperators_pricing(); //When provider changes we default back to operators_pricing
+
     let servicesResponse = await getServices(providerId);
+
     setServices(servicesResponse);
+
+    setServiceLoading(false);
   };
 
   const handleServiceChange = async (e) => {
     let serviceId = e.target.value;
 
     setSelectedService(serviceId);
+
+    setCountryLoading(true);
+
+    resetOperators_pricing(); //When service change we default back to operators_pricings;
 
     let countriesMetaData = await getCountriesMetaData(
       selectedProvider,
@@ -65,17 +103,26 @@ export default function RequestNumber({ onNewNumber }) {
     }));
 
     setCountries(countriesData);
+
+    setCountryLoading(false);
+
     setCountriesMetadata(countriesMetaData);
   };
 
   const handleCountryChange = async (e) => {
     let countryId = e.target.value;
 
-    const selectedCountry = countriesMetadata.find(
-      (item) => item.countryId === Number(countryId),
+    setCountryMetadataLoading(true);
+
+    const countries = countriesMetadata.find(
+      (item) => item.countryId === countryId,
     );
 
-    setOperators_Pricing(selectedCountry.metaData);
+    setPurchaseState(true);
+    setOperators_Pricing(countries.metaData);
+
+    setCountryMetadataLoading(false);
+
     setSelectedCountry(countryId);
   };
 
@@ -85,17 +132,16 @@ export default function RequestNumber({ onNewNumber }) {
 
     var operator_pricing = operators_pricings.find((item) => item.id == id);
 
+    setOperator_Pricings(id);
+    setPurchaseState(false);
     setRequestedNumber({
       id,
       price: operator_pricing.price,
     });
-
-    setPurchaseState(false);
   };
 
   const handleRequestNumber = async () => {
     setRequestNumberText("Getting Number..");
-    setPurchaseState(true);
 
     var response = await requestNumber(
       selectedProvider,
@@ -134,7 +180,6 @@ export default function RequestNumber({ onNewNumber }) {
       });
     }
 
-    setPurchaseState(false);
     setRequestNumberText("⚡ Get Number");
   };
 
@@ -150,60 +195,94 @@ export default function RequestNumber({ onNewNumber }) {
 
       <div className="fields">
         <div className="field">
-          <label>🏢 SMS Provider</label>
-          <select onChange={handleProviderChange}>
-            <option value="">Select provider...</option>
-            {providers.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
+          <>
+            <label>🏢 SMS Provider</label>
+            <select
+              onChange={handleProviderChange}
+              disabled={providers.length == 0}
+            >
+              <option value="" selected disabled>
+                Select provider
               </option>
-            ))}
-          </select>
+              {providers.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </>
         </div>
         <div className="field">
           <label>📲 Service</label>
-          <select onChange={handleServiceChange}>
-            <option value="">Select service...</option>
-            {services.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
+          {isServiceLoading ? (
+            <div className="select-skeleton"></div>
+          ) : (
+            <select
+              onChange={handleServiceChange}
+              disabled={selectedProvider == null}
+            >
+              <option value="">
+                {selectedProvider == null
+                  ? "First select provider"
+                  : "Select service"}
               </option>
-            ))}
-          </select>
+              {services.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name} {s.price ? `— From ${s.price}` : ""}{" "}
+                  {s.qty ? `— Total ${s.qty} numbers` : ""}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
         <div className="field">
           <label>🌍 Country</label>
-          <select id="country" onChange={handleCountryChange}>
-            <option value="">Select country...</option>
-            {countries.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
+          {isCountryLoadinig ? (
+            <div className="select-skeleton"></div>
+          ) : (
+            <select
+              id="country"
+              onChange={handleCountryChange}
+              disabled={selectedService == null}
+            >
+              <option value="">
+                {selectedService == null
+                  ? "First select service"
+                  : "Select country"}
               </option>
-            ))}
-          </select>
+              {countries.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
         <div className="field">
           <label>📡 Operator / Pricing</label>
-          <select
-            id="operator"
-            className="operator-select"
-            onChange={handleOperators_PricingChange}
-          >
-            <option value="">Select operator / pricing</option>
-            {operators_pricings && operators_pricings.length > 0 ? (
-              operators_pricings.map((s) => (
+          {isCountryMetadataLoadinig ? (
+            <div className="select-skeleton"></div>
+          ) : (
+            <select
+              id="operator"
+              className="operator-select"
+              onChange={handleOperators_PricingChange}
+              disabled={selectedCountry == null}
+            >
+              <option value="">
+                {selectedCountry == null
+                  ? "First select country"
+                  : "Select operator / pricing"}
+              </option>
+              {operators_pricings.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name && s.name.trim() !== "" ? `${s.name} - ` : ""}$
                   {Math.trunc((s.price ?? 0) * 10000) / 10000} ({s.count ?? 0}{" "}
                   available)
                 </option>
-              ))
-            ) : (
-              <option value="" disabled>
-                Operators / Pricing not found
-              </option>
-            )}
-          </select>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
@@ -211,7 +290,7 @@ export default function RequestNumber({ onNewNumber }) {
         className="get-btn"
         id="getBtn"
         onClick={handleRequestNumber}
-        disabled={canPurchaseNumber}
+        disabled={pruchaseState}
       >
         {requestNumberText}
       </button>
