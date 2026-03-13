@@ -6,15 +6,19 @@ export const FormatterHelper = {
   },
 
   formatCurrency: (number, currency = "USD", locale = "en-US") => {
-    const decimals = number % 1 === 0 ? 0 : 4;
+    const truncated = Math.trunc(number * 10000) / 10000;
+
+    const decimals = truncated % 1 === 0 ? 0 : 4;
+
     return new Intl.NumberFormat(locale, {
       style: "currency",
       currencyDisplay: "symbol",
       currency,
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
-    }).format(number);
+    }).format(truncated);
   },
+
   formatPhoneNumber: (number) => {
     try {
       const phone = parsePhoneNumber("+" + number);

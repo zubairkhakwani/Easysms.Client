@@ -131,7 +131,6 @@ export default function RequestNumber({ onNewNumber }) {
     if (!id) return;
 
     var operator_pricing = operators_pricings.find((item) => item.id == id);
-    console.log(operator_pricing);
     setOperator_Pricings(id);
     setPurchaseState(false);
     setRequestedNumber({
@@ -200,10 +199,11 @@ export default function RequestNumber({ onNewNumber }) {
           <>
             <label>🏢 SMS Provider</label>
             <select
+              defaultValue=""
               onChange={handleProviderChange}
-              disabled={providers.length == 0}
+              disabled={providers.length === 0}
             >
-              <option value="" selected disabled>
+              <option value="" disabled>
                 Select provider
               </option>
               {providers.map((p) => (

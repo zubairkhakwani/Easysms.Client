@@ -176,6 +176,12 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
   }
 
   function canMakeCancelRequest(order) {
+    let isProviderB = order.provider?.toLowerCase().includes("provider b");
+
+    if (isProviderB) {
+      return true;
+    }
+
     if (!order.activationStartTime) return false;
 
     const startTime = new Date(order.activationStartTime).getTime();
@@ -292,7 +298,7 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
                 }
               />
               <InfoIcon
-                tooltip={"You can cancel the number after 2 minutes"}
+                tooltip={`You can cancel the number  ${order.provider?.toLowerCase().includes("provider b") ? "" : "after 2 minutes"}`}
                 btn={
                   <button
                     disabled={

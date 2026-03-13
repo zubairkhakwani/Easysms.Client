@@ -65,7 +65,7 @@ function TopupModal({ user, onClose, onConfirm }) {
           <div>
             <div className="um-topup-balance-label">Current Balance</div>
             <div className="um-topup-balance-val">
-              ${user.balance.toFixed(2)}
+              {FormatterHelper.formatCurrency(user.balance)}
             </div>
           </div>
           <span style={{ fontSize: "1.5rem" }}>💳</span>
@@ -96,7 +96,9 @@ function TopupModal({ user, onClose, onConfirm }) {
         {amount && Number(amount) > 0 && (
           <p className="um-new-balance">
             New balance will be{" "}
-            <span>${(user.balance + Number(amount)).toFixed(2)}</span>
+            <span>
+              {FormatterHelper.formatCurrency(user.balance + Number(amount))}
+            </span>
           </p>
         )}
 
