@@ -1,14 +1,119 @@
-import { useEffect, useState, useContext } from "react";
+//React
+import { useEffect, useState, useContext, use } from "react";
+
+//Context
 import { AuthContext } from "../../../context/AuthContext";
-import { toast, Slide } from "react-toastify";
+
+//Toaster
+import { successTaost, errorToast } from "../../../helper/Toaster";
+
+//Services
 import {
   getProviders,
+  getPhysicalProviderInfo,
   getServices,
   getCountriesMetaData,
   requestNumber,
 } from "../../../services/Provider/ProviderService";
+
+//Components
+import { PhysicalNumberContainer } from "../../Helper/PhysicalNumberContainer";
+import { PhysicalNumberSkelton } from "../../Helper/PhysicalNumberSkelton";
+
+//Css
 import "./RequestNumberForm.css";
 
+function PhysicalNumberModal({ numbersText, onClose }) {
+  const [copied, setCopied] = useState(false);
+
+  const rows = numbersText
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => {
+      const [number, url] = line.split("|");
+      return { number, url };
+    });
+
+  function handleCopy() {
+    navigator.clipboard.writeText(numbersText).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <div className="um-overlay" onClick={onClose}>
+      <div className="um-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="um-close-btn" onClick={onClose}>
+          ✕
+        </button>
+        <div className="um-modal-title">Requested Physical Numbers</div>
+
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            margin: "1rem 0",
+          }}
+        >
+          <thead>
+            <tr>
+              <th
+                style={{
+                  textAlign: "left",
+                  padding: "0.4rem 0.6rem",
+                  borderBottom: "1px solid #444",
+                }}
+              >
+                Phone Number
+              </th>
+              <th
+                style={{
+                  textAlign: "left",
+                  padding: "0.4rem 0.6rem",
+                  borderBottom: "1px solid #444",
+                }}
+              >
+                Activation URL
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(({ number, url }, i) => (
+              <tr key={i}>
+                <td
+                  style={{ padding: "0.4rem 0.6rem", fontFamily: "monospace" }}
+                >
+                  {number}
+                </td>
+                <td
+                  style={{
+                    padding: "0.4rem 0.6rem",
+                    wordBreak: "break-all",
+                    fontSize: "0.8rem",
+                  }}
+                >
+                  <a href={url} target="_blank" rel="noreferrer">
+                    {url}
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="um-modal-actions">
+          <button className="um-btn ghost" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="um-btn primary" onClick={handleCopy}>
+            {copied ? "✓ Copied!" : "Copy to Clipboard"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 export default function RequestNumber({ onNewNumber }) {
   const { balanceDebit } = useContext(AuthContext);
 
@@ -17,6 +122,11 @@ export default function RequestNumber({ onNewNumber }) {
   const [countries, setCountries] = useState([]);
   const [countriesMetadata, setCountriesMetadata] = useState([]);
   const [operators_pricings, setOperators_Pricing] = useState([]);
+  const [quantity, setQuantity] = useState(0);
+
+  const [physicalNumberInfo, setPhysicalNumberInfo] = useState(null);
+  const [isPhysicalNumberInfoLoading, setPhysicalNumberInfoLoading] =
+    useState(false);
 
   const [requestedNumber, setRequestedNumber] = useState({});
   const [requestNumberText, setRequestNumberText] = useState("⚡ Get Number");
@@ -25,7 +135,7 @@ export default function RequestNumber({ onNewNumber }) {
   const [selectedService, setSelectedService] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedOperator_Pricings, setOperator_Pricings] = useState(null);
-
+  const [modal, setModal] = useState(null);
   const [isServiceLoading, setServiceLoading] = useState(false);
   const [isCountryLoadinig, setCountryLoading] = useState(false);
   const [isCountryMetadataLoadinig, setCountryMetadataLoading] =
@@ -66,6 +176,19 @@ export default function RequestNumber({ onNewNumber }) {
     let providerId = e.target.value;
 
     setSelectedProvider(providerId);
+
+    if (providerId == 3) {
+      setPhysicalNumberInfoLoading(true);
+      let response = await getPhysicalProviderInfo();
+      setPhysicalNumberInfoLoading(false);
+      setSelectedService("Facebook");
+      setSelectedCountry("USA");
+      setPhysicalNumberInfo(response);
+      setPurchaseState(false);
+      return;
+    }
+
+    setPhysicalNumberInfo(null);
 
     setServiceLoading(true);
 
@@ -140,49 +263,69 @@ export default function RequestNumber({ onNewNumber }) {
     });
   };
 
+  function copyPhysicalNumbers(numbers) {
+    navigator.clipboard.writeText(numbers).catch(() => {});
+  }
+
   const handleRequestNumber = async () => {
     setRequestNumberText("Getting Number..");
+
+    const updatedRequestedNumber = {
+      ...requestedNumber,
+      quantity: quantity,
+    };
+
     setPurchaseState(true);
+
+    setRequestedNumber(updatedRequestedNumber);
+
     var response = await requestNumber(
       selectedProvider,
       selectedService,
       selectedCountry,
-      requestedNumber,
+      updatedRequestedNumber,
     );
 
     var responseMessage = response.message;
+
     var responseData = response.data;
+
     if (response.isSuccess) {
-      toast(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
+      successTaost(responseMessage);
+
+      let activationCost = 0;
+      let phoneNumber_Url = "";
+      responseData.forEach((data) => {
+        if (selectedProvider != 3) {
+          onNewNumber(data);
+        } else {
+          phoneNumber_Url += data.phoneNumber_Url + "\n";
+        }
+
+        activationCost = data.activationCost;
       });
-      onNewNumber(responseData);
-      balanceDebit(responseData.activationCost);
+
+      if (selectedProvider == 3) {
+        handlePhysicalNumberRequest(phoneNumber_Url, {
+          numbersText: phoneNumber_Url.trim(),
+        });
+      }
+
+      balanceDebit(activationCost);
     } else {
-      toast.warn(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+      errorToast(responseMessage);
     }
 
     setRequestNumberText("⚡ Get Number");
     setPurchaseState(false);
   };
+
+  function handlePhysicalNumberRequest(phoneNumber_Url, numbersText) {
+    copyPhysicalNumbers(phoneNumber_Url);
+    setModal(numbersText);
+  }
+
+  const closeModal = () => setModal(null);
 
   return (
     <div className="card">
@@ -193,7 +336,6 @@ export default function RequestNumber({ onNewNumber }) {
           <div className="card-sub">Configure your options below</div>
         </div>
       </div>
-
       <div className="fields">
         <div className="field">
           <>
@@ -214,79 +356,93 @@ export default function RequestNumber({ onNewNumber }) {
             </select>
           </>
         </div>
-        <div className="field">
-          <label>📲 Service</label>
-          {isServiceLoading ? (
-            <div className="select-skeleton"></div>
-          ) : (
-            <select
-              onChange={handleServiceChange}
-              disabled={selectedProvider == null}
-            >
-              <option value="">
-                {selectedProvider == null
-                  ? "First select provider"
-                  : "Select service"}
-              </option>
-              {services.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} {s.price ? `— From ${s.price}` : ""}{" "}
-                  {s.qty ? `— Total ${s.qty} numbers` : ""}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-        <div className="field">
-          <label>🌍 Country</label>
-          {isCountryLoadinig ? (
-            <div className="select-skeleton"></div>
-          ) : (
-            <select
-              id="country"
-              onChange={handleCountryChange}
-              disabled={selectedService == null}
-            >
-              <option value="">
-                {selectedService == null
-                  ? "First select service"
-                  : "Select country"}
-              </option>
-              {countries.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-        <div className="field">
-          <label>📡 Operator / Pricing</label>
-          {isCountryMetadataLoadinig ? (
-            <div className="select-skeleton"></div>
-          ) : (
-            <select
-              id="operator"
-              className="operator-select"
-              onChange={handleOperators_PricingChange}
-              disabled={selectedCountry == null}
-            >
-              <option value="">
-                {selectedCountry == null
-                  ? "First select country"
-                  : "Select operator / pricing"}
-              </option>
-              {operators_pricings.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name && s.name.trim() !== "" ? `${s.name} - ` : ""}$
-                  {Math.trunc((s.price ?? 0) * 10000) / 10000} ({s.count ?? 0}{" "}
-                  available)
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
       </div>
+
+      {isPhysicalNumberInfoLoading ? (
+        <PhysicalNumberSkelton />
+      ) : physicalNumberInfo ? (
+        <PhysicalNumberContainer
+          availability={physicalNumberInfo.count}
+          price={physicalNumberInfo.pricePerNumber}
+          quantity={quantity}
+          setQuantity={setQuantity}
+        />
+      ) : (
+        <div className="fields">
+          <div className="field">
+            <label>📲 Service</label>
+            {isServiceLoading ? (
+              <div className="select-skeleton"></div>
+            ) : (
+              <select
+                onChange={handleServiceChange}
+                disabled={selectedProvider == null}
+              >
+                <option value="">
+                  {selectedProvider == null
+                    ? "First select provider"
+                    : "Select service"}
+                </option>
+                {services.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} {s.price ? `— From ${s.price}` : ""}{" "}
+                    {s.qty ? `— Total ${s.qty} numbers` : ""}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          <div className="field">
+            <label>🌍 Country</label>
+            {isCountryLoadinig ? (
+              <div className="select-skeleton"></div>
+            ) : (
+              <select
+                id="country"
+                onChange={handleCountryChange}
+                disabled={selectedService == null}
+              >
+                <option value="">
+                  {selectedService == null
+                    ? "First select service"
+                    : "Select country"}
+                </option>
+                {countries.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          <div className="field">
+            <label>📡 Operator / Pricing</label>
+            {isCountryMetadataLoadinig ? (
+              <div className="select-skeleton"></div>
+            ) : (
+              <select
+                id="operator"
+                className="operator-select"
+                onChange={handleOperators_PricingChange}
+                disabled={selectedCountry == null}
+              >
+                <option value="">
+                  {selectedCountry == null
+                    ? "First select country"
+                    : "Select operator / pricing"}
+                </option>
+                {operators_pricings.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name && s.name.trim() !== "" ? `${s.name} - ` : ""}$
+                    {Math.trunc((s.price ?? 0) * 10000) / 10000} ({s.count ?? 0}{" "}
+                    available)
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        </div>
+      )}
 
       <button
         className="get-btn"
@@ -296,6 +452,12 @@ export default function RequestNumber({ onNewNumber }) {
       >
         {requestNumberText}
       </button>
+      {modal && (
+        <PhysicalNumberModal
+          numbersText={modal.numbersText}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 }
