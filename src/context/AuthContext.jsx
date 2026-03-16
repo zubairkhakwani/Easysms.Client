@@ -53,17 +53,24 @@ export const AuthProvider = ({ children }) => {
   };
 
   const balanceCredit = (amount) => {
-    setCurrentUser((prevUser) => ({
-      ...prevUser,
-      balance: prevUser.balance + amount,
-    }));
+    setCurrentUser((prevUser) => {
+      if (prevUser?.balance == null) return prevUser;
+      return {
+        ...prevUser,
+        balance: prevUser.balance + amount,
+      };
+    });
   };
 
   const balanceDebit = (amount) => {
-    setCurrentUser((prevUser) => ({
-      ...prevUser,
-      balance: prevUser.balance - amount,
-    }));
+    setCurrentUser((prevUser) => {
+      if (prevUser?.balance == null) return prevUser;
+
+      return {
+        ...prevUser,
+        balance: prevUser.balance - amount,
+      };
+    });
   };
   return (
     <AuthContext.Provider

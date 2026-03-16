@@ -76,17 +76,27 @@
 
 .nav-links a {
   display: inline-block;
-  margin-top: 1.5rem;
   color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s;
+  cursor: pointer;
 }
+
+.nav-links span {
+  display: inline-block;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+}
+
 .nav-links a .cyan {
   color: var(--accent);
 }
+
 .nav-links a:hover,
-.nav-links a .cyan:hover {
+.nav-links a .cyan:hover,
+.nav-links span:hover {
   color: #fff;
 }
 
@@ -326,7 +336,8 @@
     opacity: 1;
     transform: none;
   }
-  .nav-links a {
+  .nav-links a,
+  .nav-links span {
     margin: 0;
   }
   .hamburger {

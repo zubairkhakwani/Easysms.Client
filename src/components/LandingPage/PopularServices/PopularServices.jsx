@@ -16,7 +16,7 @@ function hexToRgb(hex) {
 export default function PopularServices() {
   const [hoveredService, setHoveredService] = useState(null);
   return (
-    <section className="section" id="Services">
+    <section className="section" id="services">
       <div className="section-label">Popular Services</div>
       <div
         style={{

@@ -1,6 +1,6 @@
 //React
 import { useContext, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
 //Context
 import { AuthContext } from "../../context/AuthContext";
@@ -13,6 +13,8 @@ import "./Navbar.css";
 
 export default function Navbar() {
   var navigate = useNavigate();
+  var location = useLocation();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const { isAuth, isAdmin, currentUser, logout } = useContext(AuthContext);
 
@@ -25,9 +27,26 @@ export default function Navbar() {
     navigate("/");
   }
 
-  const handleNavClick = () => {
+  const handleNavClick = (sectionId = null) => {
     setMenuOpen(false);
-    navigate("/");
+
+    if (sectionId) {
+      // If we're not on home page, navigate there first then scroll
+      if (location.pathname !== "/") {
+        navigate("/");
+        // Wait for navigation to complete, then scroll
+        setTimeout(() => {
+          document
+            .getElementById(sectionId)
+            ?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      } else {
+        // Already on home, just scroll
+        document
+          .getElementById(sectionId)
+          ?.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   };
 
   if (!isAuth) {
@@ -107,19 +126,15 @@ export default function Navbar() {
 
       <ul className="nav-links">
         <li>
-          <a href="#Services" onClick={() => handleNavClick()}>
-            Services
-          </a>
+          <span onClick={() => handleNavClick("services")}>Services</span>
         </li>
         <li>
-          <a href="#how-it-works" onClick={() => handleNavClick()}>
+          <span onClick={() => handleNavClick("how-it-works")}>
             How it works
-          </a>
+          </span>
         </li>
         <li>
-          <a href="#why-us" onClick={() => handleNavClick()}>
-            Why us
-          </a>
+          <span onClick={() => handleNavClick("why-us")}>Why us</span>
         </li>
         {adminActionButtons}
         {authActionButtons}
