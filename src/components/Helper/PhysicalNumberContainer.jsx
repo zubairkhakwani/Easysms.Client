@@ -9,7 +9,7 @@ export const PhysicalNumberContainer = ({
   const getAvailabilityMessage = () => {
     if (availability === 0) {
       return (
-        <p className="qty-helper qty-helper--none">
+        <p className="qty-helper qty-helper--error ">
           😔 No numbers are available right now. Please check back later.
         </p>
       );
@@ -74,7 +74,9 @@ export const PhysicalNumberContainer = ({
           <div className="qty-stepper">
             <button
               className="qty-btn"
-              onClick={() => setQuantity((q) => Math.max(0, q - 1))}
+              onClick={() =>
+                setQuantity((q) => Math.max(availability > 0 ? 1 : 0, q - 1))
+              }
             >
               −
             </button>
@@ -90,12 +92,6 @@ export const PhysicalNumberContainer = ({
           </div>
 
           {getAvailabilityMessage()}
-
-          {quantity > availability && (
-            <p className="qty-error">
-              ⚠ Exceeds available stock. Max you can order is {availability}.
-            </p>
-          )}
         </div>
       </div>
     </div>

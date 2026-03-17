@@ -122,7 +122,7 @@ export default function RequestNumber({ onNewNumber }) {
   const [countries, setCountries] = useState([]);
   const [countriesMetadata, setCountriesMetadata] = useState([]);
   const [operators_pricings, setOperators_Pricing] = useState([]);
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   const [physicalNumberInfo, setPhysicalNumberInfo] = useState(null);
   const [isPhysicalNumberInfoLoading, setPhysicalNumberInfoLoading] =
@@ -183,6 +183,10 @@ export default function RequestNumber({ onNewNumber }) {
       setPhysicalNumberInfoLoading(false);
       setSelectedService("Facebook");
       setSelectedCountry("USA");
+      // response.count = response.count = 0;
+      if (response.count <= 0) {
+        setQuantity(0);
+      }
       setPhysicalNumberInfo(response);
       setPurchaseState(false);
       return;
@@ -286,15 +290,16 @@ export default function RequestNumber({ onNewNumber }) {
       updatedRequestedNumber,
     );
 
-    var responseMessage = response.message;
+    let responseMessage = response.message;
 
-    var responseData = response.data;
+    let responseData = response.data;
 
     if (response.isSuccess) {
       successTaost(responseMessage);
 
       let activationCost = 0;
       let phoneNumber_Url = "";
+
       responseData.forEach((data) => {
         if (selectedProvider != 3) {
           onNewNumber(data);
@@ -306,7 +311,7 @@ export default function RequestNumber({ onNewNumber }) {
       });
 
       if (selectedProvider == 3) {
-        handlePhysicalNumberRequest(phoneNumber_Url, {
+        handlePhysicalNumberRequest(responseData.length, phoneNumber_Url, {
           numbersText: phoneNumber_Url.trim(),
         });
       }
@@ -320,7 +325,12 @@ export default function RequestNumber({ onNewNumber }) {
     setPurchaseState(false);
   };
 
-  function handlePhysicalNumberRequest(phoneNumber_Url, numbersText) {
+  function handlePhysicalNumberRequest(count, phoneNumber_Url, numbersText) {
+    setPhysicalNumberInfo((prev) => ({
+      ...prev,
+      count: Math.max(0, prev.count - count),
+    }));
+
     copyPhysicalNumbers(phoneNumber_Url);
     setModal(numbersText);
   }
