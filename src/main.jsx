@@ -11,7 +11,7 @@ import App from "./App.jsx";
 import RequestNumberContainer from "./components/RequestNumber/Container/RequestNumberContainer.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import UserManagement from "./components/User/UserManagement.jsx";
-import PurchasedNumberHistory from "./components/Navbar/PurchasedNumberHistory.jsx";
+import OrderHistory from "./components/User/OrderHistory.jsx";
 import Register from "./components/Auth/Register.jsx";
 import Login from "./components/Auth/Login.jsx";
 import PrivateRoute from "./components/Route/PrivateRoute.jsx";
@@ -39,7 +39,7 @@ createRoot(document.getElementById("root")).render(
               <Route path="/manage-users" element={<UserManagement />} />
             </Route>
             <Route element={<PrivateRoute />}>
-              <Route path="/history" element={<PurchasedNumberHistory />} />
+              <Route path="/history" element={<OrderHistory />} />
             </Route>
             <Route path="/topup" element={<TopUp />} />
             <Route path="/register" element={<Register />} />

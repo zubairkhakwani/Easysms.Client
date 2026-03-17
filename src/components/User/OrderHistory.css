@@ -252,3 +252,29 @@
   margin-bottom: 14px;
   box-sizing: border-box;
 }
+.um-ellipsis-copy {
+  display: flex;
+  align-items: center;
+  max-width: 400px;
+}
+
+.um-ellipsis-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 6px;
+}
+
+.um-copy-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+}
+
+.um-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}

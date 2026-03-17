@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
       try {
         if (isAuthenticated()) {
           const res = await getCurrentUser();
-          //console.log(res);
           setCurrentUser(res.data);
         }
       } catch (error) {
@@ -78,6 +77,7 @@ export const AuthProvider = ({ children }) => {
         isAuth,
         isAdmin,
         currentUser,
+
         login,
         logout,
         balanceCredit,

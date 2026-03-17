@@ -8,6 +8,9 @@ import { AuthContext } from "../../context/AuthContext";
 //Helper
 import { FormatterHelper } from "../../helper/FormatterHelper";
 
+//Skeltons
+import { UserBadgeSkeleton } from "../Skeltons/User/UserBadge";
+
 //Css
 import "./Navbar.css";
 
@@ -63,15 +66,19 @@ export default function Navbar() {
   } else {
     authButtons = (
       <>
-        {currentUser && (
+        {!currentUser ? (
+          <UserBadgeSkeleton />
+        ) : (
           <div className="nav-user-badge">
-            <div className="nav-user-avatar">{currentUser?.avatar}</div>
+            <div className="nav-user-avatar">{currentUser.avatar}</div>
+
             <div className="nav-user-info">
-              <span className="nav-user-name">{currentUser?.name}</span>
+              <span className="nav-user-name">{currentUser.name}</span>
               <span className="nav-user-balance">
                 {FormatterHelper.formatCurrency(currentUser.balance)}
               </span>
             </div>
+
             <div className="nav-user-divider" />
             <span className="nav-user-arrow">▾</span>
           </div>

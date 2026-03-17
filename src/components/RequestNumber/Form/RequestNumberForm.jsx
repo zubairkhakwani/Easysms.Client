@@ -304,10 +304,10 @@ export default function RequestNumber({ onNewNumber }) {
         if (selectedProvider != 3) {
           onNewNumber(data);
         } else {
-          phoneNumber_Url += data.phoneNumber_Url + "\n";
+          phoneNumber_Url += data.phoneNumber + "\n";
         }
 
-        activationCost = data.activationCost;
+        activationCost += data.activationCost;
       });
 
       if (selectedProvider == 3) {

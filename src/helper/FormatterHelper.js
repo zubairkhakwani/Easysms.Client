@@ -27,4 +27,19 @@ export const FormatterHelper = {
       return number; // fallback to raw if invalid
     }
   },
+
+  formatDateToLocal: (date) => {
+    const localDate = new Date(date);
+
+    const formattedDate = localDate.toLocaleString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+    return formattedDate;
+  },
 };

@@ -45,7 +45,7 @@ export default function TopUp() {
         <div className="topup-card topup-main-card">
           <div className="topup-card-header">
             <span className="topup-card-icon">
-              <i class="fa-solid fa-question"></i>
+              <i className="fa-solid fa-question"></i>
             </span>
             <h2>How to Top Up</h2>
           </div>
@@ -97,7 +97,7 @@ export default function TopUp() {
           <div className="topup-card topup-contact-card">
             <div className="topup-card-header">
               <span className="topup-card-icon">
-                <i class="fa-solid fa-phone"></i>
+                <i className="fa-solid fa-phone"></i>
               </span>
               <h2>Contact Support</h2>
             </div>
@@ -112,7 +112,7 @@ export default function TopUp() {
               target="_blank"
               rel="noreferrer"
             >
-              <i class="fa-solid fa-message"></i> Chat on WhatsApp
+              <i className="fa-solid fa-message"></i> Chat on WhatsApp
             </a>
           </div>
 
@@ -132,7 +132,7 @@ export default function TopUp() {
               you never run out mid-verification.
             </p>
             <div className="topup-warning">
-              <i class="fa-solid fa-triangle-exclamation"></i> Low balance =
+              <i className="fa-solid fa-triangle-exclamation"></i> Low balance =
               missed verifications. Don't risk it.
             </div>
           </div>
