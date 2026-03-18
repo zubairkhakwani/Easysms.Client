@@ -7,7 +7,7 @@ import { Base_Url } from "../../data/Static";
 let hubConnection;
 let userId;
 
-export const connectSignalR = async (id, addSms) => {
+export const connectSignalR = async (id, addSms, setReconnected) => {
   try {
     userId = id;
 
@@ -23,10 +23,10 @@ export const connectSignalR = async (id, addSms) => {
       .withUrl(`${Base_Url}/hub`)
       .build();
 
-    addEventListeners(addSms);
     await hubConnection.start();
     await new Promise((resolve) => setTimeout(resolve, 5000)); // wait 5 seconds
     await hubConnection.send("RegisterUser", userId);
+    addEventListeners(addSms, setReconnected);
   } catch (err) {
     console.log("Connection failed:", err);
   }
@@ -43,9 +43,9 @@ async function disconnectAsync() {
   hubConnection = null;
 }
 
-function addEventListeners(addSms) {
+function addEventListeners(addSms, setReconnected) {
   hubConnection.onclose(async () => {
-    await attemptReconnect();
+    await attemptReconnect(setReconnected);
   });
 
   hubConnection.on("ReceiveSms", (sms) => {
@@ -53,16 +53,18 @@ function addEventListeners(addSms) {
   });
 }
 
-async function attemptReconnect() {
-  while (hubConnection?.state !== "Connected") {
+async function attemptReconnect(setReconnected) {
+  while (hubConnection?.state !== signalR.HubConnectionState.Connected) {
     try {
       await hubConnection.start();
       await hubConnection.send("RegisterUser", userId);
+      setReconnected();
       return;
     } catch (ex) {
       console.log(
         `Reconnection failed: ${ex.message}, retrying in 5 seconds...`,
       );
+
       await new Promise((resolve) => setTimeout(resolve, 5000)); // wait 5 seconds
     }
   }

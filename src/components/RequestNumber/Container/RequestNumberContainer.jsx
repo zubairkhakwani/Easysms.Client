@@ -19,7 +19,8 @@ import { getCurrentUser } from "../../../services/User/CurrentUserService";
 import "./RequestNumberContainer.css";
 
 export default function RequestNumberContainer() {
-  const { latestSms, addSms } = useContext(SmsContext);
+  const { latestSms, addSms, isReconnected, setReconnected } =
+    useContext(SmsContext);
   const [activeOrders, setActiveOrders] = useState([]);
 
   const addNewNumber = (newNumber) => {
@@ -36,7 +37,7 @@ export default function RequestNumberContainer() {
   useEffect(() => {
     try {
       let currentUser = getCurrentUser();
-      connectSignalR(currentUser.id, addSms);
+      connectSignalR(currentUser.id, addSms, setReconnected);
     } catch (error) {
       console.error("Failed to connect and register user:", error);
     }
@@ -52,9 +53,8 @@ export default function RequestNumberContainer() {
         console.error("Failed to fetch recent numbers:", error);
       }
     };
-
     fetchMyRecentNumbers();
-  }, []);
+  }, [isReconnected]);
 
   //Update the UI when sms code receives
   useEffect(() => {
