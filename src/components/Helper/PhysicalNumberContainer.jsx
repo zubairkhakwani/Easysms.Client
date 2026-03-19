@@ -46,7 +46,7 @@ export const PhysicalNumberContainer = ({
 
         <div className="summary-country">
           <span className="summary-flag">🌍</span>
-          <span className="summary-country-name">United States</span>
+          <span className="summary-country-name">USA/Canada</span>
         </div>
       </div>
 
