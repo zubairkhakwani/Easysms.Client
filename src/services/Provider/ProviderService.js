@@ -5,10 +5,16 @@ export const getProviders = async () => {
   return response.data.data;
 };
 
+export const getProvidersInfo = async () => {
+  const response = await httpClient.get("/api/providers/info");
+  return response.data.data;
+};
+
 export const getPhysicalProviderInfo = async () => {
   const response = await httpClient.get(`/api/providers/physical-info`);
   return response.data.data;
 };
+
 export const getServices = async (providerId) => {
   const response = await httpClient.get(
     `/api/providers/${providerId}/services`,

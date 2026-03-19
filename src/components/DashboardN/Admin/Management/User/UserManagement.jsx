@@ -5,13 +5,13 @@ import { useState, useEffect, useContext } from "react";
 import { toast, Slide } from "react-toastify";
 
 //Context
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../../../context/AuthContext";
 
 //Services
-import { getAll, topUpBalance } from "../../services/User/UserService";
+import { getAll, topUpBalance } from "../../../../../services/User/UserService";
 
 //Helper
-import { FormatterHelper } from "../../helper/FormatterHelper";
+import { FormatterHelper } from "../../../../../helper/FormatterHelper";
 
 //Css
 import "./UserManagement.css";

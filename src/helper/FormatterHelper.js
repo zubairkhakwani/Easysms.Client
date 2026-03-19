@@ -1,8 +1,13 @@
 import { parsePhoneNumber } from "libphonenumber-js";
 
 export const FormatterHelper = {
-  formatNumber: (number, locale = navigator.language) => {
-    return new Intl.NumberFormat(locale).format(number);
+  formatNumber: (value, locale = navigator.language) => {
+    if (value === null || value === undefined) return "0";
+
+    const num = typeof value === "number" ? value : Number(value);
+    if (isNaN(num)) return "0";
+
+    return new Intl.NumberFormat(locale).format(num);
   },
 
   formatCurrency: (number, currency = "USD", locale = "en-US") => {

@@ -1,0 +1,32 @@
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+.counter-skeleton {
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    #2b2b2b 0%,
+    #3a3a3a 25%,
+    #555555 50%,
+    #3a3a3a 75%,
+    #2b2b2b 100%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease infinite;
+  height: 36px;
+}
+
+.counter-skeleton--number {
+  width: 100px;
+}
+.counter-skeleton--string {
+  width: 140px;
+}

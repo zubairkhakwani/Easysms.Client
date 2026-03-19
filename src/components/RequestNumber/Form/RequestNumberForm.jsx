@@ -49,58 +49,14 @@ function PhysicalNumberModal({ numbersText, onClose }) {
         </button>
         <div className="um-modal-title">Requested Physical Numbers</div>
 
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            margin: "1rem 0",
-          }}
-        >
-          <thead>
-            <tr>
-              <th
-                style={{
-                  textAlign: "left",
-                  padding: "0.4rem 0.6rem",
-                  borderBottom: "1px solid #444",
-                }}
-              >
-                Phone Number
-              </th>
-              <th
-                style={{
-                  textAlign: "left",
-                  padding: "0.4rem 0.6rem",
-                  borderBottom: "1px solid #444",
-                }}
-              >
-                Activation URL
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(({ number, url }, i) => (
-              <tr key={i}>
-                <td
-                  style={{ padding: "0.4rem 0.6rem", fontFamily: "monospace" }}
-                >
-                  {number}
-                </td>
-                <td
-                  style={{
-                    padding: "0.4rem 0.6rem",
-                    wordBreak: "break-all",
-                    fontSize: "0.8rem",
-                  }}
-                >
-                  <a href={url} target="_blank" rel="noreferrer">
-                    {url}
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="pn-list">
+          {rows.map(({ number, url }, i) => (
+            <div key={i} className="pn-row">
+              <span className="pn-number">{number}</span>
+              <span className="pn-url">{url}</span>
+            </div>
+          ))}
+        </div>
 
         <div className="um-modal-actions">
           <button className="um-btn ghost" onClick={onClose}>
