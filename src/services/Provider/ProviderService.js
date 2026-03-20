@@ -10,6 +10,13 @@ export const getProvidersInfo = async () => {
   return response.data.data;
 };
 
+export const getProvidersHistory = async (httpRequest) => {
+  const response = await httpClient.get(
+    `/api/providers/history?start=${httpRequest.startDate}&end=${httpRequest.endDate}&provider=${httpRequest.provider}`,
+  );
+  return response.data;
+};
+
 export const getPhysicalProviderInfo = async () => {
   const response = await httpClient.get(`/api/providers/physical-info`);
   return response.data.data;

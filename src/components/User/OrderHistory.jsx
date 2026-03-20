@@ -143,7 +143,7 @@ export default function OrderHistory() {
                         className="um-copy-btn"
                         onClick={() =>
                           copyToClipboard(
-                            number.orderData.phoneNumbers.join(", "),
+                            number.orderData.phoneNumbers.join("\n"),
                           )
                         }
                       >

@@ -28,16 +28,37 @@ export const navItems = [
         id: "Physical Number",
         url: "physical-number",
       },
-      { icon: "⊛", label: "Transactions", id: "transactions" },
+
       { icon: "⊕", label: "Users", id: "users", url: "manage-user" },
     ],
   },
   {
-    section: "System",
+    section: "Provder",
     items: [
-      { icon: "⊟", label: "Settings", id: "settings" },
-      { icon: "◫", label: "Audit Logs", id: "audit" },
-      { icon: "◻", label: "API Keys", id: "api-keys" },
+      {
+        icon: "⊞",
+        label: "Activation History",
+        id: "Activation History",
+        url: "provider-history",
+      },
     ],
+  },
+];
+
+export const providers = [
+  {
+    id: "1",
+    name: "Hero Sms",
+    codeName: "Provider A",
+  },
+  {
+    id: "2",
+    name: "Five Sim .Net",
+    codeName: "Provider B",
+  },
+  {
+    id: "3",
+    name: "USA/Canada Premium Numbers",
+    codeName: "USA/Canada Premium Numbers",
   },
 ];
