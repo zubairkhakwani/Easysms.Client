@@ -30,6 +30,7 @@ import ActiveNumbers from "./components/DashboardN/Admin/Provider/ActiveNumbers.
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { SmsProvider } from "./context/SmsContext.jsx";
+import { NumberProvider } from "./context/NumberContext.jsx";
 
 //Css
 import "./index.css";
@@ -38,47 +39,49 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
       <SmsProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* User Layout */}
-            <Route element={<UserLayout />}>
-              <Route path="/" element={<App />} />
+        <NumberProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* User Layout */}
+              <Route element={<UserLayout />}>
+                <Route path="/" element={<App />} />
 
-              <Route element={<PrivateRoute />}>
-                <Route
-                  path="/get-number"
-                  element={<RequestNumberContainer />}
-                />
-                <Route path="/history" element={<OrderHistory />} />
+                <Route element={<PrivateRoute />}>
+                  <Route
+                    path="/get-number"
+                    element={<RequestNumberContainer />}
+                  />
+                  <Route path="/history" element={<OrderHistory />} />
+                </Route>
+
+                <Route path="/topup" element={<TopUp />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
               </Route>
 
-              <Route path="/topup" element={<TopUp />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
-            </Route>
-
-            {/* Admin Layout */}
-            <Route element={<AdminLayout />}>
-              <Route element={<PrivateRoute requireAdmin={true} />}>
-                <Route path="admin-dashboard" element={<AdminDashobard />}>
-                  <Route index element={<Overview />} />
-                  <Route path="overview" element={<Overview />} />
-                  <Route path="manage-user" element={<UserManagement />} />
-                  <Route
-                    path="physical-number"
-                    element={<AddPhysicalNumber />}
-                  />
-                  <Route
-                    path="provider-history"
-                    element={<ProviderHistory />}
-                  />
-                  <Route path="active-numbers" element={<ActiveNumbers />} />
+              {/* Admin Layout */}
+              <Route element={<AdminLayout />}>
+                <Route element={<PrivateRoute requireAdmin={true} />}>
+                  <Route path="admin-dashboard" element={<AdminDashobard />}>
+                    <Route index element={<Overview />} />
+                    <Route path="overview" element={<Overview />} />
+                    <Route path="manage-user" element={<UserManagement />} />
+                    <Route
+                      path="physical-number"
+                      element={<AddPhysicalNumber />}
+                    />
+                    <Route
+                      path="provider-history"
+                      element={<ProviderHistory />}
+                    />
+                    <Route path="active-numbers" element={<ActiveNumbers />} />
+                  </Route>
                 </Route>
               </Route>
-            </Route>
-          </Routes>
-          <ToastContainer />
-        </BrowserRouter>
+            </Routes>
+            <ToastContainer />
+          </BrowserRouter>
+        </NumberProvider>
       </SmsProvider>
     </AuthProvider>
   </StrictMode>,

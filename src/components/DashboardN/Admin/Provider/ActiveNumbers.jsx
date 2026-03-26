@@ -1,296 +1,156 @@
 //React
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useContext } from "react";
+
+//Context
+import { SmsContext } from "../../../../context/SmsContext";
+import { NumberContext } from "../../../../context/NumberContext";
 
 //Services
-import { getProvidersHistory } from "../../../../services/Provider/ProviderService";
-
-//Helper
-import { providers } from "../../../../data/Admin/Static";
+import { getActiveNumbers } from "../../../../services/Number/NumberService";
 
 import { errorToast } from "../../../../helper/Toaster";
 
 //Css
 import "./ActiveNumbers.css";
 
-const CURRENCY_LABEL = { 1: "USD", 2: "PKR" };
-const PAGE_SIZE = 10;
-
-const toDS = (d) => d.toISOString().slice(0, 10);
-const today = new Date();
-const twoDays = new Date(
-  today.getFullYear(),
-  today.getMonth(),
-  today.getDate() - 2,
-);
-
-function fmtDate(iso) {
-  try {
-    return new Date(iso).toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch {
-    return iso;
-  }
-}
-
-function fmtCost(n) {
-  return "$" + Number(n).toFixed(4);
-}
-
-function StatusBadge({ status }) {
-  const known = ["Successfully", "Cancelled"];
-  const cls = known.includes(status) ? status : "default";
-  return <span className={`ph-status ${cls}`}>{status}</span>;
-}
-
 export default function ActiveNumbers() {
-  const [startDate, setStartDate] = useState(toDS(twoDays));
-  const [endDate, setEndDate] = useState(toDS(today));
-  const [provider, setProvider] = useState("1");
-  const [applied, setApplied] = useState(null);
-  const [providerHistory, setProviderHistory] = useState([]);
+  //State
+  const [activeNumbers, setActiveNumbers] = useState([]);
+  const [filteredNumbers, setFilteredNumbers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [removingId, setRemovingId] = useState(null);
 
-  async function getProviderHistoryData() {
+  //Context
+  const { latestSms } = useContext(SmsContext);
+  const { newNumbers, removeNumberId } = useContext(NumberContext);
+
+  async function getActiveNumbersData() {
     setIsLoading(true);
     try {
-      let response = await getProvidersHistory({
-        startDate,
-        endDate,
-        provider,
-      });
+      let response = await getActiveNumbers();
       var responseMessage = response.message;
       if (!response.isSuccess) {
         errorToast(responseMessage);
       }
 
-      setProviderHistory(response.data);
+      setActiveNumbers(response.data);
+      setFilteredNumbers(response.data);
     } finally {
-      setApplied({ from: startDate, to: endDate, provider });
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    getProviderHistoryData();
+    getActiveNumbersData();
   }, []);
 
-  const handleApply = async () => {
-    setPage(1);
-    await getProviderHistoryData();
-  };
+  // Update the UI when sms code receives
+  useEffect(() => {
+    if (!latestSms) return;
 
-  const handleReset = async () => {
-    setStartDate(toDS(twoDays));
-    setEndDate(toDS(today));
-    setProvider("1");
-    setPage(1);
-  };
+    const updateNumbers = (numbers) =>
+      numbers.map((number) => {
+        if (number.activationId === latestSms.activationId) {
+          return { ...number, otp: latestSms.code };
+        }
+        return number;
+      });
 
-  // ── Pagination ─────────────────────────────────────────────────────
-  const totalPages = Math.ceil(providerHistory.length / PAGE_SIZE);
-  const pageRows = providerHistory.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
-  );
+    setActiveNumbers((current) => updateNumbers(current));
+    setFilteredNumbers((current) => updateNumbers(current));
+  }, [latestSms]);
 
-  const pageNumbers = useMemo(() => {
-    const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
-      if (i === 1 || i === totalPages || Math.abs(i - page) <= 1) pages.push(i);
-      else if (pages[pages.length - 1] !== "…") pages.push("…");
-    }
-    return pages;
-  }, [totalPages, page]);
+  // Update the UI when a new number gets added
+  useEffect(() => {
+    if (!newNumbers) return;
+
+    setActiveNumbers((current) => [...newNumbers, ...current]);
+    setFilteredNumbers((current) => [...newNumbers, ...current]);
+  }, [newNumbers]);
+
+  // Update the UI when a number gets removed
+  useEffect(() => {
+    if (!removeNumberId) return;
+
+    setRemovingId(removeNumberId);
+    const timer = setTimeout(() => {
+      const filterNumbers = (numbers) =>
+        numbers.filter((number) => number.activationId !== removeNumberId);
+
+      setActiveNumbers((current) => filterNumbers(current));
+
+      setFilteredNumbers((current) => filterNumbers(current));
+
+      setRemovingId(null);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [removeNumberId]);
+
+  function handleSearch(keyword) {
+    let filteredUsers = activeNumbers.filter(
+      (u) =>
+        u.activationId.toLowerCase().includes(keyword.toLowerCase()) ||
+        u.phoneNumber.toLowerCase().includes(keyword.toLowerCase()) ||
+        u.name.toLowerCase().includes(keyword.toLowerCase()) ||
+        u.email.toLowerCase().includes(keyword.toLowerCase()),
+    );
+    setFilteredNumbers(filteredUsers);
+  }
 
   return (
     <div className="ph-page">
-      {/* ── Filters ── */}
-      <div className="ph-filters">
-        <div className="ph-filter-field">
-          <label className="ph-filter-label">From Date</label>
-          <input
-            type="date"
-            className="ph-filter-input"
-            value={startDate}
-            max={endDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </div>
-
-        <div className="ph-filter-field">
-          <label className="ph-filter-label">To Date</label>
-          <input
-            type="date"
-            className="ph-filter-input"
-            value={endDate}
-            min={startDate}
-            max={toDS(today)}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </div>
-
-        <div className="ph-filter-field">
-          <label className="ph-filter-label">Provider</label>
-          <select
-            className="ph-filter-input"
-            value={provider}
-            onChange={(e) => setProvider(e.target.value)}
-          >
-            {providers.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="ph-filter-actions">
-          <button className="ph-reset-btn" onClick={handleReset}>
-            Reset
-          </button>
-          <button
-            className="ph-apply-btn"
-            onClick={handleApply}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <span
-                  className="btn-spinner"
-                  style={{
-                    width: 13,
-                    height: 13,
-                    borderTopColor: "#000",
-                    borderColor: "rgba(0,0,0,0.25)",
-                  }}
-                />{" "}
-                Fetching…
-              </>
-            ) : (
-              "✦ Apply"
-            )}
-          </button>
-        </div>
-      </div>
-
       {/* ── Table ── */}
       <div className="ph-table-panel">
         <div className="ph-table-header">
-          <span className="ph-table-title">Provider History</span>
-          {
-            <span className="ph-table-meta">
-              {applied?.from} → {applied?.to}
-              {` · ${providers.find((p) => p.id === applied?.provider)?.name}`}
-            </span>
-          }
+          <span className="ph-table-title">Active Numbers</span>
         </div>
         {/* Table */}
         {!isLoading && (
           <>
             <div className="ph-table-wrap">
+              <div className="um-table-header">
+                <span className="um-table-title">All Active Numbers</span>
+                <input
+                  className="um-search-input"
+                  placeholder="🔍  Search numbers..."
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
+              </div>
+
               <table className="ph-table">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Phone</th>
-                    <th>SMS</th>
-                    <th>Internal Code</th>
-                    <th>Cost</th>
-                    <th>Activation Cost</th>
-                    <th>Currency</th>
-                    <th>Status</th>
-                    <th>Our Status</th>
+                    <th>Activation Id</th>
+                    <th>Phone Number</th>
+                    <th>Otp</th>
+                    <th>Name</th>
+                    <th>Email</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {providerHistory.map((r, index) => (
-                    <tr key={r.id}>
+                  {filteredNumbers.map((r, index) => (
+                    <tr
+                      key={r.phoneNumber}
+                      className={
+                        removingId === r.activationId ? "row-removing" : ""
+                      }
+                    >
                       <td className="ph-col-id">{index + 1}</td>
-                      <td className="ph-col-id">{r.id}</td>
-                      <td className="ph-col-date">{fmtDate(r.date)}</td>
-                      <td className="ph-col-phone">{r.phone}</td>
-
-                      <td className="ph-col-sms" title={r.sms}>
-                        {r.sms ?? "-"}
-                      </td>
-                      <td className="ph-col-sms" title={r.ourInternalCode}>
-                        {r.ourInternalCode ?? "-"}
-                      </td>
-                      <td className="ph-col-cost">{fmtCost(r.cost)}</td>
-                      <td className="ph-col-currency">
-                        {CURRENCY_LABEL[r.Currency] ?? r.ourActivationCost}
-                      </td>
-                      <td className="ph-col-currency">
-                        {CURRENCY_LABEL[r.Currency] ?? r.currency}
+                      <td className="ph-col-id">{r.activationId}</td>
+                      <td className="ph-col-phone">{r.phoneNumber}</td>
+                      <td className="ph-col-sms" title={r.otp}>
+                        {r.otp ?? "-"}
                       </td>
 
-                      <td>
-                        <StatusBadge status={r.status} />
-                      </td>
-                      <td>
-                        <StatusBadge status={r.ourStatus} />
-                      </td>
+                      <td className="ph-col-id">{r.name}</td>
+                      <td className="ph-col-id">{r.email}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="ph-pagination">
-                <span className="ph-pagination-info">
-                  Showing {(page - 1) * PAGE_SIZE + 1}–
-                  {Math.min(page * PAGE_SIZE, providerHistory.length)} of{" "}
-                  {providerHistory.length} records
-                </span>
-                <div className="ph-pagination-controls">
-                  <button
-                    className="ph-page-btn"
-                    onClick={() => setPage((p) => p - 1)}
-                    disabled={page === 1}
-                  >
-                    ←
-                  </button>
-
-                  {pageNumbers.map((n, i) =>
-                    n === "…" ? (
-                      <span
-                        key={`ellipsis-${i}`}
-                        className="ph-page-btn"
-                        style={{ cursor: "default", opacity: 0.4 }}
-                      >
-                        …
-                      </span>
-                    ) : (
-                      <button
-                        key={n}
-                        className={`ph-page-btn ${page === n ? "active" : ""}`}
-                        onClick={() => setPage(n)}
-                      >
-                        {n}
-                      </button>
-                    ),
-                  )}
-
-                  <button
-                    className="ph-page-btn"
-                    onClick={() => setPage((p) => p + 1)}
-                    disabled={page === totalPages}
-                  >
-                    →
-                  </button>
-                </div>
-              </div>
-            )}
           </>
         )}
 
@@ -303,7 +163,7 @@ export default function ActiveNumbers() {
         )}
 
         {/* Empty result */}
-        {!isLoading && applied && providerHistory.length === 0 && (
+        {!isLoading && activeNumbers.length === 0 && (
           <div className="ph-state-row">
             <div className="ph-state-icon">⊟</div>
             <span className="ph-state-text">

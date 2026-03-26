@@ -412,7 +412,7 @@
   align-items: center;
   gap: 6px;
 }
- 
+
 .ph-page-btn {
   background: transparent;
   border: 1px solid var(--border);
@@ -441,4 +441,29 @@
 .ph-page-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+.row-removing {
+  background-color: #ffe5e5;
+  animation: fadeOutRow 0.4s ease forwards;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+@keyframes fadeOutRow {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    background-color: #ffcccc;
+  }
+
+  50% {
+    background-color: #ff9999;
+    transform: translateX(-15px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
 }

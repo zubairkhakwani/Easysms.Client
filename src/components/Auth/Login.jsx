@@ -84,6 +84,7 @@ export default function Login() {
       var responseMessage = response.message;
 
       if (response.isSuccess) {
+        //Update authentication state
         await login(data.token);
         navigate("/get-number");
       } else {

@@ -1,11 +1,11 @@
-//Services
-import { TOKEN_KEY } from "../../data/Static";
-
 //Package that helps us decode jwt token
 import { jwtDecode } from "jwt-decode";
 
+//Services
+import TokenService from "../../services/Token/TokenService";
+
 export const getCurrentUser = () => {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = TokenService.getToken();
   if (!token) null;
 
   try {
@@ -24,11 +24,11 @@ export const getCurrentUser = () => {
 };
 
 export const isAuthenticated = () => {
-  return !!localStorage.getItem(TOKEN_KEY);
+  return !!TokenService.getToken();
 };
 
 export const isAdminUser = () => {
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = TokenService.getToken();
 
   if (!token) return false;
 

@@ -22,3 +22,8 @@ export const completeNumber = async (activationId) => {
   );
   return response.data;
 };
+
+export const getActiveNumbers = async () => {
+  const response = await httpClient.get(`/api/numbers/active`);
+  return response.data;
+};

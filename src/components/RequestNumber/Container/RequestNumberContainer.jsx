@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 
 //Context
 import { SmsContext } from "../../../context/SmsContext";
+import { NumberContext } from "../../../context/NumberContext";
 
 //Components
 import ActiveOrders from "../ActiveOrder/ActiveOrders";
@@ -13,7 +14,6 @@ import { getMyNumbers } from "../../../services/Number/NumberService";
 import RequestNumberContainerHeader from "../Header/RequestNumberHeader";
 import RequestNumberGuideline from "../Guideline/RequestNumberGuideline";
 import { connectSignalR } from "../../../services/SignalR/SignalRService";
-import { getCurrentUser } from "../../../services/User/CurrentUserService";
 
 //Css
 import "./RequestNumberContainer.css";
@@ -21,6 +21,9 @@ import "./RequestNumberContainer.css";
 export default function RequestNumberContainer() {
   const { latestSms, addSms, isReconnected, setReconnected } =
     useContext(SmsContext);
+
+  const { OnNewNumbers, OnRemoveNumber } = useContext(NumberContext);
+
   const [activeOrders, setActiveOrders] = useState([]);
 
   const addNewNumber = (newNumber) => {
@@ -36,8 +39,7 @@ export default function RequestNumberContainer() {
   //Connect to signalR
   useEffect(() => {
     try {
-      let currentUser = getCurrentUser();
-      connectSignalR(currentUser.id, addSms, setReconnected);
+      connectSignalR(addSms, setReconnected, OnNewNumbers, OnRemoveNumber);
     } catch (error) {
       console.error("Failed to connect and register user:", error);
     }

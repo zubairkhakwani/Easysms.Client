@@ -4,13 +4,18 @@ import * as signalR from "@microsoft/signalr";
 //Static
 import { Base_Url } from "../../data/Static";
 
+//Services
+import TokenService from "../../services/Token/TokenService";
+
 let hubConnection;
-let userId;
 
-export const connectSignalR = async (id, addSms, setReconnected) => {
+export const connectSignalR = async (
+  addSms,
+  setReconnected,
+  OnNewNumbers,
+  OnRemoveNumber,
+) => {
   try {
-    userId = id;
-
     // Disconnect from the previous connection if connected and we have the hubConnection
     if (
       hubConnection?.state === signalR.HubConnectionState.Connected &&
@@ -20,13 +25,15 @@ export const connectSignalR = async (id, addSms, setReconnected) => {
     }
 
     hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${Base_Url}/hub`)
+      .withUrl(`${Base_Url}/hub`, {
+        accessTokenFactory: () => TokenService.getToken(),
+      })
       .build();
 
     await hubConnection.start();
     await new Promise((resolve) => setTimeout(resolve, 5000)); // wait 5 seconds
-    await hubConnection.send("RegisterUser", userId);
-    addEventListeners(addSms, setReconnected);
+    await hubConnection.send("RegisterUser");
+    addEventListeners(addSms, setReconnected, OnNewNumbers, OnRemoveNumber);
   } catch (err) {
     console.log("Connection failed:", err);
   }
@@ -43,7 +50,12 @@ async function disconnectAsync() {
   hubConnection = null;
 }
 
-function addEventListeners(addSms, setReconnected) {
+function addEventListeners(
+  addSms,
+  setReconnected,
+  OnNewNumbers,
+  OnRemoveNumber,
+) {
   hubConnection.onclose(async () => {
     await attemptReconnect(setReconnected);
   });
@@ -51,13 +63,21 @@ function addEventListeners(addSms, setReconnected) {
   hubConnection.on("ReceiveSms", (sms) => {
     addSms(sms);
   });
+
+  hubConnection.on("NumberAdded", (newNumber) => {
+    OnNewNumbers(newNumber);
+  });
+
+  hubConnection.on("NumberRemoved", (activationId) => {
+    OnRemoveNumber(activationId);
+  });
 }
 
 async function attemptReconnect(setReconnected) {
   while (hubConnection?.state !== signalR.HubConnectionState.Connected) {
     try {
       await hubConnection.start();
-      await hubConnection.send("RegisterUser", userId);
+      await hubConnection.send("RegisterUser");
       setReconnected();
       return;
     } catch (ex) {

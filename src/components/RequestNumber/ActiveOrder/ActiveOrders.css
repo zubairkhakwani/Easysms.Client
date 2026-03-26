@@ -63,6 +63,8 @@ body {
   flex-direction: column;
   gap: 10px;
   padding: 14px;
+  max-height: 500px;
+  overflow: auto;
 }
 
 .order-row {
