@@ -48,7 +48,7 @@ function ActionDropdown({ user, onAction }) {
   );
 }
 
-function TopupModal({ user, onClose, onConfirm }) {
+function TopupModal({ user, isTopUp, onClose, onConfirm }) {
   const [amount, setAmount] = useState("");
   const presets = [5, 10, 25, 50];
 
@@ -106,12 +106,17 @@ function TopupModal({ user, onClose, onConfirm }) {
           <button className="um-btn ghost" onClick={onClose}>
             Cancel
           </button>
+
           <button
-            className="um-btn primary"
-            disabled={!amount || Number(amount) <= 0}
+            className={`um-btn ${!isTopUp ? "primary" : ""}`}
+            disabled={isTopUp || !amount || Number(amount) <= 0}
             onClick={() => onConfirm(user.id, Number(amount))}
           >
-            💰 Add ${amount || "0"}
+            {isTopUp ? (
+              <div className="ph-spinner" />
+            ) : (
+              <span>💰 Add ${amount || "0"}</span>
+            )}
           </button>
         </div>
       </div>
@@ -125,6 +130,7 @@ export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [modal, setModal] = useState(null);
+  const [isTopup, setIsTopUp] = useState(false);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -151,11 +157,6 @@ export default function UserManagement() {
   const openModal = (type, user) => setModal({ type, user });
   const closeModal = () => setModal(null);
 
-  const handleSave = (updated) => {
-    setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
-    closeModal();
-  };
-
   function handleOnSuccessTopup(userId, amount) {
     //Update the balance in the users table whose balance was credited
     const updatedUsers = users.map((user) => {
@@ -173,7 +174,10 @@ export default function UserManagement() {
   }
 
   const handleTopup = async (userId, amount) => {
+    setIsTopUp(true);
+
     var response = await topUpBalance(userId, amount);
+    setIsTopUp(false);
     var responseMessage = response.message;
     if (response.isSuccess) {
       toast(responseMessage, {
@@ -303,6 +307,7 @@ export default function UserManagement() {
       {modal?.type === "topup" && (
         <TopupModal
           user={modal.user}
+          isTopUp={isTopup}
           onClose={closeModal}
           onConfirm={handleTopup}
         />

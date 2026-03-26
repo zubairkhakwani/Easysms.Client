@@ -10,7 +10,7 @@ import { providers } from "../../../../data/Admin/Static";
 import { errorToast } from "../../../../helper/Toaster";
 
 //Css
-import "./ProviderHistory.css";
+import "./ActiveNumbers.css";
 
 const CURRENCY_LABEL = { 1: "USD", 2: "PKR" };
 const PAGE_SIZE = 10;
@@ -47,7 +47,7 @@ function StatusBadge({ status }) {
   return <span className={`ph-status ${cls}`}>{status}</span>;
 }
 
-export default function ProviderHistory() {
+export default function ActiveNumbers() {
   const [startDate, setStartDate] = useState(toDS(twoDays));
   const [endDate, setEndDate] = useState(toDS(today));
   const [provider, setProvider] = useState("1");

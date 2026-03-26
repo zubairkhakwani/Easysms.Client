@@ -25,6 +25,7 @@ import Overview from "./components/DashboardN/Admin/Overview/Overview.jsx";
 import UserManagement from "./components/DashboardN/Admin/Management/User/UserManagement.jsx";
 import AddPhysicalNumber from "./components/DashboardN/Admin/Management/Provider/AddPhysicalNumber.jsx";
 import ProviderHistory from "./components/DashboardN/Admin/Provider/ProviderHistory.jsx";
+import ActiveNumbers from "./components/DashboardN/Admin/Provider/ActiveNumbers.jsx";
 
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -71,6 +72,7 @@ createRoot(document.getElementById("root")).render(
                     path="provider-history"
                     element={<ProviderHistory />}
                   />
+                  <Route path="active-numbers" element={<ActiveNumbers />} />
                 </Route>
               </Route>
             </Route>

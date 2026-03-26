@@ -389,7 +389,6 @@
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.75s linear infinite;
-  margin: 0 auto;
 }
 
 /* ── Pagination ── */
@@ -413,7 +412,7 @@
   align-items: center;
   gap: 6px;
 }
-
+ 
 .ph-page-btn {
   background: transparent;
   border: 1px solid var(--border);

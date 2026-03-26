@@ -33,13 +33,19 @@ export const navItems = [
     ],
   },
   {
-    section: "Provder",
+    section: "Provider",
     items: [
       {
         icon: "⊞",
         label: "Activation History",
         id: "Activation History",
         url: "provider-history",
+      },
+      {
+        icon: "◈",
+        label: "Active numbers",
+        id: "Active numbers",
+        url: "active-numbers",
       },
     ],
   },
