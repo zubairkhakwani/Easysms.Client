@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext } from "react";
 
 //Toaster
-import { toast, Slide } from "react-toastify";
+import { successTaost, errorToast } from "../../../helper/Toaster";
 
 //Services
 import {
@@ -62,7 +62,11 @@ const InfoIcon = ({ tooltip, btn }) => {
     </span>
   );
 };
-export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
+export default function ActiveOrders({
+  incomingOrders,
+  onCancelNumber,
+  OnNumberCancelFailure,
+}) {
   const { balanceCredit } = useContext(AuthContext);
   const [copied, setCopied] = useState(null);
   const [now, setNow] = useState(Date.now());
@@ -89,33 +93,21 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
     var response = await cancelNumber(activationId);
 
     var responseMessage = response.message;
+    var responseData = response.data;
 
     if (response.isSuccess) {
-      toast(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
-      onCancelNumber(activationId);
-      balanceCredit(response.data.refundAmount);
+      successTaost(responseMessage);
     } else {
-      toast.error(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+      errorToast(responseMessage);
+    }
+
+    if (responseData.isCancelled) {
+      onCancelNumber(activationId);
+      balanceCredit(responseData.refundAmount);
+    }
+
+    if (responseData.hasSms) {
+      OnNumberCancelFailure(responseData);
     }
 
     setCancel((prev) => prev.filter((id) => id !== activationId));
@@ -129,30 +121,11 @@ export default function ActiveOrders({ incomingOrders, onCancelNumber }) {
     var responseMessage = response.message;
 
     if (response.isSuccess) {
-      toast(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+      successTaost(responseMessage);
+
       onCancelNumber(activationId);
     } else {
-      toast.error(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+      errorToast(responseMessage);
     }
 
     setComplete((prev) => prev.filter((id) => id !== activationId));

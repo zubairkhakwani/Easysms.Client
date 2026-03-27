@@ -30,9 +30,27 @@ export default function RequestNumberContainer() {
     setActiveOrders((prev) => [newNumber, ...prev]);
   };
 
-  const cancelNumber = (activationIid) => {
+  //When number is successfully cancelled
+  const handleCancelNumber = (activationIid) => {
     setActiveOrders((prev) =>
       prev.filter((order) => order.activationId !== activationIid),
+    );
+  };
+
+  //When number is not able to cancel so we update the otp if coming
+  const handleCancelNumberFailure = (data) => {
+    setActiveOrders((prev) =>
+      prev.map((order) => {
+        if (order.activationId === data.activationId) {
+          return {
+            ...order,
+            hasSms: true,
+            code: data.code,
+            text: data.text,
+          };
+        }
+        return order;
+      }),
     );
   };
 
@@ -85,7 +103,8 @@ export default function RequestNumberContainer() {
         <RequestNumber onNewNumber={addNewNumber} />
         <ActiveOrders
           incomingOrders={activeOrders}
-          onCancelNumber={cancelNumber}
+          onCancelNumber={handleCancelNumber}
+          OnNumberCancelFailure={handleCancelNumberFailure}
         />
       </div>
     </>

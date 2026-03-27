@@ -8,7 +8,11 @@ import { NumberContext } from "../../../../context/NumberContext";
 //Services
 import { getActiveNumbers } from "../../../../services/Number/NumberService";
 
+//Toaster
 import { errorToast } from "../../../../helper/Toaster";
+
+//Helper
+import { FormatterHelper } from "../../../../helper/FormatterHelper";
 
 //Css
 import "./ActiveNumbers.css";
@@ -19,6 +23,7 @@ export default function ActiveNumbers() {
   const [filteredNumbers, setFilteredNumbers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [removingId, setRemovingId] = useState(null);
+  const [now, setNow] = useState(Date.now());
 
   //Context
   const { latestSms } = useContext(SmsContext);
@@ -39,6 +44,31 @@ export default function ActiveNumbers() {
       setIsLoading(false);
     }
   }
+
+  function getRemainingTime(order) {
+    if (!order.startTime || !order.activationLimit) return "Invalid";
+
+    const startTime = new Date(order.startTime).getTime();
+    if (isNaN(startTime)) return "Invalid date";
+
+    const expiryTime = startTime + order.activationLimit * 60 * 1000;
+    const remaining = expiryTime - Date.now();
+
+    if (remaining <= 0) return "Expired";
+
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     getActiveNumbersData();
@@ -125,6 +155,8 @@ export default function ActiveNumbers() {
                     <th>Activation Id</th>
                     <th>Phone Number</th>
                     <th>Otp</th>
+                    <th>Remaining Time</th>
+                    <th>Purchased At</th>
                     <th>Name</th>
                     <th>Email</th>
                   </tr>
@@ -144,6 +176,10 @@ export default function ActiveNumbers() {
                         {r.otp ?? "-"}
                       </td>
 
+                      <td className="ph-col-sms">{getRemainingTime(r)}</td>
+                      <td className="ph-col-sms" title={r.otp}>
+                        {FormatterHelper.formatDateToLocal(r.purchasedAt)}
+                      </td>
                       <td className="ph-col-id">{r.name}</td>
                       <td className="ph-col-id">{r.email}</td>
                     </tr>
