@@ -11,6 +11,7 @@ export const SmsProvider = ({ children }) => {
     setLatestSms(sms);
   };
   const setReconnected = () => {
+    console.log("Reconnected");
     setIsReconnected((prev) => !prev);
   };
 

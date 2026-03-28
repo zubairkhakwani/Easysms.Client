@@ -68,6 +68,7 @@ export default function RequestNumberContainer() {
     const fetchMyRecentNumbers = async () => {
       try {
         const res = await getMyNumbers(true);
+        console.log("Getting my recent numbers:", res.data);
         setActiveOrders(res.data);
       } catch (error) {
         console.error("Failed to fetch recent numbers:", error);
