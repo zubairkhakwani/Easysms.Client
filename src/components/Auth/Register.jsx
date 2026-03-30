@@ -7,6 +7,7 @@ import "./Register.css";
 
 const InfoIcon = ({ tooltip }) => {
   const [visible, setVisible] = useState(false);
+
   return (
     <span
       className="info-icon-wrapper"
@@ -52,6 +53,7 @@ export default function Register() {
     password: false,
   });
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisibile] = useState(false);
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
@@ -121,7 +123,7 @@ export default function Register() {
       case "name":
         if (!value) return "Name is required.";
         if (value.length < 3) return "Name must be at least 3 characters.";
-        if (value.length > 15) return "Name must be 15 characters or fewer.";
+        if (value.length > 25) return "Name must be 25 characters or fewer.";
         return "";
       case "email":
         if (!value) return "Email is required.";
@@ -139,6 +141,10 @@ export default function Register() {
     }
   };
 
+  function handlePasswordVisibility() {
+    setPasswordVisibile((prev) => !prev);
+  }
+
   return (
     <div className="register-container">
       <div className="register-card">
@@ -152,7 +158,7 @@ export default function Register() {
           <div className="form-group">
             <div className="form-label-row">
               <label>Name</label>
-              <InfoIcon tooltip="Name must be between 3 and 15 characters." />
+              <InfoIcon tooltip="Name must be between 3 and 25 characters." />
             </div>
             <input
               type="text"
@@ -231,17 +237,31 @@ export default function Register() {
                 tooltip={"Must contain uppercase, lowercase & a number."}
               />
             </div>
-            <input
-              type="password"
-              name="password"
-              placeholder="Create a password"
-              value={formData.password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={
-                errors.password && touched.password ? "input-error" : ""
-              }
-            />
+            <div className="password-container">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                name="password"
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={
+                  errors.password && touched.password ? "input-error" : ""
+                }
+              />
+              {passwordVisible ? (
+                <i
+                  className="fa-solid fa-eye  eye show-password"
+                  onClick={handlePasswordVisibility}
+                ></i>
+              ) : (
+                <i
+                  className="fa-solid fa-eye-slash eye hide-password"
+                  onClick={handlePasswordVisibility}
+                ></i>
+              )}
+            </div>
+
             {errors.password && touched.password && (
               <span className="error-msg">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -266,7 +286,7 @@ export default function Register() {
           </div>
 
           <button type="submit" className="register-btn" disabled={loading}>
-            {loading ? "Creating..." : "Sign Up →"}
+            {loading ? "Please wait.." : "Sign Up →"}
           </button>
         </form>
 

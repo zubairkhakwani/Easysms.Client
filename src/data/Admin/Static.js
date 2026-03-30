@@ -9,14 +9,6 @@ export const navItems = [
         active: true,
         url: "overview",
       },
-      { icon: "◈", label: "Analytics", id: "analytics", url: "overview" },
-      {
-        icon: "◉",
-        label: "Reports",
-        id: "reports",
-        badge: "New",
-        url: "overview",
-      },
     ],
   },
   {
@@ -25,7 +17,7 @@ export const navItems = [
       {
         icon: "⊞",
         label: "Physical Number",
-        id: "Physical Number",
+        id: "physicalNumber",
         url: "physical-number",
       },
 
@@ -38,14 +30,15 @@ export const navItems = [
       {
         icon: "⊞",
         label: "Activation History",
-        id: "Activation History",
+        id: "activationHistory",
         url: "provider-history",
       },
       {
         icon: "◈",
         label: "Active numbers",
-        id: "Active numbers",
+        id: "activeNumbers",
         url: "active-numbers",
+        badge: "New",
       },
     ],
   },

@@ -1,15 +1,26 @@
+//Css
+import "./Topbar.css";
 export default function Topbar({ activePage }) {
   const pageTitles = {
     overview: { title: "Overview", sub: "Real-time insights & key metrics" },
     analytics: { title: "Analytics", sub: "Detailed performance analytics" },
     reports: { title: "Reports", sub: "Generate & export reports" },
-    providers: { title: "Providers", sub: "Manage provider accounts" },
+    physicalNumber: {
+      title: "Physical Numbers",
+      sub: "Manage USA/Canada physical numbers",
+    },
     transactions: { title: "Transactions", sub: "Transaction history & logs" },
     "otp-logs": { title: "OTP Logs", sub: "Delivery logs & statuses" },
     users: { title: "Users", sub: "User management" },
-    settings: { title: "Settings", sub: "System configuration" },
-    audit: { title: "Audit Logs", sub: "System audit trail" },
-    "api-keys": { title: "API Keys", sub: "Manage API credentials" },
+    activationHistory: {
+      title: "Provider Activation History",
+      sub: "View detailed activation history with all relevant columns for insights",
+    },
+
+    activeNumbers: {
+      title: "Active Numbers",
+      sub: "View all active numbers in real-time. Numbers appear here when purchased and are removed if cancelled.",
+    },
   };
 
   const page = pageTitles[activePage] || pageTitles.overview;
@@ -24,6 +35,11 @@ export default function Topbar({ activePage }) {
 
   return (
     <header className="topbar">
+      <div className={`adm-hamburger `} aria-label="Toggle menu">
+        <span className="adm-bar" />
+        <span className="adm-bar" />
+        <span className="adm-bar" />
+      </div>
       <div className="topbar-left">
         <span className="topbar-title">{page.title}</span>
         <span className="topbar-subtitle">{page.sub}</span>

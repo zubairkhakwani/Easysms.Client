@@ -21,7 +21,7 @@ export default function Login() {
     email: "",
     password: "",
   });
-
+  const [passwordVisible, setPasswordVisibile] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -70,6 +70,9 @@ export default function Login() {
     return Object.keys(errors).length === 0;
   }
 
+  function handlePasswordVisibility() {
+    setPasswordVisibile((prev) => !prev);
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -149,14 +152,28 @@ export default function Login() {
 
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className={errors.password ? "input-error" : ""}
-            />
+            <div className="password-container">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                placeholder="Enter your password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={errors.password ? "input-error" : ""}
+              />
+              {passwordVisible ? (
+                <i
+                  className="fa-solid fa-eye  eye show-password"
+                  onClick={handlePasswordVisibility}
+                ></i>
+              ) : (
+                <i
+                  className="fa-solid fa-eye-slash eye hide-password"
+                  onClick={handlePasswordVisibility}
+                ></i>
+              )}
+            </div>
+
             {errors.password && (
               <span className="error-msg">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -181,7 +198,7 @@ export default function Login() {
           </div>
 
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Loging in..." : "Login →"}
+            {loading ? "Please wait.." : "Login →"}
           </button>
         </form>
 

@@ -5,6 +5,7 @@
   flex-direction: column;
   gap: 24px;
   animation: fadeInUp 0.4s ease both;
+  max-width: calc(100% - 140px);
 }
 
 /* ── Filters ── */
@@ -331,7 +332,14 @@
   background: rgba(0, 255, 170, 0.08);
   color: var(--accent-green);
 }
-.ph-status.sucSuccessfullycess::before {
+.ph-status.Successfully::before {
+  background: var(--accent-green);
+}
+.ph-status.Completed {
+  background: rgba(0, 255, 170, 0.08);
+  color: var(--accent-green);
+}
+.ph-status.Completed::before {
   background: var(--accent-green);
 }
 

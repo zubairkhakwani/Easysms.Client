@@ -69,6 +69,7 @@
   transition:
     border 0.2s,
     box-shadow 0.2s;
+  width: 100%;
 }
 
 .form-group input:focus {
@@ -190,7 +191,7 @@
 }
 
 .register-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
@@ -206,4 +207,15 @@
   cursor: pointer;
   font-weight: 600;
   margin-left: 4px;
+}
+.password-container {
+  position: relative;
+}
+
+.eye {
+  position: absolute;
+  position: absolute;
+  right: 10px;
+  bottom: 12px;
+  cursor: pointer;
 }

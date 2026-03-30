@@ -1,0 +1,43 @@
+.adm-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 40px;
+  height: 20px;
+  left: 37px;
+  position: absolute;
+  cursor: pointer;
+}
+
+/* ── Hamburger morph ── */
+.adm-bar {
+  transform-origin: center;
+  transition:
+    transform 0.38s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.25s ease,
+    width 0.32s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.adm-hamburger.open .bar:nth-child(1) {
+  width: 80%;
+  transform: translateY(7.75px) rotate(45deg);
+}
+.adm-hamburger.open .bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.adm-hamburger.open .bar:nth-child(3) {
+  width: 80%;
+  transform: translateY(-7.75px) rotate(-45deg);
+}
+
+.adm-bar {
+  width: 100%;
+  height: 3px;
+  background-color: var(--accent);
+  border-radius: 10px;
+}
+
+.adm-hamburger span:nth-child(3) {
+  width: 60%;
+}

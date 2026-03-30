@@ -42,7 +42,7 @@ function fmtCost(n) {
 }
 
 function StatusBadge({ status }) {
-  const known = ["Successfully", "Cancelled"];
+  const known = ["Successfully", "Cancelled", "Completed"];
   const cls = known.includes(status) ? status : "default";
   return <span className={`ph-status ${cls}`}>{status}</span>;
 }
@@ -199,13 +199,14 @@ export default function ProviderHistory() {
                   <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>Date</th>
+                    <th>User</th>
                     <th>Phone</th>
                     <th>SMS</th>
                     <th>Internal Code</th>
                     <th>Cost</th>
                     <th>Activation Cost</th>
                     <th>Currency</th>
+                    <th>Date</th>
                     <th>Status</th>
                     <th>Our Status</th>
                   </tr>
@@ -215,7 +216,13 @@ export default function ProviderHistory() {
                     <tr key={r.id}>
                       <td className="ph-col-id">{index + 1}</td>
                       <td className="ph-col-id">{r.id}</td>
-                      <td className="ph-col-date">{fmtDate(r.date)}</td>
+                      <td className="um-user-cell">
+                        <div>
+                          <div className="um-user-name">{r.userName}</div>
+                          <div className="um-user-email">{r.email}</div>
+                        </div>
+                      </td>
+
                       <td className="ph-col-phone">{r.phone}</td>
 
                       <td className="ph-col-sms" title={r.sms}>
@@ -231,7 +238,7 @@ export default function ProviderHistory() {
                       <td className="ph-col-currency">
                         {CURRENCY_LABEL[r.Currency] ?? r.currency}
                       </td>
-
+                      <td className="ph-col-date">{fmtDate(r.date)}</td>
                       <td>
                         <StatusBadge status={r.status} />
                       </td>
@@ -243,54 +250,6 @@ export default function ProviderHistory() {
                 </tbody>
               </table>
             </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="ph-pagination">
-                <span className="ph-pagination-info">
-                  Showing {(page - 1) * PAGE_SIZE + 1}–
-                  {Math.min(page * PAGE_SIZE, providerHistory.length)} of{" "}
-                  {providerHistory.length} records
-                </span>
-                <div className="ph-pagination-controls">
-                  <button
-                    className="ph-page-btn"
-                    onClick={() => setPage((p) => p - 1)}
-                    disabled={page === 1}
-                  >
-                    ←
-                  </button>
-
-                  {pageNumbers.map((n, i) =>
-                    n === "…" ? (
-                      <span
-                        key={`ellipsis-${i}`}
-                        className="ph-page-btn"
-                        style={{ cursor: "default", opacity: 0.4 }}
-                      >
-                        …
-                      </span>
-                    ) : (
-                      <button
-                        key={n}
-                        className={`ph-page-btn ${page === n ? "active" : ""}`}
-                        onClick={() => setPage(n)}
-                      >
-                        {n}
-                      </button>
-                    ),
-                  )}
-
-                  <button
-                    className="ph-page-btn"
-                    onClick={() => setPage((p) => p + 1)}
-                    disabled={page === totalPages}
-                  >
-                    →
-                  </button>
-                </div>
-              </div>
-            )}
           </>
         )}
 

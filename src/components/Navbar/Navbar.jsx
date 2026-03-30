@@ -93,11 +93,6 @@ export default function Navbar() {
 
   if (isAuth && isAdmin) {
     adminActionButtons = (
-      // <li>
-      //   <Link to="/manage-users">
-      //     <span onClick={() => handleNavClick()}>Manage User</span>
-      //   </Link>
-      // </li>
       <li>
         <Link to="/admin-dashboard">
           <span onClick={() => handleNavClick()}>Dashboard</span>

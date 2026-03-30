@@ -21,7 +21,7 @@
   background: rgba(10, 10, 15, 0.85);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
-  padding: 0 32px;
+  padding: 0 32px 0 110px;
   height: 68px;
   display: flex;
   align-items: center;
