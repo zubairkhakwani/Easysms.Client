@@ -11,18 +11,21 @@
   flex-direction: column;
   min-height: 100vh;
   background: var(--bg);
+  max-width: calc(100% - var(--sidebar-w));
+}
+.dashboard-main.collapsed {
+  margin: 0;
 }
 
 /* ── Topbar ── */
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 80;
   background: rgba(10, 10, 15, 0.85);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
-  padding: 0 32px 0 110px;
-  height: 68px;
+  padding: 20px 32px 20px 110px;
   display: flex;
   align-items: center;
   justify-content: space-between;

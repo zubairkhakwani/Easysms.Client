@@ -126,6 +126,7 @@ export default function Login() {
               value={formData.email}
               onChange={handleChange}
               className={errors.email ? "input-error" : ""}
+              autoComplete="email"
             />
             {errors.email && (
               <span className="error-msg">
@@ -160,6 +161,7 @@ export default function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 className={errors.password ? "input-error" : ""}
+                autoComplete="current-password"
               />
               {passwordVisible ? (
                 <i

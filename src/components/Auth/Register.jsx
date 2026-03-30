@@ -248,6 +248,7 @@ export default function Register() {
                 className={
                   errors.password && touched.password ? "input-error" : ""
                 }
+                autocomplete="new-password"
               />
               {passwordVisible ? (
                 <i

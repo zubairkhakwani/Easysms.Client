@@ -7,18 +7,32 @@ import { navItems } from "../../../../data/Admin/Static";
 //Css
 import "./Sidebar.css";
 
-export default function Sidebar({ activePage, setActivePage }) {
+export default function Sidebar({
+  activePage,
+  setActivePage,
+  isBarClosed,
+  onSideBarClosed,
+}) {
   return (
-    <aside className="sidebar">
-      <Link to="/">
-        <div className="sidebar-logo">
+    <aside className={`sidebar ${isBarClosed ? "hidden" : ""}`}>
+      <div className="sidebar-logo">
+        <Link to="/" className="sidebar-logo-anchor">
           <div className="sidebar-logo-icon">A</div>
           <div className="sidebar-logo-text">
             <span className="sidebar-logo-name">AdminCore</span>
             <span className="sidebar-logo-tag">Dashboard</span>
           </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
+      <div
+        className={`adm-close `}
+        aria-label="Toggle menu"
+        onClick={onSideBarClosed}
+      >
+        <span className="adm-close-bar" />
+        <span className="adm-close-bar" />
+        <span className="adm-close-bar" />
+      </div>
       {/* Navigation */}
       <nav className="sidebar-nav">
         {navItems.map((section) => (

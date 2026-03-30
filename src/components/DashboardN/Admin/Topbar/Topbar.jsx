@@ -1,6 +1,10 @@
 //Css
 import "./Topbar.css";
-export default function Topbar({ activePage }) {
+export default function Topbar({
+  activePage,
+  isSideBarOpened,
+  setSideBarOpened,
+}) {
   const pageTitles = {
     overview: { title: "Overview", sub: "Real-time insights & key metrics" },
     analytics: { title: "Analytics", sub: "Detailed performance analytics" },
@@ -35,7 +39,11 @@ export default function Topbar({ activePage }) {
 
   return (
     <header className="topbar">
-      <div className={`adm-hamburger `} aria-label="Toggle menu">
+      <div
+        className={`adm-hamburger `}
+        onClick={setSideBarOpened}
+        aria-label="Toggle menu"
+      >
         <span className="adm-bar" />
         <span className="adm-bar" />
         <span className="adm-bar" />

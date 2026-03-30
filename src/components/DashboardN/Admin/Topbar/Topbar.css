@@ -7,6 +7,7 @@
   left: 37px;
   position: absolute;
   cursor: pointer;
+  z-index: 100;
 }
 
 /* ── Hamburger morph ── */
@@ -40,4 +41,18 @@
 
 .adm-hamburger span:nth-child(3) {
   width: 60%;
+}
+
+.adm-close {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .adm-close {
+    display: flex;
+  }
+  .sidebar {
+    inset: 0;
+    width: auto;
+  }
 }

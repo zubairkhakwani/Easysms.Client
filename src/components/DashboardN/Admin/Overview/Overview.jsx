@@ -4,7 +4,6 @@ import { useEffect, useState, useMemo } from "react";
 //Services
 
 import { getProvidersInfo } from "../../../../services/Provider/ProviderService";
-import { getOverview } from "../../../../services/Dashboard/DashboardService";
 
 //Components
 import StatCard from "../StatCard/StatCard";
