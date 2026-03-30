@@ -18,6 +18,7 @@ import Register from "./components/Auth/Register.jsx";
 import Login from "./components/Auth/Login.jsx";
 import PrivateRoute from "./components/Route/PrivateRoute.jsx";
 import TopUp from "./components/LandingPage/TopUp/TopUp.jsx";
+import NotFound from "./components/Shared/NotFound.jsx";
 
 //Admin Dashboard
 import AdminDashobard from "./components/DashboardN/Admin/App/Dashboard.jsx";
@@ -78,6 +79,7 @@ createRoot(document.getElementById("root")).render(
                   </Route>
                 </Route>
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Routes>
             <ToastContainer />
           </BrowserRouter>
