@@ -22,6 +22,7 @@ export const navItems = [
       },
 
       { icon: "⊕", label: "Users", id: "users", url: "manage-user" },
+      { icon: "⊕", label: "Deposits", id: "deposits", url: "deposits" },
     ],
   },
   {
