@@ -10,8 +10,8 @@ export const NumberProvider = ({ children }) => {
     setNewNumbers(numbers);
   };
 
-  const OnRemoveNumber = (activationId) => {
-    setRemoveNumberId(activationId);
+  const OnRemoveNumber = (id) => {
+    setRemoveNumberId(id);
   };
 
   return (

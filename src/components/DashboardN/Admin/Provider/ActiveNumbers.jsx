@@ -76,11 +76,13 @@ export default function ActiveNumbers() {
 
   // Update the UI when sms code receives
   useEffect(() => {
-    if (!latestSms) return;
+    if (!latestSms) {
+      return;
+    }
 
     const updateNumbers = (numbers) =>
       numbers.map((number) => {
-        if (number.activationId === latestSms.activationId) {
+        if (number.id === latestSms.id) {
           return { ...number, otp: latestSms.code };
         }
         return number;
@@ -92,7 +94,9 @@ export default function ActiveNumbers() {
 
   // Update the UI when a new number gets added
   useEffect(() => {
-    if (!newNumbers) return;
+    if (!newNumbers) {
+      return;
+    }
 
     setActiveNumbers((current) => [...newNumbers, ...current]);
     setFilteredNumbers((current) => [...newNumbers, ...current]);
@@ -100,12 +104,15 @@ export default function ActiveNumbers() {
 
   // Update the UI when a number gets removed
   useEffect(() => {
-    if (!removeNumberId) return;
+    if (!removeNumberId) {
+      return;
+    }
 
     setRemovingId(removeNumberId);
+
     const timer = setTimeout(() => {
       const filterNumbers = (numbers) =>
-        numbers.filter((number) => number.activationId !== removeNumberId);
+        numbers.filter((number) => number.id !== removeNumberId);
 
       setActiveNumbers((current) => filterNumbers(current));
 
@@ -165,9 +172,7 @@ export default function ActiveNumbers() {
                   {filteredNumbers.map((r, index) => (
                     <tr
                       key={r.phoneNumber}
-                      className={
-                        removingId === r.activationId ? "row-removing" : ""
-                      }
+                      className={removingId === r.id ? "row-removing" : ""}
                     >
                       <td className="ph-col-id">{index + 1}</td>
                       <td className="ph-col-id">{r.activationId}</td>

@@ -117,7 +117,7 @@ export default function Deposits() {
       {/* ── Table ── */}
       <div className="ph-table-panel">
         <div className="ph-table-header">
-          <span className="ph-table-title">Provider History</span>
+          <span className="ph-table-title">Deposit History</span>
         </div>
         {/* Table */}
         {!isLoading && (

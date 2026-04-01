@@ -91,10 +91,10 @@ export default function ActiveOrders({
     setTimeout(() => setCopied(null), 500);
   }
 
-  async function handleCancel(activationId) {
-    setCancel((prev) => [...prev, activationId]);
+  async function handleCancel(id) {
+    setCancel((prev) => [...prev, id]);
 
-    var response = await cancelNumber(activationId);
+    var response = await cancelNumber(id);
 
     var responseMessage = response.message;
     var responseData = response.data;
@@ -106,7 +106,7 @@ export default function ActiveOrders({
     }
 
     if (responseData.isCancelled) {
-      onCancelNumber(activationId);
+      onCancelNumber(id);
       balanceCredit(responseData.refundAmount);
     }
 
@@ -114,25 +114,25 @@ export default function ActiveOrders({
       OnNumberCancelFailure(responseData);
     }
 
-    setCancel((prev) => prev.filter((id) => id !== activationId));
+    setCancel((prev) => prev.filter((id) => id !== id));
   }
 
-  async function handleComplete(activationId) {
-    setComplete((prev) => [...prev, activationId]);
+  async function handleComplete(id) {
+    setComplete((prev) => [...prev, id]);
 
-    var response = await completeNumber(activationId);
+    var response = await completeNumber(id);
 
     var responseMessage = response.message;
 
     if (response.isSuccess) {
       successTaost(responseMessage);
 
-      onCancelNumber(activationId);
+      onCancelNumber(id);
     } else {
       errorToast(responseMessage);
     }
 
-    setComplete((prev) => prev.filter((id) => id !== activationId));
+    setComplete((prev) => prev.filter((id) => id !== id));
   }
 
   function getRemainingTime(order) {
@@ -273,9 +273,9 @@ export default function ActiveOrders({
                   tooltip={"Mark this number as complete"}
                   btn={
                     <button
-                      disabled={complete.includes(order.activationId)}
+                      disabled={complete.includes(order.id)}
                       className="btn-action"
-                      onClick={() => handleComplete(order.activationId)}
+                      onClick={() => handleComplete(order.id)}
                     >
                       ✓
                     </button>
@@ -287,10 +287,10 @@ export default function ActiveOrders({
                     <button
                       disabled={
                         !canMakeCancelRequest(order) ||
-                        cancel.includes(order.activationId)
+                        cancel.includes(order.id)
                       }
                       className="btn-action btn-cancel"
-                      onClick={() => handleCancel(order.activationId)}
+                      onClick={() => handleCancel(order.id)}
                     >
                       ✕
                     </button>

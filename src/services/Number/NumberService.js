@@ -11,16 +11,13 @@ export const addPhysical = async (numbers) => {
   return response.data;
 };
 
-export const cancelNumber = async (activationId) => {
-  const response = await httpClient.get(`/api/numbers/${activationId}/cancel`);
+export const cancelNumber = async (id) => {
+  const response = await httpClient.get(`/api/numbers/${id}/cancel`);
   return response.data;
 };
 
-export const completeNumber = async (activationId) => {
-  console.log(activationId);
-  const response = await httpClient.get(
-    `/api/numbers/${activationId}/complete`,
-  );
+export const completeNumber = async (id) => {
+  const response = await httpClient.get(`/api/numbers/${id}/complete`);
   return response.data;
 };
 

@@ -68,8 +68,8 @@ function addEventListeners(
     OnNewNumbers(newNumber);
   });
 
-  hubConnection.on("NumberRemoved", (activationId) => {
-    OnRemoveNumber(activationId);
+  hubConnection.on("NumberRemoved", (id) => {
+    OnRemoveNumber(id);
   });
 }
 

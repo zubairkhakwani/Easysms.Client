@@ -144,7 +144,6 @@ export default function RequestNumber({ onNewNumber }) {
       setPhysicalNumberInfo(response);
       setPurchaseState(false);
       if (response.count <= 0) {
-        setQuantity(0);
         setPurchaseState(true);
       }
       return;

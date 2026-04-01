@@ -25,6 +25,10 @@ export default function Topbar({
       title: "Active Numbers",
       sub: "View all active numbers in real-time. Numbers appear here when purchased and are removed if cancelled.",
     },
+    deposits: {
+      title: "User Deposits",
+      sub: "View all deposits made by users in real-time. Admin-added deposits appear here with details including the amount, date, and responsible admin.",
+    },
   };
 
   const page = pageTitles[activePage] || pageTitles.overview;

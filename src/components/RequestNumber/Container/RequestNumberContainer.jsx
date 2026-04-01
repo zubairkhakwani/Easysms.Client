@@ -32,17 +32,15 @@ export default function RequestNumberContainer() {
   };
 
   //When number is successfully cancelled
-  const handleCancelNumber = (activationId) => {
-    setActiveOrders((prev) =>
-      prev.filter((order) => order.activationId !== activationId),
-    );
+  const handleCancelNumber = (id) => {
+    setActiveOrders((prev) => prev.filter((order) => order.id !== id));
   };
 
   //When number is not able to cancel so we update the otp if coming
   const handleCancelNumberFailure = (data) => {
     setActiveOrders((prev) =>
       prev.map((order) => {
-        if (order.activationId === data.activationId) {
+        if (order.id === data.id) {
           return {
             ...order,
             hasSms: true,
@@ -78,10 +76,8 @@ export default function RequestNumberContainer() {
     fetchMyRecentNumbers();
   }, [isReconnected]);
 
-  function handleNumberExpired(activationId) {
-    setActiveOrders((prev) =>
-      prev.filter((order) => order.activationId !== activationId),
-    );
+  function handleNumberExpired(id) {
+    setActiveOrders((prev) => prev.filter((order) => order.id !== id));
   }
 
   //Checks the expiry of the numbers, if expired remove from the DOM.
@@ -93,7 +89,7 @@ export default function RequestNumberContainer() {
         const expiryTime = startTime + order.activationLimit * 60 * 1000;
 
         if (expiryTime - Date.now() <= 0) {
-          handleNumberExpired(order.activationId);
+          handleNumberExpired(order.id);
         }
       });
     }, 1000);
@@ -107,7 +103,7 @@ export default function RequestNumberContainer() {
 
     setActiveOrders((prevOrders) =>
       prevOrders.map((order) => {
-        if (order.activationId === latestSms.activationId) {
+        if (order.id === latestSms.id) {
           return {
             ...order,
             hasSms: true,
