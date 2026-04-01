@@ -1,4 +1,8 @@
+//Css
 import "./PhysicalNumberContainer.css";
+
+//Helper
+import { FormatterHelper } from "../../helper/FormatterHelper";
 
 export const PhysicalNumberContainer = ({
   availability,
@@ -60,14 +64,14 @@ export const PhysicalNumberContainer = ({
         <div className="summary-price-block">
           <span className="summary-per">per number</span>
           <span className="summary-price">
-            ${Math.trunc((price ?? 0) * 10000) / 10000}
+            ${FormatterHelper.formatNumber(price)}
           </span>
         </div>
       </div>
 
       <div className="summary-divider" />
 
-      <div className="summary-bottom">
+      {/* <div className="summary-bottom">
         <div className="summary-col">
           <label className="summary-label">Quantity</label>
 
@@ -80,7 +84,7 @@ export const PhysicalNumberContainer = ({
             >
               −
             </button>
-
+              
             <span className="qty-val">{quantity}</span>
 
             <button
@@ -93,7 +97,7 @@ export const PhysicalNumberContainer = ({
 
           {getAvailabilityMessage()}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

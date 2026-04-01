@@ -89,8 +89,8 @@ export default function RequestNumber({ onNewNumber }) {
 
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
-  const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedOperator_Pricings, setOperator_Pricings] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const [modal, setModal] = useState(null);
   const [isServiceLoading, setServiceLoading] = useState(false);
   const [isCountryLoadinig, setCountryLoading] = useState(false);
@@ -137,14 +137,16 @@ export default function RequestNumber({ onNewNumber }) {
       setPhysicalNumberInfoLoading(true);
       let response = await getPhysicalProviderInfo();
       setPhysicalNumberInfoLoading(false);
+
       setSelectedService("Facebook");
       setSelectedCountry("USA");
-      // response.count = response.count = 0;
-      if (response.count <= 0) {
-        setQuantity(0);
-      }
+
       setPhysicalNumberInfo(response);
       setPurchaseState(false);
+      if (response.count <= 0) {
+        setQuantity(0);
+        setPurchaseState(true);
+      }
       return;
     }
 
@@ -232,7 +234,7 @@ export default function RequestNumber({ onNewNumber }) {
 
     const updatedRequestedNumber = {
       ...requestedNumber,
-      quantity: quantity,
+      quantity,
     };
 
     setPurchaseState(true);
@@ -249,30 +251,28 @@ export default function RequestNumber({ onNewNumber }) {
     let responseMessage = response.message;
 
     let responseData = response.data;
-
     if (response.isSuccess) {
+      let activationCost = 0;
+      let totalPurchasedNumbers = 0;
       successTaost(responseMessage);
 
-      let activationCost = 0;
-      let phoneNumber_Url = "";
-
       responseData.forEach((data) => {
-        if (selectedProvider != 3) {
-          onNewNumber(data);
-        } else {
-          phoneNumber_Url += data.phoneNumber + "\n";
-        }
-
+        //Add numbers in the list
+        onNewNumber(data);
+        totalPurchasedNumbers += 1;
         activationCost += data.activationCost;
       });
 
-      if (selectedProvider == 3) {
-        handlePhysicalNumberRequest(responseData.length, phoneNumber_Url, {
-          numbersText: phoneNumber_Url.trim(),
-        });
-      }
-
+      //Update the balance
       balanceDebit(activationCost);
+
+      //Update the quantity of physical numbers
+      if (selectedProvider == 3) {
+        setPhysicalNumberInfo((prev) => ({
+          ...prev,
+          count: Math.max(0, prev.count - totalPurchasedNumbers),
+        }));
+      }
     } else {
       errorToast(responseMessage);
     }
@@ -281,6 +281,7 @@ export default function RequestNumber({ onNewNumber }) {
     setPurchaseState(false);
   };
 
+  //Can be used later depending on the buisness needs
   function handlePhysicalNumberRequest(count, phoneNumber_Url, numbersText) {
     setPhysicalNumberInfo((prev) => ({
       ...prev,

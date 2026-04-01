@@ -501,3 +501,26 @@
   display: inline-block;
   flex-shrink: 0;
 }
+
+.price-input {
+  max-width: 250px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: #f0f0f0;
+  font-family: "Courier New", monospace;
+  font-size: 0.82rem;
+  padding: 18px 20px;
+
+  outline: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.price-input:focus {
+  border-color: var(--border-accent);
+  background: rgba(0, 229, 255, 0.02);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.06);
+}

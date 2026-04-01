@@ -4,6 +4,9 @@ import { useState, useMemo } from "react";
 //Serives
 import { addPhysical } from "../../../../../services/Number/NumberService";
 
+//Toaster
+import { successTaost, errorToast } from "../../../../../helper/Toaster";
+
 //Css
 import "./AddPhysicalNumber.css";
 
@@ -104,6 +107,7 @@ function ResultModal({ result, onClose }) {
 /* ── Main Page ── */
 export default function AddPhysicalNumber() {
   const [text, setText] = useState("");
+  const [price, setPrice] = useState(0);
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -121,12 +125,18 @@ export default function AddPhysicalNumber() {
     setIsLoading(true);
 
     try {
-      const payload = { Numbers: validLines.map((l) => l.raw).join("\n") };
-
+      const payload = {
+        Numbers: validLines.map((l) => l.raw).join("\n"),
+        price,
+      };
       let response = await addPhysical(payload);
-      console.log(response);
-      setResult(response.data);
-      setText("");
+
+      if (response.isSuccess) {
+        setResult(response.data);
+        setText("");
+      } else {
+        errorToast(response.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -214,12 +224,35 @@ export default function AddPhysicalNumber() {
         </div>
       </div>
 
+      {/* Price */}
+      <div className="textarea-section">
+        <div className="textarea-header">
+          <span className="textarea-label">Price</span>
+        </div>
+        <input
+          className="price-input"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+        <div className="validation-row">
+          {price <= 0 && (
+            <span className="validation-item neutral">
+              ⊙ Please enter valid price for these numbers
+            </span>
+          )}
+        </div>
+      </div>
+
       {/* Actions */}
       <div className="action-row">
         <button
           className="submit-btn"
           onClick={handleSubmit}
-          disabled={validLines.length === 0 || isLoading}
+          disabled={price <= 0 || validLines.length === 0 || isLoading}
         >
           {isLoading ? (
             <>
@@ -246,9 +279,6 @@ export default function AddPhysicalNumber() {
         </button>
 
         <span className="action-spacer" />
-        <span className="submit-note">
-          Invalid lines are automatically skipped
-        </span>
       </div>
     </div>
   );

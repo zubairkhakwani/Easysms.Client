@@ -25,15 +25,16 @@ export default function RequestNumberContainer() {
   const { OnNewNumbers, OnRemoveNumber } = useContext(NumberContext);
 
   const [activeOrders, setActiveOrders] = useState([]);
+  const [isActiveOrdersLoading, setActiveOrdersLoading] = useState(true);
 
   const addNewNumber = (newNumber) => {
     setActiveOrders((prev) => [newNumber, ...prev]);
   };
 
   //When number is successfully cancelled
-  const handleCancelNumber = (activationIid) => {
+  const handleCancelNumber = (activationId) => {
     setActiveOrders((prev) =>
-      prev.filter((order) => order.activationId !== activationIid),
+      prev.filter((order) => order.activationId !== activationId),
     );
   };
 
@@ -68,7 +69,7 @@ export default function RequestNumberContainer() {
     const fetchMyRecentNumbers = async () => {
       try {
         const res = await getMyNumbers(true);
-        console.log("Getting my recent numbers:", res.data);
+        setActiveOrdersLoading(false);
         setActiveOrders(res.data);
       } catch (error) {
         console.error("Failed to fetch recent numbers:", error);
@@ -76,6 +77,29 @@ export default function RequestNumberContainer() {
     };
     fetchMyRecentNumbers();
   }, [isReconnected]);
+
+  function handleNumberExpired(activationId) {
+    setActiveOrders((prev) =>
+      prev.filter((order) => order.activationId !== activationId),
+    );
+  }
+
+  //Checks the expiry of the numbers, if expired remove from the DOM.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      activeOrders.forEach((order) => {
+        const startTime = new Date(order.activationStartTime).getTime();
+
+        const expiryTime = startTime + order.activationLimit * 60 * 1000;
+
+        if (expiryTime - Date.now() <= 0) {
+          handleNumberExpired(order.activationId);
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [activeOrders]);
 
   //Update the UI when sms code receives
   useEffect(() => {
@@ -103,6 +127,7 @@ export default function RequestNumberContainer() {
         <RequestNumberGuideline />
         <RequestNumber onNewNumber={addNewNumber} />
         <ActiveOrders
+          ordersLoading={isActiveOrdersLoading}
           incomingOrders={activeOrders}
           onCancelNumber={handleCancelNumber}
           OnNumberCancelFailure={handleCancelNumberFailure}

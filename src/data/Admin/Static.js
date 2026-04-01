@@ -42,6 +42,17 @@ export const navItems = [
       },
     ],
   },
+  {
+    section: "Numbers",
+    items: [
+      {
+        icon: "⊞",
+        label: "Get Number",
+        id: "getNumber",
+        url: "/get-number",
+      },
+    ],
+  },
 ];
 
 export const providers = [

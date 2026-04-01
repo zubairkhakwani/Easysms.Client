@@ -4,6 +4,9 @@ import { useState, useEffect, useContext } from "react";
 //Toaster
 import { successTaost, errorToast } from "../../../helper/Toaster";
 
+//Skeltons
+import ActiveOrdersSkelton from "../../Skeltons/ActiveOrdersSkelton";
+
 //Services
 import {
   cancelNumber,
@@ -63,6 +66,7 @@ const InfoIcon = ({ tooltip, btn }) => {
   );
 };
 export default function ActiveOrders({
+  ordersLoading,
   incomingOrders,
   onCancelNumber,
   OnNumberCancelFailure,
@@ -138,9 +142,12 @@ export default function ActiveOrders({
     if (isNaN(startTime)) return "Invalid date";
 
     const expiryTime = startTime + order.activationLimit * 60 * 1000;
+
     const remaining = expiryTime - Date.now();
 
-    if (remaining <= 0) return "Expired";
+    if (remaining <= 0) {
+      return "Expired";
+    }
 
     const minutes = Math.floor(remaining / 60000);
     const seconds = Math.floor((remaining % 60000) / 1000);
@@ -184,111 +191,116 @@ export default function ActiveOrders({
           ""
         )}
       </div>
+      {}
 
-      <div className="orders-list">
-        {incomingOrders.map((order) => (
-          <div className="order-row" key={order.activationId}>
-            <div className="order-row-top">
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              >
-                <span className="order-service">{order.provider}</span>
-                <span className="order-service">-</span>
-                <span className="order-service">{order.service}</span>
-                <span className="order-service">-</span>
-                <span className="order-country">{order.country}</span>
-              </div>
-
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              >
-                <span className="order-price">
-                  {FormatterHelper.formatCurrency(order.activationCost)}
-                </span>
-              </div>
-            </div>
-
-            <div className="order-number">
-              {FormatterHelper.formatPhoneNumber(order.phoneNumber)}
-            </div>
-
-            <div className="order-expiry">
-              Expires in {getRemainingTime(order)}
-            </div>
-
-            {/* SMS Block ( hidden until sms arrives) */}
-            {order.hasSms && (
-              <div className="sms-block">
-                <div className="sms-label">
-                  <span className="sms-label-dot"></span>
-                  SMS Received
+      {ordersLoading ? (
+        <ActiveOrdersSkelton />
+      ) : (
+        <div className="orders-list">
+          {incomingOrders.map((order) => (
+            <div className="order-row" key={order.activationId}>
+              <div className="order-row-top">
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <span className="order-service">{order.provider}</span>
+                  <span className="order-service">-</span>
+                  <span className="order-service">{order.service}</span>
+                  <span className="order-service">-</span>
+                  <span className="order-country">{order.country}</span>
                 </div>
 
-                <div className="sms-body">{order.text}</div>
-
-                <div className="sms-code">
-                  <span className="sms-code-label">Code</span>
-                  <span className="sms-code-value">{order.code}</span>
-
-                  <button
-                    className="sms-copy-btn"
-                    title="Copy code"
-                    onClick={() =>
-                      navigator.clipboard.writeText(order.sms.code)
-                    }
-                  >
-                    📋
-                  </button>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <span className="order-price">
+                    {FormatterHelper.formatCurrency(order.activationCost)}
+                  </span>
                 </div>
               </div>
-            )}
 
-            <div className="order-actions">
-              <InfoIcon
-                tooltip={"Copy number"}
-                btn={
-                  <button
-                    className="btn-action"
-                    onClick={() =>
-                      handleCopy(order.activationId, order.phoneNumber)
-                    }
-                  >
-                    {copied == order.activationId ? "Copying" : "📋"}
-                  </button>
-                }
-              />
+              <div className="order-number">
+                {FormatterHelper.formatPhoneNumber(order.phoneNumber)}
+              </div>
 
-              <InfoIcon
-                tooltip={"Mark this number as complete"}
-                btn={
-                  <button
-                    disabled={complete.includes(order.activationId)}
-                    className="btn-action"
-                    onClick={() => handleComplete(order.activationId)}
-                  >
-                    ✓
-                  </button>
-                }
-              />
-              <InfoIcon
-                tooltip={`You can cancel the number  ${order.provider?.toLowerCase().includes("provider b") ? "" : "after 2 minutes"}`}
-                btn={
-                  <button
-                    disabled={
-                      !canMakeCancelRequest(order) ||
-                      cancel.includes(order.activationId)
-                    }
-                    className="btn-action btn-cancel"
-                    onClick={() => handleCancel(order.activationId)}
-                  >
-                    ✕
-                  </button>
-                }
-              />
+              <div className="order-expiry">
+                Expires in {getRemainingTime(order)}
+              </div>
+
+              {/* SMS Block ( hidden until sms arrives) */}
+              {order.hasSms && (
+                <div className="sms-block">
+                  <div className="sms-label">
+                    <span className="sms-label-dot"></span>
+                    SMS Received
+                  </div>
+
+                  <div className="sms-body">{order.text}</div>
+
+                  <div className="sms-code">
+                    <span className="sms-code-label">Code</span>
+                    <span className="sms-code-value">{order.code}</span>
+
+                    <button
+                      className="sms-copy-btn"
+                      title="Copy code"
+                      onClick={() =>
+                        navigator.clipboard.writeText(order.sms.code)
+                      }
+                    >
+                      📋
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="order-actions">
+                <InfoIcon
+                  tooltip={"Copy number"}
+                  btn={
+                    <button
+                      className="btn-action"
+                      onClick={() =>
+                        handleCopy(order.activationId, order.phoneNumber)
+                      }
+                    >
+                      {copied == order.activationId ? "Copying" : "📋"}
+                    </button>
+                  }
+                />
+
+                <InfoIcon
+                  tooltip={"Mark this number as complete"}
+                  btn={
+                    <button
+                      disabled={complete.includes(order.activationId)}
+                      className="btn-action"
+                      onClick={() => handleComplete(order.activationId)}
+                    >
+                      ✓
+                    </button>
+                  }
+                />
+                <InfoIcon
+                  tooltip={`You can cancel the number  ${order.provider?.toLowerCase().includes("provider b") ? "" : "after 2 minutes"}`}
+                  btn={
+                    <button
+                      disabled={
+                        !canMakeCancelRequest(order) ||
+                        cancel.includes(order.activationId)
+                      }
+                      className="btn-action btn-cancel"
+                      onClick={() => handleCancel(order.activationId)}
+                    >
+                      ✕
+                    </button>
+                  }
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

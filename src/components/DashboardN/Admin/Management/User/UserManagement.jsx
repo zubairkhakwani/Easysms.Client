@@ -2,7 +2,7 @@
 import { useState, useEffect, useContext } from "react";
 
 //Toaster
-import { toast, Slide } from "react-toastify";
+import { successTaost, errorToast } from "../../../../../helper/Toaster";
 
 //Context
 import { AuthContext } from "../../../../../context/AuthContext";
@@ -180,31 +180,11 @@ export default function UserManagement() {
     setIsTopUp(false);
     var responseMessage = response.message;
     if (response.isSuccess) {
-      toast(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+      successTaost(responseMessage);
       closeModal();
       handleOnSuccessTopup(userId, amount);
     } else {
-      toast.error(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+      errorToast(responseMessage);
     }
   };
 

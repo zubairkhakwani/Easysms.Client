@@ -17,6 +17,7 @@ export const cancelNumber = async (activationId) => {
 };
 
 export const completeNumber = async (activationId) => {
+  console.log(activationId);
   const response = await httpClient.get(
     `/api/numbers/${activationId}/complete`,
   );
