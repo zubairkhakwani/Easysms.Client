@@ -155,12 +155,27 @@ export default function ActiveOrders({
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   }
 
+  function getCancelTooltip(provider) {
+    const name = provider.toLowerCase();
+
+    if (name.includes("provider b")) {
+      return "You can cancel the number";
+    }
+    if (name.includes("provider a")) {
+      return "You can cancel the number after 2 minutes";
+    }
+
+    return "You can cancel the number after 5 minutes";
+  }
+
   function canMakeCancelRequest(order) {
     let isProviderB = order.provider?.toLowerCase().includes("provider b");
 
     if (isProviderB) {
       return true;
     }
+
+    let time = order.provider?.toLowerCase().includes("provider a") ? 2 : 5;
 
     if (!order.activationStartTime) return false;
 
@@ -169,14 +184,16 @@ export default function ActiveOrders({
 
     const now = Date.now();
 
-    return now >= startTime + 2 * 60 * 1000;
+    return now >= startTime + time * 60 * 1000;
   }
 
   return (
     <div className="recent-card">
       <div className="card-header">
         <div className="orders-top">
-          <span className="card-icon">🕐</span>
+          <span className="card-icon">
+            <i className="fa-solid fa-clock number-type-icon"></i>
+          </span>
           <div>
             <div className="card-title">Active Orders</div>
             <div className="card-sub">
@@ -282,7 +299,7 @@ export default function ActiveOrders({
                   }
                 />
                 <InfoIcon
-                  tooltip={`You can cancel the number  ${order.provider?.toLowerCase().includes("provider b") ? "" : "after 2 minutes"}`}
+                  tooltip={getCancelTooltip(order.provider)}
                   btn={
                     <button
                       disabled={

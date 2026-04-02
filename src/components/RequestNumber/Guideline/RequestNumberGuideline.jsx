@@ -4,7 +4,9 @@ export default function RequestNumberGuideline() {
   return (
     <div className="card">
       <div className="card-header">
-        <span className="card-icon">📋</span>
+        <span className="card-icon">
+          <i className="fa-solid fa-list-check number-type-icon"></i>
+        </span>
         <div>
           <div className="card-title">Getting Started</div>
           <div className="card-sub">

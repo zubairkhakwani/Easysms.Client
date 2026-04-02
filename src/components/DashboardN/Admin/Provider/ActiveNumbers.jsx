@@ -97,8 +97,6 @@ export default function ActiveNumbers() {
     if (!newNumbers) {
       return;
     }
-
-    console.log("New numbers:", newNumbers);
     setActiveNumbers((current) => [...newNumbers, ...current]);
     setFilteredNumbers((current) => [...newNumbers, ...current]);
   }, [newNumbers]);
@@ -108,7 +106,6 @@ export default function ActiveNumbers() {
     if (!removeNumberId) {
       return;
     }
-    console.log("Trying to remove:", removeNumberId);
     setRemovingId(removeNumberId);
 
     const timer = setTimeout(() => {
@@ -164,9 +161,10 @@ export default function ActiveNumbers() {
                     <th>Phone Number</th>
                     <th>Otp</th>
                     <th>Remaining Time</th>
-                    <th>Purchased At</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Provider</th>
+                    <th>Purchased At</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -183,11 +181,12 @@ export default function ActiveNumbers() {
                       </td>
 
                       <td className="ph-col-sms">{getRemainingTime(r)}</td>
+                      <td className="ph-col-id">{r.name}</td>
+                      <td className="ph-col-id">{r.email}</td>
+                      <td className="ph-col-id">{r.provider}</td>
                       <td className="ph-col-sms" title={r.otp}>
                         {FormatterHelper.formatDateToLocal(r.purchasedAt)}
                       </td>
-                      <td className="ph-col-id">{r.name}</td>
-                      <td className="ph-col-id">{r.email}</td>
                     </tr>
                   ))}
                 </tbody>

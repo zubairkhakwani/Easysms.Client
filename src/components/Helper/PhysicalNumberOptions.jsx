@@ -13,14 +13,15 @@ export function PhysicalNumberOptions({ numberType, setNumberType }) {
           onClick={() => setNumberType("virtual")}
         >
           <div className="number-type-card-top">
-            <span className="number-type-title">Virtual number</span>
+            <span className="number-type-title">Number</span>
             <div
               className={`number-type-dot ${numberType === "virtual" ? "checked" : ""}`}
             />
           </div>
           <span className="number-type-badge badge-green">Refundable</span>
           <p className="number-type-desc">
-            Real phone number — we handle OTP delivery automatically.
+            Premium number. you will receive the OTP automatically inside
+            website.
           </p>
         </div>
 
@@ -29,14 +30,15 @@ export function PhysicalNumberOptions({ numberType, setNumberType }) {
           onClick={() => setNumberType("physical")}
         >
           <div className="number-type-card-top">
-            <span className="number-type-title">Physical link</span>
+            <span className="number-type-title">Number with link</span>
             <div
               className={`number-type-dot ${numberType === "physical" ? "checked" : ""}`}
             />
           </div>
           <span className="number-type-badge badge-amber">Non-refundable</span>
           <p className="number-type-desc">
-            Direct inbox link — you access OTPs via the provided URL.
+            Premium number with inbox link. you can access OTP via the provided
+            URL.
           </p>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { getProvidersHistory } from "../../../../services/Provider/ProviderServi
 
 //Helper
 import { providers } from "../../../../data/Admin/Static";
+import { FormatterHelper } from "../../../../helper/FormatterHelper";
 
 import { errorToast } from "../../../../helper/Toaster";
 
@@ -22,24 +23,6 @@ const twoDays = new Date(
   today.getMonth(),
   today.getDate() - 2,
 );
-
-function fmtDate(iso) {
-  try {
-    return new Date(iso).toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch {
-    return iso;
-  }
-}
-
-function fmtCost(n) {
-  return "$" + Number(n).toFixed(4);
-}
 
 function StatusBadge({ status }) {
   const known = ["Successfully", "Cancelled", "Completed"];
@@ -231,14 +214,18 @@ export default function ProviderHistory() {
                       <td className="ph-col-sms" title={r.ourInternalCode}>
                         {r.ourInternalCode ?? "-"}
                       </td>
-                      <td className="ph-col-cost">{fmtCost(r.cost)}</td>
-                      <td className="ph-col-currency">
-                        {CURRENCY_LABEL[r.Currency] ?? r.ourActivationCost}
+                      <td className="ph-col-cost">
+                        {FormatterHelper.formatCurrency(r.cost)}
+                      </td>
+                      <td className="ph-col-cost">
+                        {FormatterHelper.formatCurrency(r.ourActivationCost)}
                       </td>
                       <td className="ph-col-currency">
                         {CURRENCY_LABEL[r.Currency] ?? r.currency}
                       </td>
-                      <td className="ph-col-date">{fmtDate(r.date)}</td>
+                      <td className="ph-col-date">
+                        {FormatterHelper.formatDateToLocal(r.date)}
+                      </td>
                       <td>
                         <StatusBadge status={r.status} />
                       </td>

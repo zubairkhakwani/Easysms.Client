@@ -308,7 +308,9 @@ export default function RequestNumber({ onNewNumber }) {
   return (
     <div className="card">
       <div className="card-header">
-        <span className="card-icon">📱</span>
+        <span className="card-icon">
+          <i className="fa-solid fa-sim-card number-type-icon"></i>
+        </span>
         <div>
           <div className="card-title">Get Phone Number</div>
           <div className="card-sub">Configure your options below</div>
@@ -358,7 +360,10 @@ export default function RequestNumber({ onNewNumber }) {
       ) : (
         <div className="fields">
           <div className="field">
-            <label>📲 Service</label>
+            <label>
+              <i className="fa-solid fa-gear number-type-icon"></i>
+              Service
+            </label>
             {isServiceLoading ? (
               <div className="select-skeleton"></div>
             ) : (
@@ -381,7 +386,10 @@ export default function RequestNumber({ onNewNumber }) {
             )}
           </div>
           <div className="field">
-            <label>🌍 Country</label>
+            <label>
+              <i className="fa-solid fa-globe number-type-icon"></i>
+              Country
+            </label>
             {isCountryLoadinig ? (
               <div className="select-skeleton"></div>
             ) : (
@@ -404,7 +412,10 @@ export default function RequestNumber({ onNewNumber }) {
             )}
           </div>
           <div className="field">
-            <label>📡 Operator / Pricing</label>
+            <label>
+              <i className="fa-solid fa-signal number-type-icon"></i>
+              Operator / Pricing
+            </label>
             {isCountryMetadataLoadinig ? (
               <div className="select-skeleton"></div>
             ) : (
