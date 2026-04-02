@@ -98,6 +98,7 @@ export default function ActiveNumbers() {
       return;
     }
 
+    console.log("New numbers:", newNumbers);
     setActiveNumbers((current) => [...newNumbers, ...current]);
     setFilteredNumbers((current) => [...newNumbers, ...current]);
   }, [newNumbers]);
@@ -107,7 +108,7 @@ export default function ActiveNumbers() {
     if (!removeNumberId) {
       return;
     }
-
+    console.log("Trying to remove:", removeNumberId);
     setRemovingId(removeNumberId);
 
     const timer = setTimeout(() => {

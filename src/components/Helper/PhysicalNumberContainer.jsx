@@ -7,6 +7,7 @@ import { FormatterHelper } from "../../helper/FormatterHelper";
 export const PhysicalNumberContainer = ({
   availability,
   price,
+  numberType,
   quantity,
   setQuantity,
 }) => {
@@ -14,15 +15,16 @@ export const PhysicalNumberContainer = ({
     if (availability === 0) {
       return (
         <p className="qty-helper qty-helper--error ">
-          😔 No numbers are available right now. Please check back later.
+          <i className="fa-regular fa-face-frown"></i> No numbers are available
+          right now. Please check back later.
         </p>
       );
     }
 
-    if (availability <= 10) {
+    if (availability <= 25) {
       return (
         <p className="qty-helper qty-helper--low">
-          🔥 Only <b> {availability} </b>
+          <i className="fa-solid fa-fire"></i> Only <b> {availability} </b>
           {availability === 1 ? "number" : "numbers"} left — grab them before
           they're gone!
         </p>
@@ -71,33 +73,36 @@ export const PhysicalNumberContainer = ({
 
       <div className="summary-divider" />
 
-      {/* <div className="summary-bottom">
-        <div className="summary-col">
-          <label className="summary-label">Quantity</label>
+      {numberType === "physical" && (
+        <div className="summary-bottom">
+          <div className="summary-col">
+            <label className="summary-label">Quantity</label>
 
-          <div className="qty-stepper">
-            <button
-              className="qty-btn"
-              onClick={() =>
-                setQuantity((q) => Math.max(availability > 0 ? 1 : 0, q - 1))
-              }
-            >
-              −
-            </button>
-              
-            <span className="qty-val">{quantity}</span>
+            <div className="qty-stepper">
+              <button
+                className="qty-btn"
+                onClick={() =>
+                  setQuantity((q) => Math.max(availability > 0 ? 1 : 0, q - 1))
+                }
+              >
+                −
+              </button>
 
-            <button
-              className="qty-btn"
-              onClick={() => setQuantity((q) => Math.min(availability, q + 1))}
-            >
-              +
-            </button>
+              <span className="qty-val">{quantity}</span>
+
+              <button
+                className="qty-btn"
+                onClick={() =>
+                  setQuantity((q) => Math.min(availability, q + 1))
+                }
+              >
+                +
+              </button>
+            </div>
           </div>
-
-          {getAvailabilityMessage()}
         </div>
-      </div> */}
+      )}
+      {getAvailabilityMessage()}
     </div>
   );
 };

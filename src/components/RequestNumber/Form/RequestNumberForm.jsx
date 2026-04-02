@@ -1,5 +1,5 @@
 //React
-import { useEffect, useState, useContext, use } from "react";
+import { useEffect, useState, useContext } from "react";
 
 //Context
 import { AuthContext } from "../../../context/AuthContext";
@@ -19,6 +19,7 @@ import {
 //Components
 import { PhysicalNumberContainer } from "../../Helper/PhysicalNumberContainer";
 import { PhysicalNumberSkelton } from "../../Helper/PhysicalNumberSkelton";
+import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions";
 
 //Css
 import "./RequestNumberForm.css";
@@ -97,6 +98,7 @@ export default function RequestNumber({ onNewNumber }) {
   const [isCountryMetadataLoadinig, setCountryMetadataLoading] =
     useState(false);
 
+  const [numberType, setNumberType] = useState("virtual");
   const [pruchaseState, setPurchaseState] = useState(true);
 
   const fetchProviders = async () => {
@@ -140,6 +142,7 @@ export default function RequestNumber({ onNewNumber }) {
 
       setSelectedService("Facebook");
       setSelectedCountry("USA");
+      setNumberType("virtual");
 
       setPhysicalNumberInfo(response);
       setPurchaseState(false);
@@ -149,6 +152,7 @@ export default function RequestNumber({ onNewNumber }) {
       return;
     }
 
+    setNumberType();
     setPhysicalNumberInfo(null);
 
     setServiceLoading(true);
@@ -229,15 +233,20 @@ export default function RequestNumber({ onNewNumber }) {
   }
 
   const handleRequestNumber = async () => {
+    if (selectedProvider == 3 && !numberType) {
+      errorToast("Please select one of the number types");
+      return;
+    }
+
     setRequestNumberText("Getting Number..");
 
     const updatedRequestedNumber = {
       ...requestedNumber,
       quantity,
+      isPhysicalLinks: numberType === "physical",
     };
 
     setPurchaseState(true);
-
     setRequestedNumber(updatedRequestedNumber);
 
     var response = await requestNumber(
@@ -252,26 +261,30 @@ export default function RequestNumber({ onNewNumber }) {
     let responseData = response.data;
     if (response.isSuccess) {
       let activationCost = 0;
-      let totalPurchasedNumbers = 0;
+      let phoneNumber_Url = "";
+
       successTaost(responseMessage);
 
       responseData.forEach((data) => {
-        //Add numbers in the list
-        onNewNumber(data);
-        totalPurchasedNumbers += 1;
+        if (numberType !== "physical") {
+          //Add only numbers except virtual
+          onNewNumber(data);
+        }
+        if (selectedProvider == 3 && numberType === "physical") {
+          phoneNumber_Url += data.phoneNumber + "\n";
+        }
         activationCost += data.activationCost;
       });
 
+      //For physical numbers we display users the popup so the user can copy and use them links
+      if (selectedProvider == 3 && numberType === "physical") {
+        handlePhysicalNumberRequest(responseData.length, phoneNumber_Url, {
+          numbersText: phoneNumber_Url.trim(),
+        });
+      }
+
       //Update the balance
       balanceDebit(activationCost);
-
-      //Update the quantity of physical numbers
-      if (selectedProvider == 3) {
-        setPhysicalNumberInfo((prev) => ({
-          ...prev,
-          count: Math.max(0, prev.count - totalPurchasedNumbers),
-        }));
-      }
     } else {
       errorToast(responseMessage);
     }
@@ -280,7 +293,6 @@ export default function RequestNumber({ onNewNumber }) {
     setPurchaseState(false);
   };
 
-  //Can be used later depending on the buisness needs
   function handlePhysicalNumberRequest(count, phoneNumber_Url, numbersText) {
     setPhysicalNumberInfo((prev) => ({
       ...prev,
@@ -305,7 +317,10 @@ export default function RequestNumber({ onNewNumber }) {
       <div className="fields">
         <div className="field">
           <>
-            <label>🏢 SMS Provider</label>
+            <label>
+              <i className="fa-solid fa-building-columns number-type-icon"></i>
+              SMS Provider
+            </label>
             <select
               defaultValue=""
               onChange={handleProviderChange}
@@ -327,12 +342,19 @@ export default function RequestNumber({ onNewNumber }) {
       {isPhysicalNumberInfoLoading ? (
         <PhysicalNumberSkelton />
       ) : physicalNumberInfo ? (
-        <PhysicalNumberContainer
-          availability={physicalNumberInfo.count}
-          price={physicalNumberInfo.pricePerNumber}
-          quantity={quantity}
-          setQuantity={setQuantity}
-        />
+        <>
+          <PhysicalNumberOptions
+            numberType={numberType}
+            setNumberType={setNumberType}
+          />
+          <PhysicalNumberContainer
+            availability={physicalNumberInfo.count}
+            price={physicalNumberInfo.pricePerNumber}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            numberType={numberType}
+          />
+        </>
       ) : (
         <div className="fields">
           <div className="field">
