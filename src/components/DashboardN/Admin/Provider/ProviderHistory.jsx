@@ -181,17 +181,16 @@ export default function ProviderHistory() {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>ID</th>
+                    <th>Id</th>
                     <th>User</th>
                     <th>Phone</th>
-                    <th>SMS</th>
-                    <th>Internal Code</th>
-                    <th>Cost</th>
-                    <th>Activation Cost</th>
+                    <th>Code</th>
+                    <th>Actual Cost</th>
+                    <th>User Cost</th>
                     <th>Currency</th>
                     <th>Date</th>
+                    <th>Cancellation Status</th>
                     <th>Status</th>
-                    <th>Our Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -208,17 +207,15 @@ export default function ProviderHistory() {
 
                       <td className="ph-col-phone">{r.phone}</td>
 
-                      <td className="ph-col-sms" title={r.sms}>
-                        {r.sms ?? "-"}
+                      <td className="ph-col-sms" title={r.verificationCode}>
+                        {r.verificationCode ?? "-"}
                       </td>
-                      <td className="ph-col-sms" title={r.ourInternalCode}>
-                        {r.ourInternalCode ?? "-"}
+
+                      <td className="ph-col-cost">
+                        {FormatterHelper.formatCurrency(r.actualActivationCost)}
                       </td>
                       <td className="ph-col-cost">
-                        {FormatterHelper.formatCurrency(r.cost)}
-                      </td>
-                      <td className="ph-col-cost">
-                        {FormatterHelper.formatCurrency(r.ourActivationCost)}
+                        {FormatterHelper.formatCurrency(r.userActivationCost)}
                       </td>
                       <td className="ph-col-currency">
                         {CURRENCY_LABEL[r.Currency] ?? r.currency}
@@ -226,11 +223,11 @@ export default function ProviderHistory() {
                       <td className="ph-col-date">
                         {FormatterHelper.formatDateToLocal(r.date)}
                       </td>
-                      <td>
-                        <StatusBadge status={r.status} />
+                      <td className="ph-col-sms" title={r.cancellationStatus}>
+                        {r.cancellationStatus ?? "-"}
                       </td>
                       <td>
-                        <StatusBadge status={r.ourStatus} />
+                        <StatusBadge status={r.status} />
                       </td>
                     </tr>
                   ))}
