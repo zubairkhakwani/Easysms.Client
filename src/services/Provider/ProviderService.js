@@ -12,7 +12,7 @@ export const getProvidersInfo = async () => {
 
 export const getProvidersHistory = async (httpRequest) => {
   const response = await httpClient.get(
-    `/api/providers/history?start=${httpRequest.startDate}&end=${httpRequest.endDate}&provider=${httpRequest.provider}`,
+    `/api/providers/history?start=${httpRequest.startDate}&end=${httpRequest.endDate}&provider=${httpRequest.provider}&pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}`,
   );
   return response.data;
 };

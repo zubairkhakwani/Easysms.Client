@@ -326,13 +326,6 @@
   flex-shrink: 0;
 }
 
-.ph-status.Successfully {
-  background: rgba(0, 255, 170, 0.08);
-  color: var(--accent-green);
-}
-.ph-status.Successfully::before {
-  background: var(--accent-green);
-}
 .ph-status.Completed {
   background: rgba(0, 255, 170, 0.08);
   color: var(--accent-green);
@@ -348,22 +341,13 @@
 .ph-status.Cancelled::before {
   background: var(--error);
 }
-
-.ph-status.Sent {
-  background: rgba(0, 229, 255, 0.08);
-  color: var(--accent);
-}
-.ph-status.Sent::before {
-  background: var(--accent);
+.ph-status.Active {
+  background: rgba(0, 136, 255, 0.08);
+  color: var(--accent-blue);
 }
 
-/* Catch-all for unknown statuses */
-.ph-status.default {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-dim);
-}
-.ph-status.default::before {
-  background: var(--text-dim);
+.ph-status.Active::before {
+  background: var(--accent-blue);
 }
 
 /* ── Empty / Loading states ── */

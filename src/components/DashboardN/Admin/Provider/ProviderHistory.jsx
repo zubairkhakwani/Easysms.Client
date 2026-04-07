@@ -1,5 +1,5 @@
 //React
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 //Services
 import { getProvidersHistory } from "../../../../services/Provider/ProviderService";
@@ -7,14 +7,12 @@ import { getProvidersHistory } from "../../../../services/Provider/ProviderServi
 //Helper
 import { providers } from "../../../../data/Admin/Static";
 import { FormatterHelper } from "../../../../helper/FormatterHelper";
-
 import { errorToast } from "../../../../helper/Toaster";
+
+import Paginations from "../../../Shared/Pagination";
 
 //Css
 import "./ProviderHistory.css";
-
-const CURRENCY_LABEL = { 1: "USD", 2: "PKR" };
-const PAGE_SIZE = 10;
 
 const toDS = (d) => d.toISOString().slice(0, 10);
 const today = new Date();
@@ -25,7 +23,7 @@ const twoDays = new Date(
 );
 
 function StatusBadge({ status }) {
-  const known = ["Successfully", "Cancelled", "Completed"];
+  const known = ["Active", "Cancelled", "Completed"];
   const cls = known.includes(status) ? status : "default";
   return <span className={`ph-status ${cls}`}>{status}</span>;
 }
@@ -37,22 +35,27 @@ export default function ProviderHistory() {
   const [applied, setApplied] = useState(null);
   const [providerHistory, setProviderHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(0);
+  const [pageNo, setPageNo] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   async function getProviderHistoryData() {
     setIsLoading(true);
     try {
       let response = await getProvidersHistory({
+        pageNo,
+        pageSize,
         startDate,
         endDate,
         provider,
       });
       var responseMessage = response.message;
+      var responseData = response.data;
       if (!response.isSuccess) {
         errorToast(responseMessage);
       }
-
-      setProviderHistory(response.data);
+      setProviderHistory(responseData.items);
+      setCount(responseData.count);
     } finally {
       setApplied({ from: startDate, to: endDate, provider });
       setIsLoading(false);
@@ -61,35 +64,27 @@ export default function ProviderHistory() {
 
   useEffect(() => {
     getProviderHistoryData();
-  }, []);
+  }, [pageNo, pageSize]);
 
   const handleApply = async () => {
-    setPage(1);
     await getProviderHistoryData();
+    setPageNo(1);
   };
 
   const handleReset = async () => {
     setStartDate(toDS(twoDays));
     setEndDate(toDS(today));
     setProvider("1");
-    setPage(1);
   };
 
-  // ── Pagination ─────────────────────────────────────────────────────
-  const totalPages = Math.ceil(providerHistory.length / PAGE_SIZE);
-  const pageRows = providerHistory.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE,
-  );
+  const handleChangePage = (event, newPage) => {
+    setPageNo(newPage);
+  };
 
-  const pageNumbers = useMemo(() => {
-    const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
-      if (i === 1 || i === totalPages || Math.abs(i - page) <= 1) pages.push(i);
-      else if (pages[pages.length - 1] !== "…") pages.push("…");
-    }
-    return pages;
-  }, [totalPages, page]);
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNo(1);
+  };
 
   return (
     <div className="ph-page">
@@ -187,7 +182,6 @@ export default function ProviderHistory() {
                     <th>Code</th>
                     <th>Actual Cost</th>
                     <th>User Cost</th>
-                    <th>Currency</th>
                     <th>Date</th>
                     <th>Cancellation Status</th>
                     <th>Status</th>
@@ -217,9 +211,7 @@ export default function ProviderHistory() {
                       <td className="ph-col-cost">
                         {FormatterHelper.formatCurrency(r.userActivationCost)}
                       </td>
-                      <td className="ph-col-currency">
-                        {CURRENCY_LABEL[r.Currency] ?? r.currency}
-                      </td>
+
                       <td className="ph-col-date">
                         {FormatterHelper.formatDateToLocal(r.date)}
                       </td>
@@ -236,7 +228,6 @@ export default function ProviderHistory() {
             </div>
           </>
         )}
-
         {/* Loading */}
         {isLoading && (
           <div className="ph-state-row">
@@ -244,7 +235,6 @@ export default function ProviderHistory() {
             <span className="ph-state-text">Fetching records…</span>
           </div>
         )}
-
         {/* Empty result */}
         {!isLoading && applied && providerHistory.length === 0 && (
           <div className="ph-state-row">
@@ -254,6 +244,13 @@ export default function ProviderHistory() {
             </span>
           </div>
         )}
+        <Paginations
+          page={pageNo}
+          rowsPerPage={pageSize}
+          count={count}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       </div>
     </div>
   );
