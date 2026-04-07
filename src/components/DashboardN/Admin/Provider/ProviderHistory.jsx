@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 
 //Services
 import { getProvidersHistory } from "../../../../services/Provider/ProviderService";
+import { getProviders } from "../../../../services/Provider/ProviderService";
+import { getAll } from "../../../../services/User/UserService";
 
 //Helper
-import { providers } from "../../../../data/Admin/Static";
 import { FormatterHelper } from "../../../../helper/FormatterHelper";
 import { errorToast } from "../../../../helper/Toaster";
 
@@ -29,12 +30,22 @@ function StatusBadge({ status }) {
 }
 
 export default function ProviderHistory() {
+  //Filtering
   const [startDate, setStartDate] = useState(toDS(twoDays));
   const [endDate, setEndDate] = useState(toDS(today));
-  const [provider, setProvider] = useState("1");
-  const [applied, setApplied] = useState(null);
+  const [provider, setProvider] = useState("0");
+  const [user, setUser] = useState(0);
+
+  //Data
   const [providerHistory, setProviderHistory] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [providers, setProviders] = useState([]);
+
+  //Loading
+  const [applied, setApplied] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  //Pagination
   const [count, setCount] = useState(0);
   const [pageNo, setPageNo] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -48,23 +59,45 @@ export default function ProviderHistory() {
         startDate,
         endDate,
         provider,
+        user,
       });
       var responseMessage = response.message;
-      var responseData = response.data;
+      var responseData = !response.data ? [] : response.data;
       if (!response.isSuccess) {
         errorToast(responseMessage);
       }
-      setProviderHistory(responseData.items);
+      setProviderHistory(responseData?.items ?? []);
       setCount(responseData.count);
     } finally {
       setApplied({ from: startDate, to: endDate, provider });
       setIsLoading(false);
     }
   }
+  async function getUsersData() {
+    let response = await getAll();
+    var responseData = response.data;
+    setUsers(responseData);
+    if (!response.isSuccess) {
+      errorToast(response.message);
+    }
+  }
+
+  async function getProvidersData() {
+    let response = await getProviders();
+    setProviders(response);
+  }
 
   useEffect(() => {
     getProviderHistoryData();
   }, [pageNo, pageSize]);
+
+  useEffect(() => {
+    getUsersData();
+  }, []);
+
+  useEffect(() => {
+    getProvidersData();
+  }, []);
 
   const handleApply = async () => {
     await getProviderHistoryData();
@@ -74,7 +107,8 @@ export default function ProviderHistory() {
   const handleReset = async () => {
     setStartDate(toDS(twoDays));
     setEndDate(toDS(today));
-    setProvider("1");
+    setProvider("0");
+    setUser(0);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -120,7 +154,23 @@ export default function ProviderHistory() {
             value={provider}
             onChange={(e) => setProvider(e.target.value)}
           >
+            <option value={"0"}>All</option>
             {providers.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="ph-filter-field">
+          <label className="ph-filter-label">User</label>
+          <select
+            className="ph-filter-input"
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
+          >
+            <option value={0}>All</option>
+            {users.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
               </option>
@@ -161,12 +211,6 @@ export default function ProviderHistory() {
       <div className="ph-table-panel">
         <div className="ph-table-header">
           <span className="ph-table-title">Provider History</span>
-          {
-            <span className="ph-table-meta">
-              {applied?.from} → {applied?.to}
-              {` · ${providers.find((p) => p.id === applied?.provider)?.name}`}
-            </span>
-          }
         </div>
         {/* Table */}
         {!isLoading && (
@@ -179,6 +223,7 @@ export default function ProviderHistory() {
                     <th>Id</th>
                     <th>User</th>
                     <th>Phone</th>
+                    <th>Provider</th>
                     <th>Code</th>
                     <th>Actual Cost</th>
                     <th>User Cost</th>
@@ -198,8 +243,8 @@ export default function ProviderHistory() {
                           <div className="um-user-email">{r.email}</div>
                         </div>
                       </td>
-
                       <td className="ph-col-phone">{r.phone}</td>
+                      <td className="ph-col-phone">{r.provider}</td>
 
                       <td className="ph-col-sms" title={r.verificationCode}>
                         {r.verificationCode ?? "-"}
@@ -244,13 +289,16 @@ export default function ProviderHistory() {
             </span>
           </div>
         )}
-        <Paginations
-          page={pageNo}
-          rowsPerPage={pageSize}
-          count={count}
-          handleChangePage={handleChangePage}
-          handleChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+
+        {!isLoading && applied && providerHistory.length !== 0 && (
+          <Paginations
+            page={pageNo}
+            rowsPerPage={pageSize}
+            count={count}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        )}
       </div>
     </div>
   );

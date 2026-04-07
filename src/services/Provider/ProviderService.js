@@ -10,9 +10,26 @@ export const getProvidersInfo = async () => {
   return response.data.data;
 };
 
-export const getProvidersHistory = async (httpRequest) => {
+export const getProvidersHistory = async ({
+  startDate,
+  endDate,
+  provider,
+  pageNo,
+  pageSize,
+  user,
+}) => {
+  const queryParams = new URLSearchParams({
+    start: startDate,
+    end: endDate,
+    provider: provider,
+    pageNumber: pageNo,
+    pageSize: pageSize,
+    user: user,
+  }).toString();
+
+  console.log(queryParams);
   const response = await httpClient.get(
-    `/api/providers/history?start=${httpRequest.startDate}&end=${httpRequest.endDate}&provider=${httpRequest.provider}&pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}`,
+    `/api/providers/history?${queryParams}`,
   );
   return response.data;
 };
