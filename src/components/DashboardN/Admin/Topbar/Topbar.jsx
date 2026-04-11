@@ -29,6 +29,14 @@ export default function Topbar({
       title: "User Deposits",
       sub: "View all deposits made by users in real-time. Admin-added deposits appear here with details including the amount, date, and responsible admin.",
     },
+    platform: {
+      title: "Platform Management",
+      sub: "Create, update, and manage platforms available for account purchases. Platforms represent services such as Facebook, Instagram, or other supported providers.",
+    },
+    category: {
+      title: "Account Categories",
+      sub: "Create and manage categories that define the type and characteristics of accounts, such as new accounts, aged accounts, accounts with friends, or accounts with AdSense.",
+    },
   };
 
   const page = pageTitles[activePage] || pageTitles.overview;

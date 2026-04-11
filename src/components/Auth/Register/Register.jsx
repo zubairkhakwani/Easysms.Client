@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { registerUser } from "../../services/Auth/AuthService";
+import { registerUser } from "../../../services/Auth/AuthService";
 import { toast, Slide } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -45,12 +45,19 @@ export default function Register() {
     name: "",
     email: "",
     password: "",
+    phoneNumber: "",
   });
-  const [errors, setErrors] = useState({ name: "", email: "", password: "" });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+  });
   const [touched, setTouched] = useState({
     name: false,
     email: false,
     password: false,
+    phoneNumber: false,
   });
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisibile] = useState(false);
@@ -71,11 +78,17 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const allTouched = { name: true, email: true, password: true };
+    const allTouched = {
+      name: true,
+      email: true,
+      password: true,
+      phoneNumber: true,
+    };
     const allErrors = {
       name: validate("name", formData.name),
       email: validate("email", formData.email),
       password: validate("password", formData.password),
+      phoneNumber: validate("phoneNumber", formData.phoneNumber),
     };
     setTouched(allTouched);
     setErrors(allErrors);
@@ -135,6 +148,11 @@ export default function Register() {
         if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/.test(value))
           return "Must include uppercase, lowercase, and a number.";
         if (value.length < 8) return "Password must be at least 8 characters.";
+        return "";
+      case "phoneNumber":
+        if (!value) return "";
+        if (!/^\+?[0-9]{7,15}$/.test(value))
+          return "Enter a valid phone number.";
         return "";
       default:
         return "";
@@ -282,6 +300,48 @@ export default function Register() {
                   <circle cx="6" cy="8.25" r="0.6" fill="#ff5f7e" />
                 </svg>
                 {errors.password}
+              </span>
+            )}
+          </div>
+
+          {/* Phone Number (Optional) */}
+          <div className="form-group">
+            <div className="form-label-row">
+              <label>Phone Number (Optional)</label>
+              <InfoIcon tooltip="Optional. Enter a valid phone number if provided." />
+            </div>
+
+            <input
+              type="text"
+              name="phoneNumber"
+              placeholder="Enter phone number"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={
+                errors.phoneNumber && touched.phoneNumber ? "input-error" : ""
+              }
+            />
+
+            {errors.phoneNumber && touched.phoneNumber && (
+              <span className="error-msg">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <circle
+                    cx="6"
+                    cy="6"
+                    r="5.25"
+                    stroke="#ff5f7e"
+                    strokeWidth="1.5"
+                  />
+                  <path
+                    d="M6 3.5v3"
+                    stroke="#ff5f7e"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="6" cy="8.25" r="0.6" fill="#ff5f7e" />
+                </svg>
+                {errors.phoneNumber}
               </span>
             )}
           </div>

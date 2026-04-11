@@ -1,0 +1,369 @@
+/* ─────────────────────────────────────────────────────────────
+   AddAccountModal.css — dark theme, matches app aesthetic
+───────────────────────────────────────────────────────────── */
+
+/* Overlay */
+.aam-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+/* Modal card */
+.aam-modal {
+  background: rgba(15, 15, 22, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.aam-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.aam-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aam-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.aam-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── Body ────────────────────────────────────────────────── */
+.aam-body {
+  padding: 20px 22px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.aam-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.aam-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.aam-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Format hint bar */
+.aam-format-hint {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.aam-format-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.aam-format-code {
+  font-family: "SFMono-Regular", "Consolas", monospace;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.55);
+  word-break: break-all;
+}
+
+/* Badges */
+.aam-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.aam-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+.aam-badge--required {
+  background: rgba(255, 95, 126, 0.12);
+  color: #ff7f9a;
+  border: 1px solid rgba(255, 95, 126, 0.25);
+}
+
+.aam-badge--allowed {
+  background: rgba(76, 175, 130, 0.12);
+  color: #5ecfa0;
+  border: 1px solid rgba(76, 175, 130, 0.25);
+}
+
+/* Label */
+.aam-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 7px;
+}
+
+/* Textarea */
+.aam-textarea {
+  width: 100%;
+  font-family: "SFMono-Regular", "Consolas", monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  padding: 11px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  resize: vertical;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.aam-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.18);
+}
+
+.aam-textarea:focus {
+  border-color: var(--accent, #a78bfa);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Parse summary row */
+.aam-parse-row {
+  margin: 10px 0 13px;
+  min-height: 18px;
+}
+
+.aam-parse-info {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.aam-parse-info strong {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.aam-parse-invalid {
+  color: #ff7f9a;
+}
+
+.aam-parse-info--muted {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Table ───────────────────────────────────────────────── */
+.aam-table-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.aam-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.aam-th {
+  padding: 9px 11px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aam-th--num {
+  width: 38px;
+  text-align: center;
+}
+
+.aam-td {
+  padding: 8px 11px;
+  color: rgba(255, 255, 255, 0.78);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "SFMono-Regular", "Consolas", monospace;
+  font-size: 12px;
+}
+
+.aam-table tbody tr:last-child .aam-td {
+  border-bottom: none;
+}
+
+.aam-table tbody tr:hover .aam-td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.aam-td--num {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.2);
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.aam-td--missing {
+  color: #ff7f9a;
+  font-style: italic;
+  font-family: inherit;
+}
+
+/* Error row */
+.aam-row--error .aam-td {
+  background: rgba(255, 95, 126, 0.06);
+  color: #ff7f9a;
+}
+
+.aam-row--error:hover .aam-td {
+  background: rgba(255, 95, 126, 0.09) !important;
+}
+
+/* Empty state */
+.aam-empty {
+  text-align: center;
+  padding: 30px 16px;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.aam-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.aam-footer-info {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.aam-footer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Buttons */
+.aam-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    transform 0.2s,
+    background 0.2s;
+}
+
+.aam-btn--ghost {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.aam-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.aam-btn--primary {
+  background: var(--accent, #a78bfa);
+  border: none;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 116px;
+}
+
+.aam-btn--primary:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.aam-btn--primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Spinner */
+.aam-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: aam-spin 0.65s linear infinite;
+  display: inline-block;
+}
+
+@keyframes aam-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

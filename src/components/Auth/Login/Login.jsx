@@ -1,9 +1,9 @@
 import { toast, Slide } from "react-toastify";
 import { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 import { useNavigate, Link } from "react-router-dom";
-import { loginUser } from "../../services/Auth/AuthService";
+import { loginUser } from "../../../services/Auth/AuthService";
 
 import "./Login.css";
 
@@ -175,7 +175,9 @@ export default function Login() {
                 ></i>
               )}
             </div>
-
+            <div className="forgot-link-row">
+              <Link to="/forgot-password">Forgot password?</Link>
+            </div>
             {errors.password && (
               <span className="error-msg">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">

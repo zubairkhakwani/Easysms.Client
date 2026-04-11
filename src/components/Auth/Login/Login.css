@@ -75,3 +75,18 @@
   font-weight: 600;
   margin-left: 4px;
 }
+.forgot-link-row {
+  text-align: right;
+  margin-top: 4px;
+}
+
+.forgot-link-row a {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.forgot-link-row a:hover {
+  text-decoration: underline;
+}

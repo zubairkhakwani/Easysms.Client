@@ -1,11 +1,4 @@
-/* ── Provider History Page ── */
-.ph-page {
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  animation: fadeInUp 0.4s ease both;
-}
+
 
 /* ── Filters ── */
 .ph-filters {

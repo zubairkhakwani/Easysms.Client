@@ -17,11 +17,6 @@ import "./ProviderHistory.css";
 
 const toDS = (d) => d.toISOString().slice(0, 10);
 const today = new Date();
-const twoDays = new Date(
-  today.getFullYear(),
-  today.getMonth(),
-  today.getDate() - 2,
-);
 
 function StatusBadge({ status }) {
   const known = ["Active", "Cancelled", "Completed"];
@@ -31,7 +26,7 @@ function StatusBadge({ status }) {
 
 export default function ProviderHistory() {
   //Filtering
-  const [startDate, setStartDate] = useState(toDS(twoDays));
+  const [startDate, setStartDate] = useState(toDS(today));
   const [endDate, setEndDate] = useState(toDS(today));
   const [provider, setProvider] = useState("0");
   const [user, setUser] = useState(0);
@@ -47,7 +42,7 @@ export default function ProviderHistory() {
 
   //Pagination
   const [count, setCount] = useState(0);
-  const [pageNo, setPageNo] = useState(1);
+  const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
   async function getProviderHistoryData() {
@@ -101,14 +96,15 @@ export default function ProviderHistory() {
 
   const handleApply = async () => {
     await getProviderHistoryData();
-    setPageNo(1);
   };
 
   const handleReset = async () => {
-    setStartDate(toDS(twoDays));
+    setStartDate(toDS(today));
     setEndDate(toDS(today));
     setProvider("0");
     setUser(0);
+    setPageSize(10);
+    setPageNo(0);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -117,7 +113,7 @@ export default function ProviderHistory() {
 
   const handleChangeRowsPerPage = (event) => {
     setPageSize(parseInt(event.target.value, 10));
-    setPageNo(1);
+    setPageNo(0);
   };
 
   return (
@@ -290,7 +286,7 @@ export default function ProviderHistory() {
           </div>
         )}
 
-        {!isLoading && applied && providerHistory.length !== 0 && (
+        {!isLoading && applied && (
           <Paginations
             page={pageNo}
             rowsPerPage={pageSize}

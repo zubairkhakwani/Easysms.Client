@@ -39,7 +39,7 @@ export default function Sidebar({
           <div key={section.section}>
             <p className="nav-section-label">{section.section}</p>
             {section.items.map((item) => (
-              <Link to={item.url}>
+              <Link key={item.id} to={item.url}>
                 <span
                   key={item.id}
                   className={`nav-item ${activePage === item.id ? "active" : ""}`}

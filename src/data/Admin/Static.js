@@ -27,7 +27,6 @@ export const navItems = [
         label: "Deposits",
         id: "deposits",
         url: "deposits",
-        badge: "New",
       },
     ],
   },
@@ -45,7 +44,6 @@ export const navItems = [
         label: "Active numbers",
         id: "activeNumbers",
         url: "active-numbers",
-        badge: "New",
       },
     ],
   },
@@ -60,22 +58,30 @@ export const navItems = [
       },
     ],
   },
-];
-
-export const providers = [
   {
-    id: "1",
-    name: "Hero Sms",
-    codeName: "Provider A",
-  },
-  {
-    id: "2",
-    name: "Five Sim .Net",
-    codeName: "Provider B",
-  },
-  {
-    id: "3",
-    name: "USA/Canada Premium Numbers",
-    codeName: "USA/Canada Premium Numbers",
+    section: "Accounts",
+    items: [
+      {
+        icon: "⊞",
+        label: "Platforms",
+        id: "platform",
+        url: "platforms",
+        badge: "New",
+      },
+      {
+        icon: "⊞",
+        label: "Categories",
+        id: "category",
+        url: "categories",
+        badge: "New",
+      },
+      {
+        icon: "⊞",
+        label: "Account groups",
+        id: "accountGroups",
+        url: "account-groups",
+        badge: "New",
+      },
+    ],
   },
 ];

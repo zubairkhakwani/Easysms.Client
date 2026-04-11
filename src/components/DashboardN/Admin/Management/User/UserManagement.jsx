@@ -233,13 +233,19 @@ export default function UserManagement() {
         <table className="um-table">
           <thead>
             <tr>
-              {["User", "Role", "Balance", "Status", "Joined", "Actions"].map(
-                (h) => (
-                  <th key={h} className="um-th">
-                    {h}
-                  </th>
-                ),
-              )}
+              {[
+                "User",
+                "Phone Number",
+                "Role",
+                "Balance",
+                "Status",
+                "Joined",
+                "Actions",
+              ].map((h) => (
+                <th key={h} className="um-th">
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -255,10 +261,18 @@ export default function UserManagement() {
                   </div>
                 </td>
                 <td className="um-td">
+                  <span className="um-user-name">
+                    {user.phoneNumber
+                      ? FormatterHelper.formatPhoneNumber(user.phoneNumber)
+                      : "-"}
+                  </span>
+                </td>
+                <td className="um-td">
                   <span className={`um-role-badge ${user.role.toLowerCase()}`}>
                     {user.role}
                   </span>
                 </td>
+
                 <td className="um-td">
                   <span className="um-balance">
                     {FormatterHelper.formatCurrency(user.balance)}

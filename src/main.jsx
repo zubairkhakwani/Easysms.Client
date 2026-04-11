@@ -14,8 +14,11 @@ import AdminLayout from "./components/Layout/AdminLayout.jsx";
 import App from "./App.jsx";
 import RequestNumberContainer from "./components/RequestNumber/Container/RequestNumberContainer.jsx";
 import OrderHistory from "./components/User/OrderHistory.jsx";
-import Register from "./components/Auth/Register.jsx";
-import Login from "./components/Auth/Login.jsx";
+import Register from "./components/Auth/Register/Register.jsx";
+import Login from "./components/Auth/Login/Login.jsx";
+import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPasword.jsx";
+import VerifyOtp from "./components/Auth/VerifyOtp/VerifyOtp.jsx";
+import ResetPassword from "./components/Auth/ResetPassword/ResetPassword.jsx";
 import PrivateRoute from "./components/Route/PrivateRoute.jsx";
 import TopUp from "./components/LandingPage/TopUp/TopUp.jsx";
 import NotFound from "./components/Shared/NotFound.jsx";
@@ -28,6 +31,9 @@ import AddPhysicalNumber from "./components/DashboardN/Admin/Management/Provider
 import ProviderHistory from "./components/DashboardN/Admin/Provider/ProviderHistory.jsx";
 import ActiveNumbers from "./components/DashboardN/Admin/Provider/ActiveNumbers.jsx";
 import Deposits from "./components/DashboardN/Admin/Management/Deposit/Deposits.jsx";
+import Platforms from "./components/DashboardN/Admin/Account/Platform/Platforms.jsx";
+import Categories from "./components/DashboardN/Admin/Account/Category/Categories.jsx";
+import AccountGroups from "./components/DashboardN/Admin/Account/AccountGroup/AccountGroups.jsx";
 
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -59,13 +65,21 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/topup" element={<TopUp />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route
+                  path="/forgot-password/verify-otp"
+                  element={<VerifyOtp />}
+                />
+                <Route
+                  path="/forgot-password/reset-password"
+                  element={<ResetPassword />}
+                />
               </Route>
 
               {/* Admin Layout */}
               <Route element={<AdminLayout />}>
                 <Route element={<PrivateRoute requireAdmin={true} />}>
                   <Route path="admin-dashboard" element={<AdminDashobard />}>
-                    <Route index element={<Overview />} />
                     <Route path="overview" element={<Overview />} />
                     <Route path="manage-user" element={<UserManagement />} />
                     <Route path="deposits" element={<Deposits />} />
@@ -78,6 +92,9 @@ createRoot(document.getElementById("root")).render(
                       element={<ProviderHistory />}
                     />
                     <Route path="active-numbers" element={<ActiveNumbers />} />
+                    <Route path="platforms" element={<Platforms />} />
+                    <Route path="categories" element={<Categories />} />
+                    <Route path="account-groups" element={<AccountGroups />} />
                   </Route>
                 </Route>
               </Route>

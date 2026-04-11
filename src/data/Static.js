@@ -118,3 +118,14 @@ export const punchlines = [
   "Your next number is one top-up away.",
   "Stay ready. Stay verified.",
 ];
+
+export const verificationPurpose = {
+  forgotPassword: "1",
+};
+
+export const modalKeys = {
+  all: "all",
+  newAccountGroup: "account-group",
+  newAccount: "account",
+  resultModal: "result-modal",
+};

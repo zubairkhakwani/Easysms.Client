@@ -27,7 +27,6 @@ export const getProvidersHistory = async ({
     user: user,
   }).toString();
 
-  console.log(queryParams);
   const response = await httpClient.get(
     `/api/providers/history?${queryParams}`,
   );
