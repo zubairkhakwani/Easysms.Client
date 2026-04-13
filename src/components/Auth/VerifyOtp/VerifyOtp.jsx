@@ -18,6 +18,7 @@ export default function VerifyOtp() {
   const location = useLocation();
   const email = location.state?.email;
   const expiry = location.state?.expiry;
+  const message = location.state?.message;
 
   const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(""));
   const [hasError, setHasError] = useState(false);
@@ -33,6 +34,8 @@ export default function VerifyOtp() {
     if (!email) {
       navigate("/forgot-password");
     }
+
+    setServerError(message);
   }, [email, navigate]);
 
   // Countdown timer for resend

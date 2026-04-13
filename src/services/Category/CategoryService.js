@@ -1,14 +1,8 @@
 import httpClient from "../Base/HttpClient";
 
-export const getAllCategories = async ({
-  startDate,
-  endDate,
-  pageNo,
-  pageSize,
-}) => {
+export const getAllCategories = async ({ pageNo, pageSize, platformId }) => {
   const queryParams = new URLSearchParams({
-    start: startDate,
-    end: endDate,
+    platformId,
     pageNumber: pageNo,
     pageSize: pageSize,
   }).toString();

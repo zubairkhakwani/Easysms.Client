@@ -13,6 +13,7 @@ import AdminLayout from "./components/Layout/AdminLayout.jsx";
 //Components
 import App from "./App.jsx";
 import RequestNumberContainer from "./components/RequestNumber/Container/RequestNumberContainer.jsx";
+import RequestAccount from "./components/RequestAccount/RequestAccount.jsx";
 import OrderHistory from "./components/User/OrderHistory.jsx";
 import Register from "./components/Auth/Register/Register.jsx";
 import Login from "./components/Auth/Login/Login.jsx";
@@ -24,16 +25,16 @@ import TopUp from "./components/LandingPage/TopUp/TopUp.jsx";
 import NotFound from "./components/Shared/NotFound.jsx";
 
 //Admin Dashboard
-import AdminDashobard from "./components/DashboardN/Admin/App/Dashboard.jsx";
-import Overview from "./components/DashboardN/Admin/Overview/Overview.jsx";
-import UserManagement from "./components/DashboardN/Admin/Management/User/UserManagement.jsx";
-import AddPhysicalNumber from "./components/DashboardN/Admin/Management/Provider/AddPhysicalNumber.jsx";
-import ProviderHistory from "./components/DashboardN/Admin/Provider/ProviderHistory.jsx";
-import ActiveNumbers from "./components/DashboardN/Admin/Provider/ActiveNumbers.jsx";
-import Deposits from "./components/DashboardN/Admin/Management/Deposit/Deposits.jsx";
-import Platforms from "./components/DashboardN/Admin/Account/Platform/Platforms.jsx";
-import Categories from "./components/DashboardN/Admin/Account/Category/Categories.jsx";
-import AccountGroups from "./components/DashboardN/Admin/Account/AccountGroup/AccountGroups.jsx";
+import AdminDashobard from "./components/Dashboard/Admin/App/Dashboard.jsx";
+import Overview from "./components/Dashboard/Admin/Overview/Overview.jsx";
+import UserManagement from "./components/Dashboard/Admin/Management/User/UserManagement.jsx";
+import AddPhysicalNumber from "./components/Dashboard/Admin/Management/Provider/AddPhysicalNumber.jsx";
+import ProviderHistory from "./components/Dashboard/Admin/Provider/ProviderHistory.jsx";
+import ActiveNumbers from "./components/Dashboard/Admin/Provider/ActiveNumbers.jsx";
+import Deposits from "./components/Dashboard/Admin/Management/Deposit/Deposits.jsx";
+import Platforms from "./components/Dashboard/Admin/Account/Platform/Platforms.jsx";
+import Categories from "./components/Dashboard/Admin/Account/Category/Categories.jsx";
+import AccountGroups from "./components/Dashboard/Admin/Account/AccountGroup/AccountGroups.jsx";
 
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -59,6 +60,7 @@ createRoot(document.getElementById("root")).render(
                     path="/get-number"
                     element={<RequestNumberContainer />}
                   />
+                  <Route path="/get-account" element={<RequestAccount />} />
                   <Route path="/history" element={<OrderHistory />} />
                 </Route>
 

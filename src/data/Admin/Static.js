@@ -48,13 +48,19 @@ export const navItems = [
     ],
   },
   {
-    section: "Numbers",
+    section: "Accounts & Numbers",
     items: [
       {
         icon: "⊞",
-        label: "Get Number",
+        label: "Buy Number",
         id: "getNumber",
         url: "/get-number",
+      },
+      {
+        icon: "⊞",
+        label: "Buy Account",
+        id: "getAccount",
+        url: "/get-account",
       },
     ],
   },

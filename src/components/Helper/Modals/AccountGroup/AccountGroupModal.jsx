@@ -7,6 +7,7 @@ import { modalKeys } from "../../../../data/Static";
 export function AccountGroupModal({
   onClose,
   onConfirm,
+  onPlatformChange,
   isSubmitting,
   lookups,
 }) {
@@ -25,11 +26,15 @@ export function AccountGroupModal({
     hasCookie: false,
     hasTwoFactorKey: false,
   });
-
   const set = (field) => (e) => {
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePlatformChange = (value) => {
+    setFormData((prev) => ({ ...prev, ["platformId"]: value }));
+    onPlatformChange(value);
   };
 
   const isValid =
@@ -108,9 +113,9 @@ export function AccountGroupModal({
             <select
               className="um-input"
               value={formData.platformId}
-              onChange={set("platformId")}
+              onChange={(e) => handlePlatformChange(e.target.value)}
             >
-              <option value="">Select platform...</option>
+              <option value="0">Select platform...</option>
               {lookups.platforms?.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}

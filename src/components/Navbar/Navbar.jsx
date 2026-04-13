@@ -94,7 +94,7 @@ export default function Navbar() {
   if (isAuth && isAdmin) {
     adminActionButtons = (
       <li>
-        <Link to="/admin-dashboard">
+        <Link to="/admin-dashboard/overview">
           <span onClick={() => handleNavClick()}>Dashboard</span>
         </Link>
       </li>
@@ -155,7 +155,14 @@ export default function Navbar() {
         <li>
           <Link to="/get-number">
             <span className="cyan" onClick={() => handleNavClick()}>
-              Get number
+              Buy number
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/get-account">
+            <span className="cyan" onClick={() => handleNavClick()}>
+              Buy account
             </span>
           </Link>
         </li>

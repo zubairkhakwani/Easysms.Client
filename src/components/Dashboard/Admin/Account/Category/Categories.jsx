@@ -19,14 +19,6 @@ import Paginations from "../../../../Shared/Pagination";
 //Css
 import "./Categories.css";
 
-const toDS = (d) => d.toISOString().slice(0, 10);
-const today = new Date();
-const twoDays = new Date(
-  today.getFullYear(),
-  today.getMonth(),
-  today.getDate() - 2,
-);
-
 function CategoryModal({ onClose, onConfirm, isSubmitting, platforms }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -111,8 +103,7 @@ function CategoryModal({ onClose, onConfirm, isSubmitting, platforms }) {
 
 export default function Categories() {
   //Filtering
-  const [startDate, setStartDate] = useState(toDS(twoDays));
-  const [endDate, setEndDate] = useState(toDS(today));
+  const [platform, setPlatform] = useState(0);
 
   //Data
   const [categories, setCategories] = useState([]);
@@ -137,43 +128,58 @@ export default function Categories() {
   }, [pageNo, pageSize]);
 
   useEffect(() => {
-    getPlaformData();
+    getPlatformData();
   }, []);
 
   //Fetch Data From Api
   async function getCategoryData() {
     setIsLoading(true);
+
+    let responseMessage = "";
+    let responseData = [];
+
     try {
       let response = await getAllCategories({
         pageNo,
         pageSize,
-        startDate,
-        endDate,
+        platformId: platform,
       });
-      var responseMessage = response.message;
-      var responseData = !response.data ? [] : response.data;
+
+      responseMessage = response.message;
+
       if (!response.isSuccess) {
         errorToast(responseMessage);
+      } else {
+        responseData = response.data?.items ?? [];
       }
-      setCategories(responseData?.items ?? []);
-      setCount(responseData.count);
+    } catch {
+      errorToast("Unable to load categories. Please try again.");
     } finally {
       setApplied({});
       setIsLoading(false);
+      setCategories(responseData);
+      setCount(responseData.length);
     }
   }
 
-  async function getPlaformData() {
-    let response = await getAllPlatforms({
-      pageNo,
-      pageSize,
-    });
-    var responseMessage = response.message;
-    var responseData = !response.data ? [] : response.data;
-    if (!response.isSuccess) {
-      errorToast(responseMessage);
+  async function getPlatformData() {
+    let responseMessage = "";
+    let responseData = [];
+
+    try {
+      let response = await getAllPlatforms({ pageNo, pageSize });
+      responseMessage = response.message;
+
+      if (!response.isSuccess) {
+        errorToast(responseMessage);
+      } else {
+        responseData = response.data?.items ?? [];
+      }
+    } catch {
+      errorToast("Unable to load platforms. Please try again.");
+    } finally {
+      setPlatforms(responseData);
     }
-    setPlatforms(responseData?.items ?? []);
   }
 
   //Handle Filters
@@ -182,8 +188,7 @@ export default function Categories() {
   };
 
   const handleReset = async () => {
-    setStartDate(toDS(twoDays));
-    setEndDate(toDS(today));
+    setPlatform(0);
     setPageSize(10);
     setPageNo(0);
   };
@@ -224,26 +229,19 @@ export default function Categories() {
       {/* ── Filters ── */}
       <div className="ph-filters">
         <div className="ph-filter-field">
-          <label className="ph-filter-label">From Date</label>
-          <input
-            type="date"
+          <label className="ph-filter-label">Platforms</label>
+          <select
             className="ph-filter-input"
-            value={startDate}
-            max={endDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </div>
-
-        <div className="ph-filter-field">
-          <label className="ph-filter-label">To Date</label>
-          <input
-            type="date"
-            className="ph-filter-input"
-            value={endDate}
-            min={startDate}
-            max={toDS(today)}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
+            value={platform}
+            onChange={(e) => setPlatform(e.target.value)}
+          >
+            <option value={"0"}>All</option>
+            {platforms.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="ph-filter-actions">

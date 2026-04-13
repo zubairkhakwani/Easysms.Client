@@ -29,7 +29,7 @@ export function AddAccountModal({
       const password = parts[1] || "";
 
       let idx = 2;
-      const twoFaKey = accountConfig.hasTwoFa
+      const twoFactorKey = accountConfig.hasTwoFa
         ? (parts[idx++] ?? "")
         : undefined;
       const cookie = accountConfig.hasCookie ? (parts[idx++] ?? "") : undefined;
@@ -41,7 +41,7 @@ export function AddAccountModal({
       return {
         username,
         password,
-        twoFaKey,
+        twoFactorKey,
         cookie,
         registrationData,
         isValid,
@@ -68,7 +68,7 @@ export function AddAccountModal({
   const columns = [
     { key: "username", label: "Username", always: true },
     { key: "password", label: "Password", always: true },
-    { key: "twoFaKey", label: "2FA key", show: accountConfig.hasTwoFa },
+    { key: "twoFactorKey", label: "2FA key", show: accountConfig.hasTwoFa },
     { key: "cookie", label: "Cookie", show: accountConfig.hasCookie },
     {
       key: "registrationData",

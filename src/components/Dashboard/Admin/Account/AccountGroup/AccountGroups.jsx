@@ -34,6 +34,7 @@ export default function AccountGroups() {
   //Data
   const [accountGroups, setAccountGroups] = useState([]);
   const [lookups, setLookups] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [accountConfig, setAccountConfig] = useState({
     accountGroupId: undefined,
     hasTwoFa: false,
@@ -90,11 +91,18 @@ export default function AccountGroups() {
   }
 
   async function getLookupsData() {
-    let response = await getAllLookups();
-    let responseDate = response?.data ?? [];
-    setLookups(responseDate);
-    if (!response.isSuccess) {
-      errorToast(response.message);
+    let responseData = [];
+    try {
+      let response = await getAllLookups();
+      responseData = response?.data ?? [];
+      setCategories(responseData.categories);
+      responseData.categories = [];
+      setLookups(responseData);
+      if (!response.isSuccess) {
+        errorToast(response.message);
+      }
+    } catch {
+      setLookups(responseData);
     }
   }
 
@@ -159,6 +167,18 @@ export default function AccountGroups() {
   const handleChangeRowsPerPage = (event) => {
     setPageSize(parseInt(event.target.value, 10));
     setPageNo(0);
+  };
+
+  //Select Change
+  const handlePlatformChange = (platformId) => {
+    const platformCategories = categories.filter(
+      (category) => category.platformId == platformId,
+    );
+
+    setLookups((previous) => ({
+      ...previous,
+      categories: platformCategories,
+    }));
   };
 
   //Modal
@@ -334,6 +354,7 @@ export default function AccountGroups() {
         <AccountGroupModal
           onClose={closeModal}
           onConfirm={handleAddAccountGroup}
+          onPlatformChange={handlePlatformChange}
           isSubmitting={isAddingAccountGroup}
           lookups={lookups}
         />

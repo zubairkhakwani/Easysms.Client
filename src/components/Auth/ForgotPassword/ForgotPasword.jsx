@@ -4,9 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 //Services
 import { forgotPassword } from "../../../services/Auth/AuthService";
 
-//Toaster
-import { errorToast, successTaost } from "../../../helper/Toaster";
-
 //Css
 import "./ForgotPassword.css";
 
@@ -41,15 +38,21 @@ export default function ForgotPassword() {
       setLoading(true);
       setServerError("");
       const response = await forgotPassword({ email });
-
+      console.log(response);
+      let responseMessage = response.message;
       if (response.isSuccess) {
         let responseEmail = response.data.email;
         let responseExpiry = response.data.expiryTime;
+
         navigate("/forgot-password/verify-otp", {
-          state: { email: responseEmail, expiry: responseExpiry },
+          state: {
+            email: responseEmail,
+            expiry: responseExpiry,
+            message: responseMessage,
+          },
         });
       } else {
-        setServerError(response.message);
+        setServerError(responseMessage);
       }
     } catch (error) {
       setServerError(
