@@ -14,7 +14,8 @@ import AdminLayout from "./components/Layout/AdminLayout.jsx";
 import App from "./App.jsx";
 import RequestNumberContainer from "./components/RequestNumber/Container/RequestNumberContainer.jsx";
 import RequestAccount from "./components/RequestAccount/RequestAccount.jsx";
-import OrderHistory from "./components/User/OrderHistory.jsx";
+import NumberHistory from "./components/Order/NumberHistory.jsx";
+import AccountHistory from "./components/Order/AccountHistory.jsx";
 import Register from "./components/Auth/Register/Register.jsx";
 import Login from "./components/Auth/Login/Login.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPasword.jsx";
@@ -61,7 +62,8 @@ createRoot(document.getElementById("root")).render(
                     element={<RequestNumberContainer />}
                   />
                   <Route path="/get-account" element={<RequestAccount />} />
-                  <Route path="/history" element={<OrderHistory />} />
+                  <Route path="/history/number" element={<NumberHistory />} />
+                  <Route path="/history/account" element={<AccountHistory />} />
                 </Route>
 
                 <Route path="/topup" element={<TopUp />} />

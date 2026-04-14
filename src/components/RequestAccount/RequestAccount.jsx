@@ -1,16 +1,20 @@
 //React
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 //Services
 import { getAllPlatforms } from "../../services/Platform/PlatformService";
 import { getAllCategories } from "../../services/Category/CategoryService";
 import { getAllAccounts, buyNewAccount } from "../../services/Account/Account";
 
+//Context
+import { AuthContext } from "../../context/AuthContext";
+
 //Toaster
 import { errorToast, successTaost } from "../../helper/Toaster";
 
 //Helper
 import { FormatterHelper } from "../../helper/FormatterHelper";
+import { DownloadPurchaseReceipt } from "../../helper/DownloadPurchaseReceipt";
 
 //Css
 import "./RequestAccount.css";
@@ -41,6 +45,7 @@ const XCircleIcon = () => (
 );
 
 export default function RequestAccount() {
+  const { balanceDebit } = useContext(AuthContext);
   //Data
   const [accounts, setAccounts] = useState([]);
   const [platforms, setPlatforms] = useState([]);
@@ -149,16 +154,19 @@ export default function RequestAccount() {
   //Buy Accounts
   async function handleBuyAccounts(request) {
     let responseMessage = "";
+
     setBuyingState((prev) => ({ ...prev, [request.accountGroupId]: true }));
 
     try {
       let response = await buyNewAccount(request);
       responseMessage = response.message;
 
-      if (!response.isSuccess) {
-        errorToast(responseMessage);
-      } else {
+      if (response.isSuccess) {
         successTaost(responseMessage);
+        balanceDebit(response.data?.totalCost ?? 0);
+        DownloadPurchaseReceipt(response.data ?? []);
+      } else {
+        errorToast(responseMessage);
       }
     } catch {
       errorToast("Failed to buy account, please try later.");
@@ -331,6 +339,17 @@ export default function RequestAccount() {
           </div>
         </div>
       ))}
+      {accounts.length === 0 && (
+        <div className="empty-state">
+          <div className="empty-state-icon">
+            <i className="fa-solid fa-box-open"></i>
+          </div>
+          <h3 className="empty-state-title">No accounts found</h3>
+          <p className="empty-state-text">
+            Try adjusting your filters or check back later.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -338,7 +357,7 @@ export default function RequestAccount() {
 //AccountCard
 function AccountCard({ account, quantity, onQuantityChange, OnBuy, isBuying }) {
   const outOfStock = account.totalAvailable === 0;
-
+  const DEFAULT_PLATFORM_LOGO = "public/default_platform_logo.png";
   const statusClass = {
     Complete: "complete",
     "Partially Complete": "partial",
@@ -350,7 +369,18 @@ function AccountCard({ account, quantity, onQuantityChange, OnBuy, isBuying }) {
       {/* Header */}
       <div className="account-card-header">
         <div className="card-title">
-          <span className="card-platform">{account.platformName}</span>
+          <div className="card-platform-row">
+            <img
+              className="platform-logo"
+              src={`${account.platformLogoUrl}`}
+              alt={`${DEFAULT_PLATFORM_LOGO}`}
+              onError={(e) => {
+                e.target.src = `${DEFAULT_PLATFORM_LOGO}`;
+              }}
+            />
+
+            <span className="card-platform">{account.platformName}</span>
+          </div>
           <span className="card-type">· {account.categoryName}</span>
         </div>
         <div

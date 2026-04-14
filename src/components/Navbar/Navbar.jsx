@@ -19,10 +19,10 @@ export default function Navbar() {
   var location = useLocation();
 
   const [menuOpen, setMenuOpen] = useState(false);
+
   const { isAuth, isAdmin, currentUser, logout } = useContext(AuthContext);
 
   let authButtons;
-  let authActionButtons;
   let adminActionButtons;
 
   function handleLogout() {
@@ -69,18 +69,59 @@ export default function Navbar() {
         {!currentUser ? (
           <UserBadgeSkeleton />
         ) : (
-          <div className="nav-user-badge">
-            <div className="nav-user-avatar">{currentUser.avatar}</div>
-
-            <div className="nav-user-info">
-              <span className="nav-user-name">{currentUser.name}</span>
-              <span className="nav-user-balance">
-                {FormatterHelper.formatCurrency(currentUser.balance)}
+          <div className="nav-user-wrapper">
+            <div
+              className="nav-user-badge"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <div className="nav-user-avatar">{currentUser.avatar}</div>
+              <div className="nav-user-info">
+                <span className="nav-user-name">{currentUser.name}</span>
+                <span className="nav-user-balance">
+                  {FormatterHelper.formatCurrency(currentUser.balance)}
+                </span>
+              </div>
+              <div className="nav-user-divider" />
+              <span className={`nav-user-arrow ${menuOpen ? "open" : ""}`}>
+                ▾
               </span>
             </div>
 
-            <div className="nav-user-divider" />
-            <span className="nav-user-arrow">▾</span>
+            {menuOpen && (
+              <>
+                <div
+                  className="nav-dropdown-overlay"
+                  onClick={() => setMenuOpen(false)}
+                />
+                <div className="nav-dropdown">
+                  <a className="nav-dropdown-item" href="/history/number">
+                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    Number History
+                  </a>
+
+                  <a className="nav-dropdown-item" href="/history/account">
+                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    Account History
+                  </a>
+                  {/* <a className="nav-dropdown-item" href="/change-password">
+                    <i className="fa-solid fa-lock"></i>
+                    Change Password
+                  </a> */}
+                  {/* <a className="nav-dropdown-item" href="/change-email">
+                    <i className="fa-solid fa-envelope"></i>
+                    Change Email
+                  </a> */}
+                  <div className="nav-dropdown-divider" />
+                  <button
+                    className="nav-dropdown-item danger"
+                    onClick={handleLogout}
+                  >
+                    <i className="fa-solid fa-right-from-bracket"></i>
+                    Logout
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -96,16 +137,6 @@ export default function Navbar() {
       <li>
         <Link to="/admin-dashboard/overview">
           <span onClick={() => handleNavClick()}>Dashboard</span>
-        </Link>
-      </li>
-    );
-  }
-
-  if (isAuth) {
-    authActionButtons = (
-      <li>
-        <Link to="/history">
-          <span onClick={() => handleNavClick()}>History</span>
         </Link>
       </li>
     );
@@ -144,7 +175,6 @@ export default function Navbar() {
           <span onClick={() => handleNavClick("why-us")}>Why us</span>
         </li>
         {adminActionButtons}
-        {authActionButtons}
         <li>
           <Link to="/topup">
             <span className="cyan" onClick={() => handleNavClick()}>

@@ -1,3 +1,5 @@
+import { modalKeys } from "../../../../data/Static";
+
 export function ResultModal({ result, onClose }) {
   const total = result.addedCount + result.skippedCount;
   const allGood =
@@ -12,7 +14,10 @@ export function ResultModal({ result, onClose }) {
   const icon = allGood ? "✓" : allFailed ? "✕" : "!";
 
   return (
-    <div className="rmodal-overlay" onClick={onClose}>
+    <div
+      className="rmodal-overlay"
+      onClick={() => onClose(modalKeys.resultModal)}
+    >
       <div className="rmodal" onClick={(e) => e.stopPropagation()}>
         <div className={`rmodal-header ${variant}`}>
           <div className="rmodal-header-icon">{icon}</div>
@@ -22,7 +27,10 @@ export function ResultModal({ result, onClose }) {
               {total} {total === 1 ? "entry" : "entries"} processed
             </p>
           </div>
-          <button className="rmodal-close" onClick={onClose}>
+          <button
+            className="rmodal-close"
+            onClick={() => onClose(modalKeys.resultModal)}
+          >
             ✕
           </button>
         </div>
@@ -80,7 +88,10 @@ export function ResultModal({ result, onClose }) {
           </div>
         )}
 
-        <button className="rmodal-done-btn" onClick={onClose}>
+        <button
+          className="rmodal-done-btn"
+          onClick={() => onClose(modalKeys.resultModal)}
+        >
           Done
         </button>
       </div>

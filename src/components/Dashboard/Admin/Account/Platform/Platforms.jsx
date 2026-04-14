@@ -14,6 +14,8 @@ import { successTaost, errorToast } from "../../../../../helper/Toaster";
 //Paginations
 import Paginations from "../../../../Shared/Pagination";
 
+
+
 //Css
 import "./Platforms.css";
 
@@ -27,6 +29,7 @@ const twoDays = new Date(
 
 function PlatformModal({ onClose, onConfirm, isSubmitting }) {
   const [name, setName] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
   const [description, setDescription] = useState("");
 
   return (
@@ -39,7 +42,7 @@ function PlatformModal({ onClose, onConfirm, isSubmitting }) {
 
         <div className="um-form-group">
           <label className="um-label">
-            Platform Name <span style={{ color: "red" }}>*</span>
+            Name <span style={{ color: "red" }}>*</span>
           </label>
           <input
             className="um-input"
@@ -47,6 +50,19 @@ function PlatformModal({ onClose, onConfirm, isSubmitting }) {
             placeholder="e.g. Facebook, Instagram..."
             value={name}
             onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <div className="um-form-group">
+          <label className="um-label">
+            Logo Url <span style={{ color: "red" }}>*</span>
+          </label>
+          <input
+            className="um-input"
+            type="text"
+            placeholder="e.g. https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+            value={logoUrl}
+            onChange={(e) => setLogoUrl(e.target.value)}
           />
         </div>
 
@@ -73,7 +89,11 @@ function PlatformModal({ onClose, onConfirm, isSubmitting }) {
             className={`um-btn ${!isSubmitting ? "primary" : ""}`}
             disabled={isSubmitting || !name.trim()}
             onClick={() =>
-              onConfirm({ name: name.trim(), description: description.trim() })
+              onConfirm({
+                name: name.trim(),
+                description: description.trim(),
+                logoUrl: logoUrl.trim(),
+              })
             }
           >
             {isSubmitting ? <div className="ph-spinner" /> : <span> Add</span>}

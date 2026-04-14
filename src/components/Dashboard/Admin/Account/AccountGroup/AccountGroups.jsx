@@ -205,8 +205,6 @@ export default function AccountGroups() {
     setModal((prev) => prev.filter((k) => k !== key));
   };
 
-  const closeResultModal = () => {};
-
   return (
     <div className="ph-page">
       <div className="ph-filter-actions">
@@ -370,7 +368,7 @@ export default function AccountGroups() {
 
       {/* Result Modal */}
       {modal.includes(modalKeys.resultModal) && (
-        <ResultModal result={addAccountResponse} onClose={closeResultModal} />
+        <ResultModal result={addAccountResponse} onClose={closeModal} />
       )}
     </div>
   );

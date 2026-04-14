@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 //Services
-import { getMyOrderHistory } from "../../services/Order/Order";
+import { getMyNumberHistory } from "../../services/Order/Order";
 
 //Helper
 import { FormatterHelper } from "../../helper/FormatterHelper";
@@ -11,20 +11,20 @@ import { FormatterHelper } from "../../helper/FormatterHelper";
 import { successTaost, errorToast } from "../../helper/Toaster";
 
 //Css
-import "./OrderHistory.css";
+import "./NumberHistory.css";
 
-export default function OrderHistory() {
+export default function NumberHistory() {
   const [ordersData, setOrdersData] = useState([]);
   const [filterednumbers, setFilterednumbers] = useState([]);
 
   useEffect(() => {
     const fetchAllMyNumbers = async () => {
       try {
-        const res = await getMyOrderHistory();
+        const res = await getMyNumberHistory();
         setOrdersData(res.data);
         setFilterednumbers(res.data);
-      } catch (error) {
-        console.error("Failed to fetch numbers:", error);
+      } catch {
+        errorToast("Failed to fetch number history");
       }
     };
     fetchAllMyNumbers();
@@ -85,7 +85,7 @@ export default function OrderHistory() {
     <div className="um-page">
       <div className="um-header">
         <div>
-          <div className="um-page-title">Order History</div>
+          <div className="um-page-title">Number History</div>
           <div className="um-page-sub">
             View all your purchased numbers and their activation status
           </div>
@@ -134,7 +134,7 @@ export default function OrderHistory() {
               <tr key={index} className="um-tr">
                 <td className="um-td">{index + 1}</td>
                 <td className="um-td">
-                  {number.orderData.phoneNumbers.length > 0 ? (
+                  {number.number.phoneNumbers.length > 0 ? (
                     <div className="um-ellipsis-copy">
                       <span className="um-ellipsis-text">
                         {number.orderData.phoneNumbers.join(", ")}
