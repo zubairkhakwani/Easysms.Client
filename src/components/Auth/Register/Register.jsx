@@ -1,8 +1,17 @@
+//React
 import { useState } from "react";
-import { registerUser } from "../../../services/Auth/AuthService";
-import { toast, Slide } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 
+//Password Strength Bar
+import StrengthBar from "../../Helper/Auth/StrengthBar";
+
+//Services
+import { registerUser } from "../../../services/Auth/AuthService";
+
+//Toaster
+import { errorToast, successTaost } from "../../../helper/Toaster";
+
+//Css
 import "./Register.css";
 
 const InfoIcon = ({ tooltip }) => {
@@ -53,6 +62,7 @@ export default function Register() {
     password: "",
     phoneNumber: "",
   });
+
   const [touched, setTouched] = useState({
     name: false,
     email: false,
@@ -96,39 +106,24 @@ export default function Register() {
     if (Object.values(allErrors).some(Boolean)) {
       return;
     }
-
     setLoading(true);
 
-    let response = await registerUser(formData);
-    let responseMessage = response.message;
-    if (response.isSuccess) {
-      toast(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
-      navigate("/login");
-    } else {
-      toast.error(responseMessage, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+    try {
+      let response = await registerUser(formData);
+      let responseMessage = response.message;
+      if (response.isSuccess) {
+        successTaost(responseMessage);
+        navigate("/login");
+      } else {
+        if (response.data && response.data.errorKey) {
+          setErrors({ [response.data.errorKey]: responseMessage });
+        }
+      }
+    } catch {
+      errorToast("Failed to register, please try later.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const validate = (name, value) => {
@@ -145,8 +140,8 @@ export default function Register() {
         return "";
       case "password":
         if (!value) return "Password is required.";
-        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/.test(value))
-          return "Must include uppercase, lowercase, and a number.";
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])/.test(value))
+          return "Must include uppercase, lowercase, a number, and a special character e.g (!@#$%^&*).";
         if (value.length < 8) return "Password must be at least 8 characters.";
         return "";
       case "phoneNumber":
@@ -266,7 +261,7 @@ export default function Register() {
                 className={
                   errors.password && touched.password ? "input-error" : ""
                 }
-                autocomplete="new-password"
+                autoComplete="new-password"
               />
               {passwordVisible ? (
                 <i
@@ -280,7 +275,7 @@ export default function Register() {
                 ></i>
               )}
             </div>
-
+            {formData.password && <StrengthBar password={formData.password} />}
             {errors.password && touched.password && (
               <span className="error-msg">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -308,7 +303,7 @@ export default function Register() {
           <div className="form-group">
             <div className="form-label-row">
               <label>Phone Number (Optional)</label>
-              <InfoIcon tooltip="Optional. Enter a valid phone number if provided." />
+              <InfoIcon tooltip="Optional. Enter a valid phone number." />
             </div>
 
             <input

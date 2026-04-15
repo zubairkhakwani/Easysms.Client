@@ -499,7 +499,7 @@ function AccountCard({ account, quantity, onQuantityChange, OnBuy, isBuying }) {
             OnBuy({ quantity, accountGroupId: account.accountGroupId })
           }
         >
-          {isBuying ? <div className="ph-spinner" /> : <span>Add</span>}
+          {isBuying ? <div className="ph-spinner" /> : <span>Buy</span>}
         </button>
       </div>
     </div>

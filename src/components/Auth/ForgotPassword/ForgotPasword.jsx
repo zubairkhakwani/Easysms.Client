@@ -54,7 +54,7 @@ export default function ForgotPassword() {
       } else {
         setServerError(responseMessage);
       }
-    } catch (error) {
+    } catch {
       setServerError(
         "Unable to connect. Please check your connection and try again.",
       );

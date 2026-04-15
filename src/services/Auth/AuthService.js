@@ -32,3 +32,11 @@ export const resetPassword = async (httpRequest) => {
   );
   return response.data;
 };
+
+export const changePassword = async (httpRequest) => {
+  const response = await httpClient.post(
+    "/api/auth/change-password",
+    httpRequest,
+  );
+  return response.data;
+};

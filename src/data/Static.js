@@ -128,4 +128,6 @@ export const modalKeys = {
   newAccountGroup: "account-group",
   newAccount: "account",
   resultModal: "result-modal",
+  changePassword: "change-password",
+  changeEmail: "change-email",
 };

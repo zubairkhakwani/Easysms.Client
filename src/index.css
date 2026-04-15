@@ -16,17 +16,18 @@ a {
 
 :root {
   --accent: #00e5ff;
-  --accent2: #7c3aed;
   --accent-logout: #ff5c5c;
   --accent-green: #00ffaa;
   --accent-orange: #ff9d3d;
   --accent-blue: #0088ff;
   --error: #ff5f7e;
   --bg: #0a0a0f;
-  --bg2: #0d0d14;
   --card: #13131a;
   --card-hover: #17171f;
-  --border: rgba(255, 255, 255, 0.07);
+  --modal-bg: #0f0f1c;
+  --modal-border: rgba(255, 255, 255, 0.09);
+  --modal-shadow: 0 24px 80px rgba(0, 0, 0, 0.7)
+    --border: rgba(255, 255, 255, 0.07);
   --border-accent: rgba(0, 229, 255, 0.2);
   --text-dim: rgba(255, 255, 255, 0.45);
   --text-mid: rgba(255, 255, 255, 0.7);

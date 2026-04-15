@@ -5,11 +5,23 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 //Context
 import { AuthContext } from "../../context/AuthContext";
 
+//Services
+import { changePassword } from "../../services/Auth/AuthService";
+
+//Toaster
+import { successTaost, errorToast } from "../../helper/Toaster";
+
 //Helper
 import { FormatterHelper } from "../../helper/FormatterHelper";
 
+//ModalKeys
+import { modalKeys } from "../../data/Static";
+
 //Skeltons
 import { UserBadgeSkeleton } from "../Skeltons/User/UserBadge";
+
+//Modals
+import ResetPasswordModal from "../Helper/Modals/Auth/ResetPasswordModal";
 
 //Css
 import "./Navbar.css";
@@ -19,6 +31,8 @@ export default function Navbar() {
   var location = useLocation();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [modal, setModal] = useState("");
+  const [isPasswordChanging, setIsPasswordChanging] = useState(false);
 
   const { isAuth, isAdmin, currentUser, logout } = useContext(AuthContext);
 
@@ -28,6 +42,31 @@ export default function Navbar() {
   function handleLogout() {
     logout();
     navigate("/");
+  }
+
+  //Handle Password Change
+  async function handlePasswordChange(request) {
+    setIsPasswordChanging(true);
+    try {
+      let response = await changePassword(request);
+      let responseMessage = response.message;
+      if (response.isSuccess) {
+        successTaost(responseMessage);
+      } else {
+        errorToast(responseMessage);
+      }
+    } catch {
+      errorToast("Failed to update password, please try later");
+    } finally {
+      setIsPasswordChanging(false);
+    }
+  }
+
+  function handleOpenModal(key) {
+    setModal(key);
+  }
+  function handleCloseModal() {
+    setModal();
   }
 
   const handleNavClick = (sectionId = null) => {
@@ -94,19 +133,22 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}
                 />
                 <div className="nav-dropdown">
-                  <a className="nav-dropdown-item" href="/history/number">
+                  <Link className="nav-dropdown-item" to="/history/number">
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Number History
-                  </a>
-
-                  <a className="nav-dropdown-item" href="/history/account">
+                  </Link>
+                  <Link className="nav-dropdown-item" to="/history/account">
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Account History
-                  </a>
-                  {/* <a className="nav-dropdown-item" href="/change-password">
+                  </Link>
+
+                  <span
+                    className="nav-dropdown-item"
+                    onClick={() => handleOpenModal(modalKeys.changePassword)}
+                  >
                     <i className="fa-solid fa-lock"></i>
                     Change Password
-                  </a> */}
+                  </span>
                   {/* <a className="nav-dropdown-item" href="/change-email">
                     <i className="fa-solid fa-envelope"></i>
                     Change Email
@@ -143,61 +185,71 @@ export default function Navbar() {
   }
 
   return (
-    <nav className={`nav${menuOpen ? " open" : ""}`}>
-      <div className="nav-inner">
-        <Link to="/">
-          <div className="logo">
-            <span>Easy</span>otps
+    <>
+      <nav className={`nav${menuOpen ? " open" : ""}`}>
+        <div className="nav-inner">
+          <Link to="/">
+            <div className="logo">
+              <span>Easy</span>otps
+            </div>
+          </Link>
+
+          <div
+            className={`hamburger${menuOpen ? " open" : ""}`}
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label="Toggle menu"
+          >
+            <span className="bar" />
+            <span className="bar" />
+            <span className="bar" />
           </div>
-        </Link>
-
-        <div
-          className={`hamburger${menuOpen ? " open" : ""}`}
-          onClick={() => setMenuOpen((o) => !o)}
-          aria-label="Toggle menu"
-        >
-          <span className="bar" />
-          <span className="bar" />
-          <span className="bar" />
         </div>
-      </div>
 
-      <ul className="nav-links">
-        <li>
-          <span onClick={() => handleNavClick("services")}>Services</span>
-        </li>
-        <li>
-          <span onClick={() => handleNavClick("how-it-works")}>
-            How it works
-          </span>
-        </li>
-        <li>
-          <span onClick={() => handleNavClick("why-us")}>Why us</span>
-        </li>
-        {adminActionButtons}
-        <li>
-          <Link to="/topup">
-            <span className="cyan" onClick={() => handleNavClick()}>
-              Topup
+        <ul className="nav-links">
+          <li>
+            <span onClick={() => handleNavClick("services")}>Services</span>
+          </li>
+          <li>
+            <span onClick={() => handleNavClick("how-it-works")}>
+              How it works
             </span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/get-number">
-            <span className="cyan" onClick={() => handleNavClick()}>
-              Buy number
-            </span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/get-account">
-            <span className="cyan" onClick={() => handleNavClick()}>
-              Buy account
-            </span>
-          </Link>
-        </li>
-      </ul>
-      <div className="nav-auth">{authButtons}</div>
-    </nav>
+          </li>
+          <li>
+            <span onClick={() => handleNavClick("why-us")}>Why us</span>
+          </li>
+          {adminActionButtons}
+          <li>
+            <Link to="/topup">
+              <span className="cyan" onClick={() => handleNavClick()}>
+                Topup
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/get-number">
+              <span className="cyan" onClick={() => handleNavClick()}>
+                Buy number
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/get-account">
+              <span className="cyan" onClick={() => handleNavClick()}>
+                Buy account
+              </span>
+            </Link>
+          </li>
+        </ul>
+        <div className="nav-auth">{authButtons}</div>
+      </nav>
+
+      {modal === modalKeys.changePassword && (
+        <ResetPasswordModal
+          onClose={handleCloseModal}
+          isLoading={isPasswordChanging}
+          onConfirm={handlePasswordChange}
+        />
+      )}
+    </>
   );
 }

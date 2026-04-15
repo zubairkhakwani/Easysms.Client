@@ -1,4 +1,4 @@
-import { toast, Slide } from "react-toastify";
+import { errorToast } from "../../../helper/Toaster";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 
@@ -91,20 +91,10 @@ export default function Login() {
         await login(data.token);
         navigate("/get-number");
       } else {
-        toast.error(responseMessage, {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          transition: Slide,
-        });
+        errorToast(responseMessage);
       }
     } catch (error) {
-      console.error("Registration failed:", error);
+      errorToast("Failed to login, please try later.");
     } finally {
       setLoading(false);
     }

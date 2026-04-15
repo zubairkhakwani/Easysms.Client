@@ -22,7 +22,6 @@ export default function AccountHistory() {
       try {
         const res = await getMyAccountHistory();
         let responseData = res.data ?? [];
-        console.log(responseData);
         setAccountHistory(responseData);
         setFilteredAccountHistory(responseData);
       } catch {
