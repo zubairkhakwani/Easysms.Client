@@ -4,6 +4,9 @@ import { useState } from "react";
 //Helper
 import { modalKeys } from "../../../../data/Static";
 
+//Component
+import { PlatformDynamicFields } from "./PlatformsDynamicFields";
+
 export function AccountGroupModal({
   onClose,
   onConfirm,
@@ -16,16 +19,11 @@ export function AccountGroupModal({
     platformId: "",
     categoryId: "",
     unitPrice: "",
-    gender: "",
-    completionStatus: "",
-    registrationMethod: "",
-    registrationCountry: "",
-    isMarketplaceNumberVerified: false,
-    marketplaceVerificationCountry: "",
-    hasRegistrationData: false,
     hasCookie: false,
     hasTwoFactorKey: false,
+    platformFields: {},
   });
+
   const set = (field) => (e) => {
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
@@ -37,16 +35,55 @@ export function AccountGroupModal({
     onPlatformChange(value);
   };
 
+  const validatePlatformFields = (configuration, values) => {
+    if (!configuration) return true;
+
+    let fields = [];
+
+    try {
+      const parsed =
+        typeof configuration === "string"
+          ? JSON.parse(configuration)
+          : configuration;
+
+      if (Array.isArray(parsed)) fields = parsed;
+    } catch {
+      return true;
+    }
+
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+
+      if (!field.required) continue;
+
+      const key = field.value || field.label || String(i);
+      const value = values[key];
+
+      switch (field.type) {
+        case "checkbox":
+          if (!value) return false;
+          break;
+
+        default:
+          if (value === undefined || value === null || value === "")
+            return false;
+      }
+    }
+
+    return true;
+  };
+
+  const dynamicValid = validatePlatformFields(
+    lookups.platformConfiguration,
+    formData.platformFields,
+  );
+
   const isValid =
     formData.unitPrice &&
     formData.unitPrice > 0 &&
     formData.platformId &&
     formData.categoryId &&
-    formData.gender &&
-    formData.completionStatus &&
-    formData.registrationCountry &&
-    (!formData.isMarketplaceNumberVerified ||
-      formData.marketplaceVerificationCountry);
+    dynamicValid;
 
   const CheckRow = ({ label, field }) => (
     <label
@@ -157,103 +194,16 @@ export function AccountGroupModal({
           />
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "0.75rem",
-          }}
-        >
-          <div className="um-form-group">
-            <label className="um-label">
-              Gender <span style={{ color: "red" }}>*</span>
-            </label>
-            <select
-              className="um-input"
-              value={formData.gender}
-              onChange={set("gender")}
-            >
-              <option value="">Select gender...</option>
-              {lookups.genders?.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="um-form-group">
-            <label className="um-label">
-              Account Completion <span style={{ color: "red" }}>*</span>
-            </label>
-            <select
-              className="um-input"
-              value={formData.completionStatus}
-              onChange={set("completionStatus")}
-            >
-              <option value="">Select status...</option>
-              {lookups.completionStatus?.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="um-form-group">
-          <label className="um-label">Registration Method</label>
-          <select
-            className="um-input"
-            value={formData.registrationMethod}
-            onChange={set("registrationMethod")}
-          >
-            <option value="">Select registration method...</option>
-            {lookups.registrationMethods?.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="um-form-group">
-          <label className="um-label">
-            Registration Country <span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            className="um-input"
-            type="text"
-            placeholder="e.g. Canada"
-            value={formData.registrationCountry}
-            onChange={set("registrationCountry")}
-          />
-        </div>
-
         <CheckRow label="Has Cookie" field="hasCookie" />
-        <CheckRow label="Has 2FA" field="hasTwoFactorKey" />
-        <CheckRow label="Has Registration Data" field="hasRegistrationData" />
-        <CheckRow
-          label="Marketplace Number Verified"
-          field="isMarketplaceNumberVerified"
+        <CheckRow label="Has Two Factor Key" field="hasTwoFactorKey" />
+
+        <PlatformDynamicFields
+          configuration={lookups.platformConfiguration}
+          values={formData.platformFields}
+          onChange={(updated) =>
+            setFormData((prev) => ({ ...prev, platformFields: updated }))
+          }
         />
-
-        {formData.isMarketplaceNumberVerified && (
-          <div className="um-form-group" style={{ marginTop: "1rem" }}>
-            <label className="um-label">
-              Marketplace number verfied country{" "}
-              <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              className="um-input"
-              type="text"
-              placeholder="e.g. Canada"
-              value={formData.marketplaceVerificationCountry}
-              onChange={set("marketplaceVerificationCountry")}
-            />
-          </div>
-        )}
-
         {/* ── Actions ── */}
         <div className="um-modal-actions" style={{ marginTop: "1.5rem" }}>
           <button

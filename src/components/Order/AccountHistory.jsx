@@ -10,6 +10,8 @@ import { FormatterHelper } from "../../helper/FormatterHelper";
 //Toaster
 import { successTaost, errorToast } from "../../helper/Toaster";
 
+import { DownloadPurchaseReceipt } from "../../helper/DownloadPurchaseReceipt";
+
 //Css
 import "./AccountHistory.css";
 
@@ -35,25 +37,11 @@ export default function AccountHistory() {
     const filtered = accountHistory.filter(
       (account) =>
         account.categoryName.toLowerCase().includes(keyword.toLowerCase()) ||
-        account.platformName.toLowerCase().includes(keyword.toLowerCase()) ||
-        account.gender.toLowerCase().includes(keyword.toLowerCase()) ||
-        account.registrationCountry
-          .toLowerCase()
-          .includes(keyword.toLowerCase()),
+        account.platformName.toLowerCase().includes(keyword.toLowerCase()),
     );
 
     setFilteredAccountHistory(filtered);
   }
-
-  const copyToClipboard = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      successTaost("Copied to clipboard");
-    } catch (err) {
-      errorToast("Failed to copy");
-      console.error("Copy failed", err);
-    }
-  };
 
   const stats = [
     {
@@ -105,10 +93,6 @@ export default function AccountHistory() {
                 "Account",
                 "Platform",
                 "Category",
-                "Registration country",
-                "Gender",
-                "Registration Method",
-                "Market place",
                 "Total Cost",
                 "Ordered At",
               ].map((h) => (
@@ -123,43 +107,24 @@ export default function AccountHistory() {
               <tr key={index} className="um-tr">
                 <td className="um-td">{index + 1}</td>
                 <td className="um-td">
-                  {account.accountsData.length > 0 ? (
+                  {account.accounts.length > 0 ? (
                     <div className="um-ellipsis-copy">
                       <span className="um-ellipsis-text">
-                        {account.accountsData.map((a) => a.userName).join(", ")}
+                        {account.accounts.map((a) => a.data).join(", ")}
                       </span>
                       <button
                         className="um-copy-btn"
-                        onClick={() =>
-                          copyToClipboard(
-                            account.accountsData
-                              .map((a) => a.userName)
-                              .join("\n"),
-                          )
-                        }
+                        onClick={() => DownloadPurchaseReceipt(account)}
                       >
-                        📋
+                        <i className="fa-solid fa-download"></i>
                       </button>
                     </div>
                   ) : (
                     "-"
                   )}
                 </td>
-
                 <td className="um-td">{account.platformName}</td>
                 <td className="um-td">{account.categoryName}</td>
-                <td className="um-td">{account.registrationCountry}</td>
-                <td className="um-td">{account.gender}</td>
-                <td className="um-td">
-                  {account.registrationMethod
-                    ? account.registrationMethod
-                    : "-"}
-                </td>
-                <td className="um-td">
-                  {account.marketPlaceVerficationCountry
-                    ? account.marketPlaceVerficationCountry
-                    : "-"}
-                </td>
                 <td className="um-td">
                   {FormatterHelper.formatCurrency(account.totalCost)}
                 </td>

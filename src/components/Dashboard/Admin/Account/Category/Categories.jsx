@@ -25,7 +25,7 @@ function CategoryModal({ onClose, onConfirm, isSubmitting, platforms }) {
   const [platform, setPlatform] = useState();
 
   return (
-    <div className="um-overlay" onClick={onClose}>
+    <div className="um-overlay">
       <div className="um-modal" onClick={(e) => e.stopPropagation()}>
         <button className="um-close-btn" onClick={onClose}>
           ✕
@@ -144,9 +144,7 @@ export default function Categories() {
         pageSize,
         platformId: platform,
       });
-
       responseMessage = response.message;
-
       if (!response.isSuccess) {
         errorToast(responseMessage);
       } else {
@@ -201,6 +199,7 @@ export default function Categories() {
     let responseMessage = response?.message;
     if (response.isSuccess) {
       successTaost(responseMessage);
+      console.log(response);
       setCategories((previous) => [response.data, ...previous]);
     } else {
       errorToast(responseMessage);
@@ -309,7 +308,7 @@ export default function Categories() {
                           ? r.description
                           : "-"}
                       </td>
-                      <td className="um-user-name">{r.platform}</td>
+                      <td className="um-user-name">{r.platformName}</td>
                       <td className="um-user-cell">
                         <div>
                           <div className="um-user-name">{r.createdByName}</div>

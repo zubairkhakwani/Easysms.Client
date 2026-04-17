@@ -9,7 +9,14 @@ export const getAllPlatforms = async ({ pageNo, pageSize }) => {
   const response = await httpClient.get(`/api/platforms?${queryParams}`);
   return response.data;
 };
-export const addNewPlatform = async (httpRequest) => {
-  const response = await httpClient.post(`/api/platforms`, httpRequest);
+export const upsertPlatform = async (httpRequest) => {
+  let id = httpRequest.id;
+  let url = "/api/platforms";
+
+  if (id) {
+    url += `/${id}/edit`;
+  }
+  const response = await httpClient.post(url, httpRequest);
+
   return response.data;
 };

@@ -15,7 +15,6 @@ export function AddAccountModal({
 }) {
   const [raw, setRaw] = useState("");
   const [records, setRecords] = useState([]);
-
   useEffect(() => {
     if (!raw.trim()) {
       setRecords([]);
@@ -29,21 +28,25 @@ export function AddAccountModal({
       const password = parts[1] || "";
 
       let idx = 2;
-      const twoFactorKey = accountConfig.hasTwoFa
-        ? (parts[idx++] ?? "")
-        : undefined;
-      const cookie = accountConfig.hasCookie ? (parts[idx++] ?? "") : undefined;
-      const registrationData = accountConfig.hasRegistrationData
-        ? (parts[idx++] ?? "")
-        : undefined;
 
-      const isValid = Boolean(username && password);
+      const cookie = accountConfig.hasCookie ? (parts[idx++] ?? "") : undefined;
+      const twoFactorKey = accountConfig.hasTwoFactorKey
+        ? (parts[idx++] ?? "")
+        : undefined;
+      const extraInfo = parts[idx++] ?? "";
+
+      const isValid =
+        Boolean(username) &&
+        Boolean(password) &&
+        (!accountConfig.hasCookie || Boolean(cookie)) &&
+        (!accountConfig.hasTwoFactorKey || Boolean(twoFactorKey));
+
       return {
         username,
         password,
         twoFactorKey,
         cookie,
-        registrationData,
+        extraInfo,
         isValid,
       };
     });
@@ -57,9 +60,9 @@ export function AddAccountModal({
   const formatHint = [
     "username",
     "password",
-    accountConfig.hasTwoFa && "2faKey",
     accountConfig.hasCookie && "cookie",
-    accountConfig.hasRegistrationData && "registrationData",
+    accountConfig.hasTwoFactorKey && "2faKey",
+    "extraInfo",
   ]
     .filter(Boolean)
     .join(" | ");
@@ -68,12 +71,16 @@ export function AddAccountModal({
   const columns = [
     { key: "username", label: "Username", always: true },
     { key: "password", label: "Password", always: true },
-    { key: "twoFactorKey", label: "2FA key", show: accountConfig.hasTwoFa },
     { key: "cookie", label: "Cookie", show: accountConfig.hasCookie },
     {
-      key: "registrationData",
-      label: "Reg. data",
-      show: accountConfig.hasRegistrationData,
+      key: "twoFactorKey",
+      label: "2FA key",
+      show: accountConfig.hasTwoFactorKey,
+    },
+    {
+      key: "extraInfo",
+      label: "Extra Info",
+      show: true,
     },
   ].filter((c) => c.always || c.show);
 
@@ -83,7 +90,7 @@ export function AddAccountModal({
   };
 
   return (
-    <div className="aam-overlay" onClick={() => onClose(modalKeys.newAccount)}>
+    <div className="aam-overlay">
       <div className="aam-modal" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="aam-header">
@@ -114,28 +121,27 @@ export function AddAccountModal({
             <span className="aam-badge aam-badge--required">
               password required
             </span>
-            {accountConfig.hasTwoFa && (
-              <span className="aam-badge aam-badge--allowed">
-                2faKey allowed
-              </span>
-            )}
             {accountConfig.hasCookie && (
-              <span className="aam-badge aam-badge--allowed">
-                cookie allowed
+              <span className="aam-badge aam-badge--required">
+                cookie required
               </span>
             )}
-            {accountConfig.hasRegistrationData && (
-              <span className="aam-badge aam-badge--allowed">
-                registrationData allowed
+            {accountConfig.hasTwoFactorKey && (
+              <span className="aam-badge aam-badge--required">
+                2faKey required
               </span>
             )}
+
+            <span className="aam-badge aam-badge--allowed">
+              extraInfo allowed
+            </span>
           </div>
 
           {/* Textarea */}
           <label className="aam-label">Paste records below</label>
           <textarea
             className="aam-textarea"
-            placeholder={`john_doe|pass123${accountConfig.hasTwoFa ? "|JBSWY3DP" : ""}${accountConfig.hasCookie ? "|eyJhb..." : ""}${accountConfig.hasRegistrationData ? "|{name:John}" : ""}\njane_smith|secret456`}
+            placeholder={`john_doe|pass123${accountConfig.hasTwoFactorKey ? "|JBSWY3DP" : ""}${accountConfig.hasCookie ? "|eyJhb..." : ""}${accountConfig.hasRegistrationData ? "|{name:John}" : ""}\njane_smith|secret456`}
             value={raw}
             onChange={(e) => setRaw(e.target.value)}
             rows={4}
@@ -186,7 +192,11 @@ export function AddAccountModal({
                       <td className="aam-td aam-td--num">{i + 1}</td>
                       {columns.map((col) => {
                         const val = rec[col.key];
-                        const missing = !val;
+                        const missing =
+                          val === undefined ||
+                          val === null ||
+                          val.toString().trim() === "";
+
                         return (
                           <td key={col.key} className="aam-td">
                             {missing ? (

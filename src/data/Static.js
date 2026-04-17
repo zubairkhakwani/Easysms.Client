@@ -130,4 +130,6 @@ export const modalKeys = {
   resultModal: "result-modal",
   changePassword: "change-password",
   changeEmail: "change-email",
+  upsertPlatform: "upsert-platform",
+  platformConfiguration: "platform-configuration",
 };

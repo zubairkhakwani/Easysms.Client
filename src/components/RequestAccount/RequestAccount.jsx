@@ -55,12 +55,7 @@ export default function RequestAccount() {
   const [patformCategories, setPlaformCategories] = useState([]);
   const [platform, setPlatform] = useState("0");
   const [category, setCategory] = useState("0");
-  const [filters, setFilters] = useState({
-    hasTwoFactorKey: false,
-    hasCookie: false,
-    hasRegistrationData: false,
-    isMarketPlaceVerified: false,
-  });
+
   const [viewMode, setViewMode] = useState("grid");
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -69,7 +64,15 @@ export default function RequestAccount() {
   const [buyingState, setBuyingState] = useState({});
 
   const handleQuantityChange = (id, val) => {
-    setQuantities((prev) => ({ ...prev, [id]: val }));
+    let account = accounts
+      .flatMap((acc) => acc.groups)
+      .find((group) => group.accountGroupId === id);
+    if (val > account.totalAvailable) {
+      //  /errorToast("Please enter valid quantity");
+      setQuantities((prev) => ({ ...prev, [id]: 1 }));
+    } else {
+      setQuantities((prev) => ({ ...prev, [id]: val }));
+    }
   };
 
   //Use Effects
@@ -83,7 +86,7 @@ export default function RequestAccount() {
 
   useEffect(() => {
     getAccountsData();
-  }, [platform, category, filters]);
+  }, [platform, category]);
 
   //Fetch Data From Api
   async function getPlatformData() {
@@ -137,8 +140,8 @@ export default function RequestAccount() {
       let response = await getAllAccounts({
         platformId: platform,
         categoryId: category,
-        filters,
       });
+
       if (!response.isSuccess) {
         errorToast(response.message);
       } else {
@@ -155,7 +158,8 @@ export default function RequestAccount() {
   async function handleBuyAccounts(request) {
     let responseMessage = "";
 
-    setBuyingState((prev) => ({ ...prev, [request.accountGroupId]: true }));
+    let accountGroupId = request.accountGroupId;
+    setBuyingState((prev) => ({ ...prev, [accountGroupId]: true }));
 
     try {
       let response = await buyNewAccount(request);
@@ -164,11 +168,32 @@ export default function RequestAccount() {
       if (response.isSuccess) {
         successTaost(responseMessage);
         balanceDebit(response.data?.totalCost ?? 0);
-        DownloadPurchaseReceipt(response.data ?? []);
+
+        const decrement = response.data.accounts.length;
+
+        setAccounts((prev) =>
+          prev.map((platform) => ({
+            ...platform,
+            groups: platform.groups.map((group) =>
+              group.accountGroupId === accountGroupId
+                ? {
+                    ...group,
+                    totalAvailable: Math.max(
+                      0,
+                      group.totalAvailable - decrement,
+                    ),
+                  }
+                : group,
+            ),
+          })),
+        );
+
+        DownloadPurchaseReceipt(response.data ?? [], true);
       } else {
         errorToast(responseMessage);
       }
-    } catch {
+    } catch (err) {
+      console.log(err);
       errorToast("Failed to buy account, please try later.");
     } finally {
       setBuyingState((prev) => ({
@@ -189,11 +214,6 @@ export default function RequestAccount() {
 
   function handleCategoryChange(categoryId) {
     setCategory(categoryId);
-  }
-
-  function handeFilterChange(key, value) {
-    const updatedFilters = { ...filters, [key]: value };
-    setFilters(updatedFilters);
   }
 
   function buildGroupText(length) {
@@ -269,46 +289,6 @@ export default function RequestAccount() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-        </div>
-        <div className="checkbox-filters">
-          <label className="checkbox-item">
-            <input
-              type="checkbox"
-              checked={filters.hasTwoFactorKey}
-              onChange={(e) =>
-                handeFilterChange("hasTwoFactorKey", e.target.checked)
-              }
-            />
-            2FA
-          </label>
-          <label className="checkbox-item">
-            <input
-              type="checkbox"
-              checked={filters.hasCookie}
-              onChange={(e) => handeFilterChange("hasCookie", e.target.checked)}
-            />
-            Cookie
-          </label>
-          <label className="checkbox-item">
-            <input
-              type="checkbox"
-              checked={filters.hasRegistrationData}
-              onChange={(e) =>
-                handeFilterChange("hasRegistrationData", e.target.checked)
-              }
-            />
-            Reg Data
-          </label>
-          <label className="checkbox-item">
-            <input
-              type="checkbox"
-              checked={filters.isMarketPlaceVerified}
-              onChange={(e) =>
-                handeFilterChange("isMarketPlaceVerified", e.target.checked)
-              }
-            />
-            Marketplace Verfied
-          </label>
         </div>
       </section>
 
@@ -395,7 +375,7 @@ function AccountCard({ account, quantity, onQuantityChange, OnBuy, isBuying }) {
       <p className="card-description">{account.description}</p>
 
       {/* Meta */}
-      <div className="card-meta">
+      {/* <div className="card-meta">
         <span className="meta-item">
           <i className="fa-solid fa-location-dot"></i>
           {account.registrationCountry}
@@ -409,32 +389,21 @@ function AccountCard({ account, quantity, onQuantityChange, OnBuy, isBuying }) {
         >
           {account.completionStatus}
         </span>
-      </div>
+      </div> */}
 
       {/* Feature Tags */}
-      <div className="feature-tags">
-        <span
-          className={`feature-tag ${account.features.hasTwoFactorKey ? "active" : "inactive"}`}
-        >
-          2FA
-        </span>
-        <span
-          className={`feature-tag ${account.features.hasCookie ? "active" : "inactive"}`}
-        >
-          Cookie
-        </span>
-
-        <span
-          className={`feature-tag ${account.features.hasRegistrationData ? "active" : "inactive"}`}
-        >
-          Reg Data
-        </span>
-        <span
-          className={`feature-tag ${account.features.isMarketPlaceVerified ? "active" : "inactive"}`}
-        >
-          Marketplace Verified
-        </span>
-      </div>
+      {account.features && (
+        <div className="feature-tags">
+          {Object.entries(account.features).map(([key, value]) => (
+            <span
+              key={key}
+              className={`feature-tag ${value ? "active" : "inactive"}`}
+            >
+              {key}
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Pricing */}
       <div className="pricing-section">
@@ -467,6 +436,7 @@ function AccountCard({ account, quantity, onQuantityChange, OnBuy, isBuying }) {
         <div className="quantity-selector">
           <button
             className="qty-btn"
+            value={quantity}
             onClick={() => onQuantityChange(quantity - 1)}
             disabled={outOfStock || isBuying || quantity <= 1}
           >

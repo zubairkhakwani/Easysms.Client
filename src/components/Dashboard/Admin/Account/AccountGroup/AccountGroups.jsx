@@ -37,9 +37,8 @@ export default function AccountGroups() {
   const [categories, setCategories] = useState([]);
   const [accountConfig, setAccountConfig] = useState({
     accountGroupId: undefined,
-    hasTwoFa: false,
     hasCookie: false,
-    hasRegistrationData: false,
+    hasTwoFactorKey: false,
   });
 
   //Http Response
@@ -114,11 +113,12 @@ export default function AccountGroups() {
       const responseMessage = response?.message || "Something went wrong";
       if (response?.isSuccess) {
         successTaost(responseMessage);
+        console.log(response.data);
         getAccountGroupsData((previous) => [response.data, ...previous]);
       } else {
         errorToast(responseMessage);
       }
-    } catch (error) {
+    } catch {
       errorToast("Failed to add account group. Please try again.");
     } finally {
       setIsAddingAccountGroup(false);
@@ -175,9 +175,13 @@ export default function AccountGroups() {
       (category) => category.platformId == platformId,
     );
 
+    const patformConfiguration =
+      lookups.platforms.find((plat) => plat.id == platformId)?.configuration ??
+      "";
     setLookups((previous) => ({
       ...previous,
       categories: platformCategories,
+      platformConfiguration: patformConfiguration,
     }));
   };
 
@@ -190,9 +194,8 @@ export default function AccountGroups() {
 
       let config = {
         accountGroupId: accountGroupId,
-        hasTwoFa: selectedAccountGroup?.hasTwoFactorKey,
+        hasTwoFactorKey: selectedAccountGroup?.hasTwoFactorKey,
         hasCookie: selectedAccountGroup?.hasCookie,
-        hasRegistrationData: selectedAccountGroup?.hasRegistrationData,
       };
 
       setAccountConfig(config);
@@ -202,6 +205,12 @@ export default function AccountGroups() {
   };
 
   const closeModal = (key) => {
+    if (key === modalKeys.newAccountGroup) {
+      setLookups((previous) => ({
+        ...previous,
+        platformConfiguration: "",
+      }));
+    }
     setModal((prev) => prev.filter((k) => k !== key));
   };
 
@@ -219,7 +228,7 @@ export default function AccountGroups() {
       {/* ── Table ── */}
       <div className="ph-table-panel">
         <div className="ph-table-header">
-          <span className="ph-table-title">Platform Categories</span>
+          <span className="ph-table-title">Account Groups</span>
         </div>
         {/* Table */}
         {!isLoading && (
@@ -230,20 +239,12 @@ export default function AccountGroups() {
                   <tr>
                     <th>#</th>
                     <th>Id</th>
-                    <th>Name</th>
                     <th>Platform</th>
                     <th>Category</th>
-                    <th>Gender</th>
-                    <th>Account Status</th>
-                    <th>Registration Country</th>
                     <th>Total Available</th>
                     <th>Unit Price</th>
-                    <th>Marketplace Number Verfied</th>
-                    <th>Marketplace Verification Country</th>
-                    <th>Registration Method</th>
-                    <th>Has Registration Data</th>
                     <th>Has Cookie</th>
-                    <th>Has 2FA Key</th>
+                    <th>Has Two Factor Key</th>
                     <th>Is Active</th>
                     <th>Admin</th>
                     <th>Created At</th>
@@ -256,29 +257,11 @@ export default function AccountGroups() {
                     <tr key={r.id}>
                       <td className="ph-col-id">{index + 1}</td>
                       <td className="ph-col-id">{r.id}</td>
-                      <td className="ph-col-id">{r.name}</td>
                       <td className="um-user-name">{r.platform}</td>
                       <td className="um-user-name">{r.category}</td>
-                      <td className="um-user-name">{r.gender}</td>
-                      <td className="um-user-name">{r.completionStatus}</td>
-                      <td className="um-user-name">{r.registrationCountry}</td>
                       <td className="um-user-name">{r.totalAvailable}</td>
                       <td className="um-user-name">
                         {FormatterHelper.formatCurrency(r.unitPrice)}
-                      </td>
-                      <td className="um-user-name">
-                        {r.isMarketplaceNumberVerified ? "true" : "false"}
-                      </td>
-                      <td className="um-user-name">
-                        {r.marketPlaceVerificationCountry
-                          ? r.marketPlaceVerificationCountry
-                          : "-"}
-                      </td>
-                      <td className="um-user-name">
-                        {r.registrationMethod ? r.registrationMethod : "-"}
-                      </td>
-                      <td className="um-user-name">
-                        {r.hasRegistrationData ? "true" : "false"}
                       </td>
                       <td className="um-user-name">
                         {r.hasCookie ? "true" : "false"}

@@ -6,14 +6,10 @@ export const addNewAccount = async (httpRequest) => {
   return response.data;
 };
 
-export const getAllAccounts = async ({ platformId, categoryId, filters }) => {
+export const getAllAccounts = async ({ platformId, categoryId }) => {
   const queryParams = new URLSearchParams({
     platformId: platformId,
     categoryId: categoryId,
-    hasTwoFactorKey: filters.hasTwoFactorKey,
-    hasCookie: filters.hasCookie,
-    hasRegistrationData: filters.hasRegistrationData,
-    isMarketPlaceVerified: filters.isMarketPlaceVerified,
   }).toString();
 
   const response = await httpClient.get(`/api/accounts?${queryParams}`);

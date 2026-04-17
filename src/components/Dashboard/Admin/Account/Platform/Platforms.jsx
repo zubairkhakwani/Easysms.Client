@@ -4,17 +4,25 @@ import { useEffect, useState } from "react";
 //Services
 import {
   getAllPlatforms,
-  addNewPlatform,
+  upsertPlatform,
 } from "../../../../../services/Platform/PlatformService";
+
+//Modals
+import UpsertPlatformModal from "../../../../Helper/Modals/Platform/UpsertPatformModal";
+import DynamicFormBuilder from "./DynamicFormBuilder";
+
+//Action DropDown
+import { PlatformActionDropDown } from "../../../../Helper/Modals/Platform/PlatformActionDropDown";
 
 //Helper
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
 import { successTaost, errorToast } from "../../../../../helper/Toaster";
 
+//Static Data
+import { modalKeys } from "../../../../../data/Static";
+
 //Paginations
 import Paginations from "../../../../Shared/Pagination";
-
-
 
 //Css
 import "./Platforms.css";
@@ -27,83 +35,6 @@ const twoDays = new Date(
   today.getDate() - 2,
 );
 
-function PlatformModal({ onClose, onConfirm, isSubmitting }) {
-  const [name, setName] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
-  const [description, setDescription] = useState("");
-
-  return (
-    <div className="um-overlay" onClick={onClose}>
-      <div className="um-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="um-close-btn" onClick={onClose}>
-          ✕
-        </button>
-        <div className="um-modal-title">Add New Platform</div>
-
-        <div className="um-form-group">
-          <label className="um-label">
-            Name <span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            className="um-input"
-            type="text"
-            placeholder="e.g. Facebook, Instagram..."
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        <div className="um-form-group">
-          <label className="um-label">
-            Logo Url <span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            className="um-input"
-            type="text"
-            placeholder="e.g. https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
-            value={logoUrl}
-            onChange={(e) => setLogoUrl(e.target.value)}
-          />
-        </div>
-
-        <div className="um-form-group">
-          <label className="um-label">
-            Description{" "}
-            <span style={{ color: "#aaa", fontWeight: 400 }}>(optional)</span>
-          </label>
-          <textarea
-            className="um-input"
-            placeholder="Short description of this platform..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-            style={{ resize: "vertical" }}
-          />
-        </div>
-
-        <div className="um-modal-actions">
-          <button className="um-btn ghost" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            className={`um-btn ${!isSubmitting ? "primary" : ""}`}
-            disabled={isSubmitting || !name.trim()}
-            onClick={() =>
-              onConfirm({
-                name: name.trim(),
-                description: description.trim(),
-                logoUrl: logoUrl.trim(),
-              })
-            }
-          >
-            {isSubmitting ? <div className="ph-spinner" /> : <span> Add</span>}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Platforms() {
   //Filtering
   const [startDate, setStartDate] = useState(toDS(twoDays));
@@ -115,7 +46,7 @@ export default function Platforms() {
   //Loading
   const [applied, setApplied] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAddingPlatform, setIsAddingPlatform] = useState(false);
+  const [isPlatformUpserting, setIsPlatformUpserting] = useState(false);
 
   //Pagination
   const [count, setCount] = useState(0);
@@ -123,7 +54,16 @@ export default function Platforms() {
   const [pageSize, setPageSize] = useState(10);
 
   //Modal
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState([]);
+
+  //Dynamic Form Builder
+  const [unSavedPlatformData, setUnSavedPlatformData] = useState({
+    id: undefined,
+    name: "",
+    logoUrl: "",
+    description: "",
+    configuration: "",
+  });
 
   //Use Effects
   useEffect(() => {
@@ -164,17 +104,34 @@ export default function Platforms() {
   };
 
   //Platorm
-  const handleAddPlatform = async (data) => {
-    setIsAddingPlatform(true);
-    let response = await addNewPlatform(data);
-    let responseMessage = response?.message;
-    if (response.isSuccess) {
-      successTaost(responseMessage);
-      setPlatforms((previous) => [response.data, ...previous]);
-    } else {
-      errorToast(responseMessage);
+  const handleAddPlatform = async (configuration, platformData) => {
+    platformData.configuration = configuration;
+
+    setIsPlatformUpserting(true);
+    try {
+      let response = await upsertPlatform(platformData);
+      let responseMessage = response.message;
+      let responseData = response.data;
+      if (response.isSuccess) {
+        successTaost(responseMessage);
+
+        if (platformData.id) {
+          setPlatforms((previous) =>
+            previous.map((platform) =>
+              platform.id === responseData.id ? responseData : platform,
+            ),
+          );
+        } else {
+          setPlatforms((previous) => [responseData, ...previous]);
+        }
+      } else {
+        errorToast(responseMessage);
+      }
+    } catch {
+      errorToast("Failed to perform operation, please try later.");
+    } finally {
+      setIsPlatformUpserting(false);
     }
-    setIsAddingPlatform(false);
   };
 
   //Handle Pagination
@@ -188,10 +145,31 @@ export default function Platforms() {
   };
 
   //Modal
-  const OpenPlatformModal = async () => {
-    setModal(true);
+  const handelOpenModal = async (key, id) => {
+    //update request
+    if (id) {
+      let platform = platforms.find((p) => p.id === id);
+      setUnSavedPlatformData(platform);
+    } else {
+      setUnSavedPlatformData({
+        name: "",
+        logoUrl: "",
+        description: "",
+        configuration: "",
+      });
+    }
+
+    setModal((prev) => [...prev, key]);
   };
-  const closePlatformModal = () => setModal(false);
+
+  const handleCloseModal = (key) => {
+    setModal((prev) => prev.filter((item) => item !== key));
+  };
+
+  const handelOpenPlatformConfigureModal = async (plaformData, key) => {
+    setUnSavedPlatformData(plaformData);
+    setModal((prev) => [...prev, key]);
+  };
 
   return (
     <div className="ph-page">
@@ -246,7 +224,10 @@ export default function Platforms() {
               "✦ Apply"
             )}
           </button>
-          <button className="ph-apply-btn" onClick={OpenPlatformModal}>
+          <button
+            className="ph-apply-btn"
+            onClick={() => handelOpenModal(modalKeys.upsertPlatform)}
+          >
             ✦ Add new
           </button>
         </div>
@@ -271,6 +252,7 @@ export default function Platforms() {
                     <th>Admin</th>
                     <th>Created At</th>
                     <th>Updated At</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -296,7 +278,16 @@ export default function Platforms() {
                         {FormatterHelper.formatDateToLocal(r.createdAt)}
                       </td>
                       <td className="ph-col-date">
-                        {FormatterHelper.formatDateToLocal(r.updatedAt)}
+                        {r.updatedAt
+                          ? FormatterHelper.formatDateToLocal(r.updatedAt)
+                          : "-"}
+                      </td>
+
+                      <td>
+                        <PlatformActionDropDown
+                          platformId={r.id}
+                          onAction={handelOpenModal}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -334,11 +325,20 @@ export default function Platforms() {
         )}
 
         {/* Modal */}
-        {modal && (
-          <PlatformModal
-            onClose={closePlatformModal}
-            onConfirm={handleAddPlatform}
-            isSubmitting={isAddingPlatform}
+        {modal.includes(modalKeys.upsertPlatform) && (
+          <UpsertPlatformModal
+            unSavedData={unSavedPlatformData}
+            onClose={handleCloseModal}
+            onConfirm={handelOpenPlatformConfigureModal}
+          />
+        )}
+        {/* Dynamic Form Builder */}
+        {modal.includes(modalKeys.platformConfiguration) && (
+          <DynamicFormBuilder
+            isUpserting={isPlatformUpserting}
+            unSavedData={unSavedPlatformData}
+            onClose={handleCloseModal}
+            onSave={handleAddPlatform}
           />
         )}
       </div>
