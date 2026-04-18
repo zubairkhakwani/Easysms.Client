@@ -13,7 +13,7 @@ const PrivateRoute = ({ requireAdmin = false }) => {
   }
 
   if (requireAdmin && !isAdmin) {
-    return <Navigate to="/login" />;
+    return <Navigate to="*" />;
   }
 
   return <Outlet />;

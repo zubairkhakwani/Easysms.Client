@@ -34,7 +34,7 @@ export const isAdminUser = () => {
 
   try {
     const decoded = jwtDecode(token);
-    return decoded.role === "Admin";
+    return decoded.role === "Easyotps_Admin_99";
   } catch {
     return false;
   }
