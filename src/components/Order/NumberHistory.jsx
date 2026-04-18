@@ -134,7 +134,7 @@ export default function NumberHistory() {
               <tr key={index} className="um-tr">
                 <td className="um-td">{index + 1}</td>
                 <td className="um-td">
-                  {number.number.phoneNumbers.length > 0 ? (
+                  {number.orderData.phoneNumbers.length > 0 ? (
                     <div className="um-ellipsis-copy">
                       <span className="um-ellipsis-text">
                         {number.orderData.phoneNumbers.join(", ")}

@@ -80,31 +80,25 @@ createRoot(document.getElementById("root")).render(
                 />
 
                 {/* Admin Layout */}
-                <Route element={<AdminLayout />}>
-                  <Route element={<PrivateRoute requireAdmin={true} />}>
-                    <Route path="admin-dashboard" element={<AdminDashobard />}>
-                      <Route path="overview" element={<Overview />} />
-                      <Route path="deposits" element={<Deposits />} />
-                      <Route
-                        path="physical-number"
-                        element={<AddPhysicalNumber />}
-                      />
-                      <Route path="manage-user" element={<UserManagement />} />
-                      <Route
-                        path="active-numbers"
-                        element={<ActiveNumbers />}
-                      />
-                      <Route path="platforms" element={<Platforms />} />
-                      <Route path="categories" element={<Categories />} />
-                      <Route
-                        path="account-groups"
-                        element={<AccountGroups />}
-                      />
-                      <Route
-                        path="provider-history"
-                        element={<ProviderHistory />}
-                      />
-                    </Route>
+              </Route>
+              <Route element={<AdminLayout />}>
+                <Route element={<PrivateRoute requireAdmin={true} />}>
+                  <Route path="admin-dashboard" element={<AdminDashobard />}>
+                    <Route path="overview" element={<Overview />} />
+                    <Route path="deposits" element={<Deposits />} />
+                    <Route
+                      path="physical-number"
+                      element={<AddPhysicalNumber />}
+                    />
+                    <Route path="manage-user" element={<UserManagement />} />
+                    <Route path="active-numbers" element={<ActiveNumbers />} />
+                    <Route path="platforms" element={<Platforms />} />
+                    <Route path="categories" element={<Categories />} />
+                    <Route path="account-groups" element={<AccountGroups />} />
+                    <Route
+                      path="provider-history"
+                      element={<ProviderHistory />}
+                    />
                   </Route>
                 </Route>
               </Route>

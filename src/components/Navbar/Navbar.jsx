@@ -137,10 +137,10 @@ export default function Navbar() {
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Number History
                   </Link>
-                  <Link className="nav-dropdown-item" to="/history/account">
+                  {/* <Link className="nav-dropdown-item" to="/history/account">
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Account History
-                  </Link>
+                  </Link> */}
 
                   <span
                     className="nav-dropdown-item"
