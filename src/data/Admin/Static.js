@@ -56,12 +56,12 @@ export const navItems = [
         id: "getNumber",
         url: "/get-number",
       },
-      {
-        icon: "⊞",
-        label: "Buy Account",
-        id: "getAccount",
-        url: "/get-account",
-      },
+      // {
+      //   icon: "⊞",
+      //   label: "Buy Account",
+      //   id: "getAccount",
+      //   url: "/get-account",
+      // },
     ],
   },
   {

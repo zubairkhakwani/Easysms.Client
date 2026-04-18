@@ -4,9 +4,9 @@ import { useState } from "react";
 import StrengthBar from "../../Auth/StrengthBar";
 
 //Css
-import "./ResetPasswordModal.css";
+import "./ChangePasswordModal.css";
 
-function ResetPasswordModal({ isLoading, onClose, onConfirm }) {
+function ChangePasswordModal({ isLoading, onClose, onConfirm }) {
   const [fields, setFields] = useState({
     currentPassword: "",
     newPassword: "",
@@ -90,7 +90,7 @@ function ResetPasswordModal({ isLoading, onClose, onConfirm }) {
         </button>
 
         <div className="rp-header">
-          <div className="rp-title">🔐 Reset Password</div>
+          <div className="rp-title">🔐 Change Password</div>
         </div>
 
         {inputFields.map(({ key, label, placeholder }) => (
@@ -154,7 +154,7 @@ function ResetPasswordModal({ isLoading, onClose, onConfirm }) {
             disabled={isLoading}
             onClick={handleSubmit}
           >
-            {isLoading ? <div className="rp-spinner" /> : "Update Password"}
+            {isLoading ? <div className="rp-spinner" /> : "Change Password"}
           </button>
         </div>
       </div>
@@ -162,4 +162,4 @@ function ResetPasswordModal({ isLoading, onClose, onConfirm }) {
   );
 }
 
-export default ResetPasswordModal;
+export default ChangePasswordModal;

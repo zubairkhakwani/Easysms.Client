@@ -21,7 +21,7 @@ import { modalKeys } from "../../data/Static";
 import { UserBadgeSkeleton } from "../Skeltons/User/UserBadge";
 
 //Modals
-import ResetPasswordModal from "../Helper/Modals/Auth/ResetPasswordModal";
+import ChangePasswordModal from "../Helper/Modals/Auth/ChangePasswordModal";
 
 //Css
 import "./Navbar.css";
@@ -232,19 +232,19 @@ export default function Navbar() {
               </span>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/get-account">
               <span className="cyan" onClick={() => handleNavClick()}>
                 Buy account
               </span>
             </Link>
-          </li>
+          </li> */}
         </ul>
         <div className="nav-auth">{authButtons}</div>
       </nav>
 
       {modal === modalKeys.changePassword && (
-        <ResetPasswordModal
+        <ChangePasswordModal
           onClose={handleCloseModal}
           isLoading={isPasswordChanging}
           onConfirm={handlePasswordChange}
