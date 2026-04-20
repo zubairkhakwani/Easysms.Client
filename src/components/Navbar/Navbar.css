@@ -323,12 +323,16 @@
   font-size: 1.4rem;
   color: var(--accent);
 }
+.nav-links,
+.nav-auth,
+.hamburger .bar {
+  will-change: transform, opacity;
+}
 
 /* ── Mobile: hide by default ── */
 @media (max-width: 679px) {
   .nav-links,
   .nav-auth {
-    overflow: hidden;
     max-height: 0;
     opacity: 0;
     margin: 0;
@@ -389,22 +393,17 @@
     transform: none;
     transition-delay: 0.37s;
   }
-
-  .nav.open .nav-links li:nth-child(7) {
-    opacity: 1;
-    transform: none;
-    transition-delay: 0.43s;
-  }
   .nav-auth {
     opacity: 0;
     transform: translateY(14px);
     transition:
-      opacity 0.3s ease 0.4s,
-      transform 0.3s ease 0.4s;
+      opacity 0.3s ease,
+      transform 0.3s ease;
   }
   .nav.open .nav-auth {
     opacity: 1;
     transform: translateY(0);
+    transition-delay: 0.43s;
   }
 }
 

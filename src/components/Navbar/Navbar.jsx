@@ -31,6 +31,7 @@ export default function Navbar() {
   var location = useLocation();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [actionOpen, setActionOpen] = useState(false);
   const [modal, setModal] = useState("");
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
 
@@ -71,6 +72,7 @@ export default function Navbar() {
 
   const handleNavClick = (sectionId = null) => {
     setMenuOpen(false);
+    setActionOpen(false);
 
     if (sectionId) {
       // If we're not on home page, navigate there first then scroll
@@ -111,7 +113,7 @@ export default function Navbar() {
           <div className="nav-user-wrapper">
             <div
               className="nav-user-badge"
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={() => setActionOpen((prev) => !prev)}
             >
               <div className="nav-user-avatar">{currentUser.avatar}</div>
               <div className="nav-user-info">
@@ -121,17 +123,17 @@ export default function Navbar() {
                 </span>
               </div>
               <div className="nav-user-divider" />
-              <span className={`nav-user-arrow ${menuOpen ? "open" : ""}`}>
+              <span className={`nav-user-arrow ${actionOpen ? "open" : ""}`}>
                 ▾
               </span>
             </div>
 
-            {menuOpen && (
+            {actionOpen && (
               <>
-                <div
+                {/* <div
                   className="nav-dropdown-overlay"
-                  onClick={() => setMenuOpen(false)}
-                />
+                  // onClick={() => setActionOpen(false)}
+                /> */}
                 <div className="nav-dropdown">
                   <Link className="nav-dropdown-item" to="/history/number">
                     <i className="fa-solid fa-clock-rotate-left"></i>
