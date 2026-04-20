@@ -137,7 +137,7 @@ export default function Navbar() {
                 <div className="nav-dropdown">
                   <Link className="nav-dropdown-item" to="/history/number">
                     <i className="fa-solid fa-clock-rotate-left"></i>
-                    Number History
+                    <span onClick={() => handleNavClick()}>Number History</span>
                   </Link>
                   {/* <Link className="nav-dropdown-item" to="/history/account">
                     <i className="fa-solid fa-clock-rotate-left"></i>
