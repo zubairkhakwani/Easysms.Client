@@ -71,8 +71,8 @@ export default function Navbar() {
   }
 
   const handleNavClick = (sectionId = null) => {
-    setMenuOpen(false);
     setActionOpen(false);
+    setMenuOpen(false);
 
     if (sectionId) {
       // If we're not on home page, navigate there first then scroll
@@ -91,6 +91,11 @@ export default function Navbar() {
           ?.scrollIntoView({ behavior: "smooth" });
       }
     }
+  };
+
+  const handleHamburgerClick = () => {
+    setActionOpen(false);
+    setMenuOpen((prev) => !prev);
   };
 
   if (!isAuth) {
@@ -198,7 +203,7 @@ export default function Navbar() {
 
           <div
             className={`hamburger${menuOpen ? " open" : ""}`}
-            onClick={() => setMenuOpen((o) => !o)}
+            onClick={() => handleHamburgerClick()}
             aria-label="Toggle menu"
           >
             <span className="bar" />
