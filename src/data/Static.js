@@ -205,4 +205,5 @@ export const modalKeys = {
   changeEmail: "change-email",
   upsertPlatform: "upsert-platform",
   platformConfiguration: "platform-configuration",
+  contactUsMessage: "contact-us-message",
 };

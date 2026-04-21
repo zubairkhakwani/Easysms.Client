@@ -7,7 +7,7 @@ export const getProviders = async () => {
 
 export const getProvidersInfo = async () => {
   const response = await httpClient.get("/api/providers/info");
-  return response.data.data;
+  return response.data;
 };
 
 export const getProvidersHistory = async ({

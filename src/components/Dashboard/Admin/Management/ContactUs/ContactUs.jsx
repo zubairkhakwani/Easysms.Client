@@ -2,13 +2,20 @@
 import { useEffect, useState } from "react";
 
 //Services
-import { getAllContactUs } from "../../../../../services/ContactUs/ContactUsService";
+import {
+  getAllContactUs,
+  toggleContactUsMessage,
+} from "../../../../../services/ContactUs/ContactUsService";
+
+import { ActionDropdown } from "../../../../Helper/ContactUs/DropDown/ActionDropDown";
+import ToggleMessageReadModal from "../../../../Helper/ContactUs/Modal/ToggleMessageReadModal";
 
 //Helper
-import { errorToast } from "../../../../../helper/Toaster";
-
+import { errorToast, successTaost } from "../../../../../helper/Toaster";
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
+import { modalKeys } from "../../../../../data/Static";
 
+//Paginations
 import Paginations from "../../../../Shared/Pagination";
 
 //Css
@@ -17,9 +24,12 @@ import "./ContactUs.css";
 export default function ContactUs() {
   //Data
   const [contactUs, setContactUs] = useState([]);
+  const [message, setMessage] = useState({ id: "", isRead: false });
+  const [modal, setModal] = useState();
 
   //Loading
   const [isLoading, setIsLoading] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
 
   //Pagination
   const [count, setCount] = useState(0);
@@ -55,6 +65,52 @@ export default function ContactUs() {
     setPageNo(0);
   };
 
+  async function handleToggleContactUs() {
+    setIsToggling(true);
+    try {
+      let response = await toggleContactUsMessage(message.id);
+
+      if (response.isSuccess) {
+        const responseData = response.data;
+        setContactUs((previous) =>
+          previous.map((item) =>
+            item.id === message.id
+              ? {
+                  ...item,
+                  isRead: responseData.isRead,
+                  readyByName: responseData.readyByName,
+                  readyByEmail: responseData.readyByEmail,
+                  readtAt: responseData.readAt,
+                }
+              : item,
+          ),
+        );
+
+        successTaost(response.message);
+        setModal();
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to perform action");
+    } finally {
+      setIsToggling(false);
+    }
+  }
+
+  const openModal = (key, contactUsId) => {
+    let messageObj = contactUs.find((obj) => obj.id === contactUsId);
+
+    setMessage({
+      id: contactUsId,
+      isRead: messageObj.isRead,
+    });
+
+    setModal(key);
+  };
+
+  const closeModal = () => setModal();
+
   return (
     <div className="ph-page">
       {/* ── Table ── */}
@@ -80,6 +136,7 @@ export default function ContactUs() {
                     <th>Read By</th>
                     <th>Created At</th>
                     <th>Read At</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,6 +175,14 @@ export default function ContactUs() {
                           ? FormatterHelper.formatDateToLocal(r.date)
                           : "-"}
                       </td>
+
+                      <td>
+                        <ActionDropdown
+                          contactUsId={r.id}
+                          onAction={openModal}
+                          isRead={r.isRead}
+                        />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -152,6 +217,15 @@ export default function ContactUs() {
           />
         )}
       </div>
+
+      {modal === modalKeys.contactUsMessage && (
+        <ToggleMessageReadModal
+          isRead={message.isRead}
+          isLoading={isToggling}
+          onClose={closeModal}
+          onConfirm={handleToggleContactUs}
+        />
+      )}
     </div>
   );
 }

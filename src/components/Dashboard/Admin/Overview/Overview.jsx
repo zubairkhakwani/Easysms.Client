@@ -64,9 +64,8 @@ export default function Overview() {
 
   async function getProvidersData() {
     let response = await getProvidersInfo();
-
     if (response?.isSuccess) {
-      setBalances(response.info);
+      setBalances(response.data.info);
     }
   }
 

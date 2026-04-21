@@ -9,3 +9,8 @@ export const getAllContactUs = async () => {
   const response = await httpClient.get(`/api/contactus`);
   return response.data;
 };
+
+export const toggleContactUsMessage = async (id) => {
+  const response = await httpClient.put(`/api/contactus/${id}/toggle-read`);
+  return response.data;
+};
