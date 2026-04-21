@@ -554,3 +554,69 @@
   color: var(--text-dim);
   word-break: break-all;
 }
+
+/* ─── Stats Sections (System vs Page) ───────────────────── */
+
+.um-stats-section {
+  margin-bottom: 28px;
+}
+
+.um-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.um-section-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.um-section-sub {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Improve layout responsiveness */
+
+.um-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+/* System Overview accent */
+
+.um-stat-card.system {
+  border-left: 3px solid #3b82f6;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.05),
+    rgba(59, 130, 246, 0.01)
+  );
+}
+
+/* Current Page accent */
+
+.um-stat-card.page {
+  border-left: 3px solid #10b981;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.05),
+    rgba(16, 185, 129, 0.01)
+  );
+}
+
+/* Optional subtle hover */
+
+.um-stat-card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.15s ease;
+}

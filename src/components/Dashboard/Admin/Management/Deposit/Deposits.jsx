@@ -10,6 +10,8 @@ import { errorToast } from "../../../../../helper/Toaster";
 //Helper
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
 
+import Paginations from "../../../../Shared/Pagination";
+
 //Css
 import "./Deposits.css";
 
@@ -26,6 +28,9 @@ export default function Deposits() {
   const [endDate, setEndDate] = useState(toDS(today));
   const [deposits, setDeposits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [count, setCount] = useState(0);
+  const [pageNo, setPageNo] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   async function getDepositsData() {
     setIsLoading(true);
@@ -33,13 +38,18 @@ export default function Deposits() {
       let response = await getDeposts({
         startDate,
         endDate,
+        pageNo,
+        pageSize,
       });
       var responseMessage = response.message;
-      if (!response.isSuccess) {
+      if (response.isSuccess) {
+        setDeposits(response.data.items ?? []);
+        setCount(response.data.count);
+      } else {
         errorToast(responseMessage);
       }
-
-      setDeposits(response.data);
+    } catch {
+      errorToast("Failed to fetch deposits");
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +57,7 @@ export default function Deposits() {
 
   useEffect(() => {
     getDepositsData();
-  }, []);
+  }, [pageNo, pageSize]);
 
   const handleApply = async () => {
     await getDepositsData();
@@ -56,6 +66,15 @@ export default function Deposits() {
   const handleReset = async () => {
     setStartDate(toDS(twoWeeks));
     setEndDate(toDS(today));
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPageNo(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNo(0);
   };
 
   return (
@@ -182,6 +201,15 @@ export default function Deposits() {
               No records found for the selected filters
             </span>
           </div>
+        )}
+        {!isLoading && (
+          <Paginations
+            page={pageNo}
+            rowsPerPage={pageSize}
+            count={count}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+          />
         )}
       </div>
     </div>

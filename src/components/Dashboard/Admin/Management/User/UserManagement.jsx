@@ -13,6 +13,8 @@ import { getAll, topUpBalance } from "../../../../../services/User/UserService";
 //Helper
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
 
+import Paginations from "../../../../Shared/Pagination";
+
 //Css
 import "./UserManagement.css";
 
@@ -126,24 +128,44 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
 
 export default function UserManagement() {
   const { currentUser, balanceCredit } = useContext(AuthContext);
-
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [systemStats, setSystemStats] = useState({
+    totalUsers: 0,
+    totalActive: 0,
+    totalInActive: 0,
+    totalBalance: 0,
+  });
   const [modal, setModal] = useState(null);
   const [isTopup, setIsTopUp] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [count, setCount] = useState(0);
+  const [pageNo, setPageNo] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
+      setIsLoading(true);
       try {
-        const res = await getAll();
-        setUsers(res.data);
-        setFilteredUsers(res.data);
-      } catch (error) {
-        console.error("Failed to fetch recent numbers:", error);
+        const res = await getAll({ pageNo, pageSize });
+        let responseData = res.data;
+        setUsers(responseData.users.items ?? []);
+        setFilteredUsers(responseData.users.items ?? []);
+        setCount(responseData.users.count ?? 0);
+        setSystemStats({
+          totalUsers: responseData.totalUsers,
+          totalActive: responseData.totalActive,
+          totalInActive: responseData.totalInActive,
+          totalBalance: responseData.totalBalance,
+        });
+      } catch {
+        errorToast("Failed to fetch recent numbers");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchAllUsers();
-  }, []);
+  }, [pageNo, pageSize]);
 
   function handleSearch(keyword) {
     let filteredUsers = users.filter(
@@ -188,14 +210,45 @@ export default function UserManagement() {
     }
   };
 
-  const stats = [
-    { label: "Total Users", val: users.length },
-    { label: "Active", val: users.filter((u) => u.isActive).length },
-    { label: "In-Active", val: users.filter((u) => !u.isActive).length },
+  const handleChangePage = (event, newPage) => {
+    setPageNo(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNo(0);
+  };
+
+  const systemOverviewStats = [
+    { label: "Total Users", val: systemStats.totalUsers },
+
+    { label: "Active Users", val: systemStats.totalActive },
+
+    { label: "Inactive Users", val: systemStats.totalInActive },
+
     {
       label: "Total Balance",
+      val: FormatterHelper.formatCurrency(systemStats.totalBalance),
+    },
+  ];
+
+  const currentPageStats = [
+    { label: "Users on Page", val: filteredUsers.length },
+
+    {
+      label: "Active on Page",
+      val: filteredUsers.filter((u) => u.isActive).length,
+    },
+
+    {
+      label: "Inactive on Page",
+      val: filteredUsers.filter((u) => !u.isActive).length,
+    },
+
+    {
+      label: "Page Balance",
       val: FormatterHelper.formatCurrency(
-        users.reduce((s, u) => s + u.balance, 0),
+        filteredUsers.reduce((s, u) => s + u.balance, 0),
       ),
     },
   ];
@@ -211,13 +264,44 @@ export default function UserManagement() {
         </div>
       </div>
 
-      <div className="um-stats-row">
-        {stats.map((s) => (
-          <div key={s.label} className="um-stat-card">
-            <div className="um-stat-val">{s.val}</div>
-            <div className="um-stat-label">{s.label}</div>
-          </div>
-        ))}
+      {/* SYSTEM OVERVIEW */}
+
+      <div className="um-stats-section">
+        <div className="um-section-header">
+          <div className="um-section-title">📊 System Overview</div>
+
+          <div className="um-section-sub">Overall platform statistics</div>
+        </div>
+
+        <div className="um-stats-row">
+          {systemOverviewStats.map((s) => (
+            <div key={s.label} className="um-stat-card system">
+              <div className="um-stat-val">{s.val}</div>
+
+              <div className="um-stat-label">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CURRENT PAGE */}
+
+      <div className="um-stats-section">
+        <div className="um-section-header">
+          <div className="um-section-title">📄 Current Page</div>
+
+          <div className="um-section-sub">Filtered / paginated results</div>
+        </div>
+
+        <div className="um-stats-row">
+          {currentPageStats.map((s) => (
+            <div key={s.label} className="um-stat-card page">
+              <div className="um-stat-val">{s.val}</div>
+
+              <div className="um-stat-label">{s.label}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="um-table-wrap">
@@ -229,73 +313,99 @@ export default function UserManagement() {
             onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
-
-        <table className="um-table">
-          <thead>
-            <tr>
-              {[
-                "User",
-                "Phone Number",
-                "Role",
-                "Balance",
-                "Status",
-                "Joined",
-                "Actions",
-              ].map((h) => (
-                <th key={h} className="um-th">
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id} className="um-tr">
-                <td className="um-td">
-                  <div className="um-user-cell">
-                    <div className="um-avatar">{user.avatar}</div>
-                    <div>
-                      <div className="um-user-name">{user.name}</div>
-                      <div className="um-user-email">{user.email}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="um-td">
-                  <span className="um-user-name">
-                    {user.phoneNumber
-                      ? FormatterHelper.formatPhoneNumber(user.phoneNumber)
-                      : "-"}
-                  </span>
-                </td>
-                <td className="um-td">
-                  <span className={`um-role-badge ${user.role.toLowerCase()}`}>
-                    {user.role}
-                  </span>
-                </td>
-
-                <td className="um-td">
-                  <span className="um-balance">
-                    {FormatterHelper.formatCurrency(user.balance)}
-                  </span>
-                </td>
-                <td className="um-td">
-                  <span
-                    className={`um-status-badge ${user.isActive ? "active" : "inactive"}`}
-                  >
-                    {user.isActive ? "Active" : "Inactive"}
-                  </span>
-                </td>
-                <td className="um-td um-joined">{user.joinedAt}</td>
-                <td className="um-td">
-                  <ActionDropdown user={user} onAction={openModal} />
-                </td>
+        {!isLoading && (
+          <table className="um-table">
+            <thead>
+              <tr>
+                {[
+                  "User",
+                  "Phone Number",
+                  "Role",
+                  "Balance",
+                  "Status",
+                  "Joined",
+                  "Actions",
+                ].map((h) => (
+                  <th key={h} className="um-th">
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredUsers.map((user) => (
+                <tr key={user.id} className="um-tr">
+                  <td className="um-td">
+                    <div className="um-user-cell">
+                      <div className="um-avatar">{user.avatar}</div>
+                      <div>
+                        <div className="um-user-name">{user.name}</div>
+                        <div className="um-user-email">{user.email}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="um-td">
+                    <span className="um-user-name">
+                      {user.phoneNumber
+                        ? FormatterHelper.formatPhoneNumber(user.phoneNumber)
+                        : "-"}
+                    </span>
+                  </td>
+                  <td className="um-td">
+                    <span
+                      className={`um-role-badge ${user.role.toLowerCase()}`}
+                    >
+                      {user.role}
+                    </span>
+                  </td>
 
-        {filteredUsers.length === 0 && (
-          <div className="um-empty">No users found.</div>
+                  <td className="um-td">
+                    <span className="um-balance">
+                      {FormatterHelper.formatCurrency(user.balance)}
+                    </span>
+                  </td>
+                  <td className="um-td">
+                    <span
+                      className={`um-status-badge ${user.isActive ? "active" : "inactive"}`}
+                    >
+                      {user.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+                  <td className="um-td um-joined">
+                    {FormatterHelper.formatDateToLocal(user.joinedAt)}
+                  </td>
+                  <td className="um-td">
+                    <ActionDropdown user={user} onAction={openModal} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {/* Loading */}
+        {isLoading && (
+          <div className="ph-state-row">
+            <div className="ph-spinner" />
+            <span className="ph-state-text">Fetching records…</span>
+          </div>
+        )}
+
+        {/* Empty result */}
+        {!isLoading && filteredUsers.length === 0 && (
+          <div className="ph-state-row">
+            <div className="ph-state-icon">⊟</div>
+            <span className="ph-state-text">No users found</span>
+          </div>
+        )}
+        {!isLoading && (
+          <Paginations
+            page={pageNo}
+            rowsPerPage={pageSize}
+            count={count}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+          />
         )}
       </div>
       {modal?.type === "topup" && (

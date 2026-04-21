@@ -5,8 +5,10 @@ export const getCurrentUser = async () => {
   return response.data;
 };
 
-export const getAll = async () => {
-  const response = await httpClient.get(`/api/users`);
+export const getAll = async (httpRequest) => {
+  const response = await httpClient.get(
+    `/api/users?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}`,
+  );
   return response.data;
 };
 
@@ -17,7 +19,7 @@ export const topUpBalance = async (userId, amount) => {
 
 export const getDeposts = async (httpRequest) => {
   const response = await httpClient.post(
-    `/api/users/deposits?startDate=${httpRequest.startDate}&endDate=${httpRequest.endDate}`,
+    `/api/users/deposits?startDate=${httpRequest.startDate}&endDate=${httpRequest.endDate}&pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}`,
   );
   return response.data;
 };
