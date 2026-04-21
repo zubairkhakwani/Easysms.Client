@@ -123,6 +123,79 @@ export const verificationPurpose = {
   forgotPassword: "1",
 };
 
+export const ContactUsSubjects = [
+  {
+    value: 1,
+    key: "GeneralInquiry",
+    label: "General Inquiry",
+    code: "General",
+    category: "Support",
+  },
+  {
+    value: 2,
+    key: "TechnicalSupport",
+    label: "Technical Support",
+    code: "Technical",
+    category: "Support",
+  },
+  {
+    value: 3,
+    key: "BillingIssue",
+    label: "Billing Issue",
+    code: "Billing",
+    category: "Finance",
+  },
+  {
+    value: 4,
+    key: "RefundIssue",
+    label: "Refund Request",
+    code: "Refund",
+    category: "Finance",
+  },
+  {
+    value: 5,
+    key: "AccountAccessProblem",
+    label: "Account Access Problem",
+    code: "Account",
+    category: "Support",
+  },
+  {
+    value: 6,
+    key: "FeatureRequest",
+    label: "Feature Request",
+    code: "Feature",
+    category: "Product",
+  },
+  {
+    value: 7,
+    key: "BugReport",
+    label: "Bug Report",
+    code: "Bug",
+    category: "Engineering",
+  },
+  {
+    value: 8,
+    key: "PartnershipOrBusiness",
+    label: "Partnership or Business",
+    code: "Business",
+    category: "Sales",
+  },
+  {
+    value: 9,
+    key: "FeedbackOrSuggestion",
+    label: "Feedback or Suggestion",
+    code: "Feedback",
+    category: "Product",
+  },
+  {
+    value: 10,
+    key: "Other",
+    label: "Other",
+    code: "Other",
+    category: "Support",
+  },
+];
+
 export const modalKeys = {
   all: "all",
   newAccountGroup: "account-group",

@@ -6,6 +6,12 @@ import { navItems } from "../../../../data/Admin/Static";
 
 //Css
 import "./Sidebar.css";
+import { getRolePermissions } from "../../../../services/Auth/AuthService";
+
+const hasPermission = (permission) => {
+  const rolePermissions = getRolePermissions();
+  return rolePermissions.includes(permission);
+};
 
 export default function Sidebar({
   activePage,
@@ -35,26 +41,42 @@ export default function Sidebar({
       </div>
       {/* Navigation */}
       <nav className="sidebar-nav">
-        {navItems.map((section) => (
-          <div key={section.section}>
-            <p className="nav-section-label">{section.section}</p>
-            {section.items.map((item) => (
-              <Link key={item.id} to={item.url}>
-                <span
-                  key={item.id}
-                  className={`nav-item ${activePage === item.id ? "active" : ""}`}
-                  onClick={() => setActivePage(item.id)}
-                >
-                  <span className="nav-item-icon">{item.icon}</span>
-                  {item.label}
-                  {item.badge && (
-                    <span className="nav-item-badge">{item.badge}</span>
-                  )}
-                </span>
-              </Link>
-            ))}
-          </div>
-        ))}
+        {navItems.map((section) => {
+          // Get items the user can see
+          const visibleItems = section.items.filter(
+            (item) => !item.permission || hasPermission(item.permission),
+          );
+
+          // If no items are visible → don't show section
+          if (visibleItems.length === 0) {
+            return null;
+          }
+
+          return (
+            <div key={section.section}>
+              <p className="nav-section-label">{section.section}</p>
+
+              {visibleItems.map((item) => (
+                <Link key={item.id} to={item.url}>
+                  <span
+                    className={`nav-item ${
+                      activePage === item.id ? "active" : ""
+                    }`}
+                    onClick={() => setActivePage(item.id)}
+                  >
+                    <span className="nav-item-icon">{item.icon}</span>
+
+                    {item.label}
+
+                    {item.badge && (
+                      <span className="nav-item-badge">{item.badge}</span>
+                    )}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          );
+        })}
       </nav>
 
       {/* User */}

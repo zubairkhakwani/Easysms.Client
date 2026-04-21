@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 //Toaster
 import { ToastContainer } from "react-toastify";
 
+import { Permissions } from "./data/Admin/Static.js";
+
 //Layouts
 import UserLayout from "./components/Layout/UserLayout.jsx";
 import AdminLayout from "./components/Layout/AdminLayout.jsx";
@@ -33,6 +35,7 @@ import AddPhysicalNumber from "./components/Dashboard/Admin/Management/Provider/
 import ProviderHistory from "./components/Dashboard/Admin/Provider/ProviderHistory.jsx";
 import ActiveNumbers from "./components/Dashboard/Admin/Provider/ActiveNumbers.jsx";
 import Deposits from "./components/Dashboard/Admin/Management/Deposit/Deposits.jsx";
+import ContactUs from "./components/Dashboard/Admin/Management/ContactUs/ContactUs.jsx";
 import Platforms from "./components/Dashboard/Admin/Account/Platform/Platforms.jsx";
 import Categories from "./components/Dashboard/Admin/Account/Category/Categories.jsx";
 import AccountGroups from "./components/Dashboard/Admin/Account/AccountGroup/AccountGroups.jsx";
@@ -67,6 +70,7 @@ createRoot(document.getElementById("root")).render(
                 </Route>
 
                 <Route path="/topup" element={<TopUp />} />
+
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -78,27 +82,122 @@ createRoot(document.getElementById("root")).render(
                   path="/forgot-password/reset-password"
                   element={<ResetPassword />}
                 />
-
-                {/* Admin Layout */}
               </Route>
-              <Route element={<AdminLayout />}>
-                <Route element={<PrivateRoute requireAdmin={true} />}>
+
+              {/* Admin Layout */}
+              <Route element={<PrivateRoute requireAuthorized={true} />}>
+                <Route element={<AdminLayout />}>
                   <Route path="admin-dashboard" element={<AdminDashobard />}>
-                    <Route path="overview" element={<Overview />} />
-                    <Route path="deposits" element={<Deposits />} />
                     <Route
-                      path="physical-number"
-                      element={<AddPhysicalNumber />}
-                    />
-                    <Route path="manage-user" element={<UserManagement />} />
-                    <Route path="active-numbers" element={<ActiveNumbers />} />
-                    <Route path="platforms" element={<Platforms />} />
-                    <Route path="categories" element={<Categories />} />
-                    <Route path="account-groups" element={<AccountGroups />} />
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewOverview]}
+                        />
+                      }
+                    >
+                      <Route path="overview" element={<Overview />} />
+                    </Route>
+
                     <Route
-                      path="provider-history"
-                      element={<ProviderHistory />}
-                    />
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewContactUs]}
+                        />
+                      }
+                    >
+                      <Route path="contact-us" element={<ContactUs />} />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewUserDeposits]}
+                        />
+                      }
+                    >
+                      <Route path="deposits" element={<Deposits />} />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.AddPhysicalNumbers]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="physical-number"
+                        element={<AddPhysicalNumber />}
+                      />
+                    </Route>
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewUsers]}
+                        />
+                      }
+                    >
+                      <Route path="manage-user" element={<UserManagement />} />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewActiveNumbers]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="active-numbers"
+                        element={<ActiveNumbers />}
+                      />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewPatforms]}
+                        />
+                      }
+                    >
+                      <Route path="platforms" element={<Platforms />} />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.CreateCategory]}
+                        />
+                      }
+                    >
+                      <Route path="categories" element={<Categories />} />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewAccountGroups]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="account-groups"
+                        element={<AccountGroups />}
+                      />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermission={[Permissions.ViewProviderHistory]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="provider-history"
+                        element={<ProviderHistory />}
+                      />
+                    </Route>
                   </Route>
                 </Route>
               </Route>

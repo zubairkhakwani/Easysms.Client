@@ -1,19 +1,31 @@
 import { Navigate, Outlet } from "react-router-dom";
+
 import {
-  isAdminUser,
-  isAuthenticated,
-} from "../../services/User/CurrentUserService";
+  isAuthenticatedUser,
+  isAuthorizedUser,
+  getRolePermissions,
+} from "../../services/Auth/AuthService";
 
-const PrivateRoute = ({ requireAdmin = false }) => {
-  const isAuth = isAuthenticated();
-  const isAdmin = isAdminUser();
+const PrivateRoute = ({
+  requireAuthorized = false,
+  requiredPermissions = [],
+}) => {
+  const isAuthenticated = isAuthenticatedUser();
+  const isAuthorized = isAuthorizedUser();
+  const permissions = getRolePermissions();
 
-  if (!isAuth) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
-  if (requireAdmin && !isAdmin) {
-    return <Navigate to="*" />;
+  if (requireAuthorized && !isAuthorized) {
+    return <Navigate to="*" />; //This path does not exist so we end up in no page found and thats what we need.
+  }
+  if (
+    requiredPermissions.length > 0 &&
+    !requiredPermissions.every((p) => permissions.includes(p))
+  ) {
+    return <Navigate to="*" />; //This path does not exist so we end up in no page found and thats what we need.
   }
 
   return <Outlet />;

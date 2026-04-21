@@ -35,7 +35,8 @@ export default function Navbar() {
   const [modal, setModal] = useState("");
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
 
-  const { isAuth, isAdmin, currentUser, logout } = useContext(AuthContext);
+  const { isAuthenticated, isAuthorized, currentUser, logout } =
+    useContext(AuthContext);
 
   let authButtons;
   let adminActionButtons;
@@ -98,7 +99,7 @@ export default function Navbar() {
     setMenuOpen((prev) => !prev);
   };
 
-  if (!isAuth) {
+  if (!isAuthenticated) {
     authButtons = (
       <>
         <Link to="/login">
@@ -181,7 +182,7 @@ export default function Navbar() {
     );
   }
 
-  if (isAuth && isAdmin) {
+  if (isAuthenticated && isAuthorized) {
     adminActionButtons = (
       <li>
         <Link to="/admin-dashboard/overview">
@@ -223,6 +224,9 @@ export default function Navbar() {
           </li>
           <li>
             <span onClick={() => handleNavClick("why-us")}>Why us</span>
+          </li>
+          <li>
+            <span onClick={() => handleNavClick("contact-us")}>Contact us</span>
           </li>
           {adminActionButtons}
           <li>

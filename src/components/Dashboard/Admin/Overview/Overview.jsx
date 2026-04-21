@@ -64,7 +64,10 @@ export default function Overview() {
 
   async function getProvidersData() {
     let response = await getProvidersInfo();
-    setBalances(response.info);
+
+    if (response?.isSuccess) {
+      setBalances(response.info);
+    }
   }
 
   useEffect(() => {

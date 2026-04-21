@@ -7,29 +7,32 @@ import TokenService from "../services/Token/TokenService";
 import { getCurrentUser } from "../services/User/UserService";
 
 import {
-  isAuthenticated,
-  isAdminUser,
-} from "../services/User/CurrentUserService";
+  isAuthenticatedUser,
+  isAuthorizedUser,
+} from "../services/Auth/AuthService";
+
+//Toaster
+import { errorToast } from "../helper/Toaster";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuth, setIsAuthenticated] = useState(false);
-  const [isAdmin, setAdminUser] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthorized, setAuthorizedUser] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    setIsAuthenticated(isAuthenticated());
-    setAdminUser(isAdminUser());
+    setIsAuthenticated(isAuthenticatedUser());
+    setAuthorizedUser(isAuthorizedUser());
 
     const fetchCurrentUser = async () => {
       try {
-        if (isAuthenticated()) {
+        if (isAuthenticatedUser()) {
           const res = await getCurrentUser();
           setCurrentUser(res.data);
         }
-      } catch (error) {
-        console.error("Failed to fetch current user data:", error);
+      } catch {
+        errorToast("Failed to fetch your data, please try later.");
       }
     };
     fetchCurrentUser();
@@ -38,7 +41,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (token) => {
     TokenService.setToken(token);
     setIsAuthenticated(true);
-    setAdminUser(isAdminUser());
+    setAuthorizedUser(isAuthorizedUser());
 
     const res = await getCurrentUser();
     setCurrentUser(res.data);
@@ -47,7 +50,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     TokenService.removeToken();
     setIsAuthenticated(false);
-    setAdminUser(isAdminUser());
+    setAuthorizedUser(isAuthorizedUser());
     setCurrentUser(null);
   };
 
@@ -74,8 +77,8 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        isAuth,
-        isAdmin,
+        isAuthenticated,
+        isAuthorized,
         currentUser,
 
         login,

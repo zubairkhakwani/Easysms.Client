@@ -23,19 +23,4 @@ export const getCurrentUser = () => {
   }
 };
 
-export const isAuthenticated = () => {
-  return !!TokenService.getToken();
-};
 
-export const isAdminUser = () => {
-  const token = TokenService.getToken();
-
-  if (!token) return false;
-
-  try {
-    const decoded = jwtDecode(token);
-    return decoded.role === "Easyotps_Admin_99";
-  } catch {
-    return false;
-  }
-};
