@@ -6,29 +6,55 @@ import { getMyNumberHistory } from "../../services/Order/Order";
 
 //Helper
 import { FormatterHelper } from "../../helper/FormatterHelper";
+import { NumberStatus, Providers } from "../../data/Static";
 
 //Toaster
 import { successTaost, errorToast } from "../../helper/Toaster";
+
+//Pagination
+import Paginations from "../Shared/Pagination";
 
 //Css
 import "./NumberHistory.css";
 
 export default function NumberHistory() {
+  //Data
   const [ordersData, setOrdersData] = useState([]);
   const [filterednumbers, setFilterednumbers] = useState([]);
+  const [status, setStatus] = useState("0");
+  const [provider, setProvider] = useState("0");
+
+  //Loading
+  const [isLoading, setIsLoading] = useState(false);
+
+  //Pagination
+  const [count, setCount] = useState(0);
+  const [pageNo, setPageNo] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchAllMyNumbers = async () => {
       try {
-        const res = await getMyNumberHistory();
-        setOrdersData(res.data);
-        setFilterednumbers(res.data);
+        const res = await getMyNumberHistory({
+          pageNo,
+          pageSize,
+          provider,
+          status,
+        });
+        if (res.isSuccess) {
+          setOrdersData(res.data?.items ?? []);
+          setFilterednumbers(res.data?.items ?? []);
+          setCount(res.data?.count ?? 0);
+        }
       } catch {
         errorToast("Failed to fetch number history");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchAllMyNumbers();
-  }, []);
+  }, [pageNo, pageSize, provider, status]);
 
   function handleSearch(keyword) {
     const filtered = ordersData.filter((order) =>
@@ -48,6 +74,15 @@ export default function NumberHistory() {
       errorToast("Failed to copy");
       console.error("Copy failed", err);
     }
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPageNo(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNo(0);
   };
 
   const stats = [
@@ -83,6 +118,37 @@ export default function NumberHistory() {
 
   return (
     <div className="um-page">
+      <div className="ph-filters">
+        <div className="ph-filter-field">
+          <label className="ph-filter-label">Provider</label>
+          <select
+            className="ph-filter-input"
+            value={provider}
+            onChange={(e) => setProvider(e.target.value)}
+          >
+            {Providers.map((p) => (
+              <option key={p.value} value={p.value}>
+                {p.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="ph-filter-field">
+          <label className="ph-filter-label">Status</label>
+          <select
+            className="ph-filter-input"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            {NumberStatus.map((p) => (
+              <option key={p.value} value={p.value}>
+                {p.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
       <div className="um-header">
         <div>
           <div className="um-page-title">Number History</div>
@@ -111,92 +177,115 @@ export default function NumberHistory() {
           />
         </div>
 
-        <table className="um-table">
-          <thead>
-            <tr>
-              {[
-                "#",
-                "Number",
-                "Otps",
-                "Provider",
-                "Total Cost",
-                "Status",
-                "Ordered At",
-              ].map((h) => (
-                <th key={h} className="um-th">
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filterednumbers.map((number, index) => (
-              <tr key={index} className="um-tr">
-                <td className="um-td">{index + 1}</td>
-                <td className="um-td">
-                  {number.orderData.phoneNumbers.length > 0 ? (
-                    <div className="um-ellipsis-copy">
-                      <span className="um-ellipsis-text">
-                        {number.orderData.phoneNumbers.join(", ")}
-                      </span>
-                      <button
-                        className="um-copy-btn"
-                        onClick={() =>
-                          copyToClipboard(
-                            number.orderData.phoneNumbers.join("\n"),
-                          )
-                        }
-                      >
-                        📋
-                      </button>
-                    </div>
-                  ) : (
-                    "-"
-                  )}
-                </td>
-
-                <td className="um-td">
-                  {number.orderData.verificationCodes.length > 0 ? (
-                    <div className="um-ellipsis-copy">
-                      <span className="um-ellipsis-text">
-                        {number.orderData.verificationCodes.join(", ")}
-                      </span>
-                      <button
-                        className="um-copy-btn"
-                        onClick={() =>
-                          copyToClipboard(
-                            number.orderData.verificationCodes.join(", "),
-                          )
-                        }
-                      >
-                        📋
-                      </button>
-                    </div>
-                  ) : (
-                    "-"
-                  )}
-                </td>
-
-                <td className="um-td">{number.provider}</td>
-
-                <td className="um-td">
-                  {FormatterHelper.formatCurrency(number.totalCost)}
-                </td>
-                <td className="um-td">
-                  <span className={`um-status-badge ${number.status}`}>
-                    {number.status}
-                  </span>
-                </td>
-                <td className="um-td">
-                  {FormatterHelper.formatDateToLocal(number.orderedAt)}
-                </td>
+        {!isLoading && (
+          <table className="um-table">
+            <thead>
+              <tr>
+                {[
+                  "#",
+                  "Number",
+                  "Otps",
+                  "Provider",
+                  "Total Cost",
+                  "Status",
+                  "Ordered At",
+                ].map((h) => (
+                  <th key={h} className="um-th">
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filterednumbers.map((number, index) => (
+                <tr key={index} className="um-tr">
+                  <td className="um-td">{index + 1}</td>
+                  <td className="um-td">
+                    {number.orderData.phoneNumbers.length > 0 ? (
+                      <div className="um-ellipsis-copy">
+                        <span className="um-ellipsis-text">
+                          {number.orderData.phoneNumbers.join(", ")}
+                        </span>
+                        <button
+                          className="um-copy-btn"
+                          onClick={() =>
+                            copyToClipboard(
+                              number.orderData.phoneNumbers.join("\n"),
+                            )
+                          }
+                        >
+                          📋
+                        </button>
+                      </div>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
 
-        {filterednumbers.length === 0 && (
-          <div className="um-empty">No numbers found.</div>
+                  <td className="um-td">
+                    {number.orderData.verificationCodes.length > 0 ? (
+                      <div className="um-ellipsis-copy">
+                        <span className="um-ellipsis-text">
+                          {number.orderData.verificationCodes.join(", ")}
+                        </span>
+                        <button
+                          className="um-copy-btn"
+                          onClick={() =>
+                            copyToClipboard(
+                              number.orderData.verificationCodes.join(", "),
+                            )
+                          }
+                        >
+                          📋
+                        </button>
+                      </div>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  <td className="um-td">{number.provider}</td>
+
+                  <td className="um-td">
+                    {FormatterHelper.formatCurrency(number.totalCost)}
+                  </td>
+                  <td className="um-td">
+                    <span className={`um-status-badge ${number.status}`}>
+                      {number.status}
+                    </span>
+                  </td>
+                  <td className="um-td">
+                    {FormatterHelper.formatDateToLocal(number.orderedAt)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {/* Loading */}
+        {isLoading && (
+          <div className="ph-state-row">
+            <div className="ph-spinner" />
+            <span className="ph-state-text">Fetching records…</span>
+          </div>
+        )}
+        {/* Empty result */}
+        {!isLoading && filterednumbers.length === 0 && (
+          <div className="ph-state-row">
+            <div className="ph-state-icon">⊟</div>
+            <span className="ph-state-text">No records found</span>
+          </div>
+        )}
+
+        {!isLoading && (
+          <Paginations
+            page={pageNo}
+            rowsPerPage={pageSize}
+            count={count}
+            handleChangePage={handleChangePage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
+          />
         )}
       </div>
     </div>

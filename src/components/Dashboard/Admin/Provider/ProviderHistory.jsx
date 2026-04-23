@@ -210,64 +210,62 @@ export default function ProviderHistory() {
         </div>
         {/* Table */}
         {!isLoading && (
-          <>
-            <div className="ph-table-wrap">
-              <table className="ph-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Id</th>
-                    <th>User</th>
-                    <th>Phone</th>
-                    <th>Provider</th>
-                    <th>Code</th>
-                    <th>Actual Cost</th>
-                    <th>User Cost</th>
-                    <th>Date</th>
-                    <th>Cancellation Status</th>
-                    <th>Status</th>
+          <div className="ph-table-wrap">
+            <table className="ph-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Id</th>
+                  <th>User</th>
+                  <th>Phone</th>
+                  <th>Provider</th>
+                  <th>Code</th>
+                  <th>Actual Cost</th>
+                  <th>User Cost</th>
+                  <th>Date</th>
+                  <th>Cancellation Status</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {providerHistory.map((r, index) => (
+                  <tr key={r.id}>
+                    <td className="ph-col-id">{index + 1}</td>
+                    <td className="ph-col-id">{r.id}</td>
+                    <td className="um-user-cell">
+                      <div>
+                        <div className="um-user-name">{r.userName}</div>
+                        <div className="um-user-email">{r.email}</div>
+                      </div>
+                    </td>
+                    <td className="ph-col-phone">{r.phone}</td>
+                    <td className="ph-col-phone">{r.provider}</td>
+
+                    <td className="ph-col-sms" title={r.verificationCode}>
+                      {r.verificationCode ?? "-"}
+                    </td>
+
+                    <td className="ph-col-cost">
+                      {FormatterHelper.formatCurrency(r.actualActivationCost)}
+                    </td>
+                    <td className="ph-col-cost">
+                      {FormatterHelper.formatCurrency(r.userActivationCost)}
+                    </td>
+
+                    <td className="ph-col-date">
+                      {FormatterHelper.formatDateToLocal(r.date)}
+                    </td>
+                    <td className="ph-col-sms" title={r.cancellationStatus}>
+                      {r.cancellationStatus ?? "-"}
+                    </td>
+                    <td>
+                      <StatusBadge status={r.status} />
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {providerHistory.map((r, index) => (
-                    <tr key={r.id}>
-                      <td className="ph-col-id">{index + 1}</td>
-                      <td className="ph-col-id">{r.id}</td>
-                      <td className="um-user-cell">
-                        <div>
-                          <div className="um-user-name">{r.userName}</div>
-                          <div className="um-user-email">{r.email}</div>
-                        </div>
-                      </td>
-                      <td className="ph-col-phone">{r.phone}</td>
-                      <td className="ph-col-phone">{r.provider}</td>
-
-                      <td className="ph-col-sms" title={r.verificationCode}>
-                        {r.verificationCode ?? "-"}
-                      </td>
-
-                      <td className="ph-col-cost">
-                        {FormatterHelper.formatCurrency(r.actualActivationCost)}
-                      </td>
-                      <td className="ph-col-cost">
-                        {FormatterHelper.formatCurrency(r.userActivationCost)}
-                      </td>
-
-                      <td className="ph-col-date">
-                        {FormatterHelper.formatDateToLocal(r.date)}
-                      </td>
-                      <td className="ph-col-sms" title={r.cancellationStatus}>
-                        {r.cancellationStatus ?? "-"}
-                      </td>
-                      <td>
-                        <StatusBadge status={r.status} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
         {/* Loading */}
         {isLoading && (

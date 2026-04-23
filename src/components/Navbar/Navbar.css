@@ -336,7 +336,7 @@
     max-height: 0;
     opacity: 0;
     margin: 0;
-    transform: translateY(-10px);
+    transform: translateY(-1000px);
     transition:
       max-height 0.44s cubic-bezier(0.23, 1, 0.32, 1),
       opacity 0.3s ease,
@@ -393,6 +393,11 @@
     transform: none;
     transition-delay: 0.37s;
   }
+  .nav.open .nav-links li:nth-child(7) {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.43s;
+  }
   .nav-auth {
     opacity: 0;
     transform: translateY(14px);
@@ -403,7 +408,7 @@
   .nav.open .nav-auth {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 0.43s;
+    transition-delay: 0.49s;
   }
 }
 

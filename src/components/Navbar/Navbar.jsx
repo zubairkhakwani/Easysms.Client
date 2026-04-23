@@ -103,10 +103,14 @@ export default function Navbar() {
     authButtons = (
       <>
         <Link to="/login">
-          <button className="nav-login">Login</button>
+          <button onClick={handleHamburgerClick} className="nav-login">
+            Login
+          </button>
         </Link>
         <Link to="/register">
-          <button className="nav-signup">Register</button>
+          <button onClick={handleHamburgerClick} className="nav-signup">
+            Register
+          </button>
         </Link>
       </>
     );
