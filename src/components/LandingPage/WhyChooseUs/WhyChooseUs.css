@@ -1,3 +1,7 @@
+/* ============================================================
+   WhyChooseUs.css — Warm & Friendly Light Theme
+   ============================================================ */
+
 .why-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -8,31 +12,51 @@
 .why-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-xs);
   padding: clamp(28px, 3vw, 32px) clamp(15px, 2vw, 28px);
-  transition: all 0.25s;
+  transition: all var(--transition);
 }
 
 .why-card:hover {
-  border-color: rgba(0, 229, 255, 0.2);
+  background: var(--card-hover);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-md);
   transform: translateY(-3px);
 }
 
+/* Icon */
 .why-icon {
-  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  font-size: 1.4rem;
   margin-bottom: 16px;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--accent);
+  transition: box-shadow var(--transition);
 }
+
+.why-card:hover .why-icon {
+  box-shadow: 0 4px 14px rgba(232, 108, 47, 0.15);
+}
+
+/* Title */
 .why-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #fff;
+  font-size: var(--text-xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-heading);
   margin-bottom: 10px;
 }
+
+/* Description */
 .why-desc {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.45);
-  line-height: 1.65;
-  font-weight: 300;
+  font-size: var(--text-base);
+  color: var(--text-mid);
+  line-height: var(--lh-relaxed);
+  font-weight: var(--fw-light);
 }

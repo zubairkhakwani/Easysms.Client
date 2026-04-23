@@ -196,10 +196,7 @@ export default function ActiveOrders({
           </span>
           <div>
             <div className="card-title">Active Orders</div>
-            <div className="card-sub">
-              Numbers that are currently active — excluding completed and
-              cancelled orders.
-            </div>
+            <div className="card-sub">Numbers that are currently active</div>
           </div>
         </div>
         {incomingOrders.length > 0 ? (

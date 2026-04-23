@@ -308,7 +308,7 @@ export default function UserManagement() {
         <div className="um-table-header">
           <span className="um-table-title">All Users</span>
           <input
-            className="um-search-input"
+            className="adm-search-input"
             placeholder="🔍  Search users..."
             onChange={(e) => handleSearch(e.target.value)}
           />

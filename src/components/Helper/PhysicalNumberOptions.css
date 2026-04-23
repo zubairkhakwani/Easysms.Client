@@ -1,92 +1,126 @@
 .number-type-section {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
+
+/* =========================
+   LABEL
+========================= */
+
 .field-label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.76rem;
-  font-weight: 600;
-  margin-bottom: 5px;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-1);
 }
 
 .number-type-icon {
   color: var(--accent);
 }
 
+/* =========================
+   GRID
+========================= */
+
 .number-type-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
+  gap: var(--space-2);
 }
 
+/* =========================
+   CARD
+========================= */
+
 .number-type-card {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.06);
-  transition:
-    border-color 0.15s,
-    background 0.15s;
+  background: var(--card);
+  transition: var(--transition);
+}
+
+.number-type-card:hover {
+  background: var(--card-hover);
+  border-color: var(--accent-border);
 }
 
 .number-type-card.active {
   border: 2px solid var(--accent);
-  background: rgba(0, 229, 255, 0.07);
+  background: var(--accent-subtle);
 }
+
+/* =========================
+   CARD HEADER
+========================= */
 
 .number-type-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .number-type-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-heading);
 }
+
+/* =========================
+   RADIO DOT
+========================= */
 
 .number-type-dot {
   width: 18px;
   height: 18px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--border);
 }
 
 .number-type-dot.checked {
   border-color: var(--accent);
   background: var(--accent);
   box-shadow:
-    inset 0 0 0 3px #13131a,
+    inset 0 0 0 3px var(--bg),
     0 0 6px var(--accent);
 }
 
+/* =========================
+   BADGES
+========================= */
+
 .number-type-badge {
   display: inline-block;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-bottom: 8px;
+  font-size: var(--text-xs);
+  font-weight: var(--fw-semibold);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-2);
 }
 
+/* success */
 .badge-green {
-  background: rgba(0, 229, 255, 0.15);
-  color: var(--accent);
-  border: 1px solid rgba(0, 229, 255, 0.3);
+  background: var(--badge-success-bg);
+  color: var(--text-success);
+  border: 1px solid var(--border-success);
 }
 
+/* warning */
 .badge-amber {
-  background: rgba(255, 180, 0, 0.15);
-  color: #ffb400;
-  border: 1px solid rgba(255, 180, 0, 0.3);
+  background: var(--badge-warning-bg);
+  color: var(--text-warning);
+  border: 1px solid var(--border-warning);
 }
+
+/* =========================
+   DESCRIPTION
+========================= */
 
 .number-type-desc {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
   line-height: 1.5;
 }

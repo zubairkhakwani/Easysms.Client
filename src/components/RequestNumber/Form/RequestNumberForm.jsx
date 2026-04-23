@@ -86,7 +86,7 @@ export default function RequestNumber({ onNewNumber }) {
     useState(false);
 
   const [requestedNumber, setRequestedNumber] = useState({});
-  const [requestNumberText, setRequestNumberText] = useState("⚡ Get Number");
+  const [requestNumberText, setRequestNumberText] = useState("Get Number");
 
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
@@ -238,7 +238,7 @@ export default function RequestNumber({ onNewNumber }) {
       return;
     }
 
-    setRequestNumberText("Getting Number..");
+    setRequestNumberText(<div className="ph-spinner" />);
 
     const updatedRequestedNumber = {
       ...requestedNumber,
@@ -289,7 +289,7 @@ export default function RequestNumber({ onNewNumber }) {
       errorToast(responseMessage);
     }
 
-    setRequestNumberText("⚡ Get Number");
+    setRequestNumberText("Get Number");
     setPurchaseState(false);
   };
 

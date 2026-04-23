@@ -133,7 +133,7 @@ export default function TopUp() {
             </p>
             <div className="topup-warning">
               <i className="fa-solid fa-triangle-exclamation"></i> Low balance =
-              missed verifications. Don't risk it.
+              missed verifications.
             </div>
           </div>
         </div>

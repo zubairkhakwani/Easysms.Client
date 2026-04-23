@@ -1,41 +1,85 @@
-/* Add to your stylesheet */
-@keyframes shimmer {
+/* =========================
+   SKELETON SHIMMER (PREMIUM)
+========================= */
+
+@keyframes shimmer-base {
   0% {
-    background-position: -400px 0;
+    background-position: -200% 0;
   }
   100% {
-    background-position: 400px 0;
+    background-position: 200% 0;
   }
 }
 
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* =========================
+   BASE SKELETON
+========================= */
+
 .skeleton-pulse {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+
+  /* --bg-tertiary as trough gives clear contrast against --bg-secondary peak */
+  background: linear-gradient(
+    110deg,
+    var(--bg-tertiary) 0%,
+    var(--bg-secondary) 30%,
+    var(--bg-tertiary) 100%
+  );
+
+  background-size: 200% 100%;
+  animation: shimmer-base 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* bright sweep — independent animation so it doesn't cancel the base */
+.skeleton-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
   background: linear-gradient(
     90deg,
-    #2b2b2b 0%,
-    #3a3a3a 25%,
-    #555555 50%,
-    #3a3a3a 75%,
-    #2b2b2b 100%
+    transparent 0%,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0) 70%,
+    transparent 100%
   );
-  background-size: 400px 100%;
-  animation: shimmer 1.4s ease infinite;
-  border-radius: 4px;
+
+  animation: shimmer-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+
+/* =========================
+   VARIANTS
+========================= */
 
 .skeleton-avatar {
   width: 34px;
   height: 34px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
 }
+
 .skeleton-name {
   width: 88px;
   height: 12px;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-2);
 }
+
 .skeleton-balance {
   width: 60px;
   height: 10px;
 }
+
 .skeleton-arrow {
   width: 10px;
   height: 10px;

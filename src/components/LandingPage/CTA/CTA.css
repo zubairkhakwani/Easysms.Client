@@ -1,3 +1,7 @@
+/* ============================================================
+   CTA.css — Warm & Friendly Light Theme
+   ============================================================ */
+
 .cta-section {
   padding: 45px;
   text-align: center;
@@ -8,17 +12,36 @@
   margin: 0 auto;
   background: linear-gradient(
     135deg,
-    rgba(0, 229, 255, 0.06) 0%,
-    rgba(124, 58, 237, 0.08) 100%
+    rgba(232, 108, 47, 0.06) 0%,
+    rgba(245, 158, 63, 0.08) 100%
   );
-  border: 1px solid rgba(0, 229, 255, 0.15);
-  border-radius: 28px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
   padding: clamp(40px, 6vw, 80px) clamp(20px, 5vw, 60px);
-
   position: relative;
   overflow: hidden;
 }
 
+/* Top accent line */
+.cta-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent),
+    var(--accent-orange),
+    transparent
+  );
+  border-radius: var(--radius-full);
+}
+
+/* Warm glow orb — replaces the cyan radial */
 .cta-box::before {
   content: "";
   position: absolute;
@@ -28,23 +51,26 @@
   height: 200%;
   background: radial-gradient(
     ellipse,
-    rgba(0, 229, 255, 0.05),
+    rgba(232, 108, 47, 0.06),
     transparent 60%
   );
   pointer-events: none;
 }
 
+/* Heading */
 .cta-box h2 {
   font-size: clamp(1.2rem, 3vw, 2.6rem);
-  font-weight: 800;
-  letter-spacing: -1px;
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--ls-tight);
   margin-bottom: 16px;
-  color: #fff;
+  color: var(--text-heading);
 }
 
+/* Subtext */
 .cta-box p {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-mid);
   font-size: clamp(0.8rem, 1vw, 1rem);
   margin-bottom: 36px;
-  font-weight: 300;
+  font-weight: var(--fw-light);
+  line-height: var(--lh-relaxed);
 }

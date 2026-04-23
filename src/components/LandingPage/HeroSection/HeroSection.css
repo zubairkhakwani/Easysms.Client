@@ -1,3 +1,7 @@
+/* ============================================================
+   HeroSection.css — Warm & Friendly Light Theme
+   ============================================================ */
+
 .hero {
   position: relative;
   display: flex;
@@ -5,30 +9,33 @@
   justify-content: center;
   text-align: center;
   padding: 45px;
+  background: var(--bg);
 }
 
+/* Warm radial glow — replaces the old cyan/purple dark glows */
 .hero-bg {
   position: absolute;
   inset: 0;
   background:
     radial-gradient(
       ellipse 80% 60% at 50% 0%,
-      rgba(0, 229, 255, 0.08) 0%,
+      rgba(232, 108, 47, 0.07) 0%,
       transparent 70%
     ),
     radial-gradient(
       ellipse 50% 40% at 80% 80%,
-      rgba(124, 58, 237, 0.1) 0%,
+      rgba(245, 158, 63, 0.06) 0%,
       transparent 60%
     );
 }
 
+/* Subtle warm grid — replaces white lines on dark */
 .hero-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(160, 110, 60, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(160, 110, 60, 0.06) 1px, transparent 1px);
   background-size: 50px 50px;
   mask-image: radial-gradient(
     ellipse 80% 80% at 50% 50%,
@@ -42,47 +49,51 @@
   z-index: 1;
 }
 
+/* Badge */
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(0, 229, 255, 0.08);
-  border: 1px solid rgba(0, 229, 255, 0.2);
-  border-radius: 100px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-full);
   padding: 6px 16px;
-  font-size: 0.8rem;
   font-size: clamp(0.5rem, 1vw, 0.8rem);
-  color: var(--accent);
+  color: var(--text-accent);
   margin-bottom: 28px;
-  letter-spacing: 0.5px;
-  font-weight: 600;
+  letter-spacing: var(--ls-wide);
+  font-weight: var(--fw-semibold);
 }
 
+/* Heading */
 .hero h1 {
   font-size: clamp(2.4rem, 4vw, 3.5rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -2px;
+  font-weight: var(--fw-extrabold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
   margin-bottom: 22px;
-  color: #fff;
+  color: var(--text-heading);
 }
 
+/* Highlight — warm amber gradient instead of cyan/blue */
 .hero h1 .highlight {
-  background: linear-gradient(135deg, var(--accent), #60a5fa);
+  background: linear-gradient(135deg, var(--accent), var(--accent-orange));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* Subtitle */
 .hero p {
   font-size: clamp(1rem, 2vw, 1.15rem);
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--text-mid);
   max-width: 520px;
   margin: 0 auto 40px;
-  line-height: 1.7;
-  font-weight: 300;
+  line-height: var(--lh-relaxed);
+  font-weight: var(--fw-light);
 }
 
+/* Button row */
 .hero-btns {
   display: flex;
   gap: 14px;
@@ -90,24 +101,9 @@
   flex-wrap: wrap;
 }
 
-.btn-secondary {
-  background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 14px 32px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: inherit;
-}
 
-.btn-secondary:hover {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.04);
-}
 
+/* Stats row */
 .hero-stats {
   display: flex;
   flex-wrap: wrap;
@@ -115,8 +111,8 @@
   gap: 48px;
   margin-top: 60px;
   padding: 40px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
 }
 
 .stat-item {
@@ -125,9 +121,9 @@
 
 .stat-num {
   font-size: clamp(1.8rem, 2vw, 2rem);
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -1px;
+  font-weight: var(--fw-extrabold);
+  color: var(--text-heading);
+  letter-spacing: var(--ls-tight);
 }
 
 .stat-num span {
@@ -136,8 +132,9 @@
 
 .stat-label {
   font-size: clamp(0.5rem, 1vw, 0.78rem);
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-dim);
   margin-top: 4px;
-  letter-spacing: 0.5px;
+  letter-spacing: var(--ls-wider);
   text-transform: uppercase;
+  font-weight: var(--fw-medium);
 }

@@ -2,94 +2,89 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at top, #111 0%, #0a0a0f 60%);
-  padding: 40px 20px;
-  font-family: "DM Sans", sans-serif;
+  padding: var(--space-10) var(--space-5);
 }
 
 .register-card {
-  width: 100%;
-  max-width: 420px;
-  background: rgba(15, 15, 20, 0.85);
-  backdrop-filter: blur(14px);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 40px 36px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 500px;
+  padding: var(--space-10) var(--space-9);
 }
 
 .register-card h1 {
   text-align: center;
-  color: #fff;
-  font-size: 1.6rem;
-  margin-bottom: 8px;
+  color: var(--text-heading);
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-2);
 }
 
 .register-tagline {
   text-align: center;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 28px;
+  color: var(--text-mid);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-7);
   line-height: 1.5;
 }
 
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-5);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .form-label-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1);
 }
 
 .form-group label {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--text-sm);
+  color: var(--input-label);
+  font-weight: var(--fw-medium);
   line-height: 1;
 }
 
 .form-group input {
-  background: #121218;
-  border: 1px solid var(--border);
-  padding: 11px 14px;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.9rem;
-  font-family: "DM Sans", sans-serif;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  color: var(--input-text);
+  font-size: var(--text-sm);
+  font-family: var(--font);
   outline: none;
   transition:
-    border 0.2s,
-    box-shadow 0.2s;
+    border var(--transition),
+    box-shadow var(--transition);
   width: 100%;
 }
 
 .form-group input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 229, 160, 0.08);
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
 }
 
 .form-group input.input-error {
-  border-color: var(--error);
-  box-shadow: 0 0 0 3px rgba(255, 95, 126, 0.08);
+  border-color: var(--border-error);
 }
 
 .error-msg {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 0.75rem;
+  gap: var(--space-1);
+  font-size: var(--text-base);
   color: var(--error);
-  min-height: 16px;
-  animation: fadeSlideIn 0.2s ease;
+  animation: fadeSlideIn var(--transition);
 }
 
 .error-msg svg {
@@ -118,7 +113,8 @@
 .info-icon {
   width: 14px;
   height: 14px;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-mid);
+
   transition: color 0.2s;
   display: block;
 }
@@ -132,17 +128,17 @@
   left: 50%;
   bottom: calc(100% + 10px);
   transform: translateX(-50%);
-  background: #1a1a24;
-  border: 1px solid rgba(0, 229, 160, 0.2);
-  border-radius: 8px;
-  padding: 9px 12px;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-base);
+  color: var(--text-mid);
   white-space: nowrap;
   line-height: 1.5;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   pointer-events: none;
-  z-index: 10;
+  z-index: var(--z-tooltip);
   animation: fadeIn 0.15s ease;
 }
 
@@ -164,48 +160,48 @@
   transform: translateX(-50%) rotate(45deg);
   width: 8px;
   height: 8px;
-  background: #1a1a24;
-  border-right: 1px solid rgba(0, 229, 160, 0.2);
-  border-bottom: 1px solid rgba(0, 229, 160, 0.2);
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .register-btn {
-  margin-top: 10px;
-  background: var(--accent);
-  color: #000;
+  margin-top: var(--space-1);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
   border: none;
-  padding: 11px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  font-family: "DM Sans", sans-serif;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  font-weight: var(--fw-bold);
+  font-size: var(--text-base);
+  font-family: var(--font);
   cursor: pointer;
-  transition:
-    opacity 0.2s,
-    transform 0.2s;
+  transition: var(--transition);
+  box-shadow: var(--btn-primary-shadow);
 }
 
 .register-btn:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--btn-primary-bg-hover);
   transform: translateY(-2px);
+  box-shadow: var(--btn-primary-shadow-hover);
 }
 
 .register-btn:disabled {
-  opacity: 0.4;
   cursor: not-allowed;
+  border: var(--btn-disabled-border);
 }
 
 .register-footer {
-  margin-top: 22px;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
+  margin-top: var(--space-6);
+  color: var(--text-mid);
+  font-size: var(--text-sm);
   text-align: center;
 }
 
 .register-footer span {
   color: var(--accent);
   cursor: pointer;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
   margin-left: 4px;
 }
 .password-container {
@@ -214,8 +210,7 @@
 
 .eye {
   position: absolute;
-  position: absolute;
-  right: 10px;
-  bottom: 12px;
+  right: var(--space-3);
+  bottom: var(--space-3);
   cursor: pointer;
 }

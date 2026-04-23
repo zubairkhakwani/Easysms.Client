@@ -170,7 +170,9 @@ export default function Register() {
           {/* Name */}
           <div className="form-group">
             <div className="form-label-row">
-              <label>Name</label>
+              <label>
+                Name <span className="required">*</span>
+              </label>
               <InfoIcon tooltip="Name must be between 3 and 25 characters." />
             </div>
             <input
@@ -208,7 +210,10 @@ export default function Register() {
           {/* Email */}
           <div className="form-group">
             <div className="form-label-row">
-              <label>Email</label>
+              <label>
+                Email <span className="required">*</span>
+              </label>
+              <InfoIcon tooltip="Enter valid email address." />
             </div>
             <input
               type="email"
@@ -245,7 +250,9 @@ export default function Register() {
           {/* Password */}
           <div className="form-group">
             <div className="form-label-row">
-              <label>Password</label>
+              <label>
+                Password <span className="required">*</span>
+              </label>
               <InfoIcon
                 tooltip={"Must contain uppercase, lowercase & a number."}
               />
@@ -342,7 +349,7 @@ export default function Register() {
           </div>
 
           <button type="submit" className="register-btn" disabled={loading}>
-            {loading ? "Please wait.." : "Sign Up →"}
+            {loading ? <div className="ph-spinner" /> : "Sign Up →"}
           </button>
         </form>
 
