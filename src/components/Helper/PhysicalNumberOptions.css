@@ -121,6 +121,6 @@
 
 .number-type-desc {
   font-size: var(--text-xs);
-  color: var(--text-dim);
+  color: var(--text-mid);
   line-height: 1.5;
 }

@@ -13,6 +13,7 @@ import { errorToast, successTaost } from "../../../helper/Toaster";
 
 //Css
 import "./Register.css";
+import Tooltip from "../../../portal/Tooltip";
 
 const InfoIcon = ({ tooltip }) => {
   const [visible, setVisible] = useState(false);
@@ -173,7 +174,7 @@ export default function Register() {
               <label>
                 Name <span className="required">*</span>
               </label>
-              <InfoIcon tooltip="Name must be between 3 and 25 characters." />
+              <Tooltip tooltip="Name must be between 3 and 25 characters." />
             </div>
             <input
               type="text"
@@ -213,7 +214,8 @@ export default function Register() {
               <label>
                 Email <span className="required">*</span>
               </label>
-              <InfoIcon tooltip="Enter valid email address." />
+
+              <Tooltip tooltip="Enter valid email address." />
             </div>
             <input
               type="email"
@@ -253,7 +255,7 @@ export default function Register() {
               <label>
                 Password <span className="required">*</span>
               </label>
-              <InfoIcon
+              <Tooltip
                 tooltip={"Must contain uppercase, lowercase & a number."}
               />
             </div>
@@ -310,7 +312,7 @@ export default function Register() {
           <div className="form-group">
             <div className="form-label-row">
               <label>Phone Number (Optional)</label>
-              <InfoIcon tooltip="Optional. Enter a valid phone number." />
+              <Tooltip tooltip="Optional. Enter a valid phone number." />
             </div>
 
             <input

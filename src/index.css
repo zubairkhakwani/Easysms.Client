@@ -310,11 +310,13 @@ a {
    SPINNER
 ---------------------------------------------------------- */
   --spinner-track: rgba(255, 255, 255, 0.25); /* track ring on primary bg     */
-  --spinner-color: #ffffff; /* sweep color on primary bg    */
+  --spinner-color-light: #ffffff; /* sweep color on primary bg    */
+  --spinner-color-dark: var(--accent);
   --spinner-size-sm: 18px; /* inside small buttons         */
   --spinner-size-md: 28px; /* default / medium buttons     */
   --spinner-size-lg: 36px; /* large / full-width buttons   */
   --spinner-thickness: 2.5px;
+  --spinner-thickness-lg: 4.5px;
   --spinner-speed: 0.75s;
 }
 
@@ -326,8 +328,6 @@ body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-  overflow-x: hidden;
-  min-height: 100vh;
 }
 
 /* Scrollbar */
@@ -475,7 +475,7 @@ body {
   width: var(--spinner-size-md);
   height: var(--spinner-size-md);
   border: var(--spinner-thickness) solid var(--spinner-track);
-  border-top-color: var(--spinner-color);
+  border-top-color: var(--spinner-color-light);
   border-radius: 50%;
   animation: spin var(--spinner-speed) linear infinite;
   margin: 0 auto;
@@ -491,8 +491,23 @@ body {
   height: var(--spinner-size-lg);
 }
 
+.ph-spinner--dark {
+  border-top-color: var(--spinner-color-dark) !important;
+}
+.ph-spinner-thick {
+  border: var(--spinner-thickness-lg) solid var(--spinner-track);
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
+}
+
+.cyan {
+  color: var(--accent) !important;
+}
+
+.med-bold {
+  font-weight: var(--fw-medium);
 }

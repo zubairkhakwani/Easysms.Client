@@ -65,6 +65,7 @@
   gap: var(--space-3);
   max-height: 500px;
   overflow: auto;
+  padding-right: var(--space-3);
 }
 
 /* =========================

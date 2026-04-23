@@ -178,18 +178,33 @@
   margin-top: 1.5rem;
   cursor: pointer;
   color: var(--text-mid);
-}
-
-.nav-links a .cyan {
-  color: var(--accent);
+  position: relative;
 }
 
 .nav-links a:hover,
-.nav-links a .cyan:hover,
 .nav-links span:hover {
   color: var(--text-accent);
 }
+.nav-links span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background-color: var(--text-accent);
+  border-radius: var(--radius-full);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--transition),
+    transform var(--transition);
+}
 
+.nav-links span:hover::before {
+  opacity: 1;
+  transform: translateY(0);
+}
 /* Auth Button Container */
 .nav-auth {
   display: flex;

@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-export const Base_Url = "https://api.easyotps.com";
-//export const Base_Url = "https://localhost:7265";
+//export const Base_Url = "https://api.easyotps.com";
+export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -207,3 +207,29 @@ export const modalKeys = {
   platformConfiguration: "platform-configuration",
   contactUsMessage: "contact-us-message",
 };
+
+export const NumberStatus = [
+  { label: "All", value: 0 },
+  { label: "Active", value: 1 },
+  { label: "Cancelled", value: 2 },
+  { label: "Completed", value: 3 },
+];
+
+export const Providers = [
+  {
+    label: "All",
+    value: 0,
+  },
+  {
+    label: "Provider A",
+    value: 1,
+  },
+  {
+    label: "Provider B",
+    value: 2,
+  },
+  {
+    label: "USA/Canada Premium Numbers",
+    value: 3,
+  },
+];

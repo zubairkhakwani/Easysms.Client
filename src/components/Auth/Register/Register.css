@@ -104,7 +104,6 @@
 
 /* Info icon */
 .info-icon-wrapper {
-  position: relative;
   display: inline-flex;
   align-items: center;
   cursor: default;
@@ -124,10 +123,6 @@
 }
 
 .tooltip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 10px);
-  transform: translateX(-50%);
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);

@@ -231,21 +231,21 @@ export default function Navbar() {
           {adminActionButtons}
           <li>
             <Link to="/topup">
-              <span className="cyan" onClick={() => handleNavClick()}>
+              <span className="cyan med-bold" onClick={() => handleNavClick()}>
                 Topup
               </span>
             </Link>
           </li>
           <li>
             <Link to="/get-number">
-              <span className="cyan" onClick={() => handleNavClick()}>
+              <span className="cyan med-bold" onClick={() => handleNavClick()}>
                 Buy number
               </span>
             </Link>
           </li>
           {/* <li>
             <Link to="/get-account">
-              <span className="cyan" onClick={() => handleNavClick()}>
+              <span className="cyan med-bold" onClick={() => handleNavClick()}>
                 Buy account
               </span>
             </Link>
