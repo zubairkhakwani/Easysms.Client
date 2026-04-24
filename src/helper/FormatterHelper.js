@@ -34,8 +34,10 @@ export const FormatterHelper = {
   },
 
   formatDateToLocal: (date) => {
+    //new Date(date) will auto convert to local timezone.
     const localDate = new Date(date);
 
+    //en-US is a formate not timezone.
     const formattedDate = localDate.toLocaleString("en-US", {
       day: "numeric",
       month: "long",

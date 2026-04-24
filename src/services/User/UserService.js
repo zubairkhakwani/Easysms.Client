@@ -19,7 +19,7 @@ export const topUpBalance = async (userId, amount) => {
 
 export const getDeposts = async (httpRequest) => {
   const response = await httpClient.post(
-    `/api/users/deposits?startDate=${httpRequest.startDate}&endDate=${httpRequest.endDate}&pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}`,
+    `/api/users/deposits?startDate=${httpRequest.startDate}&endDate=${httpRequest.endDate}&pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
   );
   return response.data;
 };

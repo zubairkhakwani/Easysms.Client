@@ -26,6 +26,10 @@ const twoWeeks = new Date(
 export default function Deposits() {
   const [startDate, setStartDate] = useState(toDS(twoWeeks));
   const [endDate, setEndDate] = useState(toDS(today));
+  const [systemStats, setSystemStats] = useState({
+    totalDepositCount: 0,
+    totalDepositAmount: 0,
+  });
   const [deposits, setDeposits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [count, setCount] = useState(0);
@@ -43,8 +47,12 @@ export default function Deposits() {
       });
       var responseMessage = response.message;
       if (response.isSuccess) {
-        setDeposits(response.data.items ?? []);
-        setCount(response.data.count);
+        setDeposits(response.data.deposits.items ?? []);
+        setCount(response.data.deposits.count);
+        setSystemStats({
+          totalDepositCount: response.data.totalDepositCount,
+          totalDepositAmount: response.data.totalDepositAmount,
+        });
       } else {
         errorToast(responseMessage);
       }
@@ -76,6 +84,26 @@ export default function Deposits() {
     setPageSize(parseInt(event.target.value, 10));
     setPageNo(0);
   };
+
+  const systemOverviewStats = [
+    { label: "Total Deposits", val: systemStats.totalDepositCount },
+
+    {
+      label: "Total Balance",
+      val: FormatterHelper.formatCurrency(systemStats.totalDepositAmount),
+    },
+  ];
+
+  const currentPageStats = [
+    { label: "Total deposits on Page", val: deposits.length },
+
+    {
+      label: "Page Balance",
+      val: FormatterHelper.formatCurrency(
+        deposits.reduce((s, u) => s + u.amount, 0),
+      ),
+    },
+  ];
 
   return (
     <div className="ph-page">
@@ -132,7 +160,48 @@ export default function Deposits() {
           </button>
         </div>
       </div>
+      {/* SYSTEM OVERVIEW */}
 
+      <div className="um-stats-section">
+        <div className="um-section-header">
+          <div className="um-section-title">📊 System Overview</div>
+          <div className="um-section-sub">
+            Statistics for all deposits across the system
+          </div>
+        </div>
+
+        <div className="um-stats-row">
+          {systemOverviewStats.map((s) => (
+            <div key={s.label} className="um-stat-card system">
+              <div className="um-stat-val">{s.val}</div>
+
+              <div className="um-stat-label">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CURRENT PAGE */}
+
+      <div className="um-stats-section">
+        <div className="um-section-header">
+          <div className="um-section-title">📄 Current Page</div>
+
+          <div className="um-section-sub">
+            Statistics for the deposits displayed on this page
+          </div>
+        </div>
+
+        <div className="um-stats-row">
+          {currentPageStats.map((s) => (
+            <div key={s.label} className="um-stat-card page">
+              <div className="um-stat-val">{s.val}</div>
+
+              <div className="um-stat-label">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
       {/* ── Table ── */}
       <div className="ph-table-panel">
         <div className="ph-table-header">
@@ -175,6 +244,7 @@ export default function Deposits() {
                         {FormatterHelper.formatCurrency(r.amount)}
                       </td>
                       <td className="ph-col-date">
+                        {r.depositedAt} {"|||"}
                         {FormatterHelper.formatDateToLocal(r.depositedAt)}
                       </td>
                     </tr>
