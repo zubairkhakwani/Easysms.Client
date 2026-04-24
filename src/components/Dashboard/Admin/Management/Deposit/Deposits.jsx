@@ -26,6 +26,10 @@ const twoWeeks = new Date(
 export default function Deposits() {
   const [startDate, setStartDate] = useState(toDS(twoWeeks));
   const [endDate, setEndDate] = useState(toDS(today));
+  const [systemStats, setSystemStats] = useState({
+    totalDepositCount: 0,
+    totalDepositAmount: 0,
+  });
   const [deposits, setDeposits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [count, setCount] = useState(0);
@@ -45,6 +49,10 @@ export default function Deposits() {
       if (response.isSuccess) {
         setDeposits(response.data.items ?? []);
         setCount(response.data.count);
+        setSystemStats({
+          totalDepositCount: response.data.totalDepositCount,
+          totalDepositAmount: response.data.totalDepositAmount,
+        });
       } else {
         errorToast(responseMessage);
       }
@@ -76,6 +84,26 @@ export default function Deposits() {
     setPageSize(parseInt(event.target.value, 10));
     setPageNo(0);
   };
+
+  const systemOverviewStats = [
+    { label: "Total Deposits", val: systemStats.totalDepositCount },
+
+    {
+      label: "Total Balance",
+      val: FormatterHelper.formatCurrency(systemStats.totalDepositAmount),
+    },
+  ];
+
+  const currentPageStats = [
+    { label: "Total deposits on Page", val: deposits.length },
+
+    {
+      label: "Page Balance",
+      val: FormatterHelper.formatCurrency(
+        deposits.reduce((s, u) => s + u.amount, 0),
+      ),
+    },
+  ];
 
   return (
     <div className="ph-page">
