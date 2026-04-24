@@ -47,8 +47,8 @@ export default function Deposits() {
       });
       var responseMessage = response.message;
       if (response.isSuccess) {
-        setDeposits(response.data.items ?? []);
-        setCount(response.data.count);
+        setDeposits(response.data.deposits.items ?? []);
+        setCount(response.data.deposits.count);
         setSystemStats({
           totalDepositCount: response.data.totalDepositCount,
           totalDepositAmount: response.data.totalDepositAmount,
@@ -158,6 +158,49 @@ export default function Deposits() {
               "✦ Apply"
             )}
           </button>
+        </div>
+      </div>
+
+      {/* SYSTEM OVERVIEW */}
+
+      <div className="um-stats-section">
+        <div className="um-section-header">
+          <div className="um-section-title">📊 System Overview</div>
+          <div className="um-section-sub">
+            Statistics for all deposits across the system
+          </div>
+        </div>
+
+        <div className="um-stats-row">
+          {systemOverviewStats.map((s) => (
+            <div key={s.label} className="um-stat-card system">
+              <div className="um-stat-val">{s.val}</div>
+
+              <div className="um-stat-label">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CURRENT PAGE */}
+
+      <div className="um-stats-section">
+        <div className="um-section-header">
+          <div className="um-section-title">📄 Current Page</div>
+
+          <div className="um-section-sub">
+            Statistics for the deposits displayed on this page
+          </div>
+        </div>
+
+        <div className="um-stats-row">
+          {currentPageStats.map((s) => (
+            <div key={s.label} className="um-stat-card page">
+              <div className="um-stat-val">{s.val}</div>
+
+              <div className="um-stat-label">{s.label}</div>
+            </div>
+          ))}
         </div>
       </div>
 
