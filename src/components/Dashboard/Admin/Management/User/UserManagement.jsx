@@ -128,17 +128,27 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
 
 export default function UserManagement() {
   const { currentUser, balanceCredit } = useContext(AuthContext);
+
+  //Api Data
   const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
   const [systemStats, setSystemStats] = useState({
     totalUsers: 0,
     totalActive: 0,
     totalInActive: 0,
     totalBalance: 0,
   });
+
+  //Modal
   const [modal, setModal] = useState(null);
   const [isTopup, setIsTopUp] = useState(false);
+
+  //Loading
   const [isLoading, setIsLoading] = useState(false);
+
+  //Filter
+  const [keyword, setKeyword] = useState("");
+
+  //Pagination
   const [count, setCount] = useState(0);
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -147,10 +157,9 @@ export default function UserManagement() {
     const fetchAllUsers = async () => {
       setIsLoading(true);
       try {
-        const res = await getAll({ pageNo, pageSize });
+        const res = await getAll({ pageNo, pageSize, keyword });
         let responseData = res.data;
         setUsers(responseData.users.items ?? []);
-        setFilteredUsers(responseData.users.items ?? []);
         setCount(responseData.users.count ?? 0);
         setSystemStats({
           totalUsers: responseData.totalUsers,
@@ -165,16 +174,7 @@ export default function UserManagement() {
       }
     };
     fetchAllUsers();
-  }, [pageNo, pageSize]);
-
-  function handleSearch(keyword) {
-    let filteredUsers = users.filter(
-      (u) =>
-        u.name.toLowerCase().includes(keyword.toLowerCase()) ||
-        u.email.toLowerCase().includes(keyword.toLowerCase()),
-    );
-    setFilteredUsers(filteredUsers);
-  }
+  }, [pageNo, pageSize, keyword]);
 
   const openModal = (type, user) => setModal({ type, user });
   const closeModal = () => setModal(null);
@@ -233,22 +233,22 @@ export default function UserManagement() {
   ];
 
   const currentPageStats = [
-    { label: "Users on Page", val: filteredUsers.length },
+    { label: "Users on Page", val: users.length },
 
     {
       label: "Active on Page",
-      val: filteredUsers.filter((u) => u.isActive).length,
+      val: users.filter((u) => u.isActive).length,
     },
 
     {
       label: "Inactive on Page",
-      val: filteredUsers.filter((u) => !u.isActive).length,
+      val: users.filter((u) => !u.isActive).length,
     },
 
     {
       label: "Page Balance",
       val: FormatterHelper.formatCurrency(
-        filteredUsers.reduce((s, u) => s + u.balance, 0),
+        users.reduce((s, u) => s + u.balance, 0),
       ),
     },
   ];
@@ -310,7 +310,7 @@ export default function UserManagement() {
           <input
             className="um-search-input"
             placeholder="🔍  Search users..."
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => setKeyword(e.target.value)}
           />
         </div>
         {!isLoading && (
@@ -333,7 +333,7 @@ export default function UserManagement() {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((user) => (
+              {users.map((user) => (
                 <tr key={user.id} className="um-tr">
                   <td className="um-td">
                     <div className="um-user-cell">
@@ -392,7 +392,7 @@ export default function UserManagement() {
         )}
 
         {/* Empty result */}
-        {!isLoading && filteredUsers.length === 0 && (
+        {!isLoading && users.length === 0 && (
           <div className="ph-state-row">
             <div className="ph-state-icon">⊟</div>
             <span className="ph-state-text">No users found</span>

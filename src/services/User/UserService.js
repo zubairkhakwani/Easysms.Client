@@ -7,7 +7,7 @@ export const getCurrentUser = async () => {
 
 export const getAll = async (httpRequest) => {
   const response = await httpClient.get(
-    `/api/users?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}`,
+    `/api/users?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&keyword=${httpRequest.keyword}`,
   );
   return response.data;
 };
