@@ -14,6 +14,8 @@ import { successTaost, errorToast } from "../../helper/Toaster";
 //Pagination
 import Paginations from "../Shared/Pagination";
 
+import CounterSkeleton from "../Skeltons/CounterSkelton";
+
 // CSS
 import "./NumberHistory.css";
 
@@ -224,7 +226,7 @@ export default function NumberHistory() {
         <div className="nh-table-header">
           <span className="nh-table-title">All numbers</span>
           <input
-            className="nh-search-input"
+            className="adm-search-input"
             placeholder="🔍 Search numbers..."
             value={search}
             onChange={(e) => handleSearch(e.target.value)}

@@ -2,7 +2,8 @@ import "./RequestNumberGuideline.css";
 
 export default function RequestNumberGuideline() {
   return (
-    <div className="card">
+
+    <div className="guidline-container card">
       <div className="card-header">
         <span className="card-icon">
           <i className="fa-solid fa-list-check number-type-icon"></i>

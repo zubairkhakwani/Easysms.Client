@@ -1,7 +1,9 @@
 /* =========================
    GUIDE STEPS
 ========================= */
-
+.guidline-container {
+  animation: fadeInUp 0.4s ease both;
+}
 .guide-steps {
   display: flex;
   flex-direction: column;

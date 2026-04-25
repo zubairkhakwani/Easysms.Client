@@ -1,7 +1,9 @@
 /* =========================
    FORM FIELDS
 ========================= */
-
+.request-number-container {
+  animation: fadeInUp 0.4s ease both;
+}
 .fields {
   display: flex;
   flex-direction: column;
@@ -57,18 +59,20 @@ select:disabled {
 ========================= */
 
 .select-skeleton {
+  position: relative;
   height: 38px;
   width: 100%;
-  border-radius: var(--radius-xs);
-  background: linear-gradient(
-    90deg,
-    var(--bg-tertiary) 0%,
-    var(--bg-secondary) 50%,
-    var(--bg-tertiary) 100%
-  );
-  background-size: 200% 100%;
-  animation: skeleton-loading 1.6s infinite linear;
+  border-radius: var(--skeleton-border-radius);
   border: 1px solid var(--border);
+  background: linear-gradient(
+    110deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 30%,
+    var(--skeleton-base) 100%
+  );
+
+  background-size: 200% 100%;
+  animation: shimmer-base 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 /* =========================

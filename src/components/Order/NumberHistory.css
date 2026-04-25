@@ -7,7 +7,7 @@
   color: var(--text);
   padding: var(--space-10) var(--space-12);
   background: var(--bg);
-  min-height: 100vh;
+  animation: fadeInUp 0.4s ease both;
 }
 
 /* =========================

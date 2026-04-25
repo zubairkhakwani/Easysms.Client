@@ -27,14 +27,13 @@
 .skeleton-pulse {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-xs);
-
-  /* --bg-tertiary as trough gives clear contrast against --bg-secondary peak */
+  border-radius: var(--skeleton-border-radius);
+  border: 1px solid var(--border);
   background: linear-gradient(
     110deg,
-    var(--bg-tertiary) 0%,
-    var(--bg-secondary) 30%,
-    var(--bg-tertiary) 100%
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 30%,
+    var(--skeleton-base) 100%
   );
 
   background-size: 200% 100%;
@@ -51,7 +50,7 @@
     90deg,
     transparent 0%,
     rgba(255, 255, 255, 0) 30%,
-    rgba(255, 255, 255, 0.45) 50%,
+    var(--skeleton-shine) 50%,
     rgba(255, 255, 255, 0) 70%,
     transparent 100%
   );
@@ -62,6 +61,12 @@
 /* =========================
    VARIANTS
 ========================= */
+.skeleton-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
 
 .skeleton-avatar {
   width: 34px;
@@ -83,4 +88,23 @@
 .skeleton-arrow {
   width: 10px;
   height: 10px;
+}
+
+.skeleton-text {
+  display: block;
+  height: 14px;
+  margin: 6px 0;
+}
+
+.skeleton-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+}
+
+.skeleton-stepper {
+  width: 110px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-2);
 }

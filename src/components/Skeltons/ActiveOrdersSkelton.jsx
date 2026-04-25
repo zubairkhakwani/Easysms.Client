@@ -1,5 +1,3 @@
-//Css
-import "./ActiveOrdersSkelton.css";
 export default function ActiveOrdersSkelton() {
   return (
     <div className="order-row">

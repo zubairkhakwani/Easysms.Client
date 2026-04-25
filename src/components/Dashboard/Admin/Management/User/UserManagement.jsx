@@ -28,7 +28,7 @@ function ActionDropdown({ user, onAction }) {
   return (
     <div className="um-dropdown-wrap">
       <button className="um-action-btn" onClick={() => setOpen((v) => !v)}>
-        Actions <span style={{ opacity: 0.5 }}>▾</span>
+        Actions <span className="um-action-down-arrow">▾</span>
       </button>
       {open && (
         <div className="um-dropdown">

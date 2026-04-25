@@ -223,65 +223,6 @@ export default function Overview() {
         </div>
       )}
 
-      <div>
-        <div className="section-header">
-          <span className="section-header-title">Key Metrics</span>
-          <span className="section-header-meta">
-            {providerName} · {appliedFilters.from} to {appliedFilters.to}
-          </span>
-        </div>
-        <div
-          className="stats-grid"
-          style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
-        >
-          <StatCard
-            icon="◉"
-            label="Total Sales"
-            value={formatNumber(stats.totalSales)}
-            trend="8.3%"
-            trendUp={true}
-            accent="accent-purple"
-            delay={0}
-            sub="vs. last period"
-            subStrong="+2.1K"
-          />
-          <StatCard
-            icon="⊛"
-            label="Total Revenue"
-            value={formatCurrency(stats.totalRevenue)}
-            trend="5.7%"
-            trendUp={true}
-            accent="accent-green"
-            delay={60}
-            sub="most revenue"
-            subStrong={stats.topRevenueProvider}
-          />
-          <StatCard
-            icon="⊞"
-            label="Top Sales Provider"
-            value={stats.topSalesProvider.split(" ")[0]}
-            accent="accent-orange"
-            delay={120}
-            sub="leads in sales"
-            subStrong={formatNumber(
-              topProvidersBySales.find((p) => p.name === stats.topSalesProvider)
-                ?.sales || 0,
-            )}
-          />
-          <StatCard
-            icon="⊕"
-            label="OTPs Delivered"
-            value={formatNumber(stats.totalOtps)}
-            trend="3.2%"
-            trendUp={false}
-            accent="accent-pink"
-            delay={180}
-            sub="success rate"
-            subStrong="98.4%"
-          />
-        </div>
-      </div>
-
       {/* ── Provider Balances — independent of filters ── */}
       <div className="balances-section">
         <div className="balances-header">
@@ -354,7 +295,7 @@ export default function Overview() {
               className={`balance-card${isRefreshing ? " refreshing" : ""}`}
               style={{ animationDelay: `${i * 55}ms` }}
             >
-              <div className="balance-card-shimmer" />
+              <div className="balance-card-shimmer"></div>
 
               {/* Top row: avatar + Active badge */}
               <div className="balance-card-top">

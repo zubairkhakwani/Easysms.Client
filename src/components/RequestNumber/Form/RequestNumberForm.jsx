@@ -306,7 +306,7 @@ export default function RequestNumber({ onNewNumber }) {
   const closeModal = () => setModal(null);
 
   return (
-    <div className="card">
+    <div className="request-number-container card">
       <div className="card-header">
         <span className="card-icon">
           <i className="fa-solid fa-sim-card number-type-icon"></i>
