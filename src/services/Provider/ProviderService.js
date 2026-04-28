@@ -82,3 +82,13 @@ export const requestNumber = async (
   );
   return response.data;
 };
+
+export const getProvidersProfit = async () => {
+  const response = await httpClient.get("/api/providers/profit");
+  return response.data;
+};
+
+export const configureProvidersProfit = async (httpRequest) => {
+  const response = await httpClient.post("/api/providers/profit", httpRequest);
+  return response.data;
+};

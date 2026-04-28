@@ -15,6 +15,8 @@ export const Permissions = Object.freeze({
   ViewContactUs: "ViewContactUs",
   ManageContactUs: "ManageContactUs",
   ViewOverview: "ViewOverview",
+  ViewProviderProfit: "ViewProviderProfit",
+  UpsertProviderProfit: "UpsertProviderProfit",
 });
 
 export const navItems = [
@@ -127,6 +129,19 @@ export const navItems = [
         url: "account-groups",
         badge: "New",
         permission: Permissions.ManageAccountGroups,
+      },
+    ],
+  },
+  {
+    section: "Settings",
+    items: [
+      {
+        icon: "⊞",
+        label: "Provider Profit",
+        id: "proivderProfit",
+        url: "provider-profit",
+        badge: "New",
+        permission: Permissions.ViewProviderProfit,
       },
     ],
   },

@@ -1,214 +1,27 @@
-/* ── Provider History Page ── */
-.ph-page {
+/* Provider Pricing Page */
+
+.pp-page {
   padding: 32px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  /* animation: fadeInUp 0.4s ease both; */
 }
 
-/* ── Filters ── */
-.ph-filters {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 22px;
-  display: flex;
-  align-items: flex-end;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.ph-filter-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.ph-filter-label {
-  font-size: 0.63rem;
-  font-weight: 700;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.ph-filter-input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: #fff;
-  font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 500;
-  padding: 9px 13px;
-  outline: none;
-  transition:
-    border-color 0.18s,
-    background 0.18s;
-  min-width: 150px;
-}
-
-.ph-filter-input:focus {
-  border-color: var(--border-accent);
-  background: rgba(0, 229, 255, 0.03);
-}
-
-.ph-filter-input option {
-  background: #1a1a24;
-  color: #fff;
-}
-
-.ph-filter-actions {
-  display: flex;
-  gap: 10px;
-  margin-left: auto;
-}
-
-.ph-apply-btn {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  padding: 9px 22px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.82rem;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  white-space: nowrap;
-}
-
-.ph-apply-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(0, 229, 255, 0.28);
-}
-
-.ph-apply-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.ph-reset-btn {
-  background: transparent;
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-  padding: 9px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.82rem;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.ph-reset-btn:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-/* ── Summary Cards ── */
-.ph-summary {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-}
-
-@media (max-width: 1100px) {
-  .ph-summary {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 600px) {
-  .ph-summary {
-    grid-template-columns: 1fr;
-  }
-}
-
-.ph-summary-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  transition:
-    border-color 0.2s,
-    transform 0.2s;
-}
-
-.ph-summary-card:hover {
-  border-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-}
-
-.ph-summary-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-
-.ph-summary-icon.cyan {
-  background: rgba(0, 229, 255, 0.1);
-}
-.ph-summary-icon.purple {
-  background: rgba(124, 58, 237, 0.12);
-}
-.ph-summary-icon.green {
-  background: rgba(0, 255, 170, 0.1);
-}
-.ph-summary-icon.orange {
-  background: rgba(255, 157, 61, 0.12);
-}
-
-.ph-summary-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.ph-summary-val {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-
-.ph-summary-lbl {
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  font-weight: 500;
-}
-
-/* ── Table Panel ── */
-.ph-table-panel {
+.pp-table-panel {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
 }
 
-.ph-table-header {
+.pp-table-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 18px 22px;
   border-bottom: 1px solid var(--border);
-  gap: 12px;
-  flex-wrap: wrap;
 }
 
-.ph-table-title {
+.pp-table-title {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 2.5px;
@@ -216,220 +29,42 @@
   color: var(--accent);
 }
 
-.ph-table-meta {
-  font-size: 0.72rem;
-  color: var(--text-dim);
-}
-
-/* ── Table ── */
-.ph-table-wrap {
+.pp-table-wrap {
   overflow-x: auto;
 }
 
-.ph-table {
+.pp-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.ph-table thead tr {
-  border-bottom: 1px solid var(--border);
-}
-
-.ph-table th {
+.pp-table th {
   padding: 11px 16px;
-  text-align: left;
   font-size: 0.63rem;
   font-weight: 700;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  white-space: nowrap;
 }
 
-.ph-table tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  transition: background 0.15s;
-}
-
-.ph-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.ph-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.025);
-}
-
-.ph-table td {
+.pp-table td {
   padding: 13px 16px;
-  font-size: 0.82rem;
-  color: var(--text-mid);
-  white-space: nowrap;
 }
 
-/* Column specific */
-.ph-col-id {
+.pp-col-id {
   font-family: "Courier New", monospace;
-  font-size: 0.72rem;
+}
+
+.pp-col-date {
   color: var(--text-dim);
 }
 
-.ph-col-date {
-  color: var(--text-dim);
-  font-size: 0.78rem;
-}
-
-.ph-col-phone {
-  font-family: "Courier New", monospace;
-  font-weight: 600;
-  color: var(--accent);
-}
-
-.ph-col-sms {
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--text-mid);
-}
-
-.ph-col-cost {
+.pp-col-cost {
   font-weight: 700;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
 }
 
-.ph-col-currency {
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  font-family: "Courier New", monospace;
-}
-
-/* Status badge */
-.ph-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-.ph-status::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.ph-status.Completed {
-  background: rgba(0, 255, 170, 0.08);
-  color: var(--accent-green);
-}
-.ph-status.Completed::before {
-  background: var(--accent-green);
-}
-
-.ph-status.Cancelled {
-  background: rgba(255, 95, 126, 0.08);
-  color: var(--error);
-}
-.ph-status.Cancelled::before {
-  background: var(--error);
-}
-.ph-status.Active {
-  background: rgba(0, 136, 255, 0.08);
-  color: var(--accent-blue);
-}
-
-.ph-status.Active::before {
-  background: var(--accent-blue);
-}
-
-/* ── Empty / Loading states ── */
-.ph-state-row {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 60px 24px;
-  color: var(--text-dim);
-}
-
-.ph-state-icon {
-  font-size: 2rem;
-  opacity: 0.25;
-}
-
-.ph-state-text {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-dim);
-}
-
-.ph-spinner {
+.pp-spinner {
   width: 28px;
   height: 28px;
   border: 2.5px solid rgba(255, 255, 255, 0.08);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.75s linear infinite;
-  margin: 0 auto;
-}
-
-/* ── Pagination ── */
-.ph-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 22px;
-  border-top: 1px solid var(--border);
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.ph-pagination-info {
-  font-size: 0.72rem;
-  color: var(--text-dim);
-}
-
-.ph-pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.ph-page-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  font-family: inherit;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 7px;
-  cursor: pointer;
-  transition: all 0.15s;
-  min-width: 34px;
-}
-
-.ph-page-btn:hover:not(:disabled) {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.ph-page-btn.active {
-  background: rgba(0, 229, 255, 0.1);
-  border-color: rgba(0, 229, 255, 0.25);
-  color: var(--accent);
-}
-
-.ph-page-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
 }

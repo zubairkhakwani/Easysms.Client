@@ -161,13 +161,13 @@ export default function Deposits() {
         </div>
       </div>
 
-      {/* SYSTEM OVERVIEW */}
+      {/* Filtered result summary */}
 
       <div className="um-stats-section">
         <div className="um-section-header">
-          <div className="um-section-title">📊 System Overview</div>
+          <div className="um-section-title">📊 Filtered Results Summary</div>
           <div className="um-section-sub">
-            Statistics for all deposits across the system
+           Totals for all deposits matching the selected filters
           </div>
         </div>
 

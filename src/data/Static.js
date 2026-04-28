@@ -232,4 +232,5 @@ export const modalKeys = {
   upsertPlatform: "upsert-platform",
   platformConfiguration: "platform-configuration",
   contactUsMessage: "contact-us-message",
+  providerProfit: "provider-profit",
 };
