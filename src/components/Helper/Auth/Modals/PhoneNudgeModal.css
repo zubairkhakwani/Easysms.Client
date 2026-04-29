@@ -29,7 +29,7 @@
   border-top: 3px solid var(--accent-green);
   border-radius: var(--radius);
   padding: 36px 32px 28px;
-  max-width: 420px;
+  max-width: 560px;
   width: calc(100% - 40px);
   box-shadow: var(--modal-shadow);
   transform: translateY(18px);
