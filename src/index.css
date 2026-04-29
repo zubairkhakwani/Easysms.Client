@@ -521,11 +521,16 @@ body {
   height: var(--spinner-size-lg);
 }
 
-.ph-spinner--dark {
+.ph-spinner-thick {
+  border: var(--spinner-thickness-lg) solid var(--spinner-track) !important;
+}
+
+.ph-spinner--accent {
   border-top-color: var(--spinner-color-dark) !important;
 }
-.ph-spinner-thick {
-  border: var(--spinner-thickness-lg) solid var(--spinner-track);
+
+.ph-spinner--light {
+  border-top-color: var(--spinner-color-light) !important;
 }
 
 @keyframes spin {

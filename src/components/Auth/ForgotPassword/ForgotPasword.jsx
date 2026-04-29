@@ -38,7 +38,6 @@ export default function ForgotPassword() {
       setLoading(true);
       setServerError("");
       const response = await forgotPassword({ email });
-      console.log(response);
       let responseMessage = response.message;
       if (response.isSuccess) {
         let responseEmail = response.data.email;
@@ -143,7 +142,11 @@ export default function ForgotPassword() {
           </div>
 
           <button type="submit" className="fp-btn" disabled={loading}>
-            {loading ? "Sending code..." : "Send OTP →"}
+            {loading ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              "Send OTP →"
+            )}
           </button>
         </form>
 

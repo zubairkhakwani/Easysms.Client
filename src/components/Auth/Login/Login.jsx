@@ -205,7 +205,11 @@ export default function Login() {
             </div>
           </div>
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? <div className="ph-spinner" /> : "Log in →"}
+            {loading ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              "Log in →"
+            )}
           </button>
         </form>
 

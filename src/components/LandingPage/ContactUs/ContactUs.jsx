@@ -303,7 +303,6 @@ export default function ContactUs() {
               )}
             </button>
           </>
-          ,
         </div>
       </div>
     </div>

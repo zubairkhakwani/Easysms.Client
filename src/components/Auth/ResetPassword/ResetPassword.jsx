@@ -8,26 +8,8 @@ import { resetPassword } from "../../../services/Auth/AuthService";
 //Toaster
 import { errorToast } from "../../../helper/Toaster";
 
-// import "./ForgotPassword.css";
-
-function getStrength(pw) {
-  if (!pw) return 0;
-  let score = 0;
-  if (pw.length >= 8) score++;
-  if (/[A-Z]/.test(pw)) score++;
-  if (/[0-9]/.test(pw)) score++;
-  if (/[^A-Za-z0-9]/.test(pw)) score++;
-  return score; // 0–4
-}
-
-const strengthLabel = ["", "Weak", "Fair", "Good", "Strong"];
-const strengthClass = [
-  "",
-  "active-weak",
-  "active-weak",
-  "active-fair",
-  "active-strong",
-];
+//Strength Bar
+import StrengthBar from "../../Helper/Auth/StrengthBar";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -45,8 +27,6 @@ export default function ResetPassword() {
   useEffect(() => {
     if (!email || !otp) navigate("/forgot-password");
   }, [email, otp, navigate]);
-
-  const strength = getStrength(formData.password);
 
   const validate = (name, value, other = formData) => {
     const errs = { ...errors };
@@ -208,17 +188,7 @@ export default function ResetPassword() {
             {/* Strength bar */}
             {formData.password && (
               <>
-                <div className="strength-bar-wrap">
-                  {[1, 2, 3, 4].map((seg) => (
-                    <div
-                      key={seg}
-                      className={`strength-seg${strength >= seg ? ` ${strengthClass[strength]}` : ""}`}
-                    />
-                  ))}
-                </div>
-                <span className="strength-label">
-                  {strengthLabel[strength]}
-                </span>
+                <StrengthBar password={formData.password} />
               </>
             )}
 
@@ -287,7 +257,11 @@ export default function ResetPassword() {
           </div>
 
           <button type="submit" className="fp-btn" disabled={loading}>
-            {loading ? "Updating..." : "Update password →"}
+            {loading ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              "Update password →"
+            )}
           </button>
         </form>
       </div>

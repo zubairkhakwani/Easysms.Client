@@ -339,7 +339,11 @@ export default function Register() {
           </div>
 
           <button type="submit" className="register-btn" disabled={loading}>
-            {loading ? <div className="ph-spinner" /> : "Sign Up →"}
+            {loading ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              "Sign Up →"
+            )}
           </button>
         </form>
 
