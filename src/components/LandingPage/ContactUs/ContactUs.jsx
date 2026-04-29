@@ -29,6 +29,14 @@ function validate(fields) {
   } else if (fields.message.trim().length < 10) {
     errors.message = "Message must be at least 10 characters";
   }
+
+  if (
+    fields.whatsappNumber.trim() &&
+    !/^\+?[\d\s\-().]{7,15}$/.test(fields.whatsappNumber)
+  ) {
+    errors.whatsappNumber = "Enter a valid phone number.";
+  }
+
   return errors;
 }
 
@@ -38,6 +46,7 @@ export default function ContactUs() {
     firstName: "",
     lastName: "",
     email: "",
+    whatsappNumber: "",
     subject: "",
     message: "",
   });
@@ -46,6 +55,7 @@ export default function ContactUs() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFields((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
@@ -66,6 +76,7 @@ export default function ContactUs() {
           firstName: "",
           lastName: "",
           email: "",
+          whatsappNumber: "",
           subject: "",
           message: "",
         });
@@ -195,6 +206,38 @@ export default function ContactUs() {
               </div>
               {errors.email && (
                 <span className="cf-error-msg">⚠ {errors.email}</span>
+              )}
+            </div>
+
+            {/* Whatsapp Number */}
+            <div className="cf-field">
+              <label className="cf-label">Whatsapp Number</label>
+              <div className="cf-input-wrap">
+                <span className="cf-input-icon">
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7a2 2 0 011.72 2.03z" />
+                  </svg>
+                </span>
+                <input
+                  className={`cf-input`}
+                  type="text"
+                  name="whatsappNumber"
+                  placeholder="+92333221221"
+                  value={fields.whatsappNumber}
+                  onChange={handleChange}
+                />
+              </div>
+              {errors.whatsappNumber && (
+                <span className="cf-error-msg">⚠ {errors.whatsappNumber}</span>
               )}
             </div>
 

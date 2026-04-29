@@ -130,6 +130,7 @@ export default function ContactUs() {
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
+                    <th>Phone Number</th>
                     <th>Subject</th>
                     <th>Message</th>
                     <th>Is Read</th>
@@ -148,11 +149,17 @@ export default function ContactUs() {
                       <td className="um-user-email">{r.lastName}</td>
 
                       <td className="ph-col-phone">{r.email}</td>
+                      <td className="ph-col-phone">
+                        {r.whatsappNumber
+                          ? FormatterHelper.formatPhoneNumber(r.whatsappNumber)
+                          : "-"}
+                      </td>
                       <td className="ph-col-phone">{r.subject}</td>
 
                       <td className="ph-col-sms" title={r.message}>
                         {r.message}
                       </td>
+
                       <td>
                         <span
                           className={`ph-status ${r.isRead ? "Active" : "Cancelled"} `}
@@ -161,10 +168,16 @@ export default function ContactUs() {
                         </span>
                       </td>
                       <td className="um-user-cell">
-                        <div>
-                          <div className="um-user-name">{r.readyByName}</div>
-                          <div className="um-user-email">{r.readyByEmail}</div>
-                        </div>
+                        {r.readyByName ? (
+                          <div>
+                            <div className="um-user-name">{r.readyByName}</div>
+                            <div className="um-user-email">
+                              {r.readyByEmail}
+                            </div>
+                          </div>
+                        ) : (
+                          "-"
+                        )}
                       </td>
 
                       <td className="ph-col-date">
