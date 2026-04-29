@@ -21,7 +21,7 @@ import { modalKeys } from "../../data/Static";
 import { UserBadgeSkeleton } from "../Skeltons/User/UserBadge";
 
 //Modals
-import ChangePasswordModal from "../Helper/Modals/Auth/ChangePasswordModal";
+import ChangePasswordModal from "../Helper/Auth/Modals/ChangePasswordModal";
 
 //Css
 import "./Navbar.css";

@@ -11,6 +11,9 @@ import { registerUser } from "../../../services/Auth/AuthService";
 //Toaster
 import { errorToast, successTaost } from "../../../helper/Toaster";
 
+//Modal
+import PhoneNudgeModal from "../../Helper/Auth/Modals/PhoneNudgeModal";
+
 //Css
 import "./Register.css";
 import Tooltip from "../../../portal/Tooltip";
@@ -72,6 +75,7 @@ export default function Register() {
   });
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisibile] = useState(false);
+  const [showPhoneNudge, setShowPhoneNudge] = useState(false);
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
@@ -107,8 +111,26 @@ export default function Register() {
     if (Object.values(allErrors).some(Boolean)) {
       return;
     }
-    setLoading(true);
 
+    if (!formData.phoneNumber) {
+      setShowPhoneNudge(true);
+      return;
+    }
+
+    await handleRegisterUser();
+  };
+
+  function handleOnAddPhone() {
+    setShowPhoneNudge(false);
+  }
+
+  async function handleSkipPhone() {
+    setShowPhoneNudge(false);
+    await handleRegisterUser();
+  }
+
+  async function handleRegisterUser() {
+    setLoading(true);
     try {
       let response = await registerUser(formData);
       let responseMessage = response.message;
@@ -125,7 +147,7 @@ export default function Register() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const validate = (name, value) => {
     switch (name) {
@@ -311,7 +333,7 @@ export default function Register() {
           {/* Phone Number (Optional) */}
           <div className="form-group">
             <div className="form-label-row">
-              <label>Phone Number (Optional)</label>
+              <label>Whatsapp Number</label>
               <Tooltip tooltip="Optional. Enter a valid phone number." />
             </div>
 
@@ -362,6 +384,12 @@ export default function Register() {
           </Link>
         </div>
       </div>
+      {showPhoneNudge && (
+        <PhoneNudgeModal
+          onAddPhone={handleOnAddPhone}
+          onSkip={handleSkipPhone}
+        />
+      )}
     </div>
   );
 }
