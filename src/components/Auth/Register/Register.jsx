@@ -18,40 +18,6 @@ import PhoneNudgeModal from "../../Helper/Auth/Modals/PhoneNudgeModal";
 import "./Register.css";
 import Tooltip from "../../../portal/Tooltip";
 
-const InfoIcon = ({ tooltip }) => {
-  const [visible, setVisible] = useState(false);
-
-  return (
-    <span
-      className="info-icon-wrapper"
-      onMouseEnter={() => setVisible(true)}
-      onMouseLeave={() => setVisible(false)}
-    >
-      <svg
-        className="info-icon"
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" />
-        <path
-          d="M10 9v5"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        <circle cx="10" cy="6.5" r="0.75" fill="currentColor" />
-      </svg>
-      {visible && (
-        <span className="tooltip">
-          <span className="tooltip-arrow" />
-          {tooltip}
-        </span>
-      )}
-    </span>
-  );
-};
-
 export default function Register() {
   var navigate = useNavigate();
   const [formData, setFormData] = useState({

@@ -2,7 +2,10 @@
 import { useState, useEffect } from "react";
 
 //Static
-import { features, punchlines } from "../../../data/Static";
+import { features, punchlines, AdminConst } from "../../../data/Static";
+
+//Helper
+import { FormatterHelper } from "../../../helper/FormatterHelper";
 
 //Css
 import "./TopUp.css";
@@ -102,12 +105,12 @@ export default function TopUp() {
               <h2>Contact Support</h2>
             </div>
             <p className="topup-contact-label">Call / WhatsApp</p>
-            <a href="tel:+923001234567" className="topup-phone">
-              +92 318 5924 729
+            <a href={`tel:${AdminConst.phoneNumber}`} className="topup-phone">
+              {FormatterHelper.formatPhoneNumber(AdminConst.phoneNumber)}
             </a>
             <p className="topup-contact-hours">Available 9am – 10pm daily</p>
             <a
-              href={`https://wa.me/923185924729?text=${msg}`}
+              href={`https://wa.me/${AdminConst.phoneNumber}?text=${msg}`}
               className="topup-whatsapp-btn"
               target="_blank"
               rel="noreferrer"
@@ -157,7 +160,7 @@ export default function TopUp() {
             Ready to top up? <strong>One message is all it takes.</strong>
           </p>
           <a
-            href={`https://wa.me/923185924729?text=${msg}`}
+            href={`https://wa.me/${AdminConst.phoneNumber}?text=${msg}`}
             className="topup-cta-btn"
             target="_blank"
             rel="noreferrer"

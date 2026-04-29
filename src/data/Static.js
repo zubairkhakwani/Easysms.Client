@@ -233,3 +233,8 @@ export const Providers = [
     value: 3,
   },
 ];
+
+export const AdminConst = {
+  email: "zbrkhakwani@gmail.com",
+  phoneNumber: "923185924729",
+};

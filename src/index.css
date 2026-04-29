@@ -20,13 +20,13 @@ a {
 
 :root {
   /* ----------------------------------------------------------
-     BRAND ACCENTS — Electric Blue (navy-native)
+     BRAND ACCENTS — Electric Cyan (primary)
   ---------------------------------------------------------- */
-  --accent: #3b82f6;
-  --accent-hover: #5b96f8;
-  --accent-active: #2563eb;
-  --accent-subtle: rgba(59, 130, 246, 0.12);
-  --accent-border: rgba(59, 130, 246, 0.28);
+  --accent: #00e5ff;
+  --accent-hover: #33eaff;
+  --accent-active: #00b8cc;
+  --accent-subtle: rgba(0, 229, 255, 0.1);
+  --accent-border: rgba(0, 229, 255, 0.25);
 
   --accent-green: #22d3a0;
   --accent-green-hover: #2ee8b0;
@@ -48,16 +48,16 @@ a {
   --error-subtle: rgba(242, 92, 92, 0.1);
   --error-border: rgba(242, 92, 92, 0.28);
   --accent-logout: #ef4444;
-  --accent-logout-border: 1px solid rgba(242, 92, 92, 0.3);
+  --accent-logout-border: rgba(242, 92, 92, 0.3);
 
   /* ----------------------------------------------------------
      BACKGROUNDS — Deep Navy 4-step ramp
   ---------------------------------------------------------- */
-  --bg: #04050f; /* page root — deep navy black      */
-  --bg-secondary: #080c1a; /* section dividers / alt rows      */
-  --bg-tertiary: #0d1225; /* sidebars, panels                 */
-  --bg-inset: #111830; /* inputs, code blocks              */
-  --bg-overlay: rgba(2, 4, 18, 0.72); /* modal scrim           */
+  --bg: #04050f;
+  --bg-secondary: #080c1a;
+  --bg-tertiary: #0d1225;
+  --bg-inset: #111830;
+  --bg-overlay: rgba(2, 4, 18, 0.72);
 
   /* ----------------------------------------------------------
      CARDS & SURFACES
@@ -73,15 +73,15 @@ a {
 
   --sidebar-bg: #060a18;
   --sidebar-item-hover: rgba(255, 255, 255, 0.04);
-  --sidebar-item-active: rgba(59, 130, 246, 0.12);
+  --sidebar-item-active: rgba(0, 229, 255, 0.1); /* cyan, not blue */
 
   /* ----------------------------------------------------------
      BORDERS
   ---------------------------------------------------------- */
   --border: rgba(120, 160, 255, 0.08);
   --border-strong: rgba(120, 160, 255, 0.15);
-  --border-accent: rgba(59, 130, 246, 0.38);
-  --border-focus: rgba(59, 130, 246, 0.65);
+  --border-accent: rgba(0, 229, 255, 0.35); /* cyan */
+  --border-focus: rgba(0, 229, 255, 0.6); /* cyan */
   --border-error: rgba(242, 92, 92, 0.5);
   --border-success: rgba(34, 211, 160, 0.4);
   --divider: rgba(120, 160, 255, 0.06);
@@ -89,48 +89,48 @@ a {
   /* ----------------------------------------------------------
      TEXT
   ---------------------------------------------------------- */
-  --text: #dde5f4; /* body — cool blue-white           */
-  --text-heading: #eef2fc; /* headings — crisp white-blue      */
-  --text-mid: rgba(200, 215, 245, 0.62); /* secondary                        */
-  --text-dim: rgba(180, 200, 240, 0.36); /* captions, placeholders           */
+  --text: #dde5f4;
+  --text-heading: #eef2fc;
+  --text-mid: rgba(200, 215, 245, 0.62);
+  --text-dim: rgba(180, 200, 240, 0.36);
   --text-disabled: rgba(180, 200, 240, 0.2);
   --text-inverse: #04050f;
-  --text-accent: #3b82f6;
-  --text-accent-hover: #5b96f8;
+  --text-accent: #00e5ff; /* cyan */
+  --text-accent-hover: #33eaff; /* cyan hover */
   --text-success: #22d3a0;
   --text-error: #f25c5c;
   --text-warning: #fb923c;
   --text-info: #60a5fa;
 
   /* ----------------------------------------------------------
-     BUTTONS — Primary
+     BUTTONS — Primary (cyan)
   ---------------------------------------------------------- */
-  --btn-primary-bg: #3b82f6;
-  --btn-primary-bg-hover: #5b96f8;
-  --btn-primary-bg-active: #2563eb;
-  --btn-primary-text: #ffffff;
-  --btn-primary-shadow: 0 4px 18px rgba(59, 130, 246, 0.42);
-  --btn-primary-shadow-hover: 0 6px 26px rgba(59, 130, 246, 0.58);
+  --btn-primary-bg: #00e5ff;
+  --btn-primary-bg-hover: #33eaff;
+  --btn-primary-bg-active: #00b8cc;
+  --btn-primary-text: #04050f; /* dark text on cyan */
+  --btn-primary-shadow: 0 4px 18px rgba(0, 229, 255, 0.3);
+  --btn-primary-shadow-hover: 0 6px 26px rgba(0, 229, 255, 0.45);
 
   /* ----------------------------------------------------------
      BUTTONS — Secondary
   ---------------------------------------------------------- */
-  --btn-secondary-bg: rgba(59, 130, 246, 0.08);
-  --btn-secondary-bg-hover: rgba(59, 130, 246, 0.15);
-  --btn-secondary-bg-active: rgba(59, 130, 246, 0.22);
-  --btn-secondary-text: #60a5fa;
-  --btn-secondary-border: rgba(59, 130, 246, 0.3);
-  --btn-secondary-border-hover: rgba(59, 130, 246, 0.55);
+  --btn-secondary-bg: rgba(0, 229, 255, 0.08);
+  --btn-secondary-bg-hover: rgba(0, 229, 255, 0.14);
+  --btn-secondary-bg-active: rgba(0, 229, 255, 0.2);
+  --btn-secondary-text: #00e5ff;
+  --btn-secondary-border: rgba(0, 229, 255, 0.28);
+  --btn-secondary-border-hover: rgba(0, 229, 255, 0.5);
 
   /* ----------------------------------------------------------
      BUTTONS — Ghost
   ---------------------------------------------------------- */
   --btn-ghost-bg: transparent;
-  --btn-ghost-bg-hover: rgba(120, 160, 255, 0.06);
-  --btn-ghost-bg-active: rgba(120, 160, 255, 0.11);
+  --btn-ghost-bg-hover: rgba(0, 229, 255, 0.05);
+  --btn-ghost-bg-active: rgba(0, 229, 255, 0.1);
   --btn-ghost-text: rgba(200, 215, 245, 0.62);
   --btn-ghost-text-hover: #dde5f4;
-  --btn-ghost-border: rgba(120, 160, 255, 0.12);
+  --btn-ghost-border: rgba(0, 229, 255, 0.12);
 
   /* ----------------------------------------------------------
      BUTTONS — Danger
@@ -151,9 +151,9 @@ a {
   /* ----------------------------------------------------------
      BUTTONS — Disabled
   ---------------------------------------------------------- */
-  --btn-disabled-bg: rgba(120, 160, 255, 0.06);
+  --btn-disabled-bg: rgba(0, 229, 255, 0.05);
   --btn-disabled-text: rgba(180, 200, 240, 0.2);
-  --btn-disabled-border: rgba(120, 160, 255, 0.06);
+  --btn-disabled-border: rgba(0, 229, 255, 0.06);
 
   /* ----------------------------------------------------------
      INPUTS & FORMS
@@ -161,24 +161,24 @@ a {
   --input-bg: #090d1e;
   --input-bg-focus: #0e1428;
   --input-bg-disabled: #080c1a;
-  --input-border: rgba(120, 160, 255, 0.12);
-  --input-border-hover: rgba(120, 160, 255, 0.22);
-  --input-border-focus: #3b82f6;
+  --input-border: rgba(0, 229, 255, 0.1);
+  --input-border-hover: rgba(0, 229, 255, 0.2);
+  --input-border-focus: #00e5ff; /* cyan */
   --input-border-error: #f25c5c;
   --input-border-success: #22d3a0;
   --input-placeholder: rgba(180, 200, 240, 0.28);
   --input-text: #dde5f4;
   --input-label: rgba(200, 215, 245, 0.62);
-  --input-shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  --input-shadow-focus: 0 0 0 3px rgba(0, 229, 255, 0.15); /* cyan glow */
   --input-shadow-error: 0 0 0 3px rgba(242, 92, 92, 0.15);
 
   /* ----------------------------------------------------------
      BADGES & TAGS
   ---------------------------------------------------------- */
-  --badge-default-bg: rgba(120, 160, 255, 0.08);
+  --badge-default-bg: rgba(0, 229, 255, 0.07);
   --badge-default-text: rgba(200, 215, 245, 0.62);
-  --badge-accent-bg: rgba(59, 130, 246, 0.12);
-  --badge-accent-text: #60a5fa;
+  --badge-accent-bg: rgba(0, 229, 255, 0.1);
+  --badge-accent-text: #00e5ff;
   --badge-success-bg: rgba(34, 211, 160, 0.1);
   --badge-success-text: #22d3a0;
   --badge-error-bg: rgba(242, 92, 92, 0.1);
@@ -190,7 +190,6 @@ a {
 
   /* ----------------------------------------------------------
      SHADOWS & ELEVATION
-     (deeper/bluer than generic dark — navy shadows, not black)
   ---------------------------------------------------------- */
   --shadow-xs: 0 1px 3px rgba(2, 6, 30, 0.4);
   --shadow-sm: 0 2px 8px rgba(2, 6, 30, 0.45);
@@ -218,7 +217,7 @@ a {
   --text-2xl: 20px;
   --text-3xl: 24px;
   --text-4xl: 28px;
-  --text-4mxl: 30px;
+  --text-4-5xl: 30px;
   --text-5xl: 32px;
   --text-6xl: 40px;
   --text-7xl: 48px;
@@ -311,7 +310,7 @@ a {
   /* ----------------------------------------------------------
      SPINNER
   ---------------------------------------------------------- */
-  --spinner-track: rgba(120, 160, 255, 0.14);
+  --spinner-track: rgba(0, 229, 255, 0.12); /* cyan */
   --spinner-color-light: #ffffff;
   --spinner-color-dark: var(--accent);
   --spinner-size-sm: 18px;
@@ -322,16 +321,13 @@ a {
   --spinner-speed: 0.75s;
 
   /* ----------------------------------------------------------
-   SKELETON (Loading States)
----------------------------------------------------------- */
-
-  --skeleton-base: #0f1530; /* matches elevated surfaces */
-  --skeleton-highlight: #151c3f; /* slightly brighter sweep */
+     SKELETON (Loading States)
+  ---------------------------------------------------------- */
+  --skeleton-base: #0f1530;
+  --skeleton-highlight: #151c3f;
   --skeleton-shine: rgba(255, 255, 255, 0.35);
-
   --skeleton-border-radius: var(--radius-xs);
 }
-
 html {
   scroll-behavior: smooth;
 }
