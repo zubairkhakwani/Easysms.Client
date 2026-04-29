@@ -357,12 +357,6 @@
   opacity: 0.25;
 }
 
-.ph-state-text {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-dim);
-}
-
 /* ── Pagination ── */
 .ph-pagination {
   display: flex;

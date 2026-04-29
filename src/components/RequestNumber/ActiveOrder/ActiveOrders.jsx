@@ -32,7 +32,6 @@ export default function ActiveOrders({
   OnNumberCancelFailure,
 }) {
   const { balanceCredit } = useContext(AuthContext);
-  const [copied, setCopied] = useState(null);
   const [now, setNow] = useState(Date.now());
   const [cancel, setCancel] = useState([]);
   const [complete, setComplete] = useState([]);
@@ -45,10 +44,9 @@ export default function ActiveOrders({
     return () => clearInterval(interval);
   }, []);
 
-  function handleCopy(activationId, number) {
-    navigator.clipboard.writeText(number).catch(() => {});
-    setCopied(activationId);
-    setTimeout(() => setCopied(null), 500);
+  function handleCopy(text, type) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    successTaost(`${type} copied successfully`);
   }
 
   async function handleCancel(id) {
@@ -225,11 +223,9 @@ export default function ActiveOrders({
                       <span className="sms-code-value">{order.code}</span>
 
                       <button
-                        className="sms-copy-btn"
+                        style={{ cursor: "pointer" }}
                         title="Copy code"
-                        onClick={() =>
-                          navigator.clipboard.writeText(order.sms.code)
-                        }
+                        onClick={() => handleCopy(order.code, "Code")}
                       >
                         📋
                       </button>
@@ -243,11 +239,9 @@ export default function ActiveOrders({
                     btn={
                       <button
                         className="btn-action"
-                        onClick={() =>
-                          handleCopy(order.activationId, order.phoneNumber)
-                        }
+                        onClick={() => handleCopy(order.phoneNumber, "Number")}
                       >
-                        {copied == order.activationId ? "Copying" : "📋"}
+                        📋
                       </button>
                     }
                   />

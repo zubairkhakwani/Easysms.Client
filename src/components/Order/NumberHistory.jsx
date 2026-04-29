@@ -319,7 +319,7 @@ export default function NumberHistory() {
         {/* Loading */}
         {isLoading && (
           <div className="ph-state-row">
-            <div className="ph-spinner ph-spinner--dark ph-spinner--lg ph-spinner-thick" />
+            <div className="ph-spinner  ph-spinner--lg ph-spinner-thick ph-spinner--light" />
             <span className="ph-state-text">Fetching records…</span>
           </div>
         )}

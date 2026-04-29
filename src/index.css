@@ -546,3 +546,9 @@ body {
 .med-bold {
   font-weight: var(--fw-medium);
 }
+
+.ph-state-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-mid);
+}
