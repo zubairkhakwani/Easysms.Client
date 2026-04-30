@@ -109,7 +109,6 @@ export const navItems = [
         label: "Platforms",
         id: "platform",
         url: "platforms",
-        badge: "New",
         permission: Permissions.ViewPatforms,
       },
       {
@@ -117,7 +116,6 @@ export const navItems = [
         label: "Categories",
         id: "category",
         url: "categories",
-        badge: "New",
         permission: Permissions.CreateCategory,
       },
       {
@@ -125,7 +123,6 @@ export const navItems = [
         label: "Account groups",
         id: "accountGroups",
         url: "account-groups",
-        badge: "New",
         permission: Permissions.ManageAccountGroups,
       },
     ],

@@ -11,6 +11,14 @@ export const addPhysical = async (numbers) => {
   return response.data;
 };
 
+export const getAllPhysical = async (request) => {
+  const response = await httpClient.get(
+    `/api/numbers/physical?pageNumber=${request.pageNo}&pageSize=${request.pageSize}&status=${request.filters.status}&OrderByCancellationCountDesc=${request.filters.orderByCancellationCountDesc}`,
+  );
+
+  return response.data;
+};
+
 export const cancelNumber = async (id) => {
   const response = await httpClient.get(`/api/numbers/${id}/cancel`);
   return response.data;

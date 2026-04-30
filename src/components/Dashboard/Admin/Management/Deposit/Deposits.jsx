@@ -244,7 +244,6 @@ export default function Deposits() {
                         {FormatterHelper.formatCurrency(r.amount)}
                       </td>
                       <td className="ph-col-date">
-                        {r.depositedAt} {"|||"}
                         {FormatterHelper.formatDateToLocal(r.depositedAt)}
                       </td>
                     </tr>

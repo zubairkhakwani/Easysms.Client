@@ -1,11 +1,23 @@
 //React
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 //Serives
-import { addPhysical } from "../../../../../services/Number/NumberService";
+import {
+  addPhysical,
+  getAllPhysical,
+} from "../../../../../services/Number/NumberService";
 
 //Toaster
-import { successTaost, errorToast } from "../../../../../helper/Toaster";
+import { errorToast } from "../../../../../helper/Toaster";
+
+//Helper
+import { FormatterHelper } from "../../../../../helper/FormatterHelper";
+
+//Static
+import { PhysicalNumberStatus } from "../../../../../data/Static";
+
+//Pagination
+import Paginations from "../../../../Shared/Pagination";
 
 //Css
 import "./AddPhysicalNumber.css";
@@ -106,15 +118,34 @@ function ResultModal({ result, onClose }) {
 
 /* ── Main Page ── */
 export default function AddPhysicalNumber() {
+  //Data
+  const [physicalNumbers, setPhysicalNumbers] = useState([]);
+
   const [text, setText] = useState("");
   const [price, setPrice] = useState(0);
   const [result, setResult] = useState(null);
+  const [isAddingPhysicalNumbers, setIsAddingPhysicalNumbers] = useState(false);
+
+  //Loading
   const [isLoading, setIsLoading] = useState(false);
+
+  //Filters
+  const [filters, setFilters] = useState({
+    status: "0",
+    orderByCancellationCountDesc: false,
+  });
+
+  //Paginations
+  const [count, setCount] = useState(0);
+  const [pageNo, setPageNo] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const lines = useMemo(
     () => text.split("\n").map(parseLine).filter(Boolean),
     [text],
   );
+
+  //Add Physical Numbers
 
   const validLines = lines.filter((l) => l.valid);
   const invalidLines = lines.filter((l) => !l.valid);
@@ -122,7 +153,7 @@ export default function AddPhysicalNumber() {
 
   const handleSubmit = async () => {
     if (validLines.length === 0) return;
-    setIsLoading(true);
+    setIsAddingPhysicalNumbers(true);
 
     try {
       const payload = {
@@ -138,148 +169,312 @@ export default function AddPhysicalNumber() {
         errorToast(response.message);
       }
     } finally {
-      setIsLoading(false);
+      setIsAddingPhysicalNumbers(false);
     }
   };
 
   const handleClear = () => setText("");
 
+  //Get Physical numbers
+
+  async function getPhysicalNumbersData() {
+    setIsLoading(true);
+    try {
+      let response = await getAllPhysical({
+        pageNo,
+        pageSize,
+        filters,
+      });
+      var responseMessage = response.message;
+      if (response.isSuccess) {
+        setPhysicalNumbers(response.data.items ?? []);
+        setCount(response.data.count);
+      } else {
+        errorToast(responseMessage);
+      }
+    } catch {
+      errorToast("Failed to fetch physical numbers");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getPhysicalNumbersData();
+  }, [pageNo, pageSize, filters]);
+
+  const handleChangePage = (event, newPage) => {
+    setPageNo(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNo(0);
+  };
+
+  function setFilter(key, value) {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  }
+
   return (
-    <div className="add-numbers-page">
-      {/* Result Modal */}
-      {result && (
-        <ResultModal result={result} onClose={() => setResult(null)} />
-      )}
+    <>
+      <div className="add-numbers-page">
+        {/* Result Modal */}
+        {result && (
+          <ResultModal result={result} onClose={() => setResult(null)} />
+        )}
 
-      {/* Banner */}
-      <div className="add-numbers-banner">
-        <div className="banner-icon">🇺🇸</div>
-        <div className="banner-text">
-          <p className="banner-title">Add USA Physical Numbers</p>
-          <p className="banner-sub">
-            Paste all numbers you want to add — one entry per line. Each line
-            must follow the pattern below. Invalid lines are skipped on submit.
-          </p>
+        {/* Banner */}
+        <div className="add-numbers-banner">
+          <div className="banner-icon">🇺🇸</div>
+          <div className="banner-text">
+            <p className="banner-title">Add USA Physical Numbers</p>
+            <p className="banner-sub">
+              Paste all numbers you want to add — one entry per line. Each line
+              must follow the pattern below. Invalid lines are skipped on
+              submit.
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Pattern hint */}
-      <div className="pattern-hint">
-        <span className="pattern-hint-label">Required Format</span>
-        <div className="pattern-hint-box">
-          <span className="pattern-code">
-            13104447990|https://sms222.us?token=j9u9Worj5y03101354
-          </span>
-          <span className="pattern-hint-note">number | inbox URL</span>
+        {/* Pattern hint */}
+        <div className="pattern-hint">
+          <span className="pattern-hint-label">Required Format</span>
+          <div className="pattern-hint-box">
+            <span className="pattern-code">
+              13104447990|https://sms222.us?token=j9u9Worj5y03101354
+            </span>
+            <span className="pattern-hint-note">number | inbox URL</span>
+          </div>
         </div>
-      </div>
 
-      {/* Textarea */}
-      <div className="textarea-section">
-        <div className="textarea-header">
-          <span className="textarea-label">Numbers</span>
-          <span
-            className={`textarea-counter ${totalLines > 0 ? "has-entries" : ""}`}
+        {/* Textarea */}
+        <div className="textarea-section">
+          <div className="textarea-header">
+            <span className="textarea-label">Numbers</span>
+            <span
+              className={`textarea-counter ${totalLines > 0 ? "has-entries" : ""}`}
+            >
+              {totalLines === 0
+                ? "No entries yet"
+                : `${validLines.length} valid · ${invalidLines.length} invalid`}
+            </span>
+          </div>
+
+          <textarea
+            className="numbers-textarea"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={
+              "13104447990|https://sms222.us?token=abc123\n" +
+              "13105557890|https://sms222.us?token=xyz456\n" +
+              "19175551234|https://sms222.us?token=def789\n" +
+              "...\n\nOne number per line."
+            }
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+          />
+
+          <div className="validation-row">
+            {totalLines === 0 && (
+              <span className="validation-item neutral">
+                ⊙ Paste your numbers above to get started
+              </span>
+            )}
+            {totalLines > 0 && validLines.length > 0 && (
+              <span className="validation-item valid">
+                ✓ {validLines.length}{" "}
+                {validLines.length === 1 ? "entry" : "entries"} ready to submit
+              </span>
+            )}
+            {invalidLines.length > 0 && (
+              <span className="validation-item invalid">
+                ✕ {invalidLines.length}{" "}
+                {invalidLines.length === 1 ? "line" : "lines"} will be skipped
+                (wrong format)
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Price */}
+        <div className="textarea-section">
+          <div className="textarea-header">
+            <span className="textarea-label">Price</span>
+          </div>
+          <input
+            className="price-input"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+          <div className="validation-row">
+            {price <= 0 && (
+              <span className="validation-item neutral">
+                ⊙ Please enter valid price for these numbers
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="action-row">
+          <button
+            className="submit-btn"
+            onClick={handleSubmit}
+            disabled={
+              price <= 0 || validLines.length === 0 || isAddingPhysicalNumbers
+            }
           >
-            {totalLines === 0
-              ? "No entries yet"
-              : `${validLines.length} valid · ${invalidLines.length} invalid`}
-          </span>
-        </div>
+            {isAddingPhysicalNumbers ? (
+              <>
+                <span className="btn-spinner" /> Submitting…
+              </>
+            ) : (
+              <>
+                ✦ Submit Numbers
+                {validLines.length > 0 && (
+                  <span style={{ opacity: 0.7, fontWeight: 400 }}>
+                    ({validLines.length})
+                  </span>
+                )}
+              </>
+            )}
+          </button>
 
-        <textarea
-          className="numbers-textarea"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder={
-            "13104447990|https://sms222.us?token=abc123\n" +
-            "13105557890|https://sms222.us?token=xyz456\n" +
-            "19175551234|https://sms222.us?token=def789\n" +
-            "...\n\nOne number per line."
-          }
-          spellCheck={false}
-          autoCorrect="off"
-          autoCapitalize="off"
-        />
+          <button
+            className="clear-btn"
+            onClick={handleClear}
+            disabled={text.length === 0 || isAddingPhysicalNumbers}
+          >
+            Clear
+          </button>
 
-        <div className="validation-row">
-          {totalLines === 0 && (
-            <span className="validation-item neutral">
-              ⊙ Paste your numbers above to get started
-            </span>
-          )}
-          {totalLines > 0 && validLines.length > 0 && (
-            <span className="validation-item valid">
-              ✓ {validLines.length}{" "}
-              {validLines.length === 1 ? "entry" : "entries"} ready to submit
-            </span>
-          )}
-          {invalidLines.length > 0 && (
-            <span className="validation-item invalid">
-              ✕ {invalidLines.length}{" "}
-              {invalidLines.length === 1 ? "line" : "lines"} will be skipped
-              (wrong format)
-            </span>
-          )}
+          <span className="action-spacer" />
         </div>
       </div>
 
-      {/* Price */}
-      <div className="textarea-section">
-        <div className="textarea-header">
-          <span className="textarea-label">Price</span>
-        </div>
-        <input
-          className="price-input"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="0.00"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-        <div className="validation-row">
-          {price <= 0 && (
-            <span className="validation-item neutral">
-              ⊙ Please enter valid price for these numbers
-            </span>
-          )}
-        </div>
-      </div>
+      <div className="ph-page">
+        {/* ── FILTERS ── */}
+        <div className="nh-filters-bar">
+          <div className="nh-filters-left">
+            <span className="nh-filters-heading">Filters</span>
+            <div className="nh-filter-group">
+              <label className="nh-filter-label">Status</label>
+              <select
+                className={`nh-filter-select`}
+                value={filters.status}
+                onChange={(e) => setFilter("status", e.target.value)}
+              >
+                {PhysicalNumberStatus.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      {/* Actions */}
-      <div className="action-row">
-        <button
-          className="submit-btn"
-          onClick={handleSubmit}
-          disabled={price <= 0 || validLines.length === 0 || isLoading}
-        >
-          {isLoading ? (
+            <div className="nh-filter-group">
+              <label className="nh-filter-label">OTP</label>
+              <label className={`nh-filter-checkbox`}>
+                <input
+                  type="checkbox"
+                  checked={filters.orderByCancellationCountDesc}
+                  onChange={(e) =>
+                    setFilter("orderByCancellationCountDesc", e.target.checked)
+                  }
+                />
+                Order By Cancellation Count
+              </label>
+            </div>
+          </div>
+        </div>
+        {/* ── Table ── */}
+        <div className="ph-table-panel">
+          <div className="ph-table-header">
+            <span className="ph-table-title">Physical Numbers</span>
+          </div>
+          {/* Table */}
+          {!isLoading && (
             <>
-              <span className="btn-spinner" /> Submitting…
-            </>
-          ) : (
-            <>
-              ✦ Submit Numbers
-              {validLines.length > 0 && (
-                <span style={{ opacity: 0.7, fontWeight: 400 }}>
-                  ({validLines.length})
-                </span>
-              )}
+              <div className="ph-table-wrap">
+                <table className="ph-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Id</th>
+                      <th>Number</th>
+                      <th>Url</th>
+                      <th>Token</th>
+                      <th>Purchased Price</th>
+                      <th>Cancelled Count</th>
+                      <th>Status</th>
+                      <th>Created At</th>
+                      <th>Sold At</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {physicalNumbers.map((r, index) => (
+                      <tr key={r.id}>
+                        <td className="ph-col-id">{index + 1}</td>
+                        <td className="ph-col-id">{r.id}</td>
+                        <td className="ph-col-id">{r.number}</td>
+                        <td className="ph-col-id">{r.url}</td>
+                        <td className="ph-col-id">{r.token}</td>
+                        <td className="ph-col-id">
+                          {FormatterHelper.formatCurrency(r.purchasedPrice)}
+                        </td>
+                        <td className="ph-col-id">{r.canclledCount}</td>
+                        <td className="ph-col-id">{r.status}</td>
+                        <td className="ph-col-date">
+                          {FormatterHelper.formatDateToLocal(r.createdAt)}
+                        </td>
+
+                        <td className="ph-col-date">
+                          {r.soldAt
+                            ? FormatterHelper.formatDateToLocal(r.soldAt)
+                            : "- "}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </>
           )}
-        </button>
 
-        <button
-          className="clear-btn"
-          onClick={handleClear}
-          disabled={text.length === 0 || isLoading}
-        >
-          Clear
-        </button>
+          {/* Loading */}
+          {isLoading && (
+            <div className="ph-state-row">
+              <div className="ph-spinner" />
+              <span className="ph-state-text">Fetching records…</span>
+            </div>
+          )}
 
-        <span className="action-spacer" />
+          {/* Empty result */}
+          {!isLoading && physicalNumbers.length === 0 && (
+            <div className="ph-state-row">
+              <div className="ph-state-icon">⊟</div>
+              <span className="ph-state-text">
+                No records found for the selected filters
+              </span>
+            </div>
+          )}
+          {!isLoading && (
+            <Paginations
+              page={pageNo}
+              rowsPerPage={pageSize}
+              count={count}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
