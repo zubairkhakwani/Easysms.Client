@@ -234,7 +234,7 @@ export default function Deposits() {
                         </div>
                       </td>
 
-                      <td className="ph-col-id ">
+                      <td className="ph-col-id">
                         <div>
                           <div className="um-user-name">{r.adminName}</div>
                           <div className="um-user-email">{r.adminEmail}</div>

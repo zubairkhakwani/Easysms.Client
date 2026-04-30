@@ -14,3 +14,13 @@ export const toggleContactUsMessage = async (id) => {
   const response = await httpClient.put(`/api/contactus/${id}/toggle-read`);
   return response.data;
 };
+
+export const contactUsReply = async (id, httpRequest) => {
+  console.log(id);
+  console.log(httpRequest);
+  const response = await httpClient.put(
+    `/api/contactus/${id}/reply`,
+    httpRequest,
+  );
+  return response.data;
+};

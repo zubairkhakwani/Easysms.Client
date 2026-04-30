@@ -206,6 +206,7 @@ export const modalKeys = {
   upsertPlatform: "upsert-platform",
   platformConfiguration: "platform-configuration",
   contactUsMessage: "contact-us-message",
+  contactUsReply: "contact-us-reply",
 };
 
 export const NumberStatus = [
