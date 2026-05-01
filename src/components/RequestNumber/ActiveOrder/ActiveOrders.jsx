@@ -165,7 +165,7 @@ export default function ActiveOrders({
       </div>
       {}
 
-      {!ordersLoading ? (
+      {ordersLoading ? (
         <ActiveOrdersSkelton />
       ) : (
         <>

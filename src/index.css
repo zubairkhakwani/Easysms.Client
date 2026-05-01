@@ -23,6 +23,7 @@ a {
      BRAND ACCENTS — Electric Cyan (primary)
   ---------------------------------------------------------- */
   --accent: #00e5ff;
+  --accent2: #7c3aed;
   --accent-hover: #33eaff;
   --accent-active: #00b8cc;
   --accent-subtle: rgba(0, 229, 255, 0.1);
@@ -53,11 +54,13 @@ a {
   /* ----------------------------------------------------------
      BACKGROUNDS — Deep Navy 4-step ramp
   ---------------------------------------------------------- */
-  --bg: #04050f;
-  --bg-secondary: #080c1a;
+  --bg: #0a0a0f;
+  --bg-secondary: #ffffff0a;
   --bg-tertiary: #0d1225;
   --bg-inset: #111830;
   --bg-overlay: rgba(2, 4, 18, 0.72);
+  --bg-avatar: linear-gradient(135deg, #00e5ff22, #0070ff44);
+  --bg-topbar: #0a0a0fd9;
 
   /* ----------------------------------------------------------
      CARDS & SURFACES
@@ -67,7 +70,7 @@ a {
   --card-skelton: rgba(255, 255, 255, 0.03);
   --card-hover: #0e1428;
   --card-active: #131b33;
-  --card-elevated: #0f1530;
+  --card-elevated: #13131a;
 
   --modal-bg: #080c1c;
   --modal-border: rgba(255, 255, 255, 0.07);
@@ -80,13 +83,14 @@ a {
   /* ----------------------------------------------------------
      BORDERS
   ---------------------------------------------------------- */
-  --border: rgba(120, 160, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.07);
   --border-strong: rgba(120, 160, 255, 0.15);
   --border-accent: rgba(0, 229, 255, 0.35); /* cyan */
   --border-focus: rgba(0, 229, 255, 0.6); /* cyan */
   --border-error: rgba(242, 92, 92, 0.5);
   --border-success: rgba(34, 211, 160, 0.4);
   --divider: rgba(120, 160, 255, 0.06);
+  --border-avatar: border: 1px solid rgba(0, 229, 255, 0.2);
 
   /* ----------------------------------------------------------
      TEXT
@@ -94,7 +98,7 @@ a {
   --text: #dde5f4;
   --text-heading: #eef2fc;
   --text-mid: rgba(200, 215, 245, 0.62);
-  --text-dim: rgba(180, 200, 240, 0.36);
+  --text-dim: rgba(255, 255, 255, 0.45);
   --text-disabled: rgba(180, 200, 240, 0.2);
   --text-inverse: #04050f;
   --text-accent: #00e5ff; /* cyan */

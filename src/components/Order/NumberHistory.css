@@ -70,7 +70,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-orange));
+  background: linear-gradient(90deg, var(--accent), #60a5fa);
   opacity: 0.6;
 }
 
@@ -167,7 +167,7 @@
   margin-bottom: var(--space-6); /* space before the table */
   border: 1px solid var(--border-strong);
   border-radius: var(--radius); /* own card shape */
-  background: var(--bg-tertiary);
+  background: var(--card);
   box-shadow: var(--shadow-sm);
 }
 
@@ -234,8 +234,6 @@
 
 .nh-filter-select--active {
   border-color: var(--accent);
-  background: var(--accent-subtle);
-  color: var(--text-accent);
   font-weight: var(--fw-semibold);
   box-shadow: 0 0 0 3px var(--accent-border);
 }

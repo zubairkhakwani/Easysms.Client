@@ -86,7 +86,7 @@ export default function RequestNumber({ onNewNumber }) {
     useState(false);
 
   const [requestedNumber, setRequestedNumber] = useState({});
-  const [isNumberGetting, setNumberGetting] = useState(false);
+  const [isRequestingNumber, setIsRequestingNumber] = useState(false);
 
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
@@ -238,7 +238,7 @@ export default function RequestNumber({ onNewNumber }) {
       return;
     }
 
-    setNumberGetting(true);
+    setIsRequestingNumber(true);
 
     const updatedRequestedNumber = {
       ...requestedNumber,
@@ -289,7 +289,7 @@ export default function RequestNumber({ onNewNumber }) {
       errorToast(responseMessage);
     }
 
-    setNumberGetting(false);
+    setIsRequestingNumber(false);
     setPurchaseState(false);
   };
 
@@ -306,7 +306,7 @@ export default function RequestNumber({ onNewNumber }) {
   const closeModal = () => setModal(null);
 
   return (
-    <div className="request-number-container card">
+    <div className="card">
       <div className="card-header">
         <span className="card-icon">
           <i className="fa-solid fa-sim-card number-type-icon"></i>
@@ -341,7 +341,7 @@ export default function RequestNumber({ onNewNumber }) {
         </div>
       </div>
 
-      {!isPhysicalNumberInfoLoading ? (
+      {isPhysicalNumberInfoLoading ? (
         <PhysicalNumberSkelton />
       ) : physicalNumberInfo ? (
         <>
@@ -449,7 +449,7 @@ export default function RequestNumber({ onNewNumber }) {
         onClick={handleRequestNumber}
         disabled={pruchaseState}
       >
-        {isNumberGetting ? (
+        {isRequestingNumber ? (
           <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
         ) : (
           "⚡ Get Number"

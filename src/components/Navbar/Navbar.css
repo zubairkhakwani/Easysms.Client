@@ -18,8 +18,8 @@
 
 .nav-user-arrow {
   transition: transform 0.2s;
-  font-size: 0.75rem;
-  color: var(--text-dim);
+  font-size: var(--text-3xl);
+  color: var(--accent);
 }
 
 .nav-user-arrow.open {
@@ -287,13 +287,15 @@
 
 .nav-user-badge:hover {
   background: var(--card-hover);
+  border-color: #00e5ff40;
 }
 
 .nav-user-avatar {
   width: 30px;
   height: 30px;
   border-radius: 8px;
-  background: var(--accent-subtle);
+  border: var(--border-avatar);
+  background: var(--bg-avatar);
   color: var(--accent);
   display: flex;
   align-items: center;
@@ -310,15 +312,16 @@
 }
 
 .nav-user-name {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
   color: var(--text-heading);
   line-height: 1;
+  margin-bottom: var(--space-1);
 }
 
 .nav-user-balance {
-  font-size: 0.65rem;
-  font-weight: 800;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
   color: var(--text-accent);
   line-height: 1;
 }
@@ -330,10 +333,6 @@
   margin: 0 4px;
 }
 
-.nav-user-arrow {
-  font-size: 1.5rem;
-  color: var(--text-dim);
-}
 .nav-links,
 .nav-auth,
 .hamburger .bar {
