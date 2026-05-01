@@ -237,7 +237,7 @@ export default function VerifyOtp() {
               onClick={handleResend}
               disabled={timer > 0 || resending}
             >
-              {resending ? "Sending..." : "Resend code"}
+              {resending ? "Re-Sending..." : "Resend code"}
             </button>
             {timer > 0 && <span className="otp-timer">in {timer}s</span>}
           </div>
@@ -247,7 +247,11 @@ export default function VerifyOtp() {
             className="fp-btn"
             disabled={loading || resending}
           >
-            {loading ? "Verifying..." : "Verify →"}
+            {loading ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              "Verify →"
+            )}
           </button>
         </form>
 

@@ -160,14 +160,13 @@ export default function Deposits() {
           </button>
         </div>
       </div>
-
-      {/* Filtered result summary */}
+      {/* SYSTEM OVERVIEW */}
 
       <div className="um-stats-section">
         <div className="um-section-header">
-          <div className="um-section-title">📊 Filtered Results Summary</div>
+          <div className="um-section-title">📊 System Overview</div>
           <div className="um-section-sub">
-           Totals for all deposits matching the selected filters
+            Statistics for all deposits across the system
           </div>
         </div>
 
@@ -203,7 +202,6 @@ export default function Deposits() {
           ))}
         </div>
       </div>
-
       {/* ── Table ── */}
       <div className="ph-table-panel">
         <div className="ph-table-header">
@@ -236,7 +234,7 @@ export default function Deposits() {
                         </div>
                       </td>
 
-                      <td className="ph-col-id ">
+                      <td className="ph-col-id">
                         <div>
                           <div className="um-user-name">{r.adminName}</div>
                           <div className="um-user-email">{r.adminEmail}</div>

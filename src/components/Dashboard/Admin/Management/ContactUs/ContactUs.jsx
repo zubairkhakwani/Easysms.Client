@@ -5,10 +5,15 @@ import { useEffect, useState } from "react";
 import {
   getAllContactUs,
   toggleContactUsMessage,
+  contactUsReply,
 } from "../../../../../services/ContactUs/ContactUsService";
 
+//DropDown
 import { ActionDropdown } from "../../../../Helper/ContactUs/DropDown/ActionDropDown";
+
+//Modals
 import ToggleMessageReadModal from "../../../../Helper/ContactUs/Modal/ToggleMessageReadModal";
+import ContactUsReplyModal from "../../../../Helper/ContactUs/Modal/ContactUsReplyModal";
 
 //Helper
 import { errorToast, successTaost } from "../../../../../helper/Toaster";
@@ -24,12 +29,20 @@ import "./ContactUs.css";
 export default function ContactUs() {
   //Data
   const [contactUs, setContactUs] = useState([]);
-  const [message, setMessage] = useState({ id: "", isRead: false });
-  const [modal, setModal] = useState();
+  const [message, setMessage] = useState({
+    id: "",
+    isRead: false,
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [modal, setModal] = useState("");
 
   //Loading
   const [isLoading, setIsLoading] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
+  const [isReplying, setIsReplying] = useState(false);
 
   //Pagination
   const [count, setCount] = useState(0);
@@ -80,7 +93,7 @@ export default function ContactUs() {
                   isRead: responseData.isRead,
                   readyByName: responseData.readyByName,
                   readyByEmail: responseData.readyByEmail,
-                  readtAt: responseData.readAt,
+                  readAt: responseData.readAt,
                 }
               : item,
           ),
@@ -98,18 +111,54 @@ export default function ContactUs() {
     }
   }
 
+  async function handleContactUsReply(request) {
+    setIsReplying(true);
+    try {
+      let response = await contactUsReply(message.id, request);
+
+      if (response.isSuccess) {
+        const responseData = response.data;
+        setContactUs((previous) =>
+          previous.map((item) =>
+            item.id === message.id
+              ? {
+                  ...item,
+                  hasReplied: responseData.hasReplied,
+                  replyByName: responseData.replyByName,
+                  replyByEmail: responseData.replyByEmail,
+                  replyAt: responseData.replyAt,
+                }
+              : item,
+          ),
+        );
+
+        successTaost(response.message);
+        setModal();
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to perform action");
+    } finally {
+      setIsReplying(false);
+    }
+  }
+
   const openModal = (key, contactUsId) => {
     let messageObj = contactUs.find((obj) => obj.id === contactUsId);
-
     setMessage({
       id: contactUsId,
       isRead: messageObj.isRead,
+      email: messageObj.email,
+      name: `${messageObj.firstName} ${messageObj.lastName}`,
+      subject: messageObj.subject,
+      message: messageObj.message,
     });
 
     setModal(key);
   };
 
-  const closeModal = () => setModal();
+  const closeModal = () => setModal("");
 
   return (
     <div className="ph-page">
@@ -130,12 +179,16 @@ export default function ContactUs() {
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
+                    <th>Phone Number</th>
                     <th>Subject</th>
                     <th>Message</th>
                     <th>Is Read</th>
+                    <th>Has Replied</th>
                     <th>Read By</th>
+                    <th>Replied By</th>
                     <th>Created At</th>
                     <th>Read At</th>
+                    <th>Reply At</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -148,11 +201,17 @@ export default function ContactUs() {
                       <td className="um-user-email">{r.lastName}</td>
 
                       <td className="ph-col-phone">{r.email}</td>
+                      <td className="ph-col-phone">
+                        {r.whatsappNumber
+                          ? FormatterHelper.formatPhoneNumber(r.whatsappNumber)
+                          : "-"}
+                      </td>
                       <td className="ph-col-phone">{r.subject}</td>
 
                       <td className="ph-col-sms" title={r.message}>
                         {r.message}
                       </td>
+
                       <td>
                         <span
                           className={`ph-status ${r.isRead ? "Active" : "Cancelled"} `}
@@ -160,11 +219,38 @@ export default function ContactUs() {
                           {r.isRead ? "true" : "false"}
                         </span>
                       </td>
+                      <td>
+                        <span
+                          className={`ph-status ${r.hasReplied ? "Active" : "Cancelled"} `}
+                        >
+                          {r.hasReplied ? "true" : "false"}
+                        </span>
+                      </td>
+
                       <td className="um-user-cell">
-                        <div>
-                          <div className="um-user-name">{r.readyByName}</div>
-                          <div className="um-user-email">{r.readyByEmail}</div>
-                        </div>
+                        {r.readyByName ? (
+                          <div>
+                            <div className="um-user-name">{r.readyByName}</div>
+                            <div className="um-user-email">
+                              {r.readyByEmail}
+                            </div>
+                          </div>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+
+                      <td className="ph-col-date">
+                        {r.replyByName ? (
+                          <div>
+                            <div className="um-user-name">{r.replyByName}</div>
+                            <div className="um-user-email">
+                              {r.replyByEmail}
+                            </div>
+                          </div>
+                        ) : (
+                          "-"
+                        )}
                       </td>
 
                       <td className="ph-col-date">
@@ -172,10 +258,14 @@ export default function ContactUs() {
                       </td>
                       <td className="ph-col-date">
                         {r.readAt
-                          ? FormatterHelper.formatDateToLocal(r.date)
+                          ? FormatterHelper.formatDateToLocal(r.readAt)
                           : "-"}
                       </td>
-
+                      <td className="ph-col-date">
+                        {r.replyAt
+                          ? FormatterHelper.formatDateToLocal(r.replyAt)
+                          : "-"}
+                      </td>
                       <td>
                         <ActionDropdown
                           contactUsId={r.id}
@@ -224,6 +314,15 @@ export default function ContactUs() {
           isLoading={isToggling}
           onClose={closeModal}
           onConfirm={handleToggleContactUs}
+        />
+      )}
+
+      {modal === modalKeys.contactUsReply && (
+        <ContactUsReplyModal
+          isLoading={isReplying}
+          query={message}
+          onConfirm={handleContactUsReply}
+          onClose={closeModal}
         />
       )}
     </div>

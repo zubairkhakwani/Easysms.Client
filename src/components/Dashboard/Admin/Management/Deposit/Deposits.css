@@ -1,4 +1,3 @@
-
 /* ── Filters ── */
 .ph-filters {
   background: var(--card);
@@ -372,12 +371,6 @@
 .ph-state-icon {
   font-size: 2rem;
   opacity: 0.25;
-}
-
-.ph-state-text {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-dim);
 }
 
 .ph-spinner {

@@ -1,4 +1,7 @@
+//React
 import { useMemo } from "react";
+
+//Css
 import "./StrengthBar.css";
 
 export default function StrengthBar({ password }) {

@@ -14,6 +14,12 @@ export function ActionDropdown({ contactUsId, onAction, isRead }) {
       icon: "",
       color: "cyan",
     },
+    {
+      key: modalKeys.contactUsReply,
+      label: `Reply`,
+      icon: "",
+      color: "cyan",
+    },
   ];
 
   return (

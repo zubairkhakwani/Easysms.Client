@@ -5,7 +5,6 @@ import "./HeroSection.css";
 export default function HeroSection() {
   return (
     <section className="hero">
-      <div className="hero-bg" />
       <div className="hero-grid" />
 
       <div className="hero-content">

@@ -19,52 +19,12 @@ import { AuthContext } from "../../../context/AuthContext";
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 
+//Tooltip
+import Tooltip from "../../../portal/Tooltip";
+
 //Css
 import "./ActiveOrders.css";
 
-const InfoIcon = ({ tooltip, btn }) => {
-  const [visible, setVisible] = useState(false);
-  return (
-    <span
-      className="info-icon-wrapper"
-      onMouseEnter={() => setVisible(true)}
-      onMouseLeave={() => setVisible(false)}
-    >
-      {btn ? (
-        btn
-      ) : (
-        <svg
-          className="info-icon"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle
-            cx="10"
-            cy="10"
-            r="9"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-          <path
-            d="M10 9v5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <circle cx="10" cy="6.5" r="0.75" fill="currentColor" />
-        </svg>
-      )}
-
-      {visible && (
-        <span className="tooltip">
-          <span className="tooltip-arrow" />
-          {tooltip}
-        </span>
-      )}
-    </span>
-  );
-};
 export default function ActiveOrders({
   ordersLoading,
   incomingOrders,
@@ -72,7 +32,6 @@ export default function ActiveOrders({
   OnNumberCancelFailure,
 }) {
   const { balanceCredit } = useContext(AuthContext);
-  const [copied, setCopied] = useState(null);
   const [now, setNow] = useState(Date.now());
   const [cancel, setCancel] = useState([]);
   const [complete, setComplete] = useState([]);
@@ -85,10 +44,9 @@ export default function ActiveOrders({
     return () => clearInterval(interval);
   }, []);
 
-  function handleCopy(activationId, number) {
-    navigator.clipboard.writeText(number).catch(() => {});
-    setCopied(activationId);
-    setTimeout(() => setCopied(null), 500);
+  function handleCopy(text, type) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    successTaost(`${type} copied successfully`);
   }
 
   async function handleCancel(id) {
@@ -196,10 +154,7 @@ export default function ActiveOrders({
           </span>
           <div>
             <div className="card-title">Active Orders</div>
-            <div className="card-sub">
-              Numbers that are currently active — excluding completed and
-              cancelled orders.
-            </div>
+            <div className="card-sub">Numbers that are currently active</div>
           </div>
         </div>
         {incomingOrders.length > 0 ? (
@@ -213,110 +168,117 @@ export default function ActiveOrders({
       {ordersLoading ? (
         <ActiveOrdersSkelton />
       ) : (
-        <div className="orders-list">
-          {incomingOrders.map((order) => (
-            <div className="order-row" key={order.activationId}>
-              <div className="order-row-top">
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span className="order-service">{order.provider}</span>
-                  <span className="order-service">-</span>
-                  <span className="order-service">{order.service}</span>
-                  <span className="order-service">-</span>
-                  <span className="order-country">{order.country}</span>
-                </div>
-
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <span className="order-price">
-                    {FormatterHelper.formatCurrency(order.activationCost)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="order-number">
-                {FormatterHelper.formatPhoneNumber(order.phoneNumber)}
-              </div>
-
-              <div className="order-expiry">
-                Expires in {getRemainingTime(order)}
-              </div>
-
-              {/* SMS Block ( hidden until sms arrives) */}
-              {order.hasSms && (
-                <div className="sms-block">
-                  <div className="sms-label">
-                    <span className="sms-label-dot"></span>
-                    SMS Received
+        <>
+          <div className="orders-list">
+            {incomingOrders.map((order) => (
+              <div className="order-row" key={order.activationId}>
+                <div className="order-row-top">
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <span className="order-service">{order.provider}</span>
+                    <span className="order-service">-</span>
+                    <span className="order-service">{order.service}</span>
+                    <span className="order-service">-</span>
+                    <span className="order-country">{order.country}</span>
                   </div>
 
-                  <div className="sms-body">{order.text}</div>
-
-                  <div className="sms-code">
-                    <span className="sms-code-label">Code</span>
-                    <span className="sms-code-value">{order.code}</span>
-
-                    <button
-                      className="sms-copy-btn"
-                      title="Copy code"
-                      onClick={() =>
-                        navigator.clipboard.writeText(order.sms.code)
-                      }
-                    >
-                      📋
-                    </button>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <span className="order-price">
+                      {FormatterHelper.formatCurrency(order.activationCost)}
+                    </span>
                   </div>
                 </div>
-              )}
 
-              <div className="order-actions">
-                <InfoIcon
-                  tooltip={"Copy number"}
-                  btn={
-                    <button
-                      className="btn-action"
-                      onClick={() =>
-                        handleCopy(order.activationId, order.phoneNumber)
-                      }
-                    >
-                      {copied == order.activationId ? "Copying" : "📋"}
-                    </button>
-                  }
-                />
+                <div className="order-number">
+                  {FormatterHelper.formatPhoneNumber(order.phoneNumber)}
+                </div>
 
-                <InfoIcon
-                  tooltip={"Mark this number as complete"}
-                  btn={
-                    <button
-                      disabled={complete.includes(order.id)}
-                      className="btn-action"
-                      onClick={() => handleComplete(order.id)}
-                    >
-                      ✓
-                    </button>
-                  }
-                />
-                <InfoIcon
-                  tooltip={getCancelTooltip(order.provider)}
-                  btn={
-                    <button
-                      disabled={
-                        !canMakeCancelRequest(order) ||
-                        cancel.includes(order.id)
-                      }
-                      className="btn-action btn-cancel"
-                      onClick={() => handleCancel(order.id)}
-                    >
-                      ✕
-                    </button>
-                  }
-                />
+                <div className="order-expiry">
+                  Expires in {getRemainingTime(order)}
+                </div>
+
+                {/* SMS Block ( hidden until sms arrives) */}
+                {order.hasSms && (
+                  <div className="sms-block">
+                    <div className="sms-label">
+                      <span className="sms-label-dot"></span>
+                      SMS Received
+                    </div>
+
+                    <div className="sms-body">{order.text}</div>
+
+                    <div className="sms-code">
+                      <span className="sms-code-label">Code</span>
+                      <span className="sms-code-value">{order.code}</span>
+
+                      <button
+                        style={{ cursor: "pointer" }}
+                        title="Copy code"
+                        onClick={() => handleCopy(order.code, "Code")}
+                      >
+                        📋
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="order-actions">
+                  <Tooltip
+                    tooltip="Copy number"
+                    btn={
+                      <button
+                        className="btn-action"
+                        onClick={() => handleCopy(order.phoneNumber, "Number")}
+                      >
+                        📋
+                      </button>
+                    }
+                  />
+
+                  <Tooltip
+                    tooltip={"Mark this number as complete"}
+                    btn={
+                      <button
+                        disabled={complete.includes(order.id)}
+                        className="btn-action"
+                        onClick={() => handleComplete(order.id)}
+                      >
+                        ✓
+                      </button>
+                    }
+                  />
+
+                  <Tooltip
+                    tooltip={getCancelTooltip(order.provider)}
+                    btn={
+                      <button
+                        disabled={
+                          !canMakeCancelRequest(order) ||
+                          cancel.includes(order.id)
+                        }
+                        className="btn-action btn-cancel"
+                        onClick={() => handleCancel(order.id)}
+                      >
+                        ✕
+                      </button>
+                    }
+                  />
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

@@ -25,6 +25,7 @@ import VerifyOtp from "./components/Auth/VerifyOtp/VerifyOtp.jsx";
 import ResetPassword from "./components/Auth/ResetPassword/ResetPassword.jsx";
 import PrivateRoute from "./components/Route/PrivateRoute.jsx";
 import TopUp from "./components/LandingPage/TopUp/TopUp.jsx";
+import ThankYouPage from "./components/LandingPage/Thankyou/ThankyouPage.jsx";
 import NotFound from "./components/Shared/NotFound.jsx";
 
 //Admin Dashboard
@@ -83,6 +84,7 @@ createRoot(document.getElementById("root")).render(
                   path="/forgot-password/reset-password"
                   element={<ResetPassword />}
                 />
+                <Route path="/thankyou" element={<ThankYouPage />} />
               </Route>
 
               {/* Admin Layout */}

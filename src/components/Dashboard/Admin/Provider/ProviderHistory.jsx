@@ -63,17 +63,23 @@ export default function ProviderHistory() {
       }
       setProviderHistory(responseData?.items ?? []);
       setCount(responseData.count);
+    } catch {
+      errorToast("Failed to load activation history");
     } finally {
       setApplied({ from: startDate, to: endDate, provider });
       setIsLoading(false);
     }
   }
   async function getUsersData() {
-    let response = await getAll();
-    var responseData = response.data;
-    setUsers(responseData);
-    if (!response.isSuccess) {
-      errorToast(response.message);
+    try {
+      let response = await getAll();
+      var responseData = response.data?.users.items ?? [];
+      setUsers(responseData);
+      if (!response.isSuccess) {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to load users");
     }
   }
 
@@ -115,6 +121,31 @@ export default function ProviderHistory() {
     setPageSize(parseInt(event.target.value, 10));
     setPageNo(0);
   };
+
+  const currentPageStats = [
+    {
+      label: "Total Numbers",
+      val: providerHistory.length,
+    },
+
+    {
+      label: "Total Active",
+      val: providerHistory.filter((x) => x.status.toLowerCase() === "active")
+        .length,
+    },
+
+    {
+      label: "Total Completed",
+      val: providerHistory.filter((x) => x.status.toLowerCase() === "completed")
+        .length,
+    },
+
+    {
+      label: "Total Cancelled",
+      val: providerHistory.filter((x) => x.status.toLowerCase() === "cancelled")
+        .length,
+    },
+  ];
 
   return (
     <div className="ph-page">
@@ -200,6 +231,23 @@ export default function ProviderHistory() {
               "✦ Apply"
             )}
           </button>
+        </div>
+      </div>
+      <div className="um-stats-section" style={{ marginBottom: "0" }}>
+        <div className="um-section-header">
+          <div className="um-section-title">📄 Current Page</div>
+
+          <div className="um-section-sub">Filtered / paginated results</div>
+        </div>
+
+        <div className="um-stats-row">
+          {currentPageStats.map((s) => (
+            <div key={s.label} className="um-stat-card page">
+              <div className="um-stat-val">{s.val}</div>
+
+              <div className="um-stat-label">{s.label}</div>
+            </div>
+          ))}
         </div>
       </div>
 

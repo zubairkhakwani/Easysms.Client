@@ -1,32 +1,45 @@
+/* ============================================================
+   PopularServices.css — Warm & Friendly Light Theme
+   ============================================================ */
+
 .section {
   padding: 45px;
 }
 
+/* Section label pill */
 .section-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 2px;
+  display: inline-block;
+  font-size: var(--text-sm);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-widest);
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--text-accent);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
   margin-bottom: 14px;
 }
 
+/* Section heading */
 .section-title {
   font-size: clamp(1.5rem, 3vw, 2.8rem);
-  font-weight: 800;
-  letter-spacing: -1px;
-  color: #fff;
+  font-weight: var(--fw-extrabold);
+  letter-spacing: var(--ls-tight);
+  color: var(--text-heading);
   margin-bottom: 14px;
 }
 
+/* Section subtitle */
 .section-sub {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: var(--text-lg);
+  color: var(--text-mid);
   max-width: 480px;
-  line-height: 1.7;
-  font-weight: 300;
+  line-height: var(--lh-relaxed);
+  font-weight: var(--fw-light);
 }
 
+/* Services grid */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -34,14 +47,16 @@
   margin-top: 50px;
 }
 
+/* Service card */
 .service-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-xs);
   padding: 24px 20px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.25s;
+  transition: all var(--transition);
   position: relative;
   overflow: hidden;
 }
@@ -51,33 +66,38 @@
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.25s;
+  transition: opacity var(--transition);
   border-radius: inherit;
 }
 
 .service-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-md);
 }
 
 .service-card:hover::before {
   opacity: 1;
 }
 
+/* Icon */
 .service-icon {
   font-size: 2.2rem;
   margin-bottom: 12px;
   display: block;
 }
 
+/* Name */
 .service-name {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-heading);
 }
 
+/* Price */
 .service-price {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.35);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
   margin-top: 6px;
+  font-weight: var(--fw-medium);
 }

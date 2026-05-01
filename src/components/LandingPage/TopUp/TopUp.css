@@ -1,16 +1,4 @@
-/* ── TopUpPage.css ─────────────────────────────────────────────── */
-
-:root {
-  --accent: #00e5ff;
-  --accent2: #7c3aed;
-  --accent-logout: #ff5c5c;
-  --error: #ff5f7e;
-  --bg: #0a0a0f;
-  --card: #13131a;
-  --border: rgba(255, 255, 255, 0.07);
-  --text-dim: rgba(255, 255, 255, 0.45);
-  --font: "Sora", "Segoe UI", sans-serif;
-}
+/* ── TopUpPage.css ─────────────────────────────────────────────── *
 
 /* ── Root & Background ── */
 .topup-root {
@@ -18,7 +6,8 @@
   min-height: 100vh;
   background: var(--bg);
   font-family: var(--font);
-  color: #fff;
+  color: var(--text);
+
   overflow-x: hidden;
 }
 
@@ -36,7 +25,7 @@
 .topup-glow {
   position: fixed;
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(80px);
   pointer-events: none;
   z-index: 0;
 }
@@ -87,7 +76,7 @@
 .topup-badge {
   display: inline-block;
   padding: 0.35em 1em;
-  border-radius: 100px;
+  border-radius: var(--radius-full);
   border: 1px solid rgba(0, 229, 255, 0.25);
   background: rgba(0, 229, 255, 0.07);
   color: var(--accent);
@@ -99,14 +88,14 @@
 
 .topup-title {
   font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 800;
+  font-weight: var(--fw-bold);
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin: 0;
 }
 
 .topup-accent {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, var(--accent), var(--accent-blue));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -136,9 +125,9 @@
 .topup-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: clamp(12px, 2vw, 20px);
+  border-radius: var(--radius-lg);
   padding: clamp(1.25rem, 4vw, 2rem);
-  transition: border-color 0.3s;
+  transition: var(--transition);
 }
 .topup-card:hover {
   border-color: rgba(0, 229, 255, 0.18);
@@ -181,7 +170,7 @@
   color: var(--accent);
   background: rgba(0, 229, 255, 0.08);
   border: 1px solid rgba(0, 229, 255, 0.2);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0.3em 0.55em;
   letter-spacing: 0.05em;
   margin-top: 2px;
@@ -230,7 +219,7 @@
   text-decoration: none;
   letter-spacing: -0.01em;
   margin-bottom: 0.35rem;
-  transition: opacity 0.2s;
+  transition: var(--transition);
 }
 .topup-phone:hover {
   opacity: 0.8;
@@ -247,7 +236,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: clamp(0.55rem, 1.5vw, 0.7rem) clamp(1rem, 3vw, 1.5rem);
-  border-radius: 10px;
+  border-radius: var(--radius);
   background: rgba(0, 229, 255, 0.1);
   border: 1px solid rgba(0, 229, 255, 0.25);
   color: var(--accent);
@@ -255,10 +244,7 @@
   font-size: clamp(0.8rem, 2vw, 0.9rem);
   font-weight: 600;
   text-decoration: none;
-  transition:
-    background 0.25s,
-    border-color 0.25s,
-    transform 0.2s;
+  transition: var(--transition);
 }
 .topup-whatsapp-btn:hover {
   background: rgba(0, 229, 255, 0.18);
@@ -276,16 +262,12 @@
 .topup-currency {
   font-size: clamp(0.85rem, 2vw, 1rem);
   color: var(--text-dim);
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
 }
 .topup-amount {
-  font-size: clamp(2rem, 6vw, 3rem);
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.02em;
+  font-size: clamp(1rem, 4vw, 2rem);
+  font-weight: var(--fw-extrabold);
+  color: var(--accent);
 }
 .topup-min-desc {
   font-size: clamp(0.8rem, 1.8vw, 0.9rem);
@@ -294,15 +276,15 @@
   margin: 0 0 clamp(0.75rem, 2vw, 1rem);
 }
 .topup-min-desc strong {
-  color: #fff;
+  color: var(--accent);
 }
 
 .topup-warning {
   font-size: clamp(0.75rem, 1.8vw, 0.85rem);
-  background: rgba(255, 92, 92, 0.08);
-  border: 1px solid rgba(255, 92, 92, 0.2);
-  color: #ff5c5c;
-  border-radius: 8px;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: var(--error);
+  border-radius: var(--radius-sm);
   padding: 0.6em 0.9em;
   font-weight: 600;
 }
@@ -332,9 +314,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  transition:
-    border-color 0.3s,
-    transform 0.25s;
+  transition: var(--transition);
 }
 .topup-feature-card:hover {
   border-color: rgba(0, 229, 255, 0.2);
@@ -378,25 +358,20 @@
   margin: 0;
 }
 .topup-cta p strong {
-  color: #fff;
+  color: var(--text);
 }
 
 .topup-cta-btn {
   display: inline-block;
   padding: clamp(0.65rem, 2vw, 0.85rem) clamp(1.75rem, 5vw, 2.75rem);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
-  font-family: var(--font);
+  color: var(--text);
   font-size: clamp(0.85rem, 2.2vw, 1rem);
   font-weight: 700;
   text-decoration: none;
   letter-spacing: 0.02em;
-  transition:
-    opacity 0.25s,
-    transform 0.25s,
-    box-shadow 0.25s;
-  box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+  transition: var(--transition);
 }
 .topup-cta-btn:hover {
   opacity: 0.9;

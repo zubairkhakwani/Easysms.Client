@@ -25,6 +25,7 @@ export const getProvidersHistory = async ({
     pageNumber: pageNo,
     pageSize: pageSize,
     user: user,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   }).toString();
 
   const response = await httpClient.get(

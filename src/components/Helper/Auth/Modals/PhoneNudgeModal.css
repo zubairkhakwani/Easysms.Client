@@ -1,0 +1,162 @@
+/* ─── Overlay ─────────────────────────────────────────────── */
+.pnm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.pnm-overlay.pnm-visible {
+  opacity: 1;
+}
+
+.pnm-overlay.pnm-visible .pnm-card {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ─── Card ─────────────────────────────────────────────────── */
+.pnm-card {
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-top: 3px solid var(--accent-green);
+  border-radius: var(--radius);
+  padding: 36px 32px 28px;
+  max-width: 560px;
+  width: calc(100% - 40px);
+  box-shadow: var(--modal-shadow);
+  transform: translateY(18px);
+  opacity: 0;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s ease;
+}
+
+/* ─── Icon ─────────────────────────────────────────────────── */
+.pnm-icon-wrap {
+  width: 52px;
+  height: 52px;
+  background: rgba(0, 255, 170, 0.08);
+  border: 1px solid rgba(0, 255, 170, 0.15);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.pnm-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* ─── Text ─────────────────────────────────────────────────── */
+.pnm-title {
+  font-family: var(--font);
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px;
+  letter-spacing: -0.3px;
+}
+
+.pnm-body {
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+.pnm-body em {
+  font-style: normal;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ─── Benefits List ────────────────────────────────────────── */
+.pnm-benefits {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pnm-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font);
+  font-size: 13.5px;
+  color: var(--text-mid);
+  line-height: 1.55;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+.pnm-bullet {
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─── Actions ──────────────────────────────────────────────── */
+.pnm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pnm-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition:
+    background 0.18s ease,
+    transform 0.15s ease,
+    box-shadow 0.18s ease;
+}
+
+.pnm-btn:active {
+  transform: scale(0.98);
+}
+
+/* Primary — accent green */
+.pnm-btn-primary {
+  background: var(--accent-green);
+  color: #0a0a0f;
+  box-shadow: 0 2px 14px rgba(0, 255, 170, 0.2);
+}
+
+.pnm-btn-primary:hover {
+  box-shadow: 0 4px 20px rgba(0, 255, 170, 0.3);
+  filter: brightness(1.08);
+}
+
+/* Ghost — dim, no guilt */
+.pnm-btn-ghost {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.pnm-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-mid);
+}

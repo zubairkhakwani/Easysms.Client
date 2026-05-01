@@ -4,8 +4,20 @@ import { useState, useMemo } from "react";
 //Serives
 import { addPhysical } from "../../../../../services/Number/NumberService";
 
+//Components
+import { PhysicalNumbers } from "./PhysicalNumbers";
+
 //Toaster
-import { successTaost, errorToast } from "../../../../../helper/Toaster";
+import { errorToast } from "../../../../../helper/Toaster";
+
+//Helper
+import { FormatterHelper } from "../../../../../helper/FormatterHelper";
+
+//Static
+import { PhysicalNumberStatus } from "../../../../../data/Static";
+
+//Pagination
+import Paginations from "../../../../Shared/Pagination";
 
 //Css
 import "./AddPhysicalNumber.css";
@@ -109,20 +121,21 @@ export default function AddPhysicalNumber() {
   const [text, setText] = useState("");
   const [price, setPrice] = useState(0);
   const [result, setResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAddingPhysicalNumbers, setIsAddingPhysicalNumbers] = useState(false);
 
   const lines = useMemo(
     () => text.split("\n").map(parseLine).filter(Boolean),
     [text],
   );
 
+  //Add Physical Numbers
   const validLines = lines.filter((l) => l.valid);
   const invalidLines = lines.filter((l) => !l.valid);
   const totalLines = lines.length;
 
   const handleSubmit = async () => {
     if (validLines.length === 0) return;
-    setIsLoading(true);
+    setIsAddingPhysicalNumbers(true);
 
     try {
       const payload = {
@@ -138,148 +151,155 @@ export default function AddPhysicalNumber() {
         errorToast(response.message);
       }
     } finally {
-      setIsLoading(false);
+      setIsAddingPhysicalNumbers(false);
     }
   };
 
   const handleClear = () => setText("");
 
   return (
-    <div className="add-numbers-page">
-      {/* Result Modal */}
-      {result && (
-        <ResultModal result={result} onClose={() => setResult(null)} />
-      )}
+    <>
+      <PhysicalNumbers />
 
-      {/* Banner */}
-      <div className="add-numbers-banner">
-        <div className="banner-icon">🇺🇸</div>
-        <div className="banner-text">
-          <p className="banner-title">Add USA Physical Numbers</p>
-          <p className="banner-sub">
-            Paste all numbers you want to add — one entry per line. Each line
-            must follow the pattern below. Invalid lines are skipped on submit.
-          </p>
+      <div className="add-numbers-page">
+        {/* Result Modal */}
+        {result && (
+          <ResultModal result={result} onClose={() => setResult(null)} />
+        )}
+
+        {/* Banner */}
+        <div className="add-numbers-banner">
+          <div className="banner-icon">🇺🇸</div>
+          <div className="banner-text">
+            <p className="banner-title">Add USA Physical Numbers</p>
+            <p className="banner-sub">
+              Paste all numbers you want to add — one entry per line. Each line
+              must follow the pattern below. Invalid lines are skipped on
+              submit.
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Pattern hint */}
-      <div className="pattern-hint">
-        <span className="pattern-hint-label">Required Format</span>
-        <div className="pattern-hint-box">
-          <span className="pattern-code">
-            13104447990|https://sms222.us?token=j9u9Worj5y03101354
-          </span>
-          <span className="pattern-hint-note">number | inbox URL</span>
+        {/* Pattern hint */}
+        <div className="pattern-hint">
+          <span className="pattern-hint-label">Required Format</span>
+          <div className="pattern-hint-box">
+            <span className="pattern-code">
+              13104447990|https://sms222.us?token=j9u9Worj5y03101354
+            </span>
+            <span className="pattern-hint-note">number | inbox URL</span>
+          </div>
         </div>
-      </div>
 
-      {/* Textarea */}
-      <div className="textarea-section">
-        <div className="textarea-header">
-          <span className="textarea-label">Numbers</span>
-          <span
-            className={`textarea-counter ${totalLines > 0 ? "has-entries" : ""}`}
+        {/* Textarea */}
+        <div className="textarea-section">
+          <div className="textarea-header">
+            <span className="textarea-label">Numbers</span>
+            <span
+              className={`textarea-counter ${totalLines > 0 ? "has-entries" : ""}`}
+            >
+              {totalLines === 0
+                ? "No entries yet"
+                : `${validLines.length} valid · ${invalidLines.length} invalid`}
+            </span>
+          </div>
+
+          <textarea
+            className="numbers-textarea"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={
+              "13104447990|https://sms222.us?token=abc123\n" +
+              "13105557890|https://sms222.us?token=xyz456\n" +
+              "19175551234|https://sms222.us?token=def789\n" +
+              "...\n\nOne number per line."
+            }
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+          />
+
+          <div className="validation-row">
+            {totalLines === 0 && (
+              <span className="validation-item neutral">
+                ⊙ Paste your numbers above to get started
+              </span>
+            )}
+            {totalLines > 0 && validLines.length > 0 && (
+              <span className="validation-item valid">
+                ✓ {validLines.length}{" "}
+                {validLines.length === 1 ? "entry" : "entries"} ready to submit
+              </span>
+            )}
+            {invalidLines.length > 0 && (
+              <span className="validation-item invalid">
+                ✕ {invalidLines.length}{" "}
+                {invalidLines.length === 1 ? "line" : "lines"} will be skipped
+                (wrong format)
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Price */}
+        <div className="textarea-section">
+          <div className="textarea-header">
+            <span className="textarea-label">Price</span>
+          </div>
+          <input
+            className="price-input"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
+          <div className="validation-row">
+            {price <= 0 && (
+              <span className="validation-item neutral">
+                ⊙ Please enter valid price for these numbers
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="action-row">
+          <button
+            className="submit-btn"
+            onClick={handleSubmit}
+            disabled={
+              price <= 0 || validLines.length === 0 || isAddingPhysicalNumbers
+            }
           >
-            {totalLines === 0
-              ? "No entries yet"
-              : `${validLines.length} valid · ${invalidLines.length} invalid`}
-          </span>
-        </div>
+            {isAddingPhysicalNumbers ? (
+              <>
+                <span className="btn-spinner" /> Submitting…
+              </>
+            ) : (
+              <>
+                ✦ Submit Numbers
+                {validLines.length > 0 && (
+                  <span style={{ opacity: 0.7, fontWeight: 400 }}>
+                    ({validLines.length})
+                  </span>
+                )}
+              </>
+            )}
+          </button>
 
-        <textarea
-          className="numbers-textarea"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder={
-            "13104447990|https://sms222.us?token=abc123\n" +
-            "13105557890|https://sms222.us?token=xyz456\n" +
-            "19175551234|https://sms222.us?token=def789\n" +
-            "...\n\nOne number per line."
-          }
-          spellCheck={false}
-          autoCorrect="off"
-          autoCapitalize="off"
-        />
+          <button
+            className="clear-btn"
+            onClick={handleClear}
+            disabled={text.length === 0 || isAddingPhysicalNumbers}
+          >
+            Clear
+          </button>
 
-        <div className="validation-row">
-          {totalLines === 0 && (
-            <span className="validation-item neutral">
-              ⊙ Paste your numbers above to get started
-            </span>
-          )}
-          {totalLines > 0 && validLines.length > 0 && (
-            <span className="validation-item valid">
-              ✓ {validLines.length}{" "}
-              {validLines.length === 1 ? "entry" : "entries"} ready to submit
-            </span>
-          )}
-          {invalidLines.length > 0 && (
-            <span className="validation-item invalid">
-              ✕ {invalidLines.length}{" "}
-              {invalidLines.length === 1 ? "line" : "lines"} will be skipped
-              (wrong format)
-            </span>
-          )}
+          <span className="action-spacer" />
         </div>
       </div>
-
-      {/* Price */}
-      <div className="textarea-section">
-        <div className="textarea-header">
-          <span className="textarea-label">Price</span>
-        </div>
-        <input
-          className="price-input"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="0.00"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-        <div className="validation-row">
-          {price <= 0 && (
-            <span className="validation-item neutral">
-              ⊙ Please enter valid price for these numbers
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="action-row">
-        <button
-          className="submit-btn"
-          onClick={handleSubmit}
-          disabled={price <= 0 || validLines.length === 0 || isLoading}
-        >
-          {isLoading ? (
-            <>
-              <span className="btn-spinner" /> Submitting…
-            </>
-          ) : (
-            <>
-              ✦ Submit Numbers
-              {validLines.length > 0 && (
-                <span style={{ opacity: 0.7, fontWeight: 400 }}>
-                  ({validLines.length})
-                </span>
-              )}
-            </>
-          )}
-        </button>
-
-        <button
-          className="clear-btn"
-          onClick={handleClear}
-          disabled={text.length === 0 || isLoading}
-        >
-          Clear
-        </button>
-
-        <span className="action-spacer" />
-      </div>
-    </div>
+    </>
   );
 }

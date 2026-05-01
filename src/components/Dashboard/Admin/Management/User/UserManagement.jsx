@@ -28,7 +28,7 @@ function ActionDropdown({ user, onAction }) {
   return (
     <div className="um-dropdown-wrap">
       <button className="um-action-btn" onClick={() => setOpen((v) => !v)}>
-        Actions <span style={{ opacity: 0.5 }}>▾</span>
+        Actions <span className="um-action-down-arrow">▾</span>
       </button>
       {open && (
         <div className="um-dropdown">
@@ -145,13 +145,13 @@ export default function UserManagement() {
   //Loading
   const [isLoading, setIsLoading] = useState(false);
 
-  //Filter
-  const [keyword, setKeyword] = useState("");
-
-  //Pagination
+  //Paginations
   const [count, setCount] = useState(0);
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+
+  //Filter
+  const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -175,6 +175,10 @@ export default function UserManagement() {
     };
     fetchAllUsers();
   }, [pageNo, pageSize, keyword]);
+
+  function handleSearch(keyword) {
+    setKeyword(keyword);
+  }
 
   const openModal = (type, user) => setModal({ type, user });
   const closeModal = () => setModal(null);
@@ -308,7 +312,7 @@ export default function UserManagement() {
         <div className="um-table-header">
           <span className="um-table-title">All Users</span>
           <input
-            className="um-search-input"
+            className="adm-search-input"
             placeholder="🔍  Search users..."
             onChange={(e) => setKeyword(e.target.value)}
           />

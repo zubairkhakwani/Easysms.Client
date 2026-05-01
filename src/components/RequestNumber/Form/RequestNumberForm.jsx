@@ -86,7 +86,7 @@ export default function RequestNumber({ onNewNumber }) {
     useState(false);
 
   const [requestedNumber, setRequestedNumber] = useState({});
-  const [requestNumberText, setRequestNumberText] = useState("⚡ Get Number");
+  const [isRequestingNumber, setIsRequestingNumber] = useState(false);
 
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
@@ -238,7 +238,7 @@ export default function RequestNumber({ onNewNumber }) {
       return;
     }
 
-    setRequestNumberText("Getting Number..");
+    setIsRequestingNumber(true);
 
     const updatedRequestedNumber = {
       ...requestedNumber,
@@ -289,7 +289,7 @@ export default function RequestNumber({ onNewNumber }) {
       errorToast(responseMessage);
     }
 
-    setRequestNumberText("⚡ Get Number");
+    setIsRequestingNumber(false);
     setPurchaseState(false);
   };
 
@@ -449,7 +449,11 @@ export default function RequestNumber({ onNewNumber }) {
         onClick={handleRequestNumber}
         disabled={pruchaseState}
       >
-        {requestNumberText}
+        {isRequestingNumber ? (
+          <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+        ) : (
+          "⚡ Get Number"
+        )}
       </button>
       {modal && (
         <PhysicalNumberModal

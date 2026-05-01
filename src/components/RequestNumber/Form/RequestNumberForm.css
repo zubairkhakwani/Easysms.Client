@@ -1,64 +1,217 @@
+/* =========================
+   FORM FIELDS
+========================= */
+.request-number-container {
+  animation: fadeInUp 0.4s ease both;
+}
 .fields {
   display: flex;
   flex-direction: column;
-  gap: 13px;
-  margin-bottom: 18px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
+
 .field label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.76rem;
-  font-weight: 600;
-  margin-bottom: 5px;
+  gap: var(--space-1);
+  font-size: var(--text-ms);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-1);
 }
+
+/* =========================
+   SELECT
+========================= */
+
 select {
   width: 100%;
-  background: var(--inner);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  color: #f0f0f0;
-  padding: 11px 36px 11px 14px;
-  font-size: 0.86rem;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  color: var(--input-text);
+  padding: var(--space-3) var(--space-8) var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
   font-family: var(--font);
   outline: none;
   cursor: pointer;
   appearance: none;
+
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath stroke='%23666' stroke-width='1.5' fill='none' d='M1 1l4.5 4.5L10 1'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 13px center;
-  transition: border-color 0.2s;
+  background-position: right var(--space-3) center;
+
+  transition: border-color var(--transition);
 }
+
 select:focus {
-  border-color: rgba(0, 229, 255, 0.4);
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
 }
+
 select:disabled {
   cursor: not-allowed;
-}
-select option {
-  background: #1a1a26;
+  opacity: 0.6;
 }
 
-/* Skeleton */
+/* =========================
+   SKELETON
+========================= */
+
 .select-skeleton {
+  position: relative;
   height: 38px;
   width: 100%;
-  border-radius: 6px;
-
+  border-radius: var(--skeleton-border-radius);
+  border: 1px solid var(--border);
   background: linear-gradient(
-    90deg,
-    #2b2b2b 0%,
-    #3a3a3a 25%,
-    #555555 50%,
-    #3a3a3a 75%,
-    #2b2b2b 100%
+    110deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 30%,
+    var(--skeleton-base) 100%
   );
 
-  background-size: 300% 100%;
-  animation: skeleton-loading 1.6s infinite linear;
-
-  border: 1px solid #444;
+  background-size: 200% 100%;
+  animation: shimmer-base 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+
+/* =========================
+   PRICE PREVIEW
+========================= */
+
+.price-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--accent-blue-subtle);
+  border: 1px solid var(--accent-blue-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.price-label {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  font-weight: var(--fw-light);
+}
+
+.price-value {
+  font-size: var(--text-xl);
+  font-weight: var(--fw-extrabold);
+  color: var(--accent);
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.get-btn {
+  width: 100%;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  font-size: var(--text-ms);
+  font-weight: var(--fw-bold);
+  font-family: var(--font);
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    opacity var(--transition);
+  box-shadow: var(--btn-primary-shadow);
+}
+
+.get-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--btn-primary-shadow-hover);
+}
+
+.get-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+
+/* =========================
+   RESULT BOX
+========================= */
+
+.result-box {
+  margin-top: var(--space-4);
+  background: var(--accent-blue-subtle);
+  border: 1px solid var(--accent-blue-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.result-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: var(--space-2);
+}
+
+.result-number {
+  font-size: var(--text-3xl);
+  font-weight: var(--fw-extrabold);
+  color: var(--accent);
+  margin-bottom: var(--space-1);
+}
+
+.result-meta {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  margin-bottom: var(--space-4);
+}
+
+/* =========================
+   COPY BUTTON
+========================= */
+
+.copy-btn {
+  background: var(--btn-ghost-bg);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  border-radius: var(--radius-xs);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.copy-btn:hover {
+  background: var(--btn-ghost-bg-hover);
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
 
 @keyframes skeleton-loading {
   0% {
@@ -67,110 +220,4 @@ select option {
   100% {
     background-position: -200% 0;
   }
-}
-
-.price-preview {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0, 229, 255, 0.05);
-  border: 1px solid rgba(0, 229, 255, 0.15);
-  border-radius: 10px;
-  padding: 10px 16px;
-  margin-bottom: 16px;
-}
-.price-label {
-  font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.45);
-  font-weight: 300;
-}
-.price-value {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--accent);
-}
-
-.get-btn {
-  width: 100%;
-  background: linear-gradient(135deg, #00e5ff, #0ea5e9);
-  color: #000;
-  border: none;
-  border-radius: 12px;
-  padding: 14px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  font-family: var(--font);
-  cursor: pointer;
-  transition:
-    opacity 0.2s,
-    transform 0.2s;
-}
-.get-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-.get-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  animation: none;
-}
-
-.loading-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-.spinner {
-  width: 15px;
-  height: 15px;
-  border: 2px solid rgba(0, 0, 0, 0.25);
-  border-top-color: #000;
-  border-radius: 50%;
-  animation: spin 0.65s linear infinite;
-  display: inline-block;
-}
-
-.result-box {
-  margin-top: 16px;
-  background: rgba(0, 229, 255, 0.04);
-  border: 1px solid rgba(0, 229, 255, 0.22);
-  border-radius: 14px;
-  padding: 20px;
-  text-align: center;
-  animation: fadeIn 0.4s ease;
-}
-.result-eyebrow {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
-  margin-bottom: 8px;
-}
-.result-number {
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: var(--accent);
-  letter-spacing: -0.5px;
-  margin-bottom: 6px;
-}
-.result-meta {
-  font-size: 0.73rem;
-  color: rgba(255, 255, 255, 0.32);
-  margin-bottom: 14px;
-}
-.copy-btn {
-  background: rgba(0, 229, 255, 0.1);
-  border: 1px solid rgba(0, 229, 255, 0.25);
-  color: var(--accent);
-  border-radius: 8px;
-  padding: 8px 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--font);
-  transition: background 0.2s;
-}
-.copy-btn:hover {
-  background: rgba(0, 229, 255, 0.18);
 }

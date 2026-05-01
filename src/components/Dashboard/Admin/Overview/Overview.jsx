@@ -1,44 +1,25 @@
 //React
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 //Services
-
 import { getProvidersInfo } from "../../../../services/Provider/ProviderService";
+import { getDasboardOverview } from "../../../../services/Dashboard/DashboardService";
+
+//Helper
+import { FormatterHelper } from "../../../../helper/FormatterHelper";
+
+//Toaster
+import { errorToast } from "../../../../helper/Toaster";
 
 //Components
 import StatCard from "../StatCard/StatCard";
 
-import {
-  providers,
-  providerStats,
-  providerBalances,
-  topProvidersBySales,
-  topProvidersByRevenue,
-  recentOtpActivity,
-  formatNumber,
-  formatCurrency,
-} from "../../../../data/MockData";
-
 //Css
 import "./Overview.css";
-
-const today = new Date();
-const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
 function toDateString(d) {
   return d.toISOString().slice(0, 10);
 }
-function fmtTime(d) {
-  return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-}
-
-const accentColors = [
-  { bar: "#00e5ff" },
-  { bar: "#7c3aed" },
-  { bar: "#00ffaa" },
-  { bar: "#ff9d3d" },
-  { bar: "#ff5f7e" },
-];
 
 function getBalanceLevel(bal) {
   if (bal < 1000) return "low";
@@ -46,22 +27,32 @@ function getBalanceLevel(bal) {
   return "";
 }
 
+const toDS = (d) => d.toISOString().slice(0, 10);
+const today = new Date();
+const twoWeeks = new Date(
+  today.getFullYear(),
+  today.getMonth(),
+  today.getDate() - 14,
+);
+
 export default function Overview() {
-  const [fromDate, setFromDate] = useState(toDateString(firstOfMonth));
-  const [toDate, setToDate] = useState(toDateString(today));
-  const [selectedProvider, setSelectedProvider] = useState("all");
-  const [appliedFilters, setAppliedFilters] = useState({
-    from: toDateString(firstOfMonth),
-    to: toDateString(today),
-    provider: "all",
-  });
-  const [isFiltered, setIsFiltered] = useState(false);
-  const [balances, setBalances] = useState(providerBalances);
+  //Providers overview
+  const [overview, setOverView] = useState([]);
+
+  //Provider Balances
+  const [balances, setBalances] = useState([]);
+
+  //Loading
+  const [isOverviewLoading, setIsOverviewLoading] = useState(false);
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
+
+  //Filters
+  const [startDate, setStartDate] = useState(toDS(twoWeeks));
+  const [endDate, setEndDate] = useState(toDS(today));
+
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastSynced, setLastSynced] = useState(fmtTime(new Date()));
 
   //Providers Info
-
   async function getProvidersData() {
     let response = await getProvidersInfo();
     if (response?.isSuccess) {
@@ -69,85 +60,49 @@ export default function Overview() {
     }
   }
 
+  async function getDashboardOverviewData() {
+    setIsOverviewLoading(true);
+    try {
+      let response = await getDasboardOverview({ startDate, endDate });
+      if (response.isSuccess) {
+        setOverView(response.data);
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to load dasboard overview");
+    } finally {
+      setIsOverviewLoading(false);
+    }
+  }
+
   useEffect(() => {
     getProvidersData();
   }, []);
 
-  const stats = useMemo(
-    () => providerStats[appliedFilters.provider] || providerStats["all"],
-    [appliedFilters.provider],
-  );
-  const providerName = useMemo(
-    () =>
-      providers.find((p) => p.id === appliedFilters.provider)?.name ||
-      "All Providers",
-    [appliedFilters.provider],
-  );
+  useEffect(() => {
+    getDashboardOverviewData();
+  }, []);
 
   const handleApply = () => {
-    setAppliedFilters({
-      from: fromDate,
-      to: toDate,
-      provider: selectedProvider,
-    });
-    setIsFiltered(
-      fromDate !== toDateString(firstOfMonth) ||
-        toDate !== toDateString(today) ||
-        selectedProvider !== "all",
-    );
+    getDashboardOverviewData();
   };
 
   const handleReset = () => {
-    const f = toDateString(firstOfMonth),
-      t = toDateString(today);
-    setFromDate(f);
-    setToDate(t);
-    setSelectedProvider("all");
-    setAppliedFilters({ from: f, to: t, provider: "all" });
-    setIsFiltered(false);
+    setStartDate(toDS(twoWeeks));
+    setEndDate(toDS(today));
   };
 
-  const handleGetLatest = () => {
+  const handleGetLatest = async () => {
     if (isRefreshing) return;
     setIsRefreshing(true);
-    setTimeout(() => {
-      // Simulate fresh balance fetch — swap this setTimeout for your real API call
-      setBalances((prev) =>
-        prev.map((b) => {
-          const delta = (Math.random() - 0.45) * ((b.Balance ?? 0) * 0.03);
-          return { ...b, Balance: Math.max(0, (b.Balance ?? 0) + delta) };
-        }),
-      );
-      setLastSynced(fmtTime(new Date()));
-      setIsRefreshing(false);
-    }, 1400);
+    await getProvidersData();
+    setIsRefreshing(false);
   };
 
-  const activeSales = useMemo(
-    () =>
-      appliedFilters.provider === "all"
-        ? topProvidersBySales
-        : topProvidersBySales.filter((p) => p.name === providerName),
-    [appliedFilters.provider, providerName],
-  );
-  const activeRevenue = useMemo(
-    () =>
-      appliedFilters.provider === "all"
-        ? topProvidersByRevenue
-        : topProvidersByRevenue.filter((p) => p.name === providerName),
-    [appliedFilters.provider, providerName],
-  );
-  const activeOtps = useMemo(
-    () =>
-      appliedFilters.provider === "all"
-        ? recentOtpActivity
-        : recentOtpActivity.filter((a) => a.provider === providerName),
-    [appliedFilters.provider, providerName],
-  );
-
-  const totalBalance = balances.reduce((s, b) => s + (b.balance ?? 0), 0);
-  const activeCount = balances.filter((b) => b.status === "Online").length;
-  const lowBalCount = balances.filter((b) => (b.balance ?? 0) < 1000).length;
+  const totalBalance = balances?.reduce((s, b) => s + (b.balance ?? 0), 0);
+  const activeCount = balances?.filter((b) => b.status === "Online").length;
+  const lowBalCount = balances?.filter((b) => (b.balance ?? 0) < 10).length;
 
   return (
     <div className="overview-page">
@@ -160,9 +115,9 @@ export default function Overview() {
             <input
               type="date"
               className="filter-input"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              max={toDate}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              max={endDate}
             />
           </div>
           <div className="filter-field">
@@ -170,117 +125,104 @@ export default function Overview() {
             <input
               type="date"
               className="filter-input"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              min={fromDate}
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              min={startDate}
               max={toDateString(today)}
             />
-          </div>
-          <div className="filter-field">
-            <label>Provider</label>
-            <select
-              className="filter-input"
-              value={selectedProvider}
-              onChange={(e) => setSelectedProvider(e.target.value)}
-            >
-              {providers.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
         <div className="filter-actions">
           <button className="filter-reset-btn" onClick={handleReset}>
             Reset
           </button>
-          <button className="filter-apply-btn" onClick={handleApply}>
-            ✦ Apply Filters
+          <button
+            className="ph-apply-btn"
+            onClick={handleApply}
+            disabled={isOverviewLoading}
+          >
+            {isOverviewLoading ? (
+              <>
+                <span
+                  className="btn-spinner"
+                  style={{
+                    width: 13,
+                    height: 13,
+                    borderTopColor: "#000",
+                    borderColor: "rgba(0,0,0,0.25)",
+                  }}
+                />{" "}
+                Fetching…
+              </>
+            ) : (
+              "✦ Apply"
+            )}
           </button>
         </div>
       </div>
 
-      {isFiltered && (
-        <div className="active-filters">
-          {appliedFilters.provider !== "all" && (
-            <span className="active-filter-tag">
-              Provider: {providerName}
-              <button
-                className="active-filter-remove"
-                onClick={() => {
-                  setSelectedProvider("all");
-                  setAppliedFilters((prev) => ({ ...prev, provider: "all" }));
-                }}
-              >
-                ×
-              </button>
-            </span>
-          )}
-          <span className="active-filter-tag">
-            {appliedFilters.from} → {appliedFilters.to}
-          </span>
-        </div>
-      )}
-
       <div>
         <div className="section-header">
-          <span className="section-header-title">Key Metrics</span>
-          <span className="section-header-meta">
-            {providerName} · {appliedFilters.from} to {appliedFilters.to}
-          </span>
+          <span className="section-header-title">Overall Breakdown</span>
         </div>
         <div
           className="stats-grid"
           style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
         >
           <StatCard
-            icon="◉"
-            label="Total Sales"
-            value={formatNumber(stats.totalSales)}
-            trend="8.3%"
+            label="Total Revenue"
+            value={FormatterHelper.formatCurrency(overview.totalRevenue)}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Cost"
+            value={FormatterHelper.formatCurrency(overview.totalCost)}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Profit"
+            value={FormatterHelper.formatCurrency(
+              overview.totalRevenue - overview.totalCost,
+            )}
             trendUp={true}
             accent="accent-purple"
-            delay={0}
-            sub="vs. last period"
-            subStrong="+2.1K"
-          />
-          <StatCard
-            icon="⊛"
-            label="Total Revenue"
-            value={formatCurrency(stats.totalRevenue)}
-            trend="5.7%"
-            trendUp={true}
-            accent="accent-green"
-            delay={60}
-            sub="most revenue"
-            subStrong={stats.topRevenueProvider}
-          />
-          <StatCard
-            icon="⊞"
-            label="Top Sales Provider"
-            value={stats.topSalesProvider.split(" ")[0]}
-            accent="accent-orange"
-            delay={120}
-            sub="leads in sales"
-            subStrong={formatNumber(
-              topProvidersBySales.find((p) => p.name === stats.topSalesProvider)
-                ?.sales || 0,
-            )}
-          />
-          <StatCard
-            icon="⊕"
-            label="OTPs Delivered"
-            value={formatNumber(stats.totalOtps)}
-            trend="3.2%"
-            trendUp={false}
-            accent="accent-pink"
-            delay={180}
-            sub="success rate"
-            subStrong="98.4%"
           />
         </div>
       </div>
+      {overview?.providersOverview?.map((o, i) => (
+        <div key={i + 1}>
+          <div className="section-header">
+            <span className="section-header-title">
+              {" "}
+              {o.provider} Breakdown
+            </span>
+          </div>
+          <div
+            className="stats-grid"
+            style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
+          >
+            <StatCard
+              label="Total Revenue"
+              value={FormatterHelper.formatCurrency(o.overview.totalRevenue)}
+              trendUp={o.overview.totalRevenue > o.overview.totalCost}
+              accent="accent-purple"
+            />
+            <StatCard
+              label="Total Cost"
+              value={FormatterHelper.formatCurrency(o.overview.totalCost)}
+              trendUp={o.overview.totalRevenue < o.overview.totalCost}
+              accent="accent-purple"
+            />
+            <StatCard
+              label="Total Profit"
+              value={FormatterHelper.formatCurrency(
+                o.overview.totalRevenue - o.overview.totalCost,
+              )}
+              accent="accent-purple"
+            />
+          </div>
+        </div>
+      ))}
 
       {/* ── Provider Balances — independent of filters ── */}
       <div className="balances-section">
@@ -289,14 +231,14 @@ export default function Overview() {
             <div className="balances-title-row">
               <span className="balances-title">Provider Balances</span>
               <span className="balances-count-pill">
-                {balances.length} Providers
+                {balances?.length} Providers
               </span>
             </div>
             <span className="balances-subtitle">
               Live wallet balances · not affected by date filters
-              {lastSynced && (
+              {/* {lastSynced && (
                 <span className="last-synced"> · Synced {lastSynced}</span>
-              )}
+              )} */}
             </span>
           </div>
           <button
@@ -312,7 +254,7 @@ export default function Overview() {
           <div className="balance-summary-card">
             <div className="balance-summary-icon">◈</div>
             <div className="balance-summary-info">
-              <span className="balance-summary-value">{balances.length}</span>
+              <span className="balance-summary-value">{balances?.length}</span>
               <span className="balance-summary-label">Total Providers</span>
             </div>
           </div>
@@ -320,7 +262,7 @@ export default function Overview() {
             <div className="balance-summary-icon">⊛</div>
             <div className="balance-summary-info">
               <span className="balance-summary-value">
-                {formatCurrency(totalBalance)}
+                {FormatterHelper.formatCurrency(totalBalance)}
               </span>
               <span className="balance-summary-label">Combined Balance</span>
             </div>
@@ -348,7 +290,7 @@ export default function Overview() {
         </div>
 
         <div className="balances-grid">
-          {balances.map((b, i) => (
+          {balances?.map((b, i) => (
             <div
               key={i}
               className={`balance-card${isRefreshing ? " refreshing" : ""}`}

@@ -11,42 +11,12 @@ import { registerUser } from "../../../services/Auth/AuthService";
 //Toaster
 import { errorToast, successTaost } from "../../../helper/Toaster";
 
+//Modal
+import PhoneNudgeModal from "../../Helper/Auth/Modals/PhoneNudgeModal";
+
 //Css
 import "./Register.css";
-
-const InfoIcon = ({ tooltip }) => {
-  const [visible, setVisible] = useState(false);
-
-  return (
-    <span
-      className="info-icon-wrapper"
-      onMouseEnter={() => setVisible(true)}
-      onMouseLeave={() => setVisible(false)}
-    >
-      <svg
-        className="info-icon"
-        viewBox="0 0 20 20"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" />
-        <path
-          d="M10 9v5"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        <circle cx="10" cy="6.5" r="0.75" fill="currentColor" />
-      </svg>
-      {visible && (
-        <span className="tooltip">
-          <span className="tooltip-arrow" />
-          {tooltip}
-        </span>
-      )}
-    </span>
-  );
-};
+import Tooltip from "../../../portal/Tooltip";
 
 export default function Register() {
   var navigate = useNavigate();
@@ -71,6 +41,7 @@ export default function Register() {
   });
   const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisibile] = useState(false);
+  const [showPhoneNudge, setShowPhoneNudge] = useState(false);
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
@@ -106,8 +77,26 @@ export default function Register() {
     if (Object.values(allErrors).some(Boolean)) {
       return;
     }
-    setLoading(true);
 
+    if (!formData.phoneNumber) {
+      setShowPhoneNudge(true);
+      return;
+    }
+
+    await handleRegisterUser();
+  };
+
+  function handleOnAddPhone() {
+    setShowPhoneNudge(false);
+  }
+
+  async function handleSkipPhone() {
+    setShowPhoneNudge(false);
+    await handleRegisterUser();
+  }
+
+  async function handleRegisterUser() {
+    setLoading(true);
     try {
       let response = await registerUser(formData);
       let responseMessage = response.message;
@@ -124,7 +113,7 @@ export default function Register() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const validate = (name, value) => {
     switch (name) {
@@ -170,8 +159,10 @@ export default function Register() {
           {/* Name */}
           <div className="form-group">
             <div className="form-label-row">
-              <label>Name</label>
-              <InfoIcon tooltip="Name must be between 3 and 25 characters." />
+              <label>
+                Name <span className="required">*</span>
+              </label>
+              <Tooltip tooltip="Name must be between 3 and 25 characters." />
             </div>
             <input
               type="text"
@@ -208,7 +199,11 @@ export default function Register() {
           {/* Email */}
           <div className="form-group">
             <div className="form-label-row">
-              <label>Email</label>
+              <label>
+                Email <span className="required">*</span>
+              </label>
+
+              <Tooltip tooltip="Enter valid email address." />
             </div>
             <input
               type="email"
@@ -245,8 +240,10 @@ export default function Register() {
           {/* Password */}
           <div className="form-group">
             <div className="form-label-row">
-              <label>Password</label>
-              <InfoIcon
+              <label>
+                Password <span className="required">*</span>
+              </label>
+              <Tooltip
                 tooltip={"Must contain uppercase, lowercase & a number."}
               />
             </div>
@@ -302,8 +299,8 @@ export default function Register() {
           {/* Phone Number (Optional) */}
           <div className="form-group">
             <div className="form-label-row">
-              <label>Phone Number (Optional)</label>
-              <InfoIcon tooltip="Optional. Enter a valid phone number." />
+              <label>Whatsapp Number</label>
+              <Tooltip tooltip="Optional. Enter a valid phone number." />
             </div>
 
             <input
@@ -342,7 +339,11 @@ export default function Register() {
           </div>
 
           <button type="submit" className="register-btn" disabled={loading}>
-            {loading ? "Please wait.." : "Sign Up →"}
+            {loading ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              "Sign Up →"
+            )}
           </button>
         </form>
 
@@ -353,6 +354,12 @@ export default function Register() {
           </Link>
         </div>
       </div>
+      {showPhoneNudge && (
+        <PhoneNudgeModal
+          onAddPhone={handleOnAddPhone}
+          onSkip={handleSkipPhone}
+        />
+      )}
     </div>
   );
 }

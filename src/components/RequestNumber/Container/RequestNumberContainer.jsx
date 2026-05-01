@@ -67,10 +67,11 @@ export default function RequestNumberContainer() {
     const fetchMyRecentNumbers = async () => {
       try {
         const res = await getMyNumbers(true);
-        setActiveOrdersLoading(false);
         setActiveOrders(res.data);
       } catch (error) {
         console.error("Failed to fetch recent numbers:", error);
+      } finally {
+        setActiveOrdersLoading(false);
       }
     };
     fetchMyRecentNumbers();

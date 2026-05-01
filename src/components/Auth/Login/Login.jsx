@@ -108,7 +108,9 @@ export default function Login() {
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Email</label>
+            <label>
+              Email <span className="required">*</span>
+            </label>
             <input
               type="email"
               placeholder="Enter your email"
@@ -142,57 +144,72 @@ export default function Login() {
           </div>
 
           <div className="form-group">
-            <label>Password</label>
-            <div className="password-container">
-              <input
-                type={passwordVisible ? "text" : "password"}
-                placeholder="Enter your password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={errors.password ? "input-error" : ""}
-                autoComplete="current-password"
-              />
-              {passwordVisible ? (
-                <i
-                  className="fa-solid fa-eye  eye show-password"
-                  onClick={handlePasswordVisibility}
-                ></i>
-              ) : (
-                <i
-                  className="fa-solid fa-eye-slash eye hide-password"
-                  onClick={handlePasswordVisibility}
-                ></i>
-              )}
+            <label>
+              Password <span className="required">*</span>
+            </label>
+            <div>
+              <div className="password-container">
+                <input
+                  type={passwordVisible ? "text" : "password"}
+                  placeholder="Enter your password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={errors.password ? "input-error" : ""}
+                  autoComplete="current-password"
+                />
+                {passwordVisible ? (
+                  <i
+                    className="fa-solid fa-eye  eye show-password"
+                    onClick={handlePasswordVisibility}
+                  ></i>
+                ) : (
+                  <i
+                    className="fa-solid fa-eye-slash eye hide-password"
+                    onClick={handlePasswordVisibility}
+                  ></i>
+                )}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                {errors.password && (
+                  <span className="error-msg">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <circle
+                        cx="6"
+                        cy="6"
+                        r="5.25"
+                        stroke="#ff5f7e"
+                        strokeWidth="1.5"
+                      />
+                      <path
+                        d="M6 3.5v3"
+                        stroke="#ff5f7e"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
+                      <circle cx="6" cy="8.25" r="0.6" fill="#ff5f7e" />
+                    </svg>
+                    {errors.password}
+                  </span>
+                )}
+                <div className="forgot-link-row">
+                  <Link to="/forgot-password">Forgot password?</Link>
+                </div>
+              </div>
             </div>
-            <div className="forgot-link-row">
-              <Link to="/forgot-password">Forgot password?</Link>
-            </div>
-            {errors.password && (
-              <span className="error-msg">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <circle
-                    cx="6"
-                    cy="6"
-                    r="5.25"
-                    stroke="#ff5f7e"
-                    strokeWidth="1.5"
-                  />
-                  <path
-                    d="M6 3.5v3"
-                    stroke="#ff5f7e"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="6" cy="8.25" r="0.6" fill="#ff5f7e" />
-                </svg>
-                {errors.password}
-              </span>
-            )}
           </div>
-
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Please wait.." : "Login →"}
+            {loading ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              "Log in →"
+            )}
           </button>
         </form>
 

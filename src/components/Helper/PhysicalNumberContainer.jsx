@@ -83,7 +83,7 @@ export const PhysicalNumberContainer = ({
 
             <div className="qty-stepper">
               <button
-                className="qty-btn"
+                className="num-qty-btn"
                 onClick={() =>
                   setQuantity((q) => Math.max(availability > 0 ? 1 : 0, q - 1))
                 }
@@ -94,7 +94,7 @@ export const PhysicalNumberContainer = ({
               <span className="qty-val">{quantity}</span>
 
               <button
-                className="qty-btn"
+                className="num-qty-btn"
                 onClick={() =>
                   setQuantity((q) => Math.min(availability, q + 1))
                 }

@@ -358,22 +358,6 @@
   opacity: 0.25;
 }
 
-.ph-state-text {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-dim);
-}
-
-.ph-spinner {
-  width: 28px;
-  height: 28px;
-  border: 2.5px solid rgba(255, 255, 255, 0.08);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.75s linear infinite;
-  margin: 0 auto;
-}
-
 /* ── Pagination ── */
 .ph-pagination {
   display: flex;
