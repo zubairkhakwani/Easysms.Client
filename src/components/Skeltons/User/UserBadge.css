@@ -32,10 +32,9 @@
   background: linear-gradient(
     110deg,
     var(--skeleton-base) 0%,
-    var(--skeleton-highlight) 30%,
-    var(--skeleton-base) 100%
+    var(--skeleton-highlight) 25%,
+    var(--skeleton-base) 50%
   );
-
   background-size: 200% 100%;
   animation: shimmer-base 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }

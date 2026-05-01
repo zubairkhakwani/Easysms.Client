@@ -1,6 +1,6 @@
 .purchase-summary {
   margin-bottom: var(--space-4);
-  background: var(--card-hover);
+  background: var(--card-skelton);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: var(--space-4);

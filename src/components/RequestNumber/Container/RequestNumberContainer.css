@@ -1,39 +1,38 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--space-5);
+  gap: 22px;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 var(--space-7) var(--space-12);
+  padding: 0 28px 60px;
   align-items: start;
 }
 
 .card {
-  background: var(--card-skelton);
+  background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
+  border-radius: 20px;
+  padding: 20px;
 }
 .card-header {
   display: flex;
-  gap: var(--space-3);
-  align-items: center;
-  margin-bottom: var(--space-5s);
-  border-bottom: 1px solid var(--divider);
-  padding-bottom: var(--space-2);
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 22px;
 }
 .card-icon {
-  font-size: var(--text-4mxl);
+  font-size: 1.9rem;
   flex-shrink: 0;
   line-height: 1;
 }
 .card-title {
-  font-size: var(--text-lg);
-  font-weight: var(--fw-bold);
-  color: var(--text-heading);
-  margin-bottom: var(--space-1);
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
 }
 .card-sub {
-  font-size: var(--text-ms);
-  color: var(--text-mid);
+  font-size: 0.78rem;
+  color: var(--dim);
+  font-weight: 300;
 }

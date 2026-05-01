@@ -325,9 +325,9 @@ a {
   /* ----------------------------------------------------------
      SKELETON (Loading States)
   ---------------------------------------------------------- */
-  --skeleton-base: #0f1530;
-  --skeleton-highlight: #151c3f;
-  --skeleton-shine: rgba(255, 255, 255, 0.35);
+  --skeleton-base: #2b2b2b;
+  --skeleton-highlight: #3a3a3a;
+  --skeleton-shine: #555555;
   --skeleton-border-radius: var(--radius-xs);
 }
 html {
