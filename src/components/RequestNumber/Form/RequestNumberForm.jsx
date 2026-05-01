@@ -341,7 +341,7 @@ export default function RequestNumber({ onNewNumber }) {
         </div>
       </div>
 
-      {isPhysicalNumberInfoLoading ? (
+      {!isPhysicalNumberInfoLoading ? (
         <PhysicalNumberSkelton />
       ) : physicalNumberInfo ? (
         <>
