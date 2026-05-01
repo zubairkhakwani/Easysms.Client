@@ -4,7 +4,7 @@
 
 .recent-card {
   width: 100%;
-  background: var(--card);
+  background: var(--card-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
