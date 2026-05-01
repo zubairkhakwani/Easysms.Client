@@ -481,6 +481,7 @@ body {
 /* Admin CSS */
 .adm-search-input {
   width: 350px;
+  max-width: 100%;
   padding: 14px 16px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -557,4 +558,8 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--text-mid);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }

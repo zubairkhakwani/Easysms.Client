@@ -196,32 +196,6 @@ export const ContactUsSubjects = [
   },
 ];
 
-export const NumberStatus = [
-  { label: "All", value: 0 },
-  { label: "Active", value: 1 },
-  { label: "Completed", value: 3 },
-  { label: "Cancelled", value: 2 },
-];
-
-export const Providers = [
-  {
-    label: "All",
-    value: 0,
-  },
-  {
-    label: "Provider A",
-    value: 1,
-  },
-  {
-    label: "Provider B",
-    value: 2,
-  },
-  {
-    label: "USA/Canada Premium Numbers",
-    value: 3,
-  },
-];
-
 export const modalKeys = {
   all: "all",
   newAccountGroup: "account-group",

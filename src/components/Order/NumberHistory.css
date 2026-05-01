@@ -43,7 +43,9 @@
 ========================= */
 
 .nh-stats-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
   gap: var(--space-4);
   margin-bottom: var(--space-8);
 }
@@ -105,7 +107,7 @@
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  overflow: hidden;
+  overflow: auto;
 }
 
 /* =========================
@@ -116,6 +118,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   padding: var(--space-5) var(--space-6);
   border-bottom: 1px solid var(--divider);
   background: var(--card);
@@ -126,6 +129,7 @@
   font-weight: var(--fw-bold);
   color: var(--text-heading);
   letter-spacing: var(--ls-tight);
+  margin-bottom: var(--space-4);
 }
 
 .nh-search-input {
@@ -218,7 +222,6 @@
   transition:
     border-color var(--transition),
     box-shadow var(--transition);
-  min-width: 130px;
   box-shadow: var(--shadow-xs);
 }
 
@@ -465,4 +468,38 @@
 .nh-empty-sub {
   font-size: var(--text-sm);
   color: var(--text-dim);
+}
+.nh-filter-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nh-apply-btn {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 9px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .nh-filters-bar {
+    display: block;
+  }
+  .nh-filter-group {
+    width: 100%;
+  }
+  .nh-filters-left {
+    margin-bottom: 1rem;
+  }
 }

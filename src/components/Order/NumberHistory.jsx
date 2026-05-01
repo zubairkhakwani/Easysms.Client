@@ -19,75 +19,65 @@ import CounterSkeleton from "../Skeltons/CounterSkelton";
 // CSS
 import "./NumberHistory.css";
 
+const toDS = (d) => d.toISOString().slice(0, 10);
+const today = new Date();
+const twoWeeks = new Date(
+  today.getFullYear(),
+  today.getMonth(),
+  today.getDate() - 14,
+);
 export default function NumberHistory() {
   //Data
-  const [ordersData, setOrdersData] = useState([]);
-  const [filteredNumbers, setFilteredNumbers] = useState([]);
+  const [numbersHistory, setNumbersHistory] = useState([]);
 
+  //Loading
   const [isLoading, setIsLoading] = useState(false);
 
   //Pagination
   const [count, setCount] = useState(0);
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [search, setSearch] = useState("");
 
   //Filters
   const [filters, setFilters] = useState({
     status: "0",
     provider: "0",
     hasOtp: false,
+    keyword: "",
+    startDate: toDS(twoWeeks),
+    endDate: toDS(today),
   });
 
-  useEffect(() => {
+  async function fetchAllMyNumbersHistory() {
     setIsLoading(true);
-    const fetchAllMyNumbers = async () => {
-      setIsLoading(true);
-      try {
-        const res = await getMyNumberHistory({
-          pageNo,
-          pageSize,
-          filters,
-        });
+    try {
+      const res = await getMyNumberHistory({
+        pageNo,
+        pageSize,
+        filters,
+      });
 
-        setOrdersData(res.data.items ?? []);
-        setFilteredNumbers(res.data.items ?? []);
-        setCount(res.data.count ?? 0);
-      } catch (err) {
-        console.log(err);
-        errorToast("Failed to fetch number history");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchAllMyNumbers();
-  }, [pageNo, pageSize, filters]);
+      setNumbersHistory(res.data.items ?? []);
+      console.log(res.data.items);
+      setCount(res.data.count ?? 0);
+    } catch (err) {
+      console.log(err);
+      errorToast("Failed to fetch number history");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
-  const activeFilterCount = Object.values(filters).filter(
-    (v) => v !== "0" && v !== false,
-  ).length;
+  useEffect(() => {
+    fetchAllMyNumbersHistory();
+  }, [pageNo, pageSize, filters.keyword]);
+
+  const handleApply = async () => {
+    await fetchAllMyNumbersHistory();
+  };
 
   function setFilter(key, value) {
     setFilters((prev) => ({ ...prev, [key]: value }));
-  }
-
-  function handleSearch(value) {
-    setSearch(value);
-
-    if (!value) {
-      setFilteredNumbers(ordersData);
-      return;
-    }
-
-    const searchValue = value.toLowerCase();
-
-    const found = ordersData.filter(
-      (num) =>
-        num.orderData?.phoneNumbers?.some((p) => p.includes(searchValue)) ||
-        num.provider.toLowerCase()?.includes(searchValue) ||
-        num.status.toLowerCase()?.includes(searchValue),
-    );
-    setFilteredNumbers(found);
   }
 
   function clearFilters() {
@@ -95,8 +85,10 @@ export default function NumberHistory() {
       status: "0",
       provider: "0",
       hasOtp: false,
+      keyword: "",
+      startDate: toDS(twoWeeks),
+      endDate: toDS(today),
     });
-    setSearch("");
   }
 
   const copyToClipboard = async (text) => {
@@ -121,30 +113,39 @@ export default function NumberHistory() {
   const stats = [
     {
       label: "Total numbers",
-      val: ordersData.flatMap((o) => o.orderData?.phoneNumbers || []).length,
+      val: numbersHistory.flatMap((o) => o.orderData?.phoneNumbers || [])
+        .length,
     },
     {
       label: "Total Active",
-      val: ordersData
+      val: numbersHistory
         .flatMap((o) => o.orderData?.status || [])
         .filter((s) => s === "Active").length,
     },
     {
       label: "Total Completed",
-      val: ordersData
+      val: numbersHistory
         .flatMap((o) => o.orderData?.status || [])
         .filter((s) => s === "Completed").length,
     },
     {
       label: "Total Cancelled",
-      val: ordersData
+      val: numbersHistory
         .flatMap((o) => o.orderData?.status || [])
         .filter((s) => s === "Cancelled").length,
     },
     {
       label: "Total Otps",
-      val: ordersData.flatMap((o) => o.orderData?.verificationCodes || [])
+      val: numbersHistory.flatMap((o) => o.orderData?.verificationCodes || [])
         .length,
+    },
+    {
+      label: "Total Spent",
+      val: FormatterHelper.formatCurrency(
+        numbersHistory
+          .filter((x) => x.status === "Completed")
+          .reduce((sum, x) => sum + (x.totalCost ?? 0), 0),
+      ),
     },
   ];
 
@@ -173,9 +174,30 @@ export default function NumberHistory() {
         <div className="nh-filters-left">
           <span className="nh-filters-heading">Filters</span>
           <div className="nh-filter-group">
+            <label className="nh-filter-label">From Date</label>
+            <input
+              type="date"
+              className={`nh-filter-select`}
+              value={filters.startDate}
+              onChange={(e) => setFilter("startDate", e.target.value)}
+              max={filters.endDate}
+            />
+          </div>
+          <div className="nh-filter-group">
+            <label className="nh-filter-label">To Date</label>
+            <input
+              type="date"
+              className={`nh-filter-select`}
+              value={filters.endDate}
+              onChange={(e) => setFilter("endDate", e.target.value)}
+              min={filters.startDate}
+              max={toDS(today)}
+            />
+          </div>
+          <div className="nh-filter-group">
             <label className="nh-filter-label">Provider</label>
             <select
-              className={`nh-filter-select ${filters.provider !== "0" ? "nh-filter-select--active" : ""}`}
+              className={`nh-filter-select `}
               value={filters.provider}
               onChange={(e) => setFilter("provider", e.target.value)}
             >
@@ -189,7 +211,7 @@ export default function NumberHistory() {
           <div className="nh-filter-group">
             <label className="nh-filter-label">Status</label>
             <select
-              className={`nh-filter-select ${filters.status !== "0" ? "nh-filter-select--active" : ""}`}
+              className={`nh-filter-select `}
               value={filters.status}
               onChange={(e) => setFilter("status", e.target.value)}
             >
@@ -203,9 +225,7 @@ export default function NumberHistory() {
 
           <div className="nh-filter-group">
             <label className="nh-filter-label">OTP</label>
-            <label
-              className={`nh-filter-checkbox ${filters.hasOtp ? "nh-filter-checkbox--active" : ""}`}
-            >
+            <label className={`nh-filter-checkbox `}>
               <input
                 type="checkbox"
                 checked={filters.hasOtp}
@@ -215,12 +235,34 @@ export default function NumberHistory() {
             </label>
           </div>
         </div>
-
-        {activeFilterCount > 0 && (
+        <div className="nh-filter-actions">
           <button className="nh-clear-btn" onClick={clearFilters}>
-            Clear {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""}
+            Reset
           </button>
-        )}
+
+          <button
+            className="nh-apply-btn"
+            onClick={handleApply}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span
+                  className="btn-spinner"
+                  style={{
+                    width: 13,
+                    height: 13,
+                    borderTopColor: "#000",
+                    borderColor: "rgba(0,0,0,0.25)",
+                  }}
+                />{" "}
+                Fetching…
+              </>
+            ) : (
+              "✦ Apply"
+            )}
+          </button>
+        </div>
       </div>
 
       <div className="nh-table-wrap">
@@ -229,8 +271,7 @@ export default function NumberHistory() {
           <input
             className="adm-search-input"
             placeholder="🔍 Search numbers..."
-            value={search}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => setFilter("keyword", e.target.value)}
           />
         </div>
         <table className="nh-table">
@@ -253,7 +294,7 @@ export default function NumberHistory() {
           </thead>
           {!isLoading && (
             <tbody>
-              {filteredNumbers.map((number, index) => (
+              {numbersHistory.map((number, index) => (
                 <tr key={index} className="nh-tr">
                   <td className="nh-td">{index + 1}</td>
                   <td className="nh-td">
@@ -325,7 +366,7 @@ export default function NumberHistory() {
           </div>
         )}
         {/* Empty result */}
-        {!isLoading && filteredNumbers.length === 0 && (
+        {!isLoading && numbersHistory.length === 0 && (
           <div className="ph-state-row">
             <div className="ph-state-icon">⊟</div>
             <span className="ph-state-text">
