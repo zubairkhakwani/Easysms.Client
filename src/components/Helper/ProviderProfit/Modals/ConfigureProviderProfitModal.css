@@ -1,0 +1,274 @@
+/* ── Overlay ───────────────────────── */
+
+.cpp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Modal ───────────────────────── */
+
+.cpp-modal {
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-radius: 16px;
+
+  padding: 28px;
+
+  width: 100%;
+  max-width: 600px;
+
+  box-shadow: var(--modal-shadow);
+
+  position: relative;
+
+  max-height: 600px;
+  overflow: auto;
+
+  animation: slideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Header ───────────────────────── */
+
+.cpp-modal-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.cpp-modal-sub {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 22px;
+}
+
+.cpp-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+
+  color: rgba(255, 255, 255, 0.45);
+
+  border-radius: 7px;
+
+  width: 28px;
+  height: 28px;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Pricing Display ───────────────── */
+
+.cpp-pricing-display {
+  background: rgba(0, 229, 255, 0.05);
+
+  border: 1px solid rgba(0, 229, 255, 0.15);
+
+  border-radius: 10px;
+
+  padding: 14px 18px;
+
+  margin-bottom: 16px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cpp-pricing-label {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.35);
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cpp-pricing-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+
+  color: #00e5ff;
+
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* ── Inputs ───────────────────────── */
+
+.cpp-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  color: rgba(255, 255, 255, 0.4);
+
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+
+  margin-bottom: 6px;
+  display: block;
+}
+
+.cpp-input {
+  width: 100%;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 9px;
+
+  padding: 9px 14px;
+
+  color: #fff;
+
+  font-size: 0.82rem;
+
+  outline: none;
+
+  margin-bottom: 14px;
+
+  box-sizing: border-box;
+}
+
+/* ── Presets ───────────────────────── */
+
+.cpp-preset-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.cpp-preset-btn {
+  flex: 1;
+
+  border-radius: 8px;
+
+  padding: 7px 0;
+
+  font-size: 0.78rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+
+  color: rgba(255, 255, 255, 0.55);
+
+  transition: all 0.15s;
+}
+
+.cpp-preset-btn.selected {
+  background: rgba(0, 229, 255, 0.15);
+
+  border-color: rgba(0, 229, 255, 0.35);
+
+  color: #00e5ff;
+}
+
+/* ── Preview ───────────────────────── */
+
+.cpp-preview {
+  font-size: 0.75rem;
+
+  color: rgba(255, 255, 255, 0.3);
+
+  margin-bottom: 14px;
+}
+
+.cpp-preview span {
+  color: #00e5ff;
+  font-weight: 700;
+}
+
+/* ── Buttons ───────────────────────── */
+
+.cpp-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cpp-btn {
+  flex: 1;
+
+  border-radius: 9px;
+
+  padding: 10px;
+
+  font-size: 0.82rem;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  border: none;
+
+  transition: opacity 0.15s;
+}
+
+.cpp-btn.primary {
+  background: var(--accent);
+  color: #07070f;
+}
+
+.cpp-btn.ghost {
+  background: rgba(255, 255, 255, 0.04);
+
+  color: rgba(255, 255, 255, 0.55);
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.cpp-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Spinner ───────────────────────── */
+
+.cpp-spinner {
+  width: 24px;
+  height: 24px;
+
+  border: 2.5px solid rgba(255, 255, 255, 0.08);
+
+  border-top-color: var(--accent);
+
+  border-radius: 50%;
+
+  animation: spin 0.75s linear infinite;
+}
+
+.cpp-preview-box {
+  background: rgba(0, 229, 255, 0.05);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 10px;
+
+  padding: 14px 18px;
+
+  margin-top: 10px;
+  margin-bottom: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  font-size: 0.82rem;
+}
+
+.cpp-preview-box span {
+  color: #00e5ff;
+  font-weight: 700;
+}

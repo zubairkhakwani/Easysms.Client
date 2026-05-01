@@ -40,6 +40,7 @@ import ContactUs from "./components/Dashboard/Admin/Management/ContactUs/Contact
 import Platforms from "./components/Dashboard/Admin/Account/Platform/Platforms.jsx";
 import Categories from "./components/Dashboard/Admin/Account/Category/Categories.jsx";
 import AccountGroups from "./components/Dashboard/Admin/Account/AccountGroup/AccountGroups.jsx";
+import ProviderProfit from "./components/Dashboard/Admin/Settings/ProviderProfit/ProviderProfit.jsx";
 
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -198,6 +199,21 @@ createRoot(document.getElementById("root")).render(
                       <Route
                         path="provider-history"
                         element={<ProviderHistory />}
+                      />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermission={[
+                            Permissions.ViewProviderPricings,
+                          ]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="provider-profit"
+                        element={<ProviderProfit />}
                       />
                     </Route>
                   </Route>

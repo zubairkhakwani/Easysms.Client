@@ -1,3 +1,12 @@
+/* ── Provider History Page ── */
+.ph-page {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  /* animation: fadeInUp 0.4s ease both; */
+}
+
 /* ── Filters ── */
 .ph-filters {
   background: var(--card);
@@ -8,7 +17,6 @@
   align-items: flex-end;
   gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 2rem;
 }
 
 .ph-filter-field {
@@ -356,6 +364,22 @@
 .ph-state-icon {
   font-size: 2rem;
   opacity: 0.25;
+}
+
+.ph-state-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.ph-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid rgba(255, 255, 255, 0.08);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  margin: 0 auto;
 }
 
 /* ── Pagination ── */

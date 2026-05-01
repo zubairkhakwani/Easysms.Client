@@ -19,6 +19,7 @@ export default function Paginations({
       onPageChange={handleChangePage}
       rowsPerPage={rowsPerPage}
       onRowsPerPageChange={handleChangeRowsPerPage}
+      rowsPerPageOptions={[10, 25, 50, 100, 1000]}
     />
   );
 }

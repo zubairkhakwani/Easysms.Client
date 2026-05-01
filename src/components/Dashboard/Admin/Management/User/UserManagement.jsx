@@ -128,6 +128,8 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
 
 export default function UserManagement() {
   const { currentUser, balanceCredit } = useContext(AuthContext);
+
+  //Api Data
   const [users, setUsers] = useState([]);
   const [systemStats, setSystemStats] = useState({
     totalUsers: 0,
@@ -135,8 +137,12 @@ export default function UserManagement() {
     totalInActive: 0,
     totalBalance: 0,
   });
+
+  //Modal
   const [modal, setModal] = useState(null);
   const [isTopup, setIsTopUp] = useState(false);
+
+  //Loading
   const [isLoading, setIsLoading] = useState(false);
 
   //Paginations
@@ -308,7 +314,7 @@ export default function UserManagement() {
           <input
             className="adm-search-input"
             placeholder="🔍  Search users..."
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => setKeyword(e.target.value)}
           />
         </div>
         {!isLoading && (

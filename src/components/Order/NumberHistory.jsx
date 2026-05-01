@@ -40,6 +40,7 @@ export default function NumberHistory() {
   });
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchAllMyNumbers = async () => {
       setIsLoading(true);
       try {
