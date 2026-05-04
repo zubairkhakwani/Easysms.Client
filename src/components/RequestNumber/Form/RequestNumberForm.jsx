@@ -18,8 +18,10 @@ import {
 
 //Components
 import { PhysicalNumberContainer } from "../../Helper/PhysicalNumberContainer";
-import { PhysicalNumberSkelton } from "../../Helper/PhysicalNumberSkelton";
 import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions";
+
+//Skeltons
+import { PhysicalNumberSkelton } from "../../Skeltons/PhysicalNumberSkelton.jsx";
 
 //Css
 import "./RequestNumberForm.css";

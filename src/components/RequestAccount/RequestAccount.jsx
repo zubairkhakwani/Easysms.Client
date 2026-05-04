@@ -281,14 +281,14 @@ export default function RequestAccount() {
               ))}
             </select>
           </div>
-          <div className="search-input">
+          {/* <div className="search-input">
             <input
               type="text"
               placeholder="Search accounts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
+          </div> */}
         </div>
       </section>
 

@@ -149,10 +149,10 @@ export default function Navbar() {
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     <span onClick={() => handleNavClick()}>Number History</span>
                   </Link>
-                  {/* <Link className="nav-dropdown-item" to="/history/account">
+                  <Link className="nav-dropdown-item" to="/history/account">
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Account History
-                  </Link> */}
+                  </Link>
 
                   <span
                     className="nav-dropdown-item"
@@ -247,13 +247,13 @@ export default function Navbar() {
               </span>
             </Link>
           </li>
-          {/* <li>
+          <li>
             <Link to="/get-account">
               <span className="cyan med-bold" onClick={() => handleNavClick()}>
                 Buy account
               </span>
             </Link>
-          </li> */}
+          </li>
         </ul>
         <div className="nav-auth">{authButtons}</div>
       </nav>

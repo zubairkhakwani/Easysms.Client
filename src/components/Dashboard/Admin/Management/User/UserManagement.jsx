@@ -1,18 +1,23 @@
 //React
 import { useState, useEffect, useContext } from "react";
 
-//Toaster
-import { successTaost, errorToast } from "../../../../../helper/Toaster";
-
 //Context
 import { AuthContext } from "../../../../../context/AuthContext";
 
 //Services
 import { getAll, topUpBalance } from "../../../../../services/User/UserService";
 
+//Toaster
+import { successTaost, errorToast } from "../../../../../helper/Toaster";
+
 //Helper
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
 
+//Components
+import { AdminPage } from "../../../../Helper/AdminPage/AdminPage";
+import { AdminStats } from "../../../../Helper/AdminStats/AdminStats";
+
+//Paginations
 import Paginations from "../../../../Shared/Pagination";
 
 //Css
@@ -258,55 +263,22 @@ export default function UserManagement() {
   ];
 
   return (
-    <div className="um-page">
-      <div className="um-header">
-        <div>
-          <div className="um-page-title">User Management</div>
-          <div className="um-page-sub">
-            Manage accounts, balances, and permissions
-          </div>
-        </div>
-      </div>
-
+    <AdminPage>
       {/* SYSTEM OVERVIEW */}
-
-      <div className="um-stats-section">
-        <div className="um-section-header">
-          <div className="um-section-title">📊 System Overview</div>
-
-          <div className="um-section-sub">Overall platform statistics</div>
-        </div>
-
-        <div className="um-stats-row">
-          {systemOverviewStats.map((s) => (
-            <div key={s.label} className="um-stat-card system">
-              <div className="um-stat-val">{s.val}</div>
-
-              <div className="um-stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <AdminStats
+        title="System Overview"
+        titleIcon="📊"
+        subTitle="Overall platform statistics"
+        stats={systemOverviewStats}
+      />
 
       {/* CURRENT PAGE */}
-
-      <div className="um-stats-section">
-        <div className="um-section-header">
-          <div className="um-section-title">📄 Current Page</div>
-
-          <div className="um-section-sub">Filtered / paginated results</div>
-        </div>
-
-        <div className="um-stats-row">
-          {currentPageStats.map((s) => (
-            <div key={s.label} className="um-stat-card page">
-              <div className="um-stat-val">{s.val}</div>
-
-              <div className="um-stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <AdminStats
+        title="Current Page"
+        titleIcon="📄"
+        subTitle="Filtered / paginated results"
+        stats={currentPageStats}
+      />
 
       <div className="um-table-wrap">
         <div className="um-table-header">
@@ -412,6 +384,7 @@ export default function UserManagement() {
           />
         )}
       </div>
+
       {modal?.type === "topup" && (
         <TopupModal
           user={modal.user}
@@ -420,6 +393,6 @@ export default function UserManagement() {
           onConfirm={handleTopup}
         />
       )}
-    </div>
+    </AdminPage>
   );
 }

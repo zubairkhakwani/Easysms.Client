@@ -166,23 +166,25 @@ export default function Overview() {
           <span className="section-header-title">Overall Breakdown</span>
         </div>
         <div
-          className="stats-grid"
+          className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
           style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
         >
           <StatCard
             label="Total Revenue"
-            value={FormatterHelper.formatCurrency(overview.totalRevenue)}
+            value={FormatterHelper.formatCurrency(overview?.totalRevenue ?? 0)}
             accent="accent-purple"
           />
           <StatCard
             label="Total Cost"
-            value={FormatterHelper.formatCurrency(overview.totalCost)}
+            value={FormatterHelper.formatCurrency(overview?.totalCost ?? 0)}
             accent="accent-purple"
           />
           <StatCard
             label="Total Profit"
             value={FormatterHelper.formatCurrency(
-              overview.totalRevenue - overview.totalCost,
+              overview?.totalRevenue
+                ? overview.totalRevenue - overview?.totalCost
+                : 0,
             )}
             trendUp={true}
             accent="accent-purple"

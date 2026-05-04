@@ -14,8 +14,6 @@ import { successTaost, errorToast } from "../../helper/Toaster";
 //Pagination
 import Paginations from "../Shared/Pagination";
 
-import CounterSkeleton from "../Skeltons/CounterSkelton";
-
 // CSS
 import "./NumberHistory.css";
 

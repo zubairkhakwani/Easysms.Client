@@ -4,19 +4,27 @@ import { useEffect, useState } from "react";
 //Services
 import { getDeposts } from "../../../../../services/User/UserService";
 
+//Components
+import { AdminPage } from "../../../../Helper/AdminPage/AdminPage";
+import { AdminFilters } from "../../../../Helper/AdminFilters/AdminFilters";
+import { AdminStats } from "../../../../Helper/AdminStats/AdminStats";
+
 //Toaster
 import { errorToast } from "../../../../../helper/Toaster";
 
 //Helper
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
 
+//Paginations
 import Paginations from "../../../../Shared/Pagination";
 
 //Css
 import "./Deposits.css";
 
 const toDS = (d) => d.toISOString().slice(0, 10);
+
 const today = new Date();
+
 const twoWeeks = new Date(
   today.getFullYear(),
   today.getMonth(),
@@ -106,102 +114,37 @@ export default function Deposits() {
   ];
 
   return (
-    <div className="ph-page">
+    <AdminPage>
       {/* ── Filters ── */}
-      <div className="ph-filters">
-        <div className="ph-filter-field">
-          <label className="ph-filter-label">From Date</label>
-          <input
-            type="date"
-            className="ph-filter-input"
-            value={startDate}
-            max={endDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </div>
+      <AdminFilters
+        starDateTitle="Start Date"
+        endDateTitle="End Date"
+        startDate={startDate}
+        endDate={endDate}
+        onStartDate={setStartDate}
+        OnEndDate={setEndDate}
+        onHandleApply={handleApply}
+        onHandleReset={handleReset}
+        isLoading={isLoading}
+        loadingTitle="Fetching..."
+      />
 
-        <div className="ph-filter-field">
-          <label className="ph-filter-label">To Date</label>
-          <input
-            type="date"
-            className="ph-filter-input"
-            value={endDate}
-            min={startDate}
-            max={toDS(today)}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </div>
-
-        <div className="ph-filter-actions">
-          <button className="ph-reset-btn" onClick={handleReset}>
-            Reset
-          </button>
-          <button
-            className="ph-apply-btn"
-            onClick={handleApply}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <span
-                  className="btn-spinner"
-                  style={{
-                    width: 13,
-                    height: 13,
-                    borderTopColor: "#000",
-                    borderColor: "rgba(0,0,0,0.25)",
-                  }}
-                />{" "}
-                Fetching…
-              </>
-            ) : (
-              "✦ Apply"
-            )}
-          </button>
-        </div>
-      </div>
       {/* SYSTEM OVERVIEW */}
-
-      <div className="um-stats-section">
-        <div className="um-section-header">
-          <div className="um-section-title">📊 System Overview</div>
-          <div className="um-section-sub">
-            Statistics for all deposits across the system
-          </div>
-        </div>
-
-        <div className="um-stats-row">
-          {systemOverviewStats.map((s) => (
-            <div key={s.label} className="um-stat-card system">
-              <div className="um-stat-val">{s.val}</div>
-
-              <div className="um-stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <AdminStats
+        title="System Overview"
+        titleIcon="📊"
+        subTitle="Statistics for all deposits across the system"
+        stats={systemOverviewStats}
+      />
 
       {/* CURRENT PAGE */}
+      <AdminStats
+        title="Current Page"
+        titleIcon="📄"
+        subTitle="Statistics for the deposits displayed on this page"
+        stats={currentPageStats}
+      />
 
-      <div className="um-stats-section">
-        <div className="um-section-header">
-          <div className="um-section-title">📄 Current Page</div>
-
-          <div className="um-section-sub">
-            Statistics for the deposits displayed on this page
-          </div>
-        </div>
-
-        <div className="um-stats-row">
-          {currentPageStats.map((s) => (
-            <div key={s.label} className="um-stat-card page">
-              <div className="um-stat-val">{s.val}</div>
-
-              <div className="um-stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
       {/* ── Table ── */}
       <div className="ph-table-panel">
         <div className="ph-table-header">
@@ -281,6 +224,6 @@ export default function Deposits() {
           />
         )}
       </div>
-    </div>
+    </AdminPage>
   );
 }

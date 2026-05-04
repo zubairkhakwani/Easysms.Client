@@ -6,10 +6,16 @@ import { getProvidersHistory } from "../../../../services/Provider/ProviderServi
 import { getProviders } from "../../../../services/Provider/ProviderService";
 import { getAll } from "../../../../services/User/UserService";
 
+//Components
+import { AdminPage } from "../../../Helper/AdminPage/AdminPage";
+import { AdminFilters } from "../../../Helper/AdminFilters/AdminFilters";
+import { AdminStats } from "../../../Helper/AdminStats/AdminStats";
+
 //Helper
 import { FormatterHelper } from "../../../../helper/FormatterHelper";
 import { errorToast } from "../../../../helper/Toaster";
 
+//Paginations
 import Paginations from "../../../Shared/Pagination";
 
 //Css
@@ -148,8 +154,10 @@ export default function ProviderHistory() {
   ];
 
   return (
-    <div className="ph-page">
-      {/* ── Filters ── */}
+    <AdminPage>
+
+  
+
       <div className="ph-filters">
         <div className="ph-filter-field">
           <label className="ph-filter-label">From Date</label>
@@ -233,23 +241,14 @@ export default function ProviderHistory() {
           </button>
         </div>
       </div>
-      <div className="um-stats-section" style={{ marginBottom: "0" }}>
-        <div className="um-section-header">
-          <div className="um-section-title">📄 Current Page</div>
 
-          <div className="um-section-sub">Filtered / paginated results</div>
-        </div>
-
-        <div className="um-stats-row">
-          {currentPageStats.map((s) => (
-            <div key={s.label} className="um-stat-card page">
-              <div className="um-stat-val">{s.val}</div>
-
-              <div className="um-stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* CURRENT PAGE */}
+      <AdminStats
+        title="Current Page"
+        titleIcon="📄"
+        subTitle="Filtered / paginated results"
+        stats={currentPageStats}
+      />
 
       {/* ── Table ── */}
       <div className="ph-table-panel">
@@ -342,6 +341,6 @@ export default function ProviderHistory() {
           />
         )}
       </div>
-    </div>
+    </AdminPage>
   );
 }

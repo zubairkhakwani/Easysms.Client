@@ -107,10 +107,7 @@ export function AccountGroupModal({
   );
 
   return (
-    <div
-      className="um-overlay"
-      onClick={() => onClose(modalKeys.newAccountGroup)}
-    >
+    <div className="um-overlay">
       <div className="um-modal" onClick={(e) => e.stopPropagation()}>
         <button
           className="um-close-btn"
