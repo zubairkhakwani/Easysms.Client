@@ -120,7 +120,7 @@ export default function ActiveOrders({
       return "You can cancel the number";
     }
     if (name.includes("provider a")) {
-      return "You can cancel the number after 2 minutes";
+      return "You can cancel the number after 3 minutes";
     }
 
     return "You can cancel the number after 5 minutes";
@@ -133,7 +133,7 @@ export default function ActiveOrders({
       return true;
     }
 
-    let time = order.provider?.toLowerCase().includes("provider a") ? 2 : 5;
+    let time = order.provider?.toLowerCase().includes("provider a") ? 3 : 5;
 
     if (!order.activationStartTime) return false;
 
