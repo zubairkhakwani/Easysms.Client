@@ -163,27 +163,85 @@ export default function Overview() {
 
       <div>
         <div className="section-header">
-          <span className="section-header-title">Overall Breakdown</span>
+          <span className="section-header-title">
+            Overall Accounts Breakdown
+          </span>
         </div>
         <div
           className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
           style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
         >
           <StatCard
+            label="Total Sold"
+            value={FormatterHelper.formatNumber(
+              overview?.totalAccountSold ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
             label="Total Revenue"
-            value={FormatterHelper.formatCurrency(overview?.totalRevenue ?? 0)}
+            value={FormatterHelper.formatCurrency(
+              overview?.totalAccountRevenue ?? 0,
+            )}
             accent="accent-purple"
           />
           <StatCard
             label="Total Cost"
-            value={FormatterHelper.formatCurrency(overview?.totalCost ?? 0)}
+            value={FormatterHelper.formatCurrency(
+              overview?.totalAccountCost ?? 0,
+            )}
             accent="accent-purple"
           />
           <StatCard
             label="Total Profit"
             value={FormatterHelper.formatCurrency(
-              overview?.totalRevenue
-                ? overview.totalRevenue - overview?.totalCost
+              overview?.totalAccountRevenue
+                ? overview.totalAccountRevenue - overview?.totalAccountCost
+                : 0,
+            )}
+            trendUp={true}
+            accent="accent-purple"
+          />
+        </div>
+      </div>
+
+      <div>
+        <div className="section-header">
+          <span className="section-header-title">
+            Overall TempNumbers Breakdown
+          </span>
+        </div>
+        <div
+          className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
+          style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
+        >
+          <StatCard
+            label="Total Sold"
+            value={FormatterHelper.formatNumber(
+              overview?.totalTempNumberSold ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Revenue"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalTempNumberRevenue ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Cost"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalTempNumberCost ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Profit"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalTempNumberRevenue
+                ? overview.totalTempNumberRevenue -
+                    overview?.totalTempNumberCost
                 : 0,
             )}
             trendUp={true}
@@ -203,6 +261,12 @@ export default function Overview() {
             className="stats-grid"
             style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
           >
+            <StatCard
+              label="Total Sold"
+              value={FormatterHelper.formatNumber(o.overview.totalSold)}
+              trendUp={o.overview.totalRevenue < o.overview.totalCost}
+              accent="accent-purple"
+            />
             <StatCard
               label="Total Revenue"
               value={FormatterHelper.formatCurrency(o.overview.totalRevenue)}

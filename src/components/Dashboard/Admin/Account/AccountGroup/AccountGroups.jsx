@@ -35,8 +35,13 @@ export default function AccountGroups() {
   const [accountGroups, setAccountGroups] = useState([]);
   const [lookups, setLookups] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [accountConfig, setAccountConfig] = useState({
+
+  const [accountGroupConfig, setAccountGroupConfig] = useState({
     accountGroupId: undefined,
+    plaformId: undefined,
+    categoryId: undefined,
+    unitPrice: undefined,
+    descripion: "",
     hasCookie: false,
     hasTwoFactorKey: false,
   });
@@ -113,8 +118,8 @@ export default function AccountGroups() {
       const responseMessage = response?.message || "Something went wrong";
       if (response?.isSuccess) {
         successTaost(responseMessage);
-        console.log(response.data);
         getAccountGroupsData((previous) => [response.data, ...previous]);
+        closeModal(modalKeys.upsertAccountGroup);
       } else {
         errorToast(responseMessage);
       }
@@ -129,7 +134,7 @@ export default function AccountGroups() {
   const handleAddAccount = async (data) => {
     setIsAddingAccount(true);
     const payload = {
-      accountGroupId: accountConfig.accountGroupId,
+      accountGroupId: accountGroupConfig.accountGroupId,
       accounts: data,
     };
     try {
@@ -138,7 +143,7 @@ export default function AccountGroups() {
       if (response.isSuccess && response.data) {
         setAccountGroups((prev) =>
           prev.map((group) =>
-            group.id === accountConfig.accountGroupId
+            group.id === accountGroupConfig.accountGroupId
               ? {
                   ...group,
                   totalAvailable:
@@ -152,7 +157,7 @@ export default function AccountGroups() {
       } else {
         errorToast(responseMessage);
       }
-    } catch (error) {
+    } catch {
       errorToast("Failed to add account. Please try again.");
     } finally {
       setIsAddingAccount(false);
@@ -187,18 +192,37 @@ export default function AccountGroups() {
 
   //Modal
   const OpenModal = (key, accountGroupId) => {
-    if (key === modalKeys.newAccount) {
+    if (key === modalKeys.upsertAccountGroup) {
       let selectedAccountGroup = accountGroups.find(
         (accountGroup) => accountGroup.id === accountGroupId,
       );
 
       let config = {
         accountGroupId: accountGroupId,
+        platformId: selectedAccountGroup?.platformId,
+        categoryId: selectedAccountGroup?.categoryId,
+        unitPrice: selectedAccountGroup?.unitPrice,
+        descripion: selectedAccountGroup?.description,
         hasTwoFactorKey: selectedAccountGroup?.hasTwoFactorKey,
         hasCookie: selectedAccountGroup?.hasCookie,
       };
 
-      setAccountConfig(config);
+      const platformCategories = categories.filter(
+        (category) => category.id == selectedAccountGroup?.categoryId,
+      );
+
+      const patformConfiguration =
+        lookups.platforms.find(
+          (plat) => plat.id == selectedAccountGroup?.categoryId,
+        )?.configuration ?? "";
+
+      setLookups((previous) => ({
+        ...previous,
+        categories: platformCategories,
+        platformConfiguration: patformConfiguration,
+      }));
+
+      setAccountGroupConfig(config);
     }
 
     setModal([key]);
@@ -219,7 +243,7 @@ export default function AccountGroups() {
       <div className="ph-filter-actions">
         <button
           className="ph-apply-btn"
-          onClick={() => OpenModal(modalKeys.newAccountGroup)}
+          onClick={() => OpenModal(modalKeys.upsertAccountGroup)}
         >
           ✦ Add new
         </button>
@@ -313,9 +337,7 @@ export default function AccountGroups() {
         {!isLoading && accountGroups.length === 0 && (
           <div className="ph-state-row">
             <div className="ph-state-icon">⊟</div>
-            <span className="ph-state-text">
-              No records found for the selected filters
-            </span>
+            <span className="ph-state-text">No records found.</span>
           </div>
         )}
 
@@ -331,18 +353,19 @@ export default function AccountGroups() {
         )}
       </div>
       {/* Modal */}
-      {modal.includes(modalKeys.newAccountGroup) && (
+      {modal.includes(modalKeys.upsertAccountGroup) && (
         <AccountGroupModal
           onClose={closeModal}
           onConfirm={handleAddAccountGroup}
           onPlatformChange={handlePlatformChange}
           isSubmitting={isAddingAccountGroup}
+          accountGroupConfig={accountGroupConfig}
           lookups={lookups}
         />
       )}
       {modal.includes(modalKeys.newAccount) && (
         <AddAccountModal
-          accountConfig={accountConfig}
+          accountConfig={accountGroupConfig}
           onClose={closeModal}
           onConfirm={handleAddAccount}
           isSubmitting={isAddingAccount}

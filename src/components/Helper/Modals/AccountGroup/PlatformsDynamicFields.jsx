@@ -3,6 +3,7 @@ import { useEffect } from "react";
 export function PlatformDynamicFields({
   configuration,
   values = {},
+  platformId,
   onChange,
 }) {
   // ── Parse once ────────────────────────────────────────────────────────────
@@ -96,7 +97,11 @@ export function PlatformDynamicFields({
             whiteSpace: "nowrap",
           }}
         >
-          {fields.length <= 0 ? "Please select patform" : 'Platform Fields'} 
+          {platformId == 0
+            ? "Please select patform"
+            : fields.length <= 0
+              ? "Plaforms Fields not configured "
+              : "Platform Fields"}
         </span>
         <div style={{ height: 1, flex: 1, background: "#2d3148" }} />
       </div>

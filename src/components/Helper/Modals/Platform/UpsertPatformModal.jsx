@@ -7,7 +7,9 @@ import { modalKeys } from "../../../../data/Static";
 export default function UpsertPlatformModal({
   unSavedData,
   onClose,
-  onConfirm,
+  onConfigure,
+  onUpsertPlatform,
+  isUpserting,
 }) {
   const [name, setName] = useState(unSavedData.name);
   const [logoUrl, setLogoUrl] = useState(unSavedData.logoUrl);
@@ -77,7 +79,27 @@ export default function UpsertPlatformModal({
             className={`um-btn primary`}
             disabled={!name.trim() || !logoUrl.trim()}
             onClick={() =>
-              onConfirm(
+              onUpsertPlatform(null, {
+                id: unSavedData.id,
+                name: name.trim(),
+                description: description.trim(),
+                logoUrl: logoUrl.trim(),
+                configuration: "",
+              })
+            }
+          >
+            {isUpserting ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              <span>{unSavedData.id ? "Update" : "Save"}</span>
+            )}
+          </button>
+
+          <button
+            className={`um-btn primary`}
+            disabled={!name.trim() || !logoUrl.trim()}
+            onClick={() =>
+              onConfigure(
                 {
                   id: unSavedData.id,
                   name: name.trim(),

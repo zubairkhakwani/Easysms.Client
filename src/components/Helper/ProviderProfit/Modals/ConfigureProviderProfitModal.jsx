@@ -9,13 +9,16 @@ import { FormatterHelper } from "../../../../helper/FormatterHelper";
 import "./ConfigureProviderProfitModal.css";
 
 export function ConfigureProviderProfitModal({
+  providersProfit,
   isSubmitting,
   onClose,
   onConfirm,
 }) {
-  const [heroSms, setHeroSms] = useState("");
-  const [fiveSim, setFiveSim] = useState("");
-  const [physicalNumbers, setPhysicalNumbers] = useState("");
+  const [heroSms, setHeroSms] = useState(providersProfit[0]?.heroSms ?? "");
+  const [fiveSim, setFiveSim] = useState(providersProfit[0]?.fiveSim ?? "");
+  const [physicalNumbers, setPhysicalNumbers] = useState(
+    providersProfit[0]?.physicalNumbers ?? "",
+  );
   const isValid =
     Number(heroSms) >= 0 &&
     Number(fiveSim) >= 0 &&
@@ -122,9 +125,11 @@ export function ConfigureProviderProfitModal({
             onClick={handleSubmit}
           >
             {isSubmitting ? (
-              <div className="cpp-spinner" />
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : providersProfit?.length > 0 ? (
+              "Update"
             ) : (
-              <span>Save Profit</span>
+              "Add"
             )}
           </button>
         </div>

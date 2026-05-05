@@ -20,7 +20,7 @@ import "./ProviderProfit.css";
 
 export default function ProviderProfit() {
   //Data
-  const [providerProfit, setProviderProfit] = useState([]);
+  const [providersProfit, setProvidersProfit] = useState([]);
 
   //Loading
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +38,7 @@ export default function ProviderProfit() {
       if (!response.isSuccess) {
         errorToast(responseMessage);
       }
-      setProviderProfit(responseData);
+      setProvidersProfit(responseData);
     } catch {
       errorToast("Failed to load provider pricings");
     } finally {
@@ -54,7 +54,8 @@ export default function ProviderProfit() {
       var responseData = !response.data ? [] : [response.data];
       if (response.isSuccess) {
         successTaost(responseMessage);
-        setProviderProfit(responseData);
+        setProvidersProfit(responseData);
+        handleModalClose(modalKeys.providerProfit);
       } else {
         errorToast(responseMessage);
       }
@@ -99,8 +100,10 @@ export default function ProviderProfit() {
                 />{" "}
                 Fetching…
               </>
+            ) : providersProfit?.length > 0 ? (
+              "✦ Edit"
             ) : (
-              "✦ Configure"
+              "✦ Add"
             )}
           </button>
         </div>
@@ -127,7 +130,7 @@ export default function ProviderProfit() {
               </thead>
 
               <tbody>
-                {providerProfit.map((r, index) => (
+                {providersProfit.map((r, index) => (
                   <tr key={r.id}>
                     <td className="ph-col-id">{index + 1}</td>
                     <td className="ph-col-cost">{r.heroSms}%</td>
@@ -180,7 +183,7 @@ export default function ProviderProfit() {
           </div>
         )}
 
-        {!isLoading && providerProfit.length === 0 && (
+        {!isLoading && providersProfit.length === 0 && (
           <div className="ph-state-row">
             <div className="ph-state-icon">⊟</div>
 
@@ -194,7 +197,7 @@ export default function ProviderProfit() {
         <ConfigureProviderProfitModal
           onConfirm={configureProviderProfit}
           onClose={handleModalClose}
-          profit={providerProfit}
+          providersProfit={providersProfit}
           isSubmitting={isConfiguring}
         />
       )}

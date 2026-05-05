@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 //Services
 import {
-  getAllCategories,
+  getAllAdminCategories,
   addNewCategory,
 } from "../../../../../services/Category/CategoryService";
 
@@ -139,7 +139,7 @@ export default function Categories() {
     let responseData = [];
 
     try {
-      let response = await getAllCategories({
+      let response = await getAllAdminCategories({
         pageNo,
         pageSize,
         platformId: platform,
@@ -165,13 +165,13 @@ export default function Categories() {
     let responseData = [];
 
     try {
-      let response = await getAllPlatforms({ pageNo, pageSize });
+      let response = await getAllPlatforms();
       responseMessage = response.message;
 
       if (!response.isSuccess) {
         errorToast(responseMessage);
       } else {
-        responseData = response.data?.items ?? [];
+        responseData = response.data ?? [];
       }
     } catch {
       errorToast("Unable to load platforms. Please try again.");
@@ -199,7 +199,6 @@ export default function Categories() {
     let responseMessage = response?.message;
     if (response.isSuccess) {
       successTaost(responseMessage);
-      console.log(response);
       setCategories((previous) => [response.data, ...previous]);
     } else {
       errorToast(responseMessage);

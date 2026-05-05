@@ -9,6 +9,9 @@ import { getAllAccounts, buyNewAccount } from "../../services/Account/Account";
 //Context
 import { AuthContext } from "../../context/AuthContext";
 
+//Components
+import { AccountCardSkeleton } from "../Skeltons/AccountCardSkelton";
+
 //Toaster
 import { errorToast, successTaost } from "../../helper/Toaster";
 
@@ -51,6 +54,8 @@ export default function RequestAccount() {
   const [platforms, setPlatforms] = useState([]);
   const [categories, setCategories] = useState([]);
 
+  const [isAccountsLoading, setIsAccountsLoading] = useState(false);
+
   //Filter
   const [patformCategories, setPlaformCategories] = useState([]);
   const [platform, setPlatform] = useState("0");
@@ -58,7 +63,7 @@ export default function RequestAccount() {
 
   const [viewMode, setViewMode] = useState("grid");
 
-  const [searchQuery, setSearchQuery] = useState("");
+  //const [searchQuery, setSearchQuery] = useState("");
 
   const [quantities, setQuantities] = useState({});
   const [buyingState, setBuyingState] = useState({});
@@ -94,13 +99,13 @@ export default function RequestAccount() {
     let responseData = [];
 
     try {
-      let response = await getAllPlatforms({ pageNo: 0, pageSize: 1000 });
+      let response = await getAllPlatforms();
       responseMessage = response.message;
 
       if (!response.isSuccess) {
         errorToast(responseMessage);
       } else {
-        responseData = response.data?.items ?? [];
+        responseData = response.data ?? [];
       }
     } catch {
       errorToast("Unable to load platforms. Please try again.");
@@ -114,18 +119,14 @@ export default function RequestAccount() {
     let responseData = [];
 
     try {
-      let response = await getAllCategories({
-        pageNo: 0,
-        pageSize: 1000,
-        platformId: 0,
-      });
+      let response = await getAllCategories();
 
       responseMessage = response.message;
 
       if (!response.isSuccess) {
         errorToast(responseMessage);
       } else {
-        responseData = response.data?.items ?? [];
+        responseData = response.data ?? [];
       }
     } catch {
       errorToast("Unable to load categories. Please try again.");
@@ -136,6 +137,7 @@ export default function RequestAccount() {
 
   async function getAccountsData() {
     let responseData = [];
+    setIsAccountsLoading(true);
     try {
       let response = await getAllAccounts({
         platformId: platform,
@@ -151,6 +153,7 @@ export default function RequestAccount() {
       errorToast("Unable to load accounts. Please try again.");
     } finally {
       setAccounts(responseData);
+      setIsAccountsLoading(false);
     }
   }
 
@@ -187,7 +190,6 @@ export default function RequestAccount() {
             ),
           })),
         );
-
         DownloadPurchaseReceipt(response.data ?? [], true);
       } else {
         errorToast(responseMessage);
@@ -293,33 +295,41 @@ export default function RequestAccount() {
       </section>
 
       {/* Account Listings */}
-      {accounts.map((accountGroup) => (
-        <div key={accountGroup.platformName} className="platform-section">
-          <div className="platform-header">
-            <h2 className="platform-title">{accountGroup.platformName}</h2>
-            <span className="group-count">
-              {buildGroupText(accountGroup.totalGroups)}
-            </span>
-          </div>
-          <div
-            className={`accounts-grid ${viewMode === "list" ? "list-view" : ""}`}
-          >
-            {accountGroup.groups.map((account) => (
-              <AccountCard
-                key={account.accountGroupId}
-                account={account}
-                quantity={quantities[account.accountGroupId] ?? 1}
-                onQuantityChange={(val) =>
-                  handleQuantityChange(account.accountGroupId, val)
-                }
-                OnBuy={handleBuyAccounts}
-                isBuying={buyingState[account.accountGroupId] ?? false}
-              />
-            ))}
-          </div>
+      {isAccountsLoading ? (
+        <div
+          className={`accounts-grid ${viewMode === "list" ? "list-view" : ""}`}
+        >
+          <AccountCardSkeleton />
         </div>
-      ))}
-      {accounts.length === 0 && (
+      ) : (
+        accounts.map((accountGroup) => (
+          <div key={accountGroup.platformName} className="platform-section">
+            <div className="platform-header">
+              <h2 className="platform-title">{accountGroup.platformName}</h2>
+              <span className="group-count">
+                {buildGroupText(accountGroup.totalGroups)}
+              </span>
+            </div>
+            <div
+              className={`accounts-grid ${viewMode === "list" ? "list-view" : ""}`}
+            >
+              {accountGroup.groups.map((account) => (
+                <AccountCard
+                  key={account.accountGroupId}
+                  account={account}
+                  quantity={quantities[account.accountGroupId] ?? 1}
+                  onQuantityChange={(val) =>
+                    handleQuantityChange(account.accountGroupId, val)
+                  }
+                  OnBuy={handleBuyAccounts}
+                  isBuying={buyingState[account.accountGroupId] ?? false}
+                />
+              ))}
+            </div>
+          </div>
+        ))
+      )}
+      {!isAccountsLoading && accounts.length === 0 && (
         <div className="empty-state">
           <div className="empty-state-icon">
             <i className="fa-solid fa-box-open"></i>
@@ -373,23 +383,6 @@ function AccountCard({ account, quantity, onQuantityChange, OnBuy, isBuying }) {
 
       {/* Description */}
       <p className="card-description">{account.description}</p>
-
-      {/* Meta */}
-      {/* <div className="card-meta">
-        <span className="meta-item">
-          <i className="fa-solid fa-location-dot"></i>
-          {account.registrationCountry}
-        </span>
-        <span className="meta-item">
-          <i className="fa-solid fa-user"></i>
-          {account.gender}
-        </span>
-        <span
-          className={`meta-status ${statusClass[account.completionStatus] ?? ""}`}
-        >
-          {account.completionStatus}
-        </span>
-      </div> */}
 
       {/* Feature Tags */}
       {account.features && (

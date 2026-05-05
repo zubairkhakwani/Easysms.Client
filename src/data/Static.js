@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-export const Base_Url = "https://api.easyotps.com";
-//export const Base_Url = "https://localhost:7265";
+//export const Base_Url = "https://api.easyotps.com";
+export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -198,7 +198,7 @@ export const ContactUsSubjects = [
 
 export const modalKeys = {
   all: "all",
-  newAccountGroup: "account-group",
+  upsertAccountGroup: "upsert-account-group",
   newAccount: "account",
   resultModal: "result-modal",
   changePassword: "change-password",
@@ -219,7 +219,7 @@ export const NumberStatus = [
 export const PhysicalNumberStatus = [
   { label: "All", value: 0 },
   { label: "Sold", value: 6 },
-  { label: "Active", value: 1 },
+  { label: "UnSold", value: 1 },
 ];
 
 export const Providers = [

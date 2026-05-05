@@ -13,14 +13,15 @@ export function AccountGroupModal({
   onPlatformChange,
   isSubmitting,
   lookups,
+  accountGroupConfig,
 }) {
   const [formData, setFormData] = useState({
-    description: "",
-    platformId: "",
-    categoryId: "",
-    unitPrice: "",
-    hasCookie: false,
-    hasTwoFactorKey: false,
+    description: accountGroupConfig.description,
+    platformId: accountGroupConfig.platformId,
+    categoryId: accountGroupConfig.categoryId,
+    unitPrice: accountGroupConfig.unitPrice,
+    hasCookie: accountGroupConfig.hasCookie,
+    hasTwoFactorKey: accountGroupConfig.hasTwoFactorKey,
     platformFields: {},
   });
 
@@ -111,7 +112,7 @@ export function AccountGroupModal({
       <div className="um-modal" onClick={(e) => e.stopPropagation()}>
         <button
           className="um-close-btn"
-          onClick={() => onClose(modalKeys.newAccountGroup)}
+          onClick={() => onClose(modalKeys.upsertAccountGroup)}
         >
           ✕
         </button>
@@ -197,6 +198,7 @@ export function AccountGroupModal({
         <PlatformDynamicFields
           configuration={lookups.platformConfiguration}
           values={formData.platformFields}
+          platformId={formData.platformId}
           onChange={(updated) =>
             setFormData((prev) => ({ ...prev, platformFields: updated }))
           }
@@ -205,7 +207,7 @@ export function AccountGroupModal({
         <div className="um-modal-actions" style={{ marginTop: "1.5rem" }}>
           <button
             className="um-btn ghost"
-            onClick={() => onClose(modalKeys.newAccountGroup)}
+            onClick={() => onClose(modalKeys.upsertAccountGroup)}
           >
             Cancel
           </button>

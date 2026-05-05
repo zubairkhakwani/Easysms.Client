@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 //Services
 import {
-  getAllPlatforms,
+  getAllAdminPlatforms,
   upsertPlatform,
 } from "../../../../../services/Platform/PlatformService";
 
@@ -74,7 +74,7 @@ export default function Platforms() {
   async function getPlatformData() {
     setIsLoading(true);
     try {
-      let response = await getAllPlatforms({
+      let response = await getAllAdminPlatforms({
         pageNo,
         pageSize,
       });
@@ -104,10 +104,13 @@ export default function Platforms() {
   };
 
   //Platorm
-  const handleAddPlatform = async (configuration, platformData) => {
+  const handleAddPlatform = async (configuration = null, platformData) => {
+    console.log(platformData);
     platformData.configuration = configuration;
 
     setIsPlatformUpserting(true);
+    console.log("Configuration", configuration);
+    console.log("Data", platformData);
     try {
       let response = await upsertPlatform(platformData);
       let responseMessage = response.message;
@@ -166,7 +169,7 @@ export default function Platforms() {
     setModal((prev) => prev.filter((item) => item !== key));
   };
 
-  const handelOpenPlatformConfigureModal = async (plaformData, key) => {
+  const handleOpenPlatformConfigureModal = async (plaformData, key) => {
     setUnSavedPlatformData(plaformData);
     setModal((prev) => [...prev, key]);
   };
@@ -329,7 +332,9 @@ export default function Platforms() {
           <UpsertPlatformModal
             unSavedData={unSavedPlatformData}
             onClose={handleCloseModal}
-            onConfirm={handelOpenPlatformConfigureModal}
+            onConfigure={handleOpenPlatformConfigureModal}
+            onUpsertPlatform={handleAddPlatform}
+            isUpserting={isPlatformUpserting}
           />
         )}
         {/* Dynamic Form Builder */}

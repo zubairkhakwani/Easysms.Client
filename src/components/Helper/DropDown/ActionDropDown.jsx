@@ -9,6 +9,12 @@ export function ActionDropdown({ accountGroupId, onAction }) {
 
   const items = [
     {
+      key: modalKeys.upsertAccountGroup,
+      label: "Edit Account group",
+      icon: "",
+      color: "cyan",
+    },
+    {
       key: modalKeys.newAccount,
       label: "Add Account",
       icon: "",
