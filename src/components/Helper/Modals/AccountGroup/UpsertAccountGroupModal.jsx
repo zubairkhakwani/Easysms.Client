@@ -7,7 +7,7 @@ import { modalKeys } from "../../../../data/Static";
 //Component
 import { PlatformDynamicFields } from "./PlatformsDynamicFields";
 
-export function AccountGroupModal({
+export function UpsertAccountGroupModal({
   onClose,
   onConfirm,
   onPlatformChange,
@@ -17,23 +17,42 @@ export function AccountGroupModal({
 }) {
   const [formData, setFormData] = useState({
     description: accountGroupConfig.description,
+    customTitle: accountGroupConfig.customTitle,
     platformId: accountGroupConfig.platformId,
     categoryId: accountGroupConfig.categoryId,
-    purchasePrice: accountGroupConfig.unitPrice,
-    salePrice: accountGroupConfig.unitPrice,
+    purchasePrice: accountGroupConfig.purchasePrice,
+    salePrice: accountGroupConfig.salePrice,
     hasCookie: accountGroupConfig.hasCookie,
     hasTwoFactorKey: accountGroupConfig.hasTwoFactorKey,
+    showCustomTitle: accountGroupConfig.showCustomTitle,
     platformFields: {},
   });
+  const numericFields = [
+    "platformId",
+    "categoryId",
+    "purchasePrice",
+    "salePrice",
+  ];
 
   const set = (field) => (e) => {
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    let value;
+    if (e.target.type === "checkbox") {
+      value = e.target.checked;
+    } else {
+      const raw = e.target.value;
+
+      if (numericFields.includes(field)) {
+        value = raw === "" ? "" : parseFloat(raw);
+      } else {
+        value = raw;
+      }
+    }
+
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handlePlatformChange = (value) => {
-    setFormData((prev) => ({ ...prev, ["platformId"]: value }));
+    setFormData((prev) => ({ ...prev, ["platformId"]: Number(value) }));
     onPlatformChange(value);
   };
 
@@ -85,12 +104,14 @@ export function AccountGroupModal({
     formData.salePrice &&
     formData.purchasePrice > 0 &&
     formData.salePrice > 0 &&
-    formData.salePrice > formData.purchasePrice &&
+    formData.salePrice >= formData.purchasePrice &&
     formData.platformId &&
     formData.categoryId &&
     dynamicValid;
 
-  const CheckRow = ({ label, field }) => (
+  const isEdit = accountGroupConfig.accountGroupId > 0;
+
+  const CheckRow = ({ label, field, isDisabled }) => (
     <label
       style={{
         display: "flex",
@@ -104,6 +125,7 @@ export function AccountGroupModal({
       <input
         type="checkbox"
         checked={formData[field]}
+        disabled={isDisabled}
         onChange={set(field)}
         style={{ accentColor: "#4f8ef7", width: 15, height: 15 }}
       />
@@ -116,24 +138,38 @@ export function AccountGroupModal({
       <div className="um-modal" onClick={(e) => e.stopPropagation()}>
         <button
           className="um-close-btn"
-          onClick={() => onClose(modalKeys.upsertAccountGroup)}
+          onClick={() =>
+            onClose(
+              isEdit ? modalKeys.updateAccountGroup : modalKeys.addAccountGroup,
+            )
+          }
         >
           ✕
         </button>
-        <div className="um-modal-title">Add New Account Group</div>
+        <div className="um-modal-title">
+          {isEdit ? "Edit" : "Add New"} Account Group
+        </div>
 
         {/* ── Basic Info ── */}
         <div className="um-form-group" style={{ marginTop: "1rem" }}>
-          <label className="um-label">
-            Description{" "}
-            <span style={{ color: "#aaa", fontWeight: 400 }}>(optional)</span>
-          </label>
+          <label className="um-label">Description </label>
           <textarea
             className="um-input"
             placeholder="Short description..."
             value={formData.description}
             onChange={set("description")}
             rows={2}
+            style={{ resize: "vertical" }}
+          />
+        </div>
+        <div className="um-form-group" style={{ marginTop: "1rem" }}>
+          <label className="um-label">Custom Title </label>
+          <textarea
+            className="um-input"
+            placeholder="Facebook accounts with included cookies..."
+            value={formData.customTitle}
+            onChange={set("customTitle")}
+            rows={4}
             style={{ resize: "vertical" }}
           />
         </div>
@@ -152,6 +188,7 @@ export function AccountGroupModal({
             <select
               className="um-input"
               value={formData.platformId}
+              disabled={isEdit}
               onChange={(e) => handlePlatformChange(e.target.value)}
             >
               <option value="0">Select platform...</option>
@@ -218,11 +255,16 @@ export function AccountGroupModal({
           </div>
         </div>
 
-        <CheckRow label="Has Cookie" field="hasCookie" />
-        <CheckRow label="Has Two Factor Key" field="hasTwoFactorKey" />
+        <CheckRow label="Has Cookie" field="hasCookie" isDisabled={isEdit} />
+        <CheckRow
+          label="Has Two Factor Key"
+          field="hasTwoFactorKey"
+          isDisabled={isEdit}
+        />
+        <CheckRow label="Show custom title" field="showCustomTitle" />
 
         <PlatformDynamicFields
-          configuration={lookups.platformConfiguration}
+          configuration={accountGroupConfig.platformConfig}
           values={formData.platformFields}
           platformId={formData.platformId}
           onChange={(updated) =>
@@ -233,7 +275,13 @@ export function AccountGroupModal({
         <div className="um-modal-actions" style={{ marginTop: "1.5rem" }}>
           <button
             className="um-btn ghost"
-            onClick={() => onClose(modalKeys.upsertAccountGroup)}
+            onClick={() =>
+              onClose(
+                isEdit
+                  ? modalKeys.updateAccountGroup
+                  : modalKeys.addAccountGroup,
+              )
+            }
           >
             Cancel
           </button>
@@ -244,6 +292,8 @@ export function AccountGroupModal({
           >
             {isSubmitting ? (
               <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : isEdit ? (
+              "Update"
             ) : (
               "Add"
             )}

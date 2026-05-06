@@ -200,11 +200,12 @@ export default function Navbar() {
     <>
       <nav className={`nav${menuOpen ? " open" : ""}`}>
         <div className="nav-inner">
-          <Link to="/">
-            <div className="logo">
-              <span>Easy</span>otps
-            </div>
-          </Link>
+          <div className="logo">
+            <Link to="/">
+              <span>Easy</span>{" "}
+              <span style={{ color: "var(--text-heading)" }}>otps</span>
+            </Link>
+          </div>
 
           <div
             className={`hamburger${menuOpen ? " open" : ""}`}

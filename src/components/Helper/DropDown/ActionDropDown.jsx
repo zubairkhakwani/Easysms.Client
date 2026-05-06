@@ -4,13 +4,19 @@ import { useState } from "react";
 //Helper
 import { modalKeys } from "../../../data/Static";
 
-export function ActionDropdown({ accountGroupId, onAction }) {
+export function ActionDropdown({ accountGroupId, isActive, onAction }) {
   const [open, setOpen] = useState(false);
 
   const items = [
     {
-      key: modalKeys.upsertAccountGroup,
-      label: "Edit Account group",
+      key: modalKeys.updateAccountGroup,
+      label: "Edit",
+      icon: "",
+      color: "cyan",
+    },
+    {
+      key: modalKeys.toggleAccountGroup,
+      label: `Mark as ${isActive ? "inactive" : "active"}`,
       icon: "",
       color: "cyan",
     },

@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-export const Base_Url = "https://api.easyotps.com";
-//export const Base_Url = "https://localhost:7265";
+//export const Base_Url = "https://api.easyotps.com";
+export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -198,7 +198,9 @@ export const ContactUsSubjects = [
 
 export const modalKeys = {
   all: "all",
-  upsertAccountGroup: "upsert-account-group",
+  addAccountGroup: "add-account-group",
+  updateAccountGroup: "update-account-group",
+  toggleAccountGroup: "toggle-account-group",
   newAccount: "account",
   resultModal: "result-modal",
   changePassword: "change-password",

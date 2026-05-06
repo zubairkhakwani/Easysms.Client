@@ -219,7 +219,7 @@ export default function RequestAccount() {
   }
 
   function buildGroupText(length) {
-    return `${length} Group ${length > 1 ? "s" : ""}`;
+    return `${length} Group${length > 1 ? "s" : ""}`;
   }
 
   return (

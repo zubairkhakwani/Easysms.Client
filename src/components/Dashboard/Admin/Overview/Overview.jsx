@@ -44,19 +44,25 @@ export default function Overview() {
 
   //Loading
   const [isOverviewLoading, setIsOverviewLoading] = useState(false);
-  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
 
   //Filters
   const [startDate, setStartDate] = useState(toDS(twoWeeks));
   const [endDate, setEndDate] = useState(toDS(today));
 
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastSynced, setLastSynced] = useState(
+    FormatterHelper.formatDateToLocal(new Date()),
+  );
 
   //Providers Info
   async function getProvidersData() {
-    let response = await getProvidersInfo();
-    if (response?.isSuccess) {
-      setBalances(response.data.info);
+    try {
+      let response = await getProvidersInfo();
+      if (response.isSuccess) {
+        setBalances(response.data.info);
+      }
+    } catch {
+      errorToast("Failed to load providers data");
     }
   }
 
@@ -97,10 +103,13 @@ export default function Overview() {
     if (isRefreshing) return;
     setIsRefreshing(true);
     await getProvidersData();
+    setLastSynced(FormatterHelper.formatDateToLocal(new Date()));
     setIsRefreshing(false);
   };
+  const totalBalance = (balances ?? [])
+    .filter((b) => !b.isPhysicalNumber)
+    .reduce((s, b) => s + (b.balance ?? 0), 0);
 
-  const totalBalance = balances?.reduce((s, b) => s + (b.balance ?? 0), 0);
   const activeCount = balances?.filter((b) => b.status === "Online").length;
   const lowBalCount = balances?.filter((b) => (b.balance ?? 0) < 10).length;
 
@@ -302,9 +311,9 @@ export default function Overview() {
             </div>
             <span className="balances-subtitle">
               Live wallet balances · not affected by date filters
-              {/* {lastSynced && (
+              {lastSynced && (
                 <span className="last-synced"> · Synced {lastSynced}</span>
-              )} */}
+              )}
             </span>
           </div>
           <button

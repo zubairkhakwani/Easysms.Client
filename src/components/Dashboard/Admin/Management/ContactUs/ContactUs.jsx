@@ -12,7 +12,7 @@ import {
 import { ActionDropdown } from "../../../../Helper/ContactUs/DropDown/ActionDropDown";
 
 //Modals
-import ToggleMessageReadModal from "../../../../Helper/ContactUs/Modal/ToggleMessageReadModal";
+import ToggleStatusModal from "../../../../Helper/ContactUs/Modal/ToggleStatusModal";
 import ContactUsReplyModal from "../../../../Helper/ContactUs/Modal/ContactUsReplyModal";
 
 //Helper
@@ -309,11 +309,19 @@ export default function ContactUs() {
       </div>
 
       {modal === modalKeys.contactUsMessage && (
-        <ToggleMessageReadModal
-          isRead={message.isRead}
-          isLoading={isToggling}
+        <ToggleStatusModal
+          isActive={message.isRead}
           onClose={closeModal}
           onConfirm={handleToggleContactUs}
+          isLoading={isToggling}
+          config={{
+            activeLabel: "Read",
+            inactiveLabel: "Unread",
+            activeIcon: "📬",
+            inactiveIcon: "✉️",
+            activeClass: "success",
+            inactiveClass: "warning",
+          }}
         />
       )}
 

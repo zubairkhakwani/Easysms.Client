@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 //Services
 import {
   getAllAccountGroups,
-  addNewAccountGroup,
+  upsertAccountGroup,
+  toggleAccountGroup,
 } from "../../../../../services/AccountGroup/AccountGroup.js";
 import { addNewAccount } from "../../../../../services/Account/Account.js";
 import { getAllLookups } from "../../../../../services/Lookup/Lookup.js";
@@ -17,9 +18,10 @@ import { successTaost, errorToast } from "../../../../../helper/Toaster";
 import Paginations from "../../../../Shared/Pagination";
 
 //Modals
-import { AccountGroupModal } from "../../../../Helper/Modals/AccountGroup/AccountGroupModal.jsx";
+import { UpsertAccountGroupModal } from "../../../../Helper/Modals/AccountGroup/UpsertAccountGroupModal.jsx";
 import { AddAccountModal } from "../../../../Helper/Modals/AccountGroup/AddAccountModal.jsx";
 import { ResultModal } from "../../../../Helper/Modals/AccountGroup/ResultModal.jsx";
+import ToggleStatusModal from "../../../../Helper/ContactUs/Modal/ToggleStatusModal.jsx";
 
 //DropDowns
 import { ActionDropdown } from "../../../../Helper/DropDown/ActionDropDown.jsx";
@@ -33,17 +35,24 @@ import "./AccountGroups.css";
 export default function AccountGroups() {
   //Data
   const [accountGroups, setAccountGroups] = useState([]);
+
+  //looks will have platforms & platfrom specific categories
   const [lookups, setLookups] = useState([]);
+
+  //categories returned from the api
   const [categories, setCategories] = useState([]);
 
   const [accountGroupConfig, setAccountGroupConfig] = useState({
-    accountGroupId: undefined,
-    plaformId: undefined,
-    categoryId: undefined,
-    unitPrice: undefined,
+    accountGroupId: 0,
+    plaformId: 0,
+    categoryId: 0,
+    plaformConfig: "",
+    purchasePrice: 0,
+    salePrice: 0,
     descripion: "",
     hasCookie: false,
     hasTwoFactorKey: false,
+    isActive: false,
   });
 
   //Http Response
@@ -53,6 +62,7 @@ export default function AccountGroups() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAddingAccountGroup, setIsAddingAccountGroup] = useState(false);
   const [isAddingAccount, setIsAddingAccount] = useState(false);
+  const [isTogglingAccountGroup, setIsTogglingAccountGroup] = useState(false);
 
   //Pagination
   const [count, setCount] = useState(0);
@@ -71,7 +81,7 @@ export default function AccountGroups() {
     getLookupsData();
   }, []);
 
-  //Fetch Data From Api
+  //Fetch Data From Api+
   async function getAccountGroupsData() {
     setIsLoading(true);
     try {
@@ -110,25 +120,77 @@ export default function AccountGroups() {
     }
   }
 
-  //Account Group
-  const handleAddAccountGroup = async (data) => {
+  //Upsert Account Group
+  const handleUpsertAccountGroup = async (data) => {
     setIsAddingAccountGroup(true);
+    let accountGroupId = accountGroupConfig.accountGroupId;
+    let isEdit = accountGroupId > 0;
     try {
-      const response = await addNewAccountGroup(data);
+      const response = await upsertAccountGroup(data, accountGroupId);
       const responseMessage = response.message;
       if (response.isSuccess) {
         successTaost(responseMessage);
-        getAccountGroupsData((previous) => [response.data, ...previous]);
-        closeModal(modalKeys.upsertAccountGroup);
+        getAccountGroupsData((previous) => {
+          let found = false;
+
+          const updated = previous.map((item) => {
+            if (item.id === accountGroupId) {
+              found = true;
+              return response.data;
+            }
+            return item;
+          });
+
+          return found ? updated : [response.data, ...previous];
+        });
+
+        closeModal(
+          isEdit ? modalKeys.updateAccountGroup : modalKeys.addAccountGroup,
+        );
       } else {
         errorToast(responseMessage);
       }
     } catch {
-      errorToast("Failed to add account group. Please try again.");
+      errorToast(
+        `Failed to ${isEdit ? "update" : "add"} account group. Please try again.`,
+      );
     } finally {
       setIsAddingAccountGroup(false);
     }
   };
+
+  //Toggle Account Group
+  async function handleToggleAccountGroup() {
+    setIsTogglingAccountGroup(true);
+    try {
+      let response = await toggleAccountGroup(
+        accountGroupConfig.accountGroupId,
+      );
+
+      if (response.isSuccess) {
+        const responseData = response.data;
+        setAccountGroups((previous) =>
+          previous.map((item) =>
+            item.id === accountGroupConfig.accountGroupId
+              ? {
+                  ...item,
+                  isActive: responseData.isActive,
+                }
+              : item,
+          ),
+        );
+
+        successTaost(response.message);
+        closeModal(modalKeys.toggleAccountGroup);
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to perform action");
+    } finally {
+      setIsTogglingAccountGroup(false);
+    }
+  }
 
   //Account
   const handleAddAccount = async (data) => {
@@ -174,67 +236,91 @@ export default function AccountGroups() {
     setPageNo(0);
   };
 
-  //Select Change
-  const handlePlatformChange = (platformId) => {
+  const setPlaformSpecificCategories = (platformId) => {
+    //Get the platform sepecific categories
     const platformCategories = categories.filter(
       (category) => category.platformId == platformId,
     );
 
-    const patformConfiguration =
+    //update lookups and add the platform specific categories
+    setLookups((prev) => ({
+      ...prev,
+      categories: platformCategories,
+    }));
+  };
+
+  const setPlaformConfig = (platformId) => {
+    //get platform configuration
+    const platformConfig =
       lookups.platforms.find((plat) => plat.id == platformId)?.configuration ??
       "";
-    setLookups((previous) => ({
-      ...previous,
-      categories: platformCategories,
-      platformConfiguration: patformConfiguration,
+
+    //update accountGroupConfig and add the platform configuraion
+    setAccountGroupConfig((prev) => ({
+      ...prev,
+      platformConfig: platformConfig,
     }));
+  };
+
+  //Select Change
+  const handlePlatformChange = (platformId) => {
+    setPlaformSpecificCategories(platformId);
+    setPlaformConfig(platformId);
   };
 
   //Modal
   const OpenModal = (key, accountGroupId) => {
-    if (key === modalKeys.upsertAccountGroup || key === modalKeys.newAccount) {
+    let config = {
+      accountGroupId: 0,
+      plaformId: 0,
+      platformConfig: "",
+      categoryId: 0,
+      purchasePrice: 0,
+      salePrice: 0,
+      descripion: "",
+      hasCookie: false,
+      hasTwoFactorKey: false,
+    };
+
+    //When opening action model e.g update account group,toggle status and add accounts we need some data to pass to model to edit and store for later use e.g account group id so it will help when adding accounts in a account group.
+    if (
+      key === modalKeys.updateAccountGroup ||
+      key === modalKeys.newAccount ||
+      key === modalKeys.toggleAccountGroup
+    ) {
       let selectedAccountGroup = accountGroups.find(
         (accountGroup) => accountGroup.id === accountGroupId,
       );
+      if (selectedAccountGroup) {
+        config.accountGroupId = accountGroupId;
+        config.platformId = selectedAccountGroup.platformId;
+        config.categoryId = selectedAccountGroup.categoryId;
+        config.purchasePrice = selectedAccountGroup.purchasePrice;
+        config.salePrice = selectedAccountGroup.salePrice;
+        config.description = selectedAccountGroup.description;
+        config.customTitle = selectedAccountGroup.customTitle;
+        config.hasCookie = selectedAccountGroup.hasCookie;
+        config.hasTwoFactorKey = selectedAccountGroup.hasTwoFactorKey;
+        config.showCustomTitle = selectedAccountGroup.showCustomTitle;
+        config.isActive = selectedAccountGroup.isActive;
 
-      let config = {
-        accountGroupId: accountGroupId,
-        platformId: selectedAccountGroup?.platformId,
-        categoryId: selectedAccountGroup?.categoryId,
-        unitPrice: selectedAccountGroup?.unitPrice,
-        descripion: selectedAccountGroup?.description,
-        hasTwoFactorKey: selectedAccountGroup?.hasTwoFactorKey,
-        hasCookie: selectedAccountGroup?.hasCookie,
-      };
+        //get platform configuration so we can display to admin for edit
+        const platformConfig =
+          lookups.platforms.find(
+            (plat) => plat.id == selectedAccountGroup.plaformId,
+          )?.configuration ?? "";
 
-      const platformCategories = categories.filter(
-        (category) => category.id == selectedAccountGroup?.categoryId,
-      );
+        config.platformConfig = platformConfig;
 
-      const patformConfiguration =
-        lookups.platforms.find(
-          (plat) => plat.id == selectedAccountGroup?.categoryId,
-        )?.configuration ?? "";
-
-      setLookups((previous) => ({
-        ...previous,
-        categories: platformCategories,
-        platformConfiguration: patformConfiguration,
-      }));
-
-      setAccountGroupConfig(config);
+        setPlaformSpecificCategories(config.platformId);
+      }
     }
+    setAccountGroupConfig(config);
 
     setModal([key]);
   };
 
   const closeModal = (key) => {
-    if (key === modalKeys.newAccountGroup) {
-      setLookups((previous) => ({
-        ...previous,
-        platformConfiguration: "",
-      }));
-    }
     setModal((prev) => prev.filter((k) => k !== key));
   };
 
@@ -243,7 +329,7 @@ export default function AccountGroups() {
       <div className="ph-filter-actions">
         <button
           className="ph-apply-btn"
-          onClick={() => OpenModal(modalKeys.upsertAccountGroup)}
+          onClick={() => OpenModal(modalKeys.addAccountGroup)}
         >
           ✦ Add new
         </button>
@@ -268,7 +354,9 @@ export default function AccountGroups() {
                     <th>Total Available</th>
                     <th>Purchase Price</th>
                     <th>Sale Price</th>
+                    <th>Has Cookie</th>
                     <th>Has Two Factor Key</th>
+                    <th>Show Custom Title</th>
                     <th>Is Active</th>
                     <th>Admin</th>
                     <th>Created At</th>
@@ -291,13 +379,16 @@ export default function AccountGroups() {
                         {FormatterHelper.formatCurrency(r.salePrice)}
                       </td>
                       <td className="um-user-name">
-                        {r.hasCookie ? "true" : "false"}
+                        {r.hasCookie ? "True" : "False"}
                       </td>
                       <td className="um-user-name">
-                        {r.hasTwoFactorKey ? "true" : "false"}
+                        {r.hasTwoFactorKey ? "True" : "False"}
                       </td>
                       <td className="um-user-name">
-                        {r.isActive ? "true" : "false"}
+                        {r.showCustomTitle ? "True" : "False"}
+                      </td>
+                      <td className="um-user-name">
+                        {r.isActive ? "True" : "False"}
                       </td>
 
                       <td className="um-user-cell">
@@ -319,6 +410,7 @@ export default function AccountGroups() {
                       <td className="um-td">
                         <ActionDropdown
                           accountGroupId={r.id}
+                          isActive={r.isActive}
                           onAction={OpenModal}
                         />
                       </td>
@@ -356,16 +448,18 @@ export default function AccountGroups() {
         )}
       </div>
       {/* Modal */}
-      {modal.includes(modalKeys.upsertAccountGroup) && (
-        <AccountGroupModal
+      {(modal.includes(modalKeys.addAccountGroup) ||
+        modal.includes(modalKeys.updateAccountGroup)) && (
+        <UpsertAccountGroupModal
           onClose={closeModal}
-          onConfirm={handleAddAccountGroup}
+          onConfirm={handleUpsertAccountGroup}
           onPlatformChange={handlePlatformChange}
           isSubmitting={isAddingAccountGroup}
           accountGroupConfig={accountGroupConfig}
           lookups={lookups}
         />
       )}
+
       {modal.includes(modalKeys.newAccount) && (
         <AddAccountModal
           accountConfig={accountGroupConfig}
@@ -375,10 +469,28 @@ export default function AccountGroups() {
         />
       )}
 
+      {modal.includes(modalKeys.toggleAccountGroup) && (
+        <ToggleStatusModal
+          isActive={accountGroupConfig.isActive}
+          onConfirm={handleToggleAccountGroup}
+          onClose={() => closeModal(modalKeys.toggleAccountGroup)}
+          isLoading={isTogglingAccountGroup}
+          config={{
+            activeLabel: "Active",
+            inactiveLabel: "Inactive",
+            activeIcon: "✅",
+            inactiveIcon: "🚫",
+            activeClass: "success",
+            inactiveClass: "danger",
+          }}
+        />
+      )}
+
       {/* Result Modal */}
       {modal.includes(modalKeys.resultModal) && (
-        <ResultModal result={addAccountResponse} onClose={closeModal} />
+        <ResultModal result={addAccountResponse ?? []} onClose={closeModal} />
       )}
+      {/* modal.includes(modalKeys.resultModal) */}
     </div>
   );
 }

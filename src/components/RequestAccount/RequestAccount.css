@@ -327,6 +327,7 @@
 .card-type {
   font-size: 0.72rem;
   color: var(--text-mid);
+  margin-top: 0.3rem;
 }
 
 /* Stock Badge */
