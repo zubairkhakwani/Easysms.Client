@@ -115,8 +115,8 @@ export default function AccountGroups() {
     setIsAddingAccountGroup(true);
     try {
       const response = await addNewAccountGroup(data);
-      const responseMessage = response?.message || "Something went wrong";
-      if (response?.isSuccess) {
+      const responseMessage = response.message;
+      if (response.isSuccess) {
         successTaost(responseMessage);
         getAccountGroupsData((previous) => [response.data, ...previous]);
         closeModal(modalKeys.upsertAccountGroup);
@@ -192,7 +192,7 @@ export default function AccountGroups() {
 
   //Modal
   const OpenModal = (key, accountGroupId) => {
-    if (key === modalKeys.upsertAccountGroup) {
+    if (key === modalKeys.upsertAccountGroup || key === modalKeys.newAccount) {
       let selectedAccountGroup = accountGroups.find(
         (accountGroup) => accountGroup.id === accountGroupId,
       );
@@ -266,8 +266,8 @@ export default function AccountGroups() {
                     <th>Platform</th>
                     <th>Category</th>
                     <th>Total Available</th>
-                    <th>Unit Price</th>
-                    <th>Has Cookie</th>
+                    <th>Purchase Price</th>
+                    <th>Sale Price</th>
                     <th>Has Two Factor Key</th>
                     <th>Is Active</th>
                     <th>Admin</th>
@@ -285,7 +285,10 @@ export default function AccountGroups() {
                       <td className="um-user-name">{r.category}</td>
                       <td className="um-user-name">{r.totalAvailable}</td>
                       <td className="um-user-name">
-                        {FormatterHelper.formatCurrency(r.unitPrice)}
+                        {FormatterHelper.formatCurrency(r.purchasePrice)}
+                      </td>
+                      <td className="um-user-name">
+                        {FormatterHelper.formatCurrency(r.salePrice)}
                       </td>
                       <td className="um-user-name">
                         {r.hasCookie ? "true" : "false"}

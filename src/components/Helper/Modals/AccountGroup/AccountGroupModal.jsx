@@ -19,7 +19,8 @@ export function AccountGroupModal({
     description: accountGroupConfig.description,
     platformId: accountGroupConfig.platformId,
     categoryId: accountGroupConfig.categoryId,
-    unitPrice: accountGroupConfig.unitPrice,
+    purchasePrice: accountGroupConfig.unitPrice,
+    salePrice: accountGroupConfig.unitPrice,
     hasCookie: accountGroupConfig.hasCookie,
     hasTwoFactorKey: accountGroupConfig.hasTwoFactorKey,
     platformFields: {},
@@ -80,8 +81,11 @@ export function AccountGroupModal({
   );
 
   const isValid =
-    formData.unitPrice &&
-    formData.unitPrice > 0 &&
+    formData.purchasePrice &&
+    formData.salePrice &&
+    formData.purchasePrice > 0 &&
+    formData.salePrice > 0 &&
+    formData.salePrice > formData.purchasePrice &&
     formData.platformId &&
     formData.categoryId &&
     dynamicValid;
@@ -177,19 +181,41 @@ export function AccountGroupModal({
           </div>
         </div>
 
-        <div className="um-form-group">
-          <label className="um-label">
-            Unit Price <span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            className="um-input"
-            type="number"
-            min={0}
-            step="0.01"
-            placeholder="0.00"
-            value={formData.unitPrice}
-            onChange={set("unitPrice")}
-          />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "0.75rem",
+          }}
+        >
+          <div className="um-form-group">
+            <label className="um-label">
+              Purchase Price <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              className="um-input"
+              type="number"
+              min={0}
+              step="0.01"
+              placeholder="0.00"
+              value={formData.purchasePrice}
+              onChange={set("purchasePrice")}
+            />
+          </div>
+          <div className="um-form-group">
+            <label className="um-label">
+              Sale Price <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              className="um-input"
+              type="number"
+              min={0}
+              step="0.01"
+              placeholder="0.00"
+              value={formData.salePrice}
+              onChange={set("salePrice")}
+            />
+          </div>
         </div>
 
         <CheckRow label="Has Cookie" field="hasCookie" />
@@ -216,7 +242,11 @@ export function AccountGroupModal({
             disabled={isSubmitting || !isValid}
             onClick={() => onConfirm(formData)}
           >
-            {isSubmitting ? <div className="ph-spinner" /> : <span>Add</span>}
+            {isSubmitting ? (
+              <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+            ) : (
+              "Add"
+            )}
           </button>
         </div>
       </div>

@@ -408,6 +408,12 @@
     transform: none;
     transition-delay: 0.43s;
   }
+
+  .nav.open .nav-links li:nth-child(8) {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.49s;
+  }
   .nav-auth {
     opacity: 0;
     transform: translateY(14px);

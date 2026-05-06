@@ -411,13 +411,13 @@ function AccountCard({ account, quantity, onQuantityChange, OnBuy, isBuying }) {
           </div>
           <div className="pricing-item">
             <span className="pricing-value price">
-              ${account.unitPrice.toFixed(2)}
+              {FormatterHelper.formatCurrency(account.salePrice)}
             </span>
             <span className="pricing-label">Unit Price</span>
           </div>
           <div className="pricing-item">
             <span className="pricing-value total">
-              {FormatterHelper.formatCurrency(quantity * account.unitPrice)}
+              {FormatterHelper.formatCurrency(quantity * account.salePrice)}
             </span>
             <span className="pricing-label">Total</span>
           </div>
