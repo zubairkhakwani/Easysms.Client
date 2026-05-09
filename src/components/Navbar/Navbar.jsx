@@ -23,6 +23,10 @@ import { UserBadgeSkeleton } from "../Skeltons/User/UserBadge";
 //Modals
 import ChangePasswordModal from "../Helper/Auth/Modals/ChangePasswordModal";
 
+//Components
+// import { NavbarItem } from "../Helper/Navbar/NavBarItem";
+
+import NavDropdownMenu from "../Helper/Navbar/NavDropdownMenu";
 //Css
 import "./Navbar.css";
 
@@ -164,10 +168,6 @@ export default function Navbar() {
                     <i className="fa-solid fa-lock"></i>
                     Change Password
                   </span>
-                  {/* <a className="nav-dropdown-item" href="/change-email">
-                    <i className="fa-solid fa-envelope"></i>
-                    Change Email
-                  </a> */}
                   <div className="nav-dropdown-divider" />
                   <button
                     className="nav-dropdown-item danger"
@@ -193,7 +193,9 @@ export default function Navbar() {
     adminActionButtons = (
       <li>
         <Link to="/admin-dashboard/overview">
-          <span onClick={() => handleNavClick()}>Dashboard</span>
+          <span className="hvr-undr" onClick={() => handleNavClick()}>
+            Dashboard
+          </span>
         </Link>
       </li>
     );
@@ -223,48 +225,64 @@ export default function Navbar() {
 
         <ul className="nav-links">
           <li>
-            <span onClick={() => handleNavClick("services")}>Services</span>
+            <span
+              className="hvr-undr"
+              onClick={() => handleNavClick("services")}
+            >
+              Services
+            </span>
           </li>
           <li>
-            <span onClick={() => handleNavClick("how-it-works")}>
+            <span
+              className="hvr-undr"
+              onClick={() => handleNavClick("how-it-works")}
+            >
               How it works
             </span>
           </li>
           <li>
-            <span onClick={() => handleNavClick("why-us")}>Why us</span>
+            <span className="hvr-undr" onClick={() => handleNavClick("why-us")}>
+              Why us
+            </span>
           </li>
           <li>
-            <span onClick={() => handleNavClick("contact-us")}>Contact us</span>
+            <span
+              className="hvr-undr"
+              onClick={() => handleNavClick("contact-us")}
+            >
+              Contact us
+            </span>
           </li>
           {adminActionButtons}
-          <li>
-            <Link to="/topup">
-              <span className="cyan med-bold" onClick={() => handleNavClick()}>
-                Topup
-              </span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/get-number">
-              <span className="cyan med-bold" onClick={() => handleNavClick()}>
-                Buy number
-              </span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/get-account">
-              <span className="cyan med-bold" onClick={() => handleNavClick()}>
-                Buy account
-              </span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/get-mail">
-              <span className="cyan med-bold" onClick={() => handleNavClick()}>
-                Buy mail
-              </span>
-            </Link>
-          </li>
+
+          <NavDropdownMenu
+            label="Get Started"
+            onItemClick={() => handleNavClick()}
+            items={[
+              {
+                label: "Topup",
+                to: "/topup",
+                icon: "fa-solid fa-wallet",
+              },
+              {
+                label: "Buy Number",
+                to: "/get-number",
+                icon: "fa-solid fa-sim-card",
+              },
+              {
+                label: "Buy Account",
+                to: "/get-account",
+                icon: "fa-solid fa-user-check",
+                badge: "Hot",
+              },
+              {
+                label: "Buy Mail",
+                to: "/get-mail",
+                icon: "fa-solid fa-envelope",
+                badge: "New",
+              },
+            ]}
+          />
         </ul>
         <div className="nav-auth">{authButtons}</div>
       </nav>

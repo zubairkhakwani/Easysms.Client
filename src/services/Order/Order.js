@@ -15,8 +15,9 @@ export const getMyAccountHistory = async (httpRequest) => {
 };
 
 export const getMyMailHistory = async (httpRequest) => {
+  console.log(httpRequest);
   const response = await httpClient.get(
-    `/api/orders/mails/me?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&keyword=${httpRequest.filters.keyword}`,
+    `/api/orders/mails/me?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&keyword=${httpRequest.filters.keyword ?? ""}`,
   );
   return response.data;
 };

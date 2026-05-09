@@ -7,9 +7,10 @@ import { getMyNumberHistory } from "../../../services/Order/Order";
 // Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 import { NumberStatus, Providers } from "../../../data/Static";
+import { CopyToClipboard } from "../../../helper/UtilityHelper";
 
 // Toaster
-import { successTaost, errorToast } from "../../../helper/Toaster";
+import { errorToast } from "../../../helper/Toaster";
 
 //Pagination
 import Paginations from "../../Shared/Pagination";
@@ -86,16 +87,6 @@ export default function NumberHistory() {
       endDate: toDS(today),
     });
   }
-
-  const copyToClipboard = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      successTaost("Copied to clipboard");
-    } catch (err) {
-      errorToast("Failed to copy");
-      console.error("Copy failed", err);
-    }
-  };
 
   const handleChangePage = (event, newPage) => {
     setPageNo(newPage);
@@ -290,67 +281,91 @@ export default function NumberHistory() {
           </thead>
           {!isLoading && (
             <tbody>
-              {numbersHistory.map((number, index) => (
-                <tr key={index} className="nh-tr">
-                  <td className="nh-td">{index + 1}</td>
-                  <td className="nh-td">
-                    {number.orderData.phoneNumbers.length > 0 ? (
-                      <div className="nh-ellipsis-copy">
-                        <span className="nh-ellipsis-text">
-                          {number.orderData.phoneNumbers.join(", ")}
-                        </span>
-                        <button
-                          className="nh-copy-btn"
-                          onClick={() =>
-                            copyToClipboard(
-                              number.orderData.phoneNumbers.join("\n"),
-                            )
-                          }
-                        >
-                          📋
-                        </button>
-                      </div>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td className="nh-td">
-                    {number.orderData.verificationCodes.length > 0 ? (
-                      <div className="nh-ellipsis-copy">
-                        <span className="nh-ellipsis-text">
-                          {number.orderData.verificationCodes.join(", ")}
-                        </span>
-                        <button
-                          className="nh-copy-btn"
-                          onClick={() =>
-                            copyToClipboard(
-                              number.orderData.verificationCodes.join(", "),
-                            )
-                          }
-                        >
-                          📋
-                        </button>
-                      </div>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td className="nh-td">{number.provider}</td>
-                  <td className="nh-td">
-                    {FormatterHelper.formatCurrency(number.totalCost)}
-                  </td>
-                  <td className="nh-td">
-                    <span
-                      className={`nh-status-badge nh-status--${number.status.toLowerCase()}`}
-                    >
-                      {number.status}
-                    </span>
-                  </td>
-                  <td className="nh-td">
-                    {FormatterHelper.formatDateToLocal(number.orderedAt)}
-                  </td>
-                </tr>
-              ))}
+              {numbersHistory.map((number, index) => {
+                const phoneNumbers = number.orderData.phoneNumbers;
+                const verificationCodes = number.orderData.verificationCodes;
+
+                const phoneNumbersText = phoneNumbers.join(", ");
+                const phoneNumbersCopyText = phoneNumbers.join("\n");
+
+                const verificationCodesText = verificationCodes.join(", ");
+                const verificationCodesCopyText = verificationCodes.join("\n");
+
+                return (
+                  <tr key={index} className="nh-tr">
+                    <td className="nh-td">{index + 1}</td>
+
+                    {/* Phone Numbers */}
+                    <td className="nh-td">
+                      {phoneNumbers.length > 0 ? (
+                        <div className="nh-ellipsis-copy">
+                          <span className="nh-ellipsis-text">
+                            {phoneNumbersText}
+                          </span>
+
+                          <button
+                            className="nh-copy-btn"
+                            onClick={() =>
+                              CopyToClipboard(
+                                `Number${phoneNumbers.length > 1 ? "s" : ""}`,
+                                phoneNumbersCopyText,
+                              )
+                            }
+                          >
+                            📋
+                          </button>
+                        </div>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    {/* Verification Codes */}
+                    <td className="nh-td">
+                      {verificationCodes.length > 0 ? (
+                        <div className="nh-ellipsis-copy">
+                          <span className="nh-ellipsis-text">
+                            {verificationCodesText}
+                          </span>
+
+                          <button
+                            className="nh-copy-btn"
+                            onClick={() =>
+                              CopyToClipboard(
+                                "",
+                                `Verification Code${verificationCodes.length > 1 ? "s" : ""}`,
+                                verificationCodesCopyText,
+                              )
+                            }
+                          >
+                            📋
+                          </button>
+                        </div>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    <td className="nh-td">{number.provider}</td>
+
+                    <td className="nh-td">
+                      {FormatterHelper.formatCurrency(number.totalCost)}
+                    </td>
+
+                    <td className="nh-td">
+                      <span
+                        className={`nh-status-badge nh-status--${number.status.toLowerCase()}`}
+                      >
+                        {number.status}
+                      </span>
+                    </td>
+
+                    <td className="nh-td">
+                      {FormatterHelper.formatDateToLocal(number.orderedAt)}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           )}
         </table>

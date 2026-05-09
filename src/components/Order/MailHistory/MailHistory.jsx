@@ -6,6 +6,7 @@ import { getMyMailHistory } from "../../../services/Order/Order";
 
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
+import { CopyToClipboard } from "../../../helper/UtilityHelper";
 
 //Toaster
 import { errorToast } from "../../../helper/Toaster";
@@ -121,33 +122,46 @@ export default function MailHistory() {
           </thead>
           {!isLoading && (
             <tbody>
-              {mailHistory.map((mail, index) => (
-                <tr key={index} className="um-tr">
-                  <td className="um-td">{index + 1}</td>
-                  <td className="um-td">
-                    {mail.data.length > 0 ? (
-                      <div className="um-ellipsis-copy">
-                        <span className="um-ellipsis-text">
-                          {mail.data.map((a) => a.mail).join(", ")}
-                        </span>
-                        <button className="um-copy-btn">
-                          <i className="fa-solid fa-download"></i>
-                        </button>
-                      </div>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td className="um-td">{mail.service}</td>
-                  <td className="um-td">{mail.domain}</td>
-                  <td className="um-td">
-                    {FormatterHelper.formatCurrency(mail.totalCost)}
-                  </td>
-                  <td className="um-td">
-                    {FormatterHelper.formatDateToLocal(mail.orderedAt)}
-                  </td>
-                </tr>
-              ))}
+              {mailHistory.map((mail, index) => {
+                const mails = mail.data.map((a) => a.mail);
+                const mailText = mails.join(", ");
+                const mailCopyText = mails.join("\n");
+
+                return (
+                  <tr key={index} className="um-tr">
+                    <td className="um-td">{index + 1}</td>
+
+                    <td className="um-td">
+                      {mails.length > 0 ? (
+                        <div className="um-ellipsis-copy">
+                          <span className="um-ellipsis-text">{mailText}</span>
+
+                          <button
+                            className="um-copy-btn"
+                            onClick={() => CopyToClipboard("Mail", mailCopyText)}
+                          >
+                            📋
+                          </button>
+                        </div>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+
+                    <td className="um-td">{mail.service}</td>
+
+                    <td className="um-td">{mail.domain}</td>
+
+                    <td className="um-td">
+                      {FormatterHelper.formatCurrency(mail.totalCost)}
+                    </td>
+
+                    <td className="um-td">
+                      {FormatterHelper.formatDateToLocal(mail.orderedAt)}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           )}
         </table>

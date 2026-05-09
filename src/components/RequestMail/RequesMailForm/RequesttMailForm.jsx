@@ -204,8 +204,8 @@ export default function RequestMailForm() {
 
         <div className="field">
           <label>
-            <i className="fa-solid fa-signal number-type-icon"></i>
-            Type
+            <i className="fa-solid fa-envelope number-type-icon"></i>
+            Email Type
           </label>
           {isEmailMetaDataLoading ? (
             <div className="select-skeleton"></div>
@@ -233,10 +233,9 @@ export default function RequestMailForm() {
 
         <div className="field">
           <label>
-            <i className="fa-solid fa-signal number-type-icon"></i>
+            <i className="fa-solid fa-dollar-sign number-type-icon"></i>
             Pricing
           </label>
-
           <select
             id="operator"
             className="operator-select"

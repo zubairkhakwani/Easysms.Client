@@ -1,0 +1,176 @@
+.ndm-root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ndm-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ndm-chevron {
+  width: 10px;
+  height: 10px;
+  color: var(--accent);
+  opacity: 0.7;
+  transition:
+    transform var(--transition),
+    opacity var(--transition);
+  margin-left: 5px;
+}
+
+.ndm-chevron--open {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+.ndm-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-dropdown);
+  animation: ndm-fade-in 0.18s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.ndm-panel-inner {
+  background: var(--card-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 1px var(--accent-border);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 240px;
+}
+
+/* ── item: icon top-aligned with the whole text block ── */
+.ndm-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: var(--font);
+  transition: background var(--transition-fast);
+}
+
+.ndm-item:hover {
+  background: var(--sidebar-item-active);
+}
+
+.ndm-item:hover .ndm-icon-wrap {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.ndm-item:hover .ndm-item-label {
+  color: var(--text-accent);
+}
+
+/* ── icon bubble ── */
+.ndm-icon-wrap {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  /* nudge so icon optical center lines up with the label text */
+  margin-top: 1px;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+/* ── text block ── */
+.ndm-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* label row: label + badge side by side */
+.ndm-item-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ndm-item-label {
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  line-height: 1;
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+}
+
+/* description sits below the label row */
+.ndm-item-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: var(--fw-regular);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── badges ── */
+.ndm-badge {
+  font-size: 9px;
+  font-weight: var(--fw-bold);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.ndm-badge--new {
+  background: var(--accent-subtle);
+  color: var(--accent) !important;
+  border: 1px solid var(--accent-border);
+}
+
+.ndm-badge--hot {
+  background: var(--accent-orange-subtle);
+  color: var(--accent-orange) !important;
+  border: 1px solid var(--accent-orange-border);
+}
+
+.ndm-badge--soon {
+  background: var(--bg-secondary);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+
+@keyframes ndm-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
