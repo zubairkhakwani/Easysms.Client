@@ -7,13 +7,13 @@ import { NumberContext } from "../../../context/NumberContext";
 
 //Components
 import ActiveOrders from "../ActiveOrder/ActiveOrders";
-import RequestNumber from "../Form/RequestNumberForm";
+import RequestNumberForm from "../RequestNumberForm/RequestNumberForm";
 
 //Services
 import { getMyNumbers } from "../../../services/Number/NumberService";
-import RequestNumberContainerHeader from "../Header/RequestNumberHeader";
-import RequestNumberGuideline from "../Guideline/RequestNumberGuideline";
+import Guideline from "../../Helper/Guideline/Guideline";
 import { connectSignalR } from "../../../services/SignalR/SignalRService";
+import Header from "../../Helper/Header/Header";
 
 //Css
 import "./RequestNumberContainer.css";
@@ -119,10 +119,54 @@ export default function RequestNumberContainer() {
 
   return (
     <>
-      <RequestNumberContainerHeader />
+      <Header
+        title="Get a Temporary Number"
+        description="Choose your options, get a number, receive your SMS — all
+        in one place."
+      />
+      
       <div className="grid">
-        <RequestNumberGuideline />
-        <RequestNumber onNewNumber={addNewNumber} />
+        <Guideline
+          title="Getting Started"
+          subtitle="Follow these steps to receive your verification code"
+          icon="fa-solid fa-list-check number-type-icon"
+          steps={[
+            {
+              title: "Select Your Options",
+              description:
+                "Choose your SMS provider, service, country, and operator from the form on the right.",
+            },
+            {
+              title: "Check Price & Availability",
+              description:
+                "Review the service information to see the price and available numbers.",
+            },
+            {
+              title: 'Click "Get Number"',
+              description:
+                "Press the button to receive your temporary phone number instantly.",
+            },
+            {
+              title: "Use the Number",
+              description:
+                " Enter the provided number in your app or service to receive the SMS code.",
+            },
+            {
+              title: "Get Your Code",
+              description:
+                "Your verification code will appear on this page within a few minutes.",
+            },
+          ]}
+          notes={[
+            "Numbers are temporary and expire after 15–20 minutes",
+            "Make sure you have sufficient balance before ordering",
+            "Use the number immediately after receiving it",
+            "Some services may take longer to deliver SMS codes",
+          ]}
+        />
+
+        <RequestNumberForm onNewNumber={addNewNumber} />
+
         <ActiveOrders
           ordersLoading={isActiveOrdersLoading}
           incomingOrders={activeOrders}

@@ -38,6 +38,7 @@ export default function ProviderProfit() {
       if (!response.isSuccess) {
         errorToast(responseMessage);
       }
+      console.log(responseData);
       setProvidersProfit(responseData);
     } catch {
       errorToast("Failed to load provider pricings");
@@ -119,12 +120,13 @@ export default function ProviderProfit() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>HeroSms</th>
+                  <th>HeroSms TempNumber</th>
+                  <th>HeroSms Mail</th>
                   <th>FiveSim</th>
                   <th>Physical Numbers</th>
                   <th>Created By</th>
-                  <th>Updated By</th>
                   <th>Created At</th>
+                  <th>Updated By</th>
                   <th>Updated At</th>
                 </tr>
               </thead>
@@ -133,11 +135,15 @@ export default function ProviderProfit() {
                 {providersProfit.map((r, index) => (
                   <tr key={r.id}>
                     <td className="ph-col-id">{index + 1}</td>
-                    <td className="ph-col-cost">{r.heroSms}%</td>
-
+                    <td className="ph-col-cost">
+                      {FormatterHelper.formatNumber(r.heroSms_TempNumbers)}%
+                    </td>
+                    <td className="ph-col-cost">
+                      {FormatterHelper.formatNumber(r.heroSms_Mails)}%
+                    </td>
                     <td className="ph-col-cost">{r.fiveSim}%</td>
                     <td className="ph-col-cost">
-                      {FormatterHelper.formatCurrency(r.physicalNumbers)}{" "}
+                      {FormatterHelper.formatCurrency(r.physicalNumbers)}
                     </td>
 
                     <td className="um-user-cell">
@@ -146,6 +152,9 @@ export default function ProviderProfit() {
 
                         <div className="um-user-email">{r.createdBy.email}</div>
                       </div>
+                    </td>
+                    <td className="ph-col-date">
+                      {FormatterHelper.formatDateToLocal(r.createdBy.createdAt)}
                     </td>
                     <td className="ph-col-id">
                       <div>
@@ -159,9 +168,6 @@ export default function ProviderProfit() {
                       </div>
                     </td>
 
-                    <td className="ph-col-date">
-                      {FormatterHelper.formatDateToLocal(r.createdBy.createdAt)}
-                    </td>
                     <td className="ph-col-date">
                       {r.updatedBy
                         ? FormatterHelper.formatDateToLocal(

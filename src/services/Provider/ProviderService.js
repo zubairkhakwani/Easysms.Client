@@ -60,6 +60,13 @@ export const getCountriesMetaData = async (providerId, serviceId) => {
   return response.data.data;
 };
 
+export const getEmailsMetaData = async (providerId, serviceId) => {
+  const response = await httpClient.get(
+    `/api/providers/${providerId}/services/${serviceId}/email-metadata`,
+  );
+  return response.data;
+};
+
 export const getOperators_Pricings = async (
   providerId,
   serviceId,
@@ -79,6 +86,15 @@ export const requestNumber = async (
 ) => {
   const response = await httpClient.post(
     `/api/providers/${providerId}/services/${serviceId}/countries/${countryId}/request-number`,
+    payload,
+  );
+  return response.data;
+};
+
+export const requestEmail = async (providerId, payload) => {
+  const response = await httpClient.post(
+    `/api/providers/${providerId}/request-email
+    `,
     payload,
   );
   return response.data;

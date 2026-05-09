@@ -2,17 +2,17 @@
 import { useState, useEffect } from "react";
 
 // Services
-import { getMyNumberHistory } from "../../services/Order/Order";
+import { getMyNumberHistory } from "../../../services/Order/Order";
 
 // Helper
-import { FormatterHelper } from "../../helper/FormatterHelper";
-import { NumberStatus, Providers } from "../../data/Static";
+import { FormatterHelper } from "../../../helper/FormatterHelper";
+import { NumberStatus, Providers } from "../../../data/Static";
 
 // Toaster
-import { successTaost, errorToast } from "../../helper/Toaster";
+import { successTaost, errorToast } from "../../../helper/Toaster";
 
 //Pagination
-import Paginations from "../Shared/Pagination";
+import Paginations from "../../Shared/Pagination";
 
 // CSS
 import "./NumberHistory.css";
@@ -56,10 +56,8 @@ export default function NumberHistory() {
       });
 
       setNumbersHistory(res.data.items ?? []);
-      console.log(res.data.items);
       setCount(res.data.count ?? 0);
-    } catch (err) {
-      console.log(err);
+    } catch {
       errorToast("Failed to fetch number history");
     } finally {
       setIsLoading(false);

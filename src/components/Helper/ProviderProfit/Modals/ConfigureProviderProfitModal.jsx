@@ -14,21 +14,25 @@ export function ConfigureProviderProfitModal({
   onClose,
   onConfirm,
 }) {
-  const [heroSms, setHeroSms] = useState(providersProfit[0]?.heroSms ?? "");
-  const [fiveSim, setFiveSim] = useState(providersProfit[0]?.fiveSim ?? "");
-  const [physicalNumbers, setPhysicalNumbers] = useState(
-    providersProfit[0]?.physicalNumbers ?? "",
-  );
+  const [profits, setProfits] = useState({
+    heroSmsTempNumbers: providersProfit[0]?.heroSms_TempNumbers ?? "",
+    heroSmsMails: providersProfit[0]?.heroSms_Mails ?? "",
+    fiveSim: providersProfit[0]?.fiveSim ?? "",
+    physicalNumbers: providersProfit[0]?.physicalNumbers ?? "",
+  });
+
   const isValid =
-    Number(heroSms) >= 0 &&
-    Number(fiveSim) >= 0 &&
-    Number(physicalNumbers) >= 0;
+    Number(profits.heroSmsTempNumbers) >= 0 &&
+    Number(profits.heroSmsMails) >= 0 &&
+    Number(profits.fiveSim) >= 0 &&
+    Number(profits.physicalNumbers) >= 0;
 
   const handleSubmit = () => {
     onConfirm({
-      heroSms: Number(heroSms),
-      fiveSim: Number(fiveSim),
-      physicalNumbers: Number(physicalNumbers),
+      heroSmsTempNumbers: Number(profits.heroSmsTempNumbers),
+      heroSmsMails: Number(profits.heroSmsMails),
+      fiveSim: Number(profits.fiveSim),
+      physicalNumbers: Number(profits.physicalNumbers),
     });
   };
 
@@ -53,15 +57,34 @@ export function ConfigureProviderProfitModal({
 
         {/* HeroSms */}
 
-        <label className="cpp-label">HeroSms Profit (%)</label>
-
+        <label className="cpp-label">HeroSms TempNumber Profit (%)</label>
         <input
           className="cpp-input"
           type="number"
           min="0"
           placeholder="Enter percentage"
-          value={heroSms}
-          onChange={(e) => setHeroSms(e.target.value)}
+          value={profits.heroSmsTempNumbers}
+          onChange={(e) =>
+            setProfits((prev) => ({
+              ...prev,
+              heroSmsTempNumbers: e.target.value,
+            }))
+          }
+        />
+
+        <label className="cpp-label">HeroSms Mails Profit (%)</label>
+        <input
+          className="cpp-input"
+          type="number"
+          min="0"
+          placeholder="Enter percentage"
+          value={profits.heroSmsMails}
+          onChange={(e) =>
+            setProfits((prev) => ({
+              ...prev,
+              heroSmsMails: e.target.value,
+            }))
+          }
         />
 
         {/* FiveSim */}
@@ -73,8 +96,13 @@ export function ConfigureProviderProfitModal({
           type="number"
           min="0"
           placeholder="Enter percentage"
-          value={fiveSim}
-          onChange={(e) => setFiveSim(e.target.value)}
+          value={profits.fiveSim}
+          onChange={(e) =>
+            setProfits((prev) => ({
+              ...prev,
+              fiveSim: e.target.value,
+            }))
+          }
         />
 
         {/* Physical Numbers */}
@@ -86,26 +114,43 @@ export function ConfigureProviderProfitModal({
           type="number"
           min="0"
           placeholder="Enter fixed price"
-          value={physicalNumbers}
-          onChange={(e) => setPhysicalNumbers(e.target.value)}
+          value={profits.physicalNumbers}
+          onChange={(e) =>
+            setProfits((prev) => ({
+              ...prev,
+              physicalNumbers: e.target.value,
+            }))
+          }
         />
 
         {/* Preview */}
 
-        {(heroSms || fiveSim || physicalNumbers) && (
+        {(profits.heroSmsTempNumbers ||
+          profits.heroSmsMails ||
+          profits.fiveSim ||
+          profits.physicalNumbers) && (
           <div className="cpp-preview-box">
             <div>
-              HeroSms: <span>{heroSms || 0}%</span>
+              HeroSms TempNumbers:{" "}
+              <span>
+                {FormatterHelper.formatNumber(profits.heroSmsTempNumbers) || 0}%
+              </span>
             </div>
-
             <div>
-              FiveSim: <span>{fiveSim || 0}%</span>
+              HeroSms Mails:{" "}
+              <span>
+                {FormatterHelper.formatNumber(profits.heroSmsMails) || 0}%
+              </span>
+            </div>
+            <div>
+              FiveSim:{" "}
+              <span>{FormatterHelper.formatNumber(profits.fiveSim) || 0}%</span>
             </div>
 
             <div>
               Physical Numbers:{" "}
               <span>
-                {FormatterHelper.formatCurrency(physicalNumbers) || 0}
+                {FormatterHelper.formatCurrency(profits.physicalNumbers) || 0}
               </span>
             </div>
           </div>

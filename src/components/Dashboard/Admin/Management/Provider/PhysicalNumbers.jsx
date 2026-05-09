@@ -144,7 +144,7 @@ export function PhysicalNumbers() {
                       <td className="ph-col-id">
                         {FormatterHelper.formatCurrency(r.purchasedPrice)}
                       </td>
-                      <td className="ph-col-id">{r.canclledCount}</td>
+                      <td className="ph-col-id">{r.cancelledCount}</td>
                       <td className="ph-col-id">{r.status}</td>
                       <td className="ph-col-date">
                         {FormatterHelper.formatDateToLocal(r.createdAt)}

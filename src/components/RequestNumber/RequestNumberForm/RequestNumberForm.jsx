@@ -2,10 +2,10 @@
 import { useEffect, useState, useContext } from "react";
 
 //Context
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext.jsx";
 
 //Toaster
-import { successTaost, errorToast } from "../../../helper/Toaster";
+import { successTaost, errorToast } from "../../../helper/Toaster.js";
 
 //Services
 import {
@@ -14,11 +14,11 @@ import {
   getServices,
   getCountriesMetaData,
   requestNumber,
-} from "../../../services/Provider/ProviderService";
+} from "../../../services/Provider/ProviderService.js";
 
 //Components
-import { PhysicalNumberContainer } from "../../Helper/PhysicalNumberContainer";
-import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions";
+import { PhysicalNumberContainer } from "../../Helper/PhysicalNumberContainer.jsx";
+import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions.jsx";
 
 //Skeltons
 import { PhysicalNumberSkelton } from "../../Skeltons/PhysicalNumberSkelton.jsx";
@@ -73,7 +73,7 @@ function PhysicalNumberModal({ numbersText, onClose }) {
     </div>
   );
 }
-export default function RequestNumber({ onNewNumber }) {
+export default function RequestNumberForm({ onNewNumber }) {
   const { balanceDebit } = useContext(AuthContext);
 
   const [providers, setProviders] = useState([]);
@@ -104,11 +104,13 @@ export default function RequestNumber({ onNewNumber }) {
   const [pruchaseState, setPurchaseState] = useState(true);
 
   const fetchProviders = async () => {
+    let data = [];
     try {
-      const data = await getProviders();
+      data = await getProviders();
+    } catch {
+      errorToast("Failed to fetch providers,please try later.");
+    } finally {
       setProviders(data);
-    } catch (error) {
-      console.error("Failed to fetch providers:", error);
     }
   };
 

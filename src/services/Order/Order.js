@@ -7,7 +7,16 @@ export const getMyNumberHistory = async (httpRequest) => {
   return response.data;
 };
 
-export const getMyAccountHistory = async () => {
-  const response = await httpClient.get(`/api/orders/accounts/me`);
+export const getMyAccountHistory = async (httpRequest) => {
+  const response = await httpClient.get(
+    `/api/orders/accounts/me?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&keyword=${httpRequest.filters.keyword}`,
+  );
+  return response.data;
+};
+
+export const getMyMailHistory = async (httpRequest) => {
+  const response = await httpClient.get(
+    `/api/orders/mails/me?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&keyword=${httpRequest.filters.keyword}`,
+  );
   return response.data;
 };

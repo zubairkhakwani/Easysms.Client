@@ -145,15 +145,18 @@ export default function Navbar() {
                   // onClick={() => setActionOpen(false)}
                 /> */}
                 <div className="nav-dropdown">
-                  <Link className="nav-dropdown-item" to="/history/number">
+                  <Link className="nav-dropdown-item" to="/history/numbers">
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     <span onClick={() => handleNavClick()}>Number History</span>
                   </Link>
-                  <Link className="nav-dropdown-item" to="/history/account">
+                  <Link className="nav-dropdown-item" to="/history/accounts">
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Account History
                   </Link>
-
+                  <Link className="nav-dropdown-item" to="/history/mails">
+                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    Mail History
+                  </Link>
                   <span
                     className="nav-dropdown-item"
                     onClick={() => handleOpenModal(modalKeys.changePassword)}
@@ -252,6 +255,13 @@ export default function Navbar() {
             <Link to="/get-account">
               <span className="cyan med-bold" onClick={() => handleNavClick()}>
                 Buy account
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/get-mail">
+              <span className="cyan med-bold" onClick={() => handleNavClick()}>
+                Buy mail
               </span>
             </Link>
           </li>
