@@ -276,7 +276,7 @@ export default function Navbar() {
                 badge: "Hot",
               },
               {
-                label: "Buy Mail",
+                label: "Buy Temp Mail",
                 to: "/get-mail",
                 icon: "fa-solid fa-envelope",
                 badge: "New",

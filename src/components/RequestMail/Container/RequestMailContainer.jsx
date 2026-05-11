@@ -1,12 +1,80 @@
+//React
+import { useEffect, useState, useContext } from "react";
+
+//Context
+import { SmsContext } from "../../../context/SmsContext";
+import { NumberContext } from "../../../context/NumberContext";
+
+//Services
+import { getMyTempMails } from "../../../services/TempMail/TempMailService";
+
+//Toaster
+import { errorToast } from "../../../helper/Toaster";
+
 //Components
 import Header from "../../Helper/Header/Header";
 import Guideline from "../../Helper/Guideline/Guideline";
 import RequestMailForm from "../RequesMailForm/RequesttMailForm";
 import ActiveOrders from "../ActiveOrder/ActiveOrder";
 
-
-
 export default function RequestMailContainer() {
+  //Contexts
+  const { latestSms, addSms, isReconnected, setReconnected } =
+    useContext(SmsContext);
+
+  const { OnNewNumbers, OnRemoveNumber } = useContext(NumberContext);
+
+  //Data
+  const [activeTempMails, setActiveTempMails] = useState([]);
+
+  //Loading
+  const [isActiveTempMailsLoading, setActiveTempMailsLoading] = useState(true);
+
+  //Api Calls
+  const fetchMyTempMails = async () => {
+    let responseData = [];
+    try {
+      const res = await getMyTempMails(true);
+      responseData = res.data;
+      setActiveTempMails(res.data);
+    } catch {
+      errorToast("Failed to fetch active temp mails");
+    } finally {
+      setActiveTempMailsLoading(false);
+      setActiveTempMails(responseData);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyTempMails();
+  }, [isReconnected]);
+
+  const addNewTempMail = (newTempMail) => {
+    setActiveTempMails((prev) => [...newTempMail, ...prev]);
+  };
+
+  //When temp mail is successfully cancelled
+  const handleCancelTempMail = (id) => {
+    setActiveTempMails((prev) => prev.filter((order) => order.id !== id));
+  };
+
+  //When temp email is not able to cancel so we update the otp if coming
+  const handleCancelTempEmailFailure = (data) => {
+    setActiveTempMails((prev) =>
+      prev.map((order) => {
+        if (order.id === data.id) {
+          return {
+            ...order,
+            hasSms: true,
+            code: data.code,
+            text: data.text,
+          };
+        }
+        return order;
+      }),
+    );
+  };
+
   return (
     <>
       <Header
@@ -54,8 +122,13 @@ export default function RequestMailContainer() {
             "Some services may take longer to deliver SMS codes",
           ]}
         />
-        <RequestMailForm />
-        <ActiveOrders incomingOrders={[]} />
+        <RequestMailForm onNewTempMail={addNewTempMail} />
+        <ActiveOrders
+          activeMailsLoading={isActiveTempMailsLoading}
+          activeMails={activeTempMails}
+          onCancelTempEmail={handleCancelTempMail}
+          OnTempEmailCancelFailure={handleCancelTempEmailFailure}
+        />
       </div>
     </>
   );

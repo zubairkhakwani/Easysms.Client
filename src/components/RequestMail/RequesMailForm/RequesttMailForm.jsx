@@ -28,7 +28,7 @@ import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions";
 import { PhysicalNumberSkelton } from "../../Skeltons/PhysicalNumberSkelton.jsx";
 import { NineKOutlined } from "@mui/icons-material";
 
-export default function RequestMailForm() {
+export default function RequestMailForm({ onNewTempMail }) {
   const { balanceDebit } = useContext(AuthContext);
 
   //Data
@@ -149,7 +149,8 @@ export default function RequestMailForm() {
   //Request Email
   const handleRequestEmail = async () => {
     setIsRequestingNumber(true);
-
+    let responseData = [];
+    let responseMessage = "";
     try {
       let response = await requestEmail(heroSmsId, {
         count: quantityState.current,
@@ -159,10 +160,13 @@ export default function RequestMailForm() {
       });
 
       if (response.isSuccess) {
-        balanceDebit(response.data?.totalCost ?? 0);
-        successTaost(response.message);
+        responseData = response.data;
+        responseMessage = response.message;
+        onNewTempMail(responseData.data ?? []);
+        balanceDebit(responseData?.totalCost ?? 0);
+        successTaost(responseMessage);
       } else {
-        errorToast(response.message);
+        errorToast(responseMessage);
       }
     } catch {
       errorToast("Failed to request email, please try later.");

@@ -10,7 +10,7 @@ import ActiveOrders from "../ActiveOrder/ActiveOrders";
 import RequestNumberForm from "../RequestNumberForm/RequestNumberForm";
 
 //Services
-import { getMyNumbers } from "../../../services/Number/NumberService";
+import { getMyTempNumbers } from "../../../services/Number/NumberService";
 import Guideline from "../../Helper/Guideline/Guideline";
 import { connectSignalR } from "../../../services/SignalR/SignalRService";
 import Header from "../../Helper/Header/Header";
@@ -19,13 +19,17 @@ import Header from "../../Helper/Header/Header";
 import "./RequestNumberContainer.css";
 
 export default function RequestNumberContainer() {
+  //Contexts
   const { latestSms, addSms, isReconnected, setReconnected } =
     useContext(SmsContext);
 
   const { OnNewNumbers, OnRemoveNumber } = useContext(NumberContext);
 
+  //Data
   const [activeOrders, setActiveOrders] = useState([]);
-  const [isActiveOrdersLoading, setActiveOrdersLoading] = useState(true);
+
+  //Lodaing
+  const [isActiveOrdersLoading, setActiveOrdersLoading] = useState(false);
 
   const addNewNumber = (newNumber) => {
     setActiveOrders((prev) => [newNumber, ...prev]);
@@ -63,18 +67,21 @@ export default function RequestNumberContainer() {
   }, []);
 
   //Get Recent Numbers
+
+  const fetchMyActiveNumbers = async () => {
+    setActiveOrdersLoading(true);
+    try {
+      const res = await getMyTempNumbers(true);
+      setActiveOrders(res.data);
+    } catch (error) {
+      console.error("Failed to fetch recent numbers:", error);
+    } finally {
+      setActiveOrdersLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchMyRecentNumbers = async () => {
-      try {
-        const res = await getMyNumbers(true);
-        setActiveOrders(res.data);
-      } catch (error) {
-        console.error("Failed to fetch recent numbers:", error);
-      } finally {
-        setActiveOrdersLoading(false);
-      }
-    };
-    fetchMyRecentNumbers();
+    fetchMyActiveNumbers();
   }, [isReconnected]);
 
   function handleNumberExpired(id) {
@@ -124,7 +131,7 @@ export default function RequestNumberContainer() {
         description="Choose your options, get a number, receive your SMS — all
         in one place."
       />
-      
+
       <div className="grid">
         <Guideline
           title="Getting Started"

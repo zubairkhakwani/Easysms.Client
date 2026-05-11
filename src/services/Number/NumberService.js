@@ -1,7 +1,7 @@
 import httpClient from "../Base/HttpClient";
 
-export const getMyNumbers = async (active = false) => {
-  const response = await httpClient.get(`/api/numbers?active=${active}`);
+export const getMyTempNumbers = async (active = false) => {
+  const response = await httpClient.get(`/api/numbers/me?active=${active}`);
   return response.data;
 };
 

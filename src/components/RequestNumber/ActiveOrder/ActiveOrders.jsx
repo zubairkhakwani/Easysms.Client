@@ -19,6 +19,13 @@ import { AuthContext } from "../../../context/AuthContext";
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 
+import {
+  CopyToClipboard,
+  GetRemainingTime,
+  CanMakeCancelRequest,
+  GetCancelTooltip,
+} from "../../../helper/UtilityHelper";
+
 //Tooltip
 import Tooltip from "../../../portal/Tooltip";
 
@@ -43,11 +50,6 @@ export default function ActiveOrders({
 
     return () => clearInterval(interval);
   }, []);
-
-  function handleCopy(text, type) {
-    navigator.clipboard.writeText(text).catch(() => {});
-    successTaost(`${type} copied successfully`);
-  }
 
   async function handleCancel(id) {
     setCancel((prev) => [...prev, id]);
@@ -91,58 +93,6 @@ export default function ActiveOrders({
     }
 
     setComplete((prev) => prev.filter((id) => id !== id));
-  }
-
-  function getRemainingTime(order) {
-    if (!order.activationStartTime || !order.activationLimit) return "Invalid";
-
-    const startTime = new Date(order.activationStartTime).getTime();
-    if (isNaN(startTime)) return "Invalid date";
-
-    const expiryTime = startTime + order.activationLimit * 60 * 1000;
-
-    const remaining = expiryTime - Date.now();
-
-    if (remaining <= 0) {
-      return "Expired";
-    }
-
-    const minutes = Math.floor(remaining / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  }
-
-  function getCancelTooltip(provider) {
-    const name = provider.toLowerCase();
-
-    if (name.includes("provider b")) {
-      return "You can cancel the number";
-    }
-    if (name.includes("provider a")) {
-      return "You can cancel the number after 3 minutes";
-    }
-
-    return "You can cancel the number after 5 minutes";
-  }
-
-  function canMakeCancelRequest(order) {
-    let isProviderB = order.provider?.toLowerCase().includes("provider b");
-
-    if (isProviderB) {
-      return true;
-    }
-
-    let time = order.provider?.toLowerCase().includes("provider a") ? 3 : 5;
-
-    if (!order.activationStartTime) return false;
-
-    const startTime = new Date(order.activationStartTime).getTime();
-    if (isNaN(startTime)) return false;
-
-    const now = Date.now();
-
-    return now >= startTime + time * 60 * 1000;
   }
 
   return (
@@ -205,7 +155,7 @@ export default function ActiveOrders({
                 </div>
 
                 <div className="order-expiry">
-                  Expires in {getRemainingTime(order)}
+                  Expires in {GetRemainingTime(order)}
                 </div>
 
                 {/* SMS Block ( hidden until sms arrives) */}
@@ -225,7 +175,7 @@ export default function ActiveOrders({
                       <button
                         style={{ cursor: "pointer" }}
                         title="Copy code"
-                        onClick={() => handleCopy(order.code, "Code")}
+                        onClick={() => CopyToClipboard(order.code, "Code")}
                       >
                         📋
                       </button>
@@ -239,7 +189,9 @@ export default function ActiveOrders({
                     btn={
                       <button
                         className="btn-action"
-                        onClick={() => handleCopy(order.phoneNumber, "Number")}
+                        onClick={() =>
+                          CopyToClipboard(order.phoneNumber, "Number")
+                        }
                       >
                         📋
                       </button>
@@ -260,11 +212,11 @@ export default function ActiveOrders({
                   />
 
                   <Tooltip
-                    tooltip={getCancelTooltip(order.provider)}
+                    tooltip={GetCancelTooltip(order.provider)}
                     btn={
                       <button
                         disabled={
-                          !canMakeCancelRequest(order) ||
+                          !CanMakeCancelRequest(order) ||
                           cancel.includes(order.id)
                         }
                         className="btn-action btn-cancel"

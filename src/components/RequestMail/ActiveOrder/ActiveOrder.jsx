@@ -8,10 +8,11 @@ import { successTaost, errorToast } from "../../../helper/Toaster";
 import ActiveOrdersSkelton from "../../Skeltons/ActiveOrdersSkelton";
 
 //Services
+
 import {
-  cancelNumber,
-  completeNumber,
-} from "../../../services/Number/NumberService";
+  cancelTempMail,
+  completeTempMail,
+} from "../../../services/TempMail/TempMailService";
 
 //Context
 import { AuthContext } from "../../../context/AuthContext";
@@ -19,14 +20,21 @@ import { AuthContext } from "../../../context/AuthContext";
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 
+import {
+  CopyToClipboard,
+  GetRemainingTime,
+  CanMakeCancelRequest,
+  GetCancelTooltip,
+} from "../../../helper/UtilityHelper";
+
 //Tooltip
 import Tooltip from "../../../portal/Tooltip";
 
 export default function ActiveOrders({
-  ordersLoading,
-  incomingOrders,
-  onCancelNumber,
-  OnNumberCancelFailure,
+  activeMailsLoading,
+  activeMails,
+  onCancelTempEmail,
+  OnTempEmailCancelFailure,
 }) {
   const { balanceCredit } = useContext(AuthContext);
   const [now, setNow] = useState(Date.now());
@@ -41,15 +49,10 @@ export default function ActiveOrders({
     return () => clearInterval(interval);
   }, []);
 
-  function handleCopy(text, type) {
-    navigator.clipboard.writeText(text).catch(() => {});
-    successTaost(`${type} copied successfully`);
-  }
-
   async function handleCancel(id) {
     setCancel((prev) => [...prev, id]);
 
-    var response = await cancelNumber(id);
+    var response = await cancelTempMail(id);
 
     var responseMessage = response.message;
     var responseData = response.data;
@@ -61,12 +64,12 @@ export default function ActiveOrders({
     }
 
     if (responseData.isCancelled) {
-      onCancelNumber(id);
+      onCancelTempEmail(id);
       balanceCredit(responseData.refundAmount);
     }
 
     if (responseData.hasSms) {
-      OnNumberCancelFailure(responseData);
+      OnTempEmailCancelFailure(responseData);
     }
 
     setCancel((prev) => prev.filter((id) => id !== id));
@@ -75,71 +78,19 @@ export default function ActiveOrders({
   async function handleComplete(id) {
     setComplete((prev) => [...prev, id]);
 
-    var response = await completeNumber(id);
+    var response = await completeTempMail(id);
 
     var responseMessage = response.message;
 
     if (response.isSuccess) {
       successTaost(responseMessage);
 
-      onCancelNumber(id);
+      onCancelTempEmail(id);
     } else {
       errorToast(responseMessage);
     }
 
     setComplete((prev) => prev.filter((id) => id !== id));
-  }
-
-  function getRemainingTime(order) {
-    if (!order.activationStartTime || !order.activationLimit) return "Invalid";
-
-    const startTime = new Date(order.activationStartTime).getTime();
-    if (isNaN(startTime)) return "Invalid date";
-
-    const expiryTime = startTime + order.activationLimit * 60 * 1000;
-
-    const remaining = expiryTime - Date.now();
-
-    if (remaining <= 0) {
-      return "Expired";
-    }
-
-    const minutes = Math.floor(remaining / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  }
-
-  function getCancelTooltip(provider) {
-    const name = provider.toLowerCase();
-
-    if (name.includes("provider b")) {
-      return "You can cancel the number";
-    }
-    if (name.includes("provider a")) {
-      return "You can cancel the number after 3 minutes";
-    }
-
-    return "You can cancel the number after 5 minutes";
-  }
-
-  function canMakeCancelRequest(order) {
-    let isProviderB = order.provider?.toLowerCase().includes("provider b");
-
-    if (isProviderB) {
-      return true;
-    }
-
-    let time = order.provider?.toLowerCase().includes("provider a") ? 3 : 5;
-
-    if (!order.activationStartTime) return false;
-
-    const startTime = new Date(order.activationStartTime).getTime();
-    if (isNaN(startTime)) return false;
-
-    const now = Date.now();
-
-    return now >= startTime + time * 60 * 1000;
   }
 
   return (
@@ -151,23 +102,23 @@ export default function ActiveOrders({
           </span>
           <div>
             <div className="card-title">Active Orders</div>
-            <div className="card-sub">Numbers that are currently active</div>
+            <div className="card-sub">Mails that are currently active</div>
           </div>
         </div>
-        {incomingOrders.length > 0 ? (
-          <span className="orders-badge">{incomingOrders.length}</span>
+        {activeMails.length > 0 ? (
+          <span className="orders-badge">{activeMails.length}</span>
         ) : (
           ""
         )}
       </div>
       {}
 
-      {ordersLoading ? (
+      {activeMailsLoading ? (
         <ActiveOrdersSkelton />
       ) : (
         <>
           <div className="orders-list">
-            {incomingOrders.map((order) => (
+            {activeMails.map((order) => (
               <div className="order-row" key={order.activationId}>
                 <div className="order-row-top">
                   <div
@@ -177,11 +128,9 @@ export default function ActiveOrders({
                       gap: "8px",
                     }}
                   >
-                    <span className="order-service">{order.provider}</span>
-                    <span className="order-service">-</span>
                     <span className="order-service">{order.service}</span>
                     <span className="order-service">-</span>
-                    <span className="order-country">{order.country}</span>
+                    <span className="order-service">{order.domain}</span>
                   </div>
 
                   <div
@@ -197,12 +146,10 @@ export default function ActiveOrders({
                   </div>
                 </div>
 
-                <div className="order-number">
-                  {FormatterHelper.formatPhoneNumber(order.phoneNumber)}
-                </div>
+                <div className="order-number">{order.email}</div>
 
                 <div className="order-expiry">
-                  Expires in {getRemainingTime(order)}
+                  Expires in {GetRemainingTime(order)}
                 </div>
 
                 {/* SMS Block ( hidden until sms arrives) */}
@@ -222,7 +169,7 @@ export default function ActiveOrders({
                       <button
                         style={{ cursor: "pointer" }}
                         title="Copy code"
-                        onClick={() => handleCopy(order.code, "Code")}
+                        onClick={() => CopyToClipboard("Code", order.code)}
                       >
                         📋
                       </button>
@@ -232,11 +179,11 @@ export default function ActiveOrders({
 
                 <div className="order-actions">
                   <Tooltip
-                    tooltip="Copy number"
+                    tooltip="Copy mail"
                     btn={
                       <button
                         className="btn-action"
-                        onClick={() => handleCopy(order.phoneNumber, "Number")}
+                        onClick={() => CopyToClipboard("Mail", order.email)}
                       >
                         📋
                       </button>
@@ -244,7 +191,7 @@ export default function ActiveOrders({
                   />
 
                   <Tooltip
-                    tooltip={"Mark this number as complete"}
+                    tooltip={"Mark this mail as complete"}
                     btn={
                       <button
                         disabled={complete.includes(order.id)}
@@ -257,11 +204,11 @@ export default function ActiveOrders({
                   />
 
                   <Tooltip
-                    tooltip={getCancelTooltip(order.provider)}
+                    tooltip={GetCancelTooltip()}
                     btn={
                       <button
                         disabled={
-                          !canMakeCancelRequest(order) ||
+                          !CanMakeCancelRequest(order) ||
                           cancel.includes(order.id)
                         }
                         className="btn-action btn-cancel"
