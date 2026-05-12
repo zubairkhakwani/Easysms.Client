@@ -69,7 +69,7 @@ createRoot(document.getElementById("root")).render(
                     element={<RequestNumberContainer />}
                   />
                   <Route path="/get-account" element={<RequestAccount />} />
-                  <Route path="/get-mail" element={<RequestMailContainer />} />
+                  {/* <Route path="/get-mail" element={<RequestMailContainer />} /> */}
                   <Route path="/history/numbers" element={<NumberHistory />} />
                   <Route
                     path="/history/accounts"

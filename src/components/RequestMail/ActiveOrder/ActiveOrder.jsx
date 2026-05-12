@@ -52,45 +52,52 @@ export default function ActiveOrders({
   async function handleCancel(id) {
     setCancel((prev) => [...prev, id]);
 
-    var response = await cancelTempMail(id);
+    try {
+      var response = await cancelTempMail(id);
 
-    var responseMessage = response.message;
-    var responseData = response.data;
+      var responseMessage = response.message;
+      var responseData = response.data;
 
-    if (response.isSuccess) {
-      successTaost(responseMessage);
-    } else {
-      errorToast(responseMessage);
+      if (response.isSuccess) {
+        successTaost(responseMessage);
+      } else {
+        errorToast(responseMessage);
+      }
+
+      if (responseData.isCancelled) {
+        onCancelTempEmail(id);
+        balanceCredit(responseData.refundAmount);
+      }
+
+      if (responseData.hasSms) {
+        OnTempEmailCancelFailure(responseData);
+      }
+    } catch {
+      errorToast("Failed to mark temp mail as cancelled, please try later.");
+    } finally {
+      setCancel((prev) => prev.filter((id) => id !== id));
     }
-
-    if (responseData.isCancelled) {
-      onCancelTempEmail(id);
-      balanceCredit(responseData.refundAmount);
-    }
-
-    if (responseData.hasSms) {
-      OnTempEmailCancelFailure(responseData);
-    }
-
-    setCancel((prev) => prev.filter((id) => id !== id));
   }
 
   async function handleComplete(id) {
     setComplete((prev) => [...prev, id]);
 
-    var response = await completeTempMail(id);
+    try {
+      var response = await completeTempMail(id);
 
-    var responseMessage = response.message;
+      var responseMessage = response.message;
 
-    if (response.isSuccess) {
-      successTaost(responseMessage);
-
-      onCancelTempEmail(id);
-    } else {
-      errorToast(responseMessage);
+      if (response.isSuccess) {
+        successTaost(responseMessage);
+        onCancelTempEmail(id);
+      } else {
+        errorToast(responseMessage);
+      }
+    } catch {
+      errorToast("Failed to mark temp mail as completed, please try later.");
+    } finally {
+      setComplete((prev) => prev.filter((id) => id !== id));
     }
-
-    setComplete((prev) => prev.filter((id) => id !== id));
   }
 
   return (

@@ -157,10 +157,10 @@ export default function Navbar() {
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Account History
                   </Link>
-                  <Link className="nav-dropdown-item" to="/history/mails">
+                  {/* <Link className="nav-dropdown-item" to="/history/mails">
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Mail History
-                  </Link>
+                  </Link> */}
                   <span
                     className="nav-dropdown-item"
                     onClick={() => handleOpenModal(modalKeys.changePassword)}
@@ -275,12 +275,12 @@ export default function Navbar() {
                 icon: "fa-solid fa-user-check",
                 badge: "Hot",
               },
-              {
-                label: "Buy Temp Mail",
-                to: "/get-mail",
-                icon: "fa-solid fa-envelope",
-                badge: "New",
-              },
+              // {
+              //   label: "Buy Temp Mail",
+              //   to: "/get-mail",
+              //   icon: "fa-solid fa-envelope",
+              //   badge: "New",
+              // },
             ]}
           />
         </ul>

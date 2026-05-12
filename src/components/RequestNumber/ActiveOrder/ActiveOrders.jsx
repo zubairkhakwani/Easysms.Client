@@ -54,45 +54,53 @@ export default function ActiveOrders({
   async function handleCancel(id) {
     setCancel((prev) => [...prev, id]);
 
-    var response = await cancelNumber(id);
+    try {
+      var response = await cancelNumber(id);
 
-    var responseMessage = response.message;
-    var responseData = response.data;
+      var responseMessage = response.message;
+      var responseData = response.data;
 
-    if (response.isSuccess) {
-      successTaost(responseMessage);
-    } else {
-      errorToast(responseMessage);
+      if (response.isSuccess) {
+        successTaost(responseMessage);
+      } else {
+        errorToast(responseMessage);
+      }
+
+      if (responseData.isCancelled) {
+        onCancelNumber(id);
+        balanceCredit(responseData.refundAmount);
+      }
+
+      if (responseData.hasSms) {
+        OnNumberCancelFailure(responseData);
+      }
+    } catch {
+      errorToast("Failed to cancel the number, please try later.");
+    } finally {
+      setCancel((prev) => prev.filter((id) => id !== id));
     }
-
-    if (responseData.isCancelled) {
-      onCancelNumber(id);
-      balanceCredit(responseData.refundAmount);
-    }
-
-    if (responseData.hasSms) {
-      OnNumberCancelFailure(responseData);
-    }
-
-    setCancel((prev) => prev.filter((id) => id !== id));
   }
 
   async function handleComplete(id) {
     setComplete((prev) => [...prev, id]);
 
-    var response = await completeNumber(id);
+    try {
+      var response = await completeNumber(id);
 
-    var responseMessage = response.message;
+      var responseMessage = response.message;
 
-    if (response.isSuccess) {
-      successTaost(responseMessage);
+      if (response.isSuccess) {
+        successTaost(responseMessage);
 
-      onCancelNumber(id);
-    } else {
-      errorToast(responseMessage);
+        onCancelNumber(id);
+      } else {
+        errorToast(responseMessage);
+      }
+    } catch {
+      errorToast("Failed to complete number, please try later.");
+    } finally {
+      setComplete((prev) => prev.filter((id) => id !== id));
     }
-
-    setComplete((prev) => prev.filter((id) => id !== id));
   }
 
   return (
@@ -175,7 +183,7 @@ export default function ActiveOrders({
                       <button
                         style={{ cursor: "pointer" }}
                         title="Copy code"
-                        onClick={() => CopyToClipboard(order.code, "Code")}
+                        onClick={() => CopyToClipboard("Code", order.code)}
                       >
                         📋
                       </button>
@@ -190,7 +198,7 @@ export default function ActiveOrders({
                       <button
                         className="btn-action"
                         onClick={() =>
-                          CopyToClipboard(order.phoneNumber, "Number")
+                          CopyToClipboard("Number", order.phoneNumber)
                         }
                       >
                         📋
