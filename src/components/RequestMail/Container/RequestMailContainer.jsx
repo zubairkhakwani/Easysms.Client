@@ -3,9 +3,9 @@ import { useEffect, useState, useContext } from "react";
 
 //Context
 import { SmsContext } from "../../../context/SmsContext";
-import { NumberContext } from "../../../context/NumberContext";
 
 //Services
+import { connectSignalR } from "../../../services/SignalR/SignalRService";
 import { getMyTempMails } from "../../../services/TempMail/TempMailService";
 
 //Toaster
@@ -19,11 +19,8 @@ import ActiveOrders from "../ActiveOrder/ActiveOrder";
 
 export default function RequestMailContainer() {
   //Contexts
-  const { latestSms, addSms, isReconnected, setReconnected } =
+  const { latestMail, addMail, setReconnected, isReconnected } =
     useContext(SmsContext);
-
-  const { OnNewNumbers, OnRemoveNumber } = useContext(NumberContext);
-
   //Data
   const [activeTempMails, setActiveTempMails] = useState([]);
 
@@ -44,6 +41,14 @@ export default function RequestMailContainer() {
       setActiveTempMails(responseData);
     }
   };
+
+  useEffect(() => {
+    try {
+      connectSignalR({ addMail, setReconnected });
+    } catch (error) {
+      console.error("Failed to connect and register user:", error);
+    }
+  }, []);
 
   useEffect(() => {
     fetchMyTempMails();
@@ -75,6 +80,29 @@ export default function RequestMailContainer() {
     );
   };
 
+  function handleTempMailExpired(id) {
+    setActiveTempMails((prev) => prev.filter((order) => order.id !== id));
+  }
+
+  //Update the UI when sms code receives
+  useEffect(() => {
+    if (!latestMail) return;
+
+    setActiveTempMails((prevOrders) =>
+      prevOrders.map((order) => {
+        if (order.id === latestMail.id) {
+          return {
+            ...order,
+            hasSms: true,
+            code: latestMail.code,
+            text: latestMail.text,
+          };
+        }
+        return order;
+      }),
+    );
+  }, [latestMail]);
+
   return (
     <>
       <Header
@@ -86,40 +114,45 @@ export default function RequestMailContainer() {
       <div className="grid">
         <Guideline
           title="Getting Started"
-          subtitle="Follow these steps to receive your verification code"
-          icon="fa-solid fa-list-check number-type-icon"
+          subtitle="Follow these steps to receive your temporary email"
+          icon="fa-solid fa-envelope-open-text number-type-icon"
           steps={[
             {
-              title: "Select Your Options",
+              title: "Select a Service",
               description:
-                "Choose your SMS provider, service, country, and operator from the form on the right.",
+                "Choose the platform or service you need the email for, such as Facebook, Google, Telegram, or Discord.",
             },
             {
-              title: "Check Price & Availability",
+              title: "Choose Email Type",
               description:
-                "Review the service information to see the price and available numbers.",
+                "Select your preferred email domain or provider, such as Gmail, Mail.com, Outlook, and more.",
             },
             {
-              title: 'Click "Get Number"',
+              title: "Review Pricing",
               description:
-                "Press the button to receive your temporary phone number instantly.",
+                "Check the price, stock availability, and delivery information before placing your order.",
             },
             {
-              title: "Use the Number",
+              title: "Select Quantity",
               description:
-                " Enter the provided number in your app or service to receive the SMS code.",
+                "Choose how many temporary email accounts you want to purchase.",
             },
             {
-              title: "Get Your Code",
+              title: 'Click "Get Mail"',
               description:
-                "Your verification code will appear on this page within a few minutes.",
+                "Press the button to instantly generate your temporary email account(s).",
+            },
+            {
+              title: "Receive Verification Emails",
+              description:
+                "Incoming emails and verification codes will automatically appear on this page.",
             },
           ]}
           notes={[
-            "Numbers are temporary and expire after 15–20 minutes",
+            "Email accounts are temporary and may expire after a limited time",
             "Make sure you have sufficient balance before ordering",
-            "Use the number immediately after receiving it",
-            "Some services may take longer to deliver SMS codes",
+            "Use the email immediately after receiving it",
+            "Some services may take longer to deliver verification emails",
           ]}
         />
         <RequestMailForm onNewTempMail={addNewTempMail} />
@@ -128,6 +161,7 @@ export default function RequestMailContainer() {
           activeMails={activeTempMails}
           onCancelTempEmail={handleCancelTempMail}
           OnTempEmailCancelFailure={handleCancelTempEmailFailure}
+          OnTempMailExpiration={handleTempMailExpired}
         />
       </div>
     </>

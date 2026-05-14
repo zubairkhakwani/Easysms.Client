@@ -9,9 +9,8 @@ export const CopyToClipboard = async (type, text) => {
   }
 };
 
-export const GetRemainingTime = (order) => {
+export const GetRemainingTime = (order, onExpired) => {
   if (!order.activationStartTime || !order.activationLimit) return "Invalid";
-
   const startTime = new Date(order.activationStartTime).getTime();
   if (isNaN(startTime)) return "Invalid date";
 
@@ -20,6 +19,9 @@ export const GetRemainingTime = (order) => {
   const remaining = expiryTime - Date.now();
 
   if (remaining <= 0) {
+    if (onExpired) {
+      onExpired(order.id);
+    }
     return "Expired";
   }
 

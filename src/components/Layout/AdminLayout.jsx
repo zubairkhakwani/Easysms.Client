@@ -16,7 +16,7 @@ const AdminLayout = () => {
 
   useEffect(() => {
     try {
-      connectSignalR(addSms, setReconnected, OnNewNumbers, OnRemoveNumber);
+      connectSignalR({ addSms, setReconnected, OnNewNumbers, OnRemoveNumber });
     } catch (error) {
       console.error("Failed to connect and register user:", error);
     }

@@ -72,6 +72,7 @@ export default function RequestMailForm({ onNewTempMail }) {
     fetchServices();
   }, []);
 
+
   //Hande Service Change
   const handleServiceChange = async (e) => {
     let serviceId = e.target.value;
@@ -159,9 +160,10 @@ export default function RequestMailForm({ onNewTempMail }) {
         cost: selecttedEmailCost,
       });
 
+      responseMessage = response.message;
+
       if (response.isSuccess) {
         responseData = response.data;
-        responseMessage = response.message;
         onNewTempMail(responseData.data ?? []);
         balanceDebit(responseData?.totalCost ?? 0);
         successTaost(responseMessage);
@@ -268,24 +270,24 @@ export default function RequestMailForm({ onNewTempMail }) {
         </div>
 
         <div className="field">
-          <div class="summary-col" bis_skin_checked="1">
-            <label class="summary-label">Quantity</label>
-            <div class="qty-stepper" bis_skin_checked="1">
+          <div className="summary-col" bis_skin_checked="1">
+            <label className="summary-label">Quantity</label>
+            <div className="qty-stepper" bis_skin_checked="1">
               <button
-                class="num-qty-btn"
+                className="num-qty-btn"
                 onClick={() => handleQuantity("minus")}
               >
                 −
               </button>
-              <span class="qty-val">{quantityState.current}</span>
+              <span className="qty-val">{quantityState.current}</span>
               <button
-                class="num-qty-btn"
+                className="num-qty-btn"
                 onClick={() => handleQuantity("plus")}
               >
                 +
               </button>
             </div>
-            <p class="qty-helper qty-helper--available">
+            <p className="qty-helper qty-helper--available">
               You can purchase up to <b>{quantityState.max}</b> mails.
             </p>
           </div>

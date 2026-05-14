@@ -37,6 +37,7 @@ export default function ActiveOrders({
   incomingOrders,
   onCancelNumber,
   OnNumberCancelFailure,
+  OnTempNumberExpiration,
 }) {
   const { balanceCredit } = useContext(AuthContext);
   const [now, setNow] = useState(Date.now());
@@ -163,7 +164,7 @@ export default function ActiveOrders({
                 </div>
 
                 <div className="order-expiry">
-                  Expires in {GetRemainingTime(order)}
+                  Expires in {GetRemainingTime(order, OnTempNumberExpiration)}
                 </div>
 
                 {/* SMS Block ( hidden until sms arrives) */}

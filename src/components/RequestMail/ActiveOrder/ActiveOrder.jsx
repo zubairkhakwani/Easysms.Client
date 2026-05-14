@@ -35,6 +35,7 @@ export default function ActiveOrders({
   activeMails,
   onCancelTempEmail,
   OnTempEmailCancelFailure,
+  OnTempMailExpiration,
 }) {
   const { balanceCredit } = useContext(AuthContext);
   const [now, setNow] = useState(Date.now());
@@ -126,7 +127,7 @@ export default function ActiveOrders({
         <>
           <div className="orders-list">
             {activeMails.map((order) => (
-              <div className="order-row" key={order.activationId}>
+              <div className="order-row" key={order.id}>
                 <div className="order-row-top">
                   <div
                     style={{
@@ -156,7 +157,7 @@ export default function ActiveOrders({
                 <div className="order-number">{order.email}</div>
 
                 <div className="order-expiry">
-                  Expires in {GetRemainingTime(order)}
+                  Expires in {GetRemainingTime(order, OnTempMailExpiration)}
                 </div>
 
                 {/* SMS Block ( hidden until sms arrives) */}

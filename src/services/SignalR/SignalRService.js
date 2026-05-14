@@ -9,12 +9,13 @@ import TokenService from "../../services/Token/TokenService";
 
 let hubConnection;
 
-export const connectSignalR = async (
+export const connectSignalR = async ({
   addSms,
+  addMail,
   setReconnected,
   OnNewNumbers,
   OnRemoveNumber,
-) => {
+}) => {
   try {
     // Disconnect from the previous connection if connected and we have the hubConnection
     if (
@@ -33,7 +34,13 @@ export const connectSignalR = async (
     await hubConnection.start();
     await new Promise((resolve) => setTimeout(resolve, 5000)); // wait 5 seconds
     await hubConnection.send("RegisterUser");
-    addEventListeners(addSms, setReconnected, OnNewNumbers, OnRemoveNumber);
+    addEventListeners(
+      addSms,
+      addMail,
+      setReconnected,
+      OnNewNumbers,
+      OnRemoveNumber,
+    );
   } catch (err) {
     console.log("Connection failed:", err);
   }
@@ -52,25 +59,39 @@ async function disconnectAsync() {
 
 function addEventListeners(
   addSms,
+  addMail,
   setReconnected,
   OnNewNumbers,
   OnRemoveNumber,
 ) {
-  hubConnection.onclose(async () => {
-    await attemptReconnect(setReconnected);
-  });
+  if (setReconnected) {
+    hubConnection.onclose(async () => {
+      await attemptReconnect(setReconnected);
+    });
+  }
 
-  hubConnection.on("ReceiveSms", (sms) => {
-    addSms(sms);
-  });
+  if (addSms) {
+    hubConnection.on("ReceiveSms", (sms) => {
+      addSms(sms);
+    });
+  }
 
-  hubConnection.on("NumberAdded", (newNumber) => {
-    OnNewNumbers(newNumber);
-  });
+  if (addMail) {
+    hubConnection.on("ReceiveMail", (mail) => {
+      addMail(mail);
+    });
+  }
+  if (OnNewNumbers) {
+    hubConnection.on("NumberAdded", (newNumber) => {
+      OnNewNumbers(newNumber);
+    });
+  }
 
-  hubConnection.on("NumberRemoved", (id) => {
-    OnRemoveNumber(id);
-  });
+  if (OnRemoveNumber) {
+    hubConnection.on("NumberRemoved", (id) => {
+      OnRemoveNumber(id);
+    });
+  }
 }
 
 async function attemptReconnect(setReconnected) {
@@ -78,7 +99,10 @@ async function attemptReconnect(setReconnected) {
     try {
       await hubConnection.start();
       await hubConnection.send("RegisterUser");
-      setReconnected();
+      if (setReconnected) {
+        setReconnected();
+      }
+
       return;
     } catch (ex) {
       console.log(
