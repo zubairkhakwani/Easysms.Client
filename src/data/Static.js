@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-//export const Base_Url = "https://api.easyotps.com";
-export const Base_Url = "https://localhost:7265";
+export const Base_Url = "https://api.easyotps.com";
+//export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -27,6 +27,47 @@ export const services = [
   { name: "Snapchat", color: "#FFFC00", icon: "fa-brands fa-snapchat" },
   { name: "Amazon", color: "#FF9900", icon: "fa-brands fa-amazon" },
   { name: "Uber", color: "#000000", icon: "fa-brands fa-uber" },
+];
+
+export const mailServices = [
+  { id: "fb", name: "Facebook" },
+  { id: "ig", name: "Instagram" },
+  { id: "tw", name: "Twitter" },
+  { id: "tg", name: "Telegram" },
+  { id: "wa", name: "WhatsApp" },
+  { id: "fu", name: "Snapchat" },
+
+  { id: "ds", name: "Discord" },
+  { id: "mt", name: "Steam" },
+  { id: "bz", name: "Blizzard" },
+  { id: "ane", name: "Supercell" },
+
+  { id: "nf", name: "Netflix" },
+  { id: "am", name: "Amazon" },
+  { id: "dh", name: "eBay" },
+
+  { id: "dr", name: "OpenAI" },
+  { id: "mm", name: "Microsoft" },
+  { id: "go", name: "Google" },
+  { id: "yt", name: "YouTube" },
+  { id: "gm", name: "Gmail" },
+
+  { id: "li", name: "LinkedIn" },
+  { id: "cn", name: "Fiverr" },
+  { id: "ds2", name: "DocuSign" },
+
+  { id: "aon", name: "Binance" },
+  { id: "aor", name: "OKX" },
+  { id: "re", name: "Coinbase" },
+
+  { id: "ts", name: "PayPal" },
+  { id: "aok", name: "NETELLER" },
+  { id: "aqt", name: "Skrill" },
+
+  { id: "uk", name: "Airbnb" },
+  { id: "ub", name: "Uber" },
+  { id: "rr", name: "Wolt" },
+  { id: "aq", name: "Glovo" },
 ];
 
 export const steps = [

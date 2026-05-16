@@ -87,11 +87,11 @@ export const navItems = [
     ],
   },
   {
-    section: "Accounts & Numbers",
+    section: "Buy",
     items: [
       {
         icon: "⊞",
-        label: "Buy Number",
+        label: "Buy Temp Number",
         id: "getNumber",
         url: "/get-number",
       },
@@ -100,6 +100,12 @@ export const navItems = [
         label: "Buy Account",
         id: "getAccount",
         url: "/get-account",
+      },
+      {
+        icon: "⊞",
+        label: "Buy Temp mail",
+        id: "getMail",
+        url: "/get-mail",
       },
     ],
   },

@@ -16,8 +16,6 @@ export const toggleContactUsMessage = async (id) => {
 };
 
 export const contactUsReply = async (id, httpRequest) => {
-  console.log(id);
-  console.log(httpRequest);
   const response = await httpClient.put(
     `/api/contactus/${id}/reply`,
     httpRequest,

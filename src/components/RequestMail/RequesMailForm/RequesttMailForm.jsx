@@ -13,6 +13,9 @@ import { successTaost, errorToast } from "../../../helper/Toaster";
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper.js";
 
+//Static Data
+import { mailServices } from "../../../data/Static";
+
 //Services
 import {
   getEmailsMetaData,
@@ -61,17 +64,18 @@ export default function RequestMailForm({ onNewTempMail }) {
     let sercices = [];
     try {
       sercices = await getServices(heroSmsId);
+      console.log(services);
     } catch {
       errorToast("Failed to fetch services, please try later.");
     } finally {
       setServices(sercices);
+      console.log(services);
     }
   };
 
   useEffect(() => {
-    fetchServices();
+    //fetchServices();
   }, []);
-
 
   //Hande Service Change
   const handleServiceChange = async (e) => {
@@ -199,7 +203,7 @@ export default function RequestMailForm({ onNewTempMail }) {
             <option value="" disabled>
               Select service
             </option>
-            {services.map((s) => (
+            {mailServices.map((s) => (
               <option key={s.id} value={s.name}>
                 {s.name} {s.price ? `— From ${s.price}` : ""}{" "}
                 {s.qty ? `— Total ${s.qty} numbers` : ""}

@@ -265,7 +265,7 @@ export default function Navbar() {
                 icon: "fa-solid fa-wallet",
               },
               {
-                label: "Buy Number",
+                label: "Buy Temp Number",
                 to: "/get-number",
                 icon: "fa-solid fa-sim-card",
               },
