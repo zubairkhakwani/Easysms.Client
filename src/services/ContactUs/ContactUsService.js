@@ -11,12 +11,12 @@ export const getAllContactUs = async () => {
 };
 
 export const toggleContactUsMessage = async (id) => {
-  const response = await httpClient.put(`/api/contactus/${id}/toggle-read`);
+  const response = await httpClient.post(`/api/contactus/${id}/toggle-read`);
   return response.data;
 };
 
 export const contactUsReply = async (id, httpRequest) => {
-  const response = await httpClient.put(
+  const response = await httpClient.post(
     `/api/contactus/${id}/reply`,
     httpRequest,
   );

@@ -334,6 +334,7 @@ a {
   --skeleton-shine: #555555;
   --skeleton-border-radius: var(--radius-xs);
 }
+
 html {
   scroll-behavior: smooth;
 }
@@ -562,4 +563,10 @@ body {
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
+}
+.title-cell {
+  max-width: 350px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

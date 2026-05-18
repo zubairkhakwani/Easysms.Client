@@ -173,6 +173,49 @@ export default function Overview() {
       <div>
         <div className="section-header">
           <span className="section-header-title">
+            Overall Temp mails Breakdown
+          </span>
+        </div>
+        <div
+          className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
+          style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
+        >
+          <StatCard
+            label="Total Sold"
+            value={FormatterHelper.formatNumber(
+              overview?.totalTempMailSold ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Revenue"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalTempMailRevenue ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Cost"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalTempMailCost ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Profit"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalTempMailRevenue
+                ? overview.totalTempMailRevenue - overview?.totalTempMailCost
+                : 0,
+            )}
+            trendUp={true}
+            accent="accent-purple"
+          />
+        </div>
+      </div>
+      <div>
+        <div className="section-header">
+          <span className="section-header-title">
             Overall Accounts Breakdown
           </span>
         </div>
@@ -217,7 +260,7 @@ export default function Overview() {
       <div>
         <div className="section-header">
           <span className="section-header-title">
-            Overall TempNumbers Breakdown
+            Overall Temp Numbers Breakdown
           </span>
         </div>
         <div

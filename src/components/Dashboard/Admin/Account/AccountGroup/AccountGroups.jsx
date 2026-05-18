@@ -349,6 +349,7 @@ export default function AccountGroups() {
                   <tr>
                     <th>#</th>
                     <th>Id</th>
+                    <th>Title</th>
                     <th>Platform</th>
                     <th>Category</th>
                     <th>Total Available</th>
@@ -369,6 +370,10 @@ export default function AccountGroups() {
                     <tr key={r.id}>
                       <td className="ph-col-id">{index + 1}</td>
                       <td className="ph-col-id">{r.id}</td>
+                      <td className="um-user-name title-cell" title={r.title}>
+                        {r.title}
+                      </td>
+
                       <td className="um-user-name">{r.platform}</td>
                       <td className="um-user-name">{r.category}</td>
                       <td className="um-user-name">{r.totalAvailable}</td>

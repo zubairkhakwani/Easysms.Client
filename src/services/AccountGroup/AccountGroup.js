@@ -11,7 +11,7 @@ export const getAllAccountGroups = async ({ pageNo, pageSize }) => {
 };
 export const upsertAccountGroup = async (httpRequest, accountGroupId) => {
   if (accountGroupId > 0) {
-    const response = await httpClient.put(
+    const response = await httpClient.post(
       `/api/accountgroups/${accountGroupId}/edit`,
       httpRequest,
     );
@@ -23,6 +23,6 @@ export const upsertAccountGroup = async (httpRequest, accountGroupId) => {
 };
 
 export const toggleAccountGroup = async (id) => {
-  const response = await httpClient.put(`/api/accountgroups/${id}/toggle`);
+  const response = await httpClient.post(`/api/accountgroups/${id}/toggle`);
   return response.data;
 };
