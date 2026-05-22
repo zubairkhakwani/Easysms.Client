@@ -250,6 +250,8 @@ export const modalKeys = {
   platformConfiguration: "platform-configuration",
   contactUsMessage: "contact-us-message",
   contactUsReply: "contact-us-reply",
+  proxyAuthChange: "proxy-auth-change",
+  exportProxy: "export-proxy",
 };
 
 export const NumberStatus = [

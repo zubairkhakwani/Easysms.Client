@@ -40,10 +40,7 @@ export function ConfigureProviderProfitModal({
   };
 
   return (
-    <div
-      className="cpp-overlay"
-      onClick={() => onClose(modalKeys.providerProfit)}
-    >
+    <div className="cpp-overlay">
       <div className="cpp-modal" onClick={(e) => e.stopPropagation()}>
         <button
           className="cpp-close-btn"

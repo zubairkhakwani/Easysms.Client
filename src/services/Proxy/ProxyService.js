@@ -24,3 +24,8 @@ export const getMyActiveProxies = async (httpRequest) => {
   );
   return response.data;
 };
+
+export const changeAuth = async (httpRequest) => {
+  const response = await httpClient.post(`/api/proxy/change-auth`, httpRequest);
+  return response.data;
+};

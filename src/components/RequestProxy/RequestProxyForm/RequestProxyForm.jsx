@@ -59,7 +59,7 @@ export default function RequestProxyForm() {
   const [isFetchingPrice, setIsFetchingPrice] = useState(false);
 
   const [quantityState, setQuantityState] = useState({
-    current: 0,
+    current: 1,
     min: 1,
   });
 

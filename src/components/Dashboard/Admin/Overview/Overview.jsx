@@ -173,6 +173,50 @@ export default function Overview() {
       <div>
         <div className="section-header">
           <span className="section-header-title">
+            Overall Proxies Breakdown
+          </span>
+        </div>
+        <div
+          className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
+          style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
+        >
+          <StatCard
+            label="Total Sold"
+            value={FormatterHelper.formatNumber(
+              overview?.totalProxiesSold ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Revenue"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalProxiesRevenue ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Cost"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalProxiesCost ?? 0,
+            )}
+            accent="accent-purple"
+          />
+          <StatCard
+            label="Total Profit"
+            value={FormatterHelper.formatCurrency(
+              overview?.totalTempMailRevenue
+                ? overview.totalProxiesRevenue - overview?.totalProxiesCost
+                : 0,
+            )}
+            trendUp={true}
+            accent="accent-purple"
+          />
+        </div>
+      </div>
+
+      <div>
+        <div className="section-header">
+          <span className="section-header-title">
             Overall Temp mails Breakdown
           </span>
         </div>
@@ -213,6 +257,7 @@ export default function Overview() {
           />
         </div>
       </div>
+
       <div>
         <div className="section-header">
           <span className="section-header-title">

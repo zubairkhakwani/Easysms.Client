@@ -1,0 +1,356 @@
+/* ============================================================
+   ProxyAuthChangeModal.css
+   Follows the project CSS variable system exactly.
+   ============================================================ */
+
+/* ── Overlay ─────────────────────────────────────────────── */
+.pac-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: pac-fade-in var(--transition) forwards;
+}
+
+@keyframes pac-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Modal card ──────────────────────────────────────────── */
+.pac-modal {
+  position: relative;
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--modal-shadow);
+  padding: var(--space-8) var(--space-8) var(--space-7);
+  width: 100%;
+  max-width: 460px;
+  animation: pac-slide-up var(--transition-spring) forwards;
+}
+
+@keyframes pac-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Close button ────────────────────────────────────────── */
+.pac-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: var(--text-ms);
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition);
+  line-height: 1;
+}
+
+.pac-close:hover {
+  background: var(--error-subtle);
+  border-color: var(--error-border);
+  color: var(--text-error);
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.pac-header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.pac-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  margin-bottom: var(--space-4);
+  font-size: 22px;
+}
+
+.pac-title {
+  font-family: var(--font);
+  font-size: var(--text-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-heading);
+  letter-spacing: var(--ls-tight);
+  margin-bottom: var(--space-2);
+}
+
+.pac-sub {
+  font-size: var(--text-base);
+  color: var(--text-mid);
+  line-height: var(--lh-relaxed);
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* ── Mode Toggle ─────────────────────────────────────────── */
+.pac-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1);
+  margin-bottom: var(--space-6);
+}
+
+.pac-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: calc(var(--radius-sm) - 2px);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+  white-space: nowrap;
+}
+
+.pac-toggle-btn:hover:not(.pac-toggle-active) {
+  background: var(--bg-secondary);
+  color: var(--text);
+}
+
+.pac-toggle-active {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--text-accent);
+  box-shadow: 0 0 0 1px var(--accent-border);
+}
+
+.pac-toggle-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* ── Form ────────────────────────────────────────────────── */
+.pac-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+/* Field wrapper */
+.pac-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.pac-label {
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--input-label);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+}
+
+/* Input row */
+.pac-input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-3);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    background var(--transition);
+  gap: var(--space-2);
+}
+
+.pac-input-wrap:focus-within {
+  border-color: var(--input-border-focus);
+  background: var(--input-bg-focus);
+  box-shadow: var(--input-shadow-focus);
+}
+
+.pac-input-wrap.pac-input-error {
+  border-color: var(--input-border-error);
+  box-shadow: var(--input-shadow-error);
+}
+
+.pac-input-icon {
+  font-size: 15px;
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: 0.65;
+}
+
+.pac-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--input-text);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  padding: var(--space-3) 0;
+  min-width: 0;
+}
+
+.pac-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+/* Eye toggle button */
+.pac-eye-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.55;
+  flex-shrink: 0;
+  transition: opacity var(--transition);
+}
+
+.pac-eye-btn:hover {
+  opacity: 1;
+}
+
+/* Error text */
+.pac-field-error {
+  font-size: var(--text-xs);
+  color: var(--text-error);
+  font-weight: var(--fw-medium);
+  padding-left: var(--space-1);
+}
+
+/* Hint text */
+.pac-field-hint {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  line-height: var(--lh-relaxed);
+  margin: var(--space-1) 0 0;
+  padding-left: var(--space-1);
+}
+
+/* ── Actions ─────────────────────────────────────────────── */
+.pac-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.pac-btn-ghost {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--btn-ghost-bg);
+  border: 1px solid var(--btn-ghost-border);
+  color: var(--btn-ghost-text);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition);
+}
+
+.pac-btn-ghost:hover {
+  background: var(--btn-ghost-bg-hover);
+  color: var(--btn-ghost-text-hover);
+}
+
+.pac-btn-ghost:active {
+  background: var(--btn-ghost-bg-active);
+}
+
+.pac-btn-primary {
+  flex: 2;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--btn-primary-bg);
+  border: none;
+  color: var(--btn-primary-text);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  box-shadow: var(--btn-primary-shadow);
+  transition:
+    background var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition-fast);
+}
+
+.pac-btn-primary:hover {
+  background: var(--btn-primary-bg-hover);
+  box-shadow: var(--btn-primary-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.pac-btn-primary:active {
+  background: var(--btn-primary-bg-active);
+  transform: translateY(0);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .pac-modal {
+    padding: var(--space-6) var(--space-5) var(--space-5);
+  }
+
+  .pac-title {
+    font-size: var(--text-xl);
+  }
+
+  .pac-actions {
+    flex-direction: column;
+  }
+
+  .pac-btn-primary,
+  .pac-btn-ghost {
+    flex: unset;
+    width: 100%;
+  }
+}

@@ -2,7 +2,10 @@
 import { useState, useEffect } from "react";
 
 //Services
-import { getMyActiveProxies } from "../../../services/Proxy/ProxyService";
+import {
+  getMyActiveProxies,
+  changeAuth,
+} from "../../../services/Proxy/ProxyService";
 
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
@@ -12,7 +15,13 @@ import { copyAndDownloadTextFile } from "../../../helper/UtilityHelper";
 import { ActionDropdown } from "../../Helper/ProxyHistory/DropwDown/ActionDropDown";
 
 //Toaster
-import { errorToast } from "../../../helper/Toaster";
+import { errorToast, successTaost } from "../../../helper/Toaster";
+
+//Modal Keys
+import { modalKeys } from "../../../data/Static";
+
+//Modals
+import { ProxyAuthChangeModal } from "../../Helper/Modals/Proxy/ProxyAuthChangeModal";
 
 //Paginations
 import Paginations from "../../Shared/Pagination";
@@ -20,9 +29,16 @@ import Paginations from "../../Shared/Pagination";
 export default function ProxyHistory() {
   //Data
   const [myActiveProxies, setMyActiveProxies] = useState([]);
+  const [myProxyAuth, setMyProxyAuth] = useState({
+    orderNumber: "",
+    login: "",
+    password: "",
+    ip: "",
+  });
 
   //Loading
   const [isLoading, setIsLoading] = useState(false);
+  const [isChangingAuth, setIsChangingAuth] = useState(false);
 
   //Pagination
   const [count, setCount] = useState(0);
@@ -33,6 +49,9 @@ export default function ProxyHistory() {
   const [filters, setFilters] = useState({
     keyword: "",
   });
+
+  //Modals
+  const [modals, setModals] = useState(null);
 
   //Fetch active proxies
   const fetchMyActiveProxies = async () => {
@@ -67,11 +86,22 @@ export default function ProxyHistory() {
     setPageNo(0);
   };
 
-  function handleExport(key, proxyId) {
-    const proxy = myActiveProxies?.find((x) => x.id === proxyId);
+  //Handle Actions
+  function handleActions(key, orderNumber) {
+    if (key === modalKeys.exportProxy) {
+      handleExport(orderNumber);
+    } else if (key === modalKeys.proxyAuthChange) {
+      populateProxyAuthChange(orderNumber);
+      openModal(key);
+    }
+  }
+
+  //Handle Export
+  function handleExport(orderNumber) {
+    const proxy = myActiveProxies?.find((x) => x.orderNumber === orderNumber);
 
     if (!proxy) {
-      console.warn("Proxy not found:", proxyId);
+      console.warn("Proxy not found:", orderNumber);
       return;
     }
     let text = `
@@ -83,6 +113,54 @@ Password: ${proxy.password}
 `.trim();
 
     copyAndDownloadTextFile(`proxy_${proxy.ip}`, text, "proxy");
+  }
+
+  //Populate modal to change proxy auth
+  function populateProxyAuthChange(orderNumber) {
+    let proxy = myActiveProxies.find((x) => x.orderNumber == orderNumber);
+    if (proxy) {
+      setMyProxyAuth({
+        orderNumber: orderNumber,
+        login: proxy.login,
+        password: proxy.password,
+        ip: proxy.ip,
+      });
+    } else {
+      setMyProxyAuth({
+        orderNumber: "",
+        login: "",
+        password: "",
+        ip: "",
+      });
+    }
+  }
+
+  //Open Modal
+  function openModal(key) {
+    setModals(key);
+  }
+
+  //Close Modal
+  function closeModal() {
+    setModals(null);
+  }
+
+  //Handle Change Auth
+  async function handleChangeAuth(request) {
+    setIsChangingAuth(true);
+    let response = await changeAuth(request);
+    if (response.isSuccess) {
+      successTaost(response.message);
+    } else {
+      errorToast(response.message);
+    }
+
+    try {
+    } catch {
+      errorToast("Failed to change proxy auth, please try later.");
+    } finally {
+      setIsChangingAuth(false);
+    }
   }
 
   //   const stats = [
@@ -173,8 +251,8 @@ Password: ${proxy.password}
                       </td>
                       <td className="um-td">
                         <ActionDropdown
-                          proxyId={item.id}
-                          onAction={handleExport}
+                          orderNumber={item.orderNumber}
+                          onAction={handleActions}
                         />
                       </td>
                     </tr>
@@ -211,14 +289,14 @@ Password: ${proxy.password}
           )}
         </div>
       </div>
-      {/* {modal?.type === "topup" && (
-        <TopupModal
-          user={modal.user}
-          isTopUp={isTopup}
+      {modals === modalKeys.proxyAuthChange && (
+        <ProxyAuthChangeModal
           onClose={closeModal}
-          onConfirm={handleTopup}
+          onConfirm={handleChangeAuth}
+          isChanging={isChangingAuth}
+          myProxyAuth={myProxyAuth}
         />
-      )} */}
+      )}
     </>
   );
 }
