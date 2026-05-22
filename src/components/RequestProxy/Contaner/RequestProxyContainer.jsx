@@ -1,108 +1,10 @@
-//React
-import { useEffect, useState, useContext } from "react";
-
-//Context
-import { SmsContext } from "../../../context/SmsContext";
-
-//Services
-import { connectSignalR } from "../../../services/SignalR/SignalRService";
-import { getMyTempMails } from "../../../services/TempMail/TempMailService";
-
-//Toaster
-import { errorToast } from "../../../helper/Toaster";
-
 //Components
 import Header from "../../Helper/Header/Header";
 import Guideline from "../../Helper/Guideline/Guideline";
-import RequestMailForm from "../RequestProxyForm/RequestProxyForm";
+import RequestProxyForm from "../RequestProxyForm/RequestProxyForm";
 import ActiveOrders from "../ActiveOrder/ActiveOrder";
 
 export default function RequestProxyContainer() {
-  //Contexts
-  const { latestMail, addMail, setReconnected, isReconnected } =
-    useContext(SmsContext);
-  //Data
-  const [activeTempMails, setActiveTempMails] = useState([]);
-
-  //Loading
-  const [isActiveTempMailsLoading, setActiveTempMailsLoading] = useState(true);
-
-  //Api Calls
-  const fetchMyTempMails = async () => {
-    let responseData = [];
-    try {
-      const res = await getMyTempMails(true);
-      responseData = res.data;
-      setActiveTempMails(res.data);
-    } catch {
-      errorToast("Failed to fetch active temp mails");
-    } finally {
-      setActiveTempMailsLoading(false);
-      setActiveTempMails(responseData);
-    }
-  };
-
-  useEffect(() => {
-    try {
-      connectSignalR({ addMail, setReconnected });
-    } catch (error) {
-      console.error("Failed to connect and register user:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchMyTempMails();
-  }, [isReconnected]);
-
-  const addNewTempMail = (newTempMail) => {
-    setActiveTempMails((prev) => [...newTempMail, ...prev]);
-  };
-
-  //When temp mail is successfully cancelled
-  const handleCancelTempMail = (id) => {
-    setActiveTempMails((prev) => prev.filter((order) => order.id !== id));
-  };
-
-  //When temp email is not able to cancel so we update the otp if coming
-  const handleCancelTempEmailFailure = (data) => {
-    setActiveTempMails((prev) =>
-      prev.map((order) => {
-        if (order.id === data.id) {
-          return {
-            ...order,
-            hasSms: true,
-            code: data.code,
-            text: data.text,
-          };
-        }
-        return order;
-      }),
-    );
-  };
-
-  function handleTempMailExpired(id) {
-    setActiveTempMails((prev) => prev.filter((order) => order.id !== id));
-  }
-
-  //Update the UI when sms code receives
-  useEffect(() => {
-    if (!latestMail) return;
-
-    setActiveTempMails((prevOrders) =>
-      prevOrders.map((order) => {
-        if (order.id === latestMail.id) {
-          return {
-            ...order,
-            hasSms: true,
-            code: latestMail.code,
-            text: latestMail.text,
-          };
-        }
-        return order;
-      }),
-    );
-  }, [latestMail]);
-
   return (
     <>
       <Header
@@ -155,14 +57,7 @@ export default function RequestProxyContainer() {
           //     "Use proxies according to the platform's terms and policies",
           //   ]}
         />
-        <RequestMailForm onNewTempMail={addNewTempMail} />
-        <ActiveOrders
-          activeMailsLoading={isActiveTempMailsLoading}
-          activeMails={activeTempMails}
-          onCancelTempEmail={handleCancelTempMail}
-          OnTempEmailCancelFailure={handleCancelTempEmailFailure}
-          OnTempMailExpiration={handleTempMailExpired}
-        />
+        <RequestProxyForm />
       </div>
     </>
   );
