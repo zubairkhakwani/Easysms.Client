@@ -33,7 +33,7 @@ export function AddAccountModal({
       const twoFactorKey = accountConfig.hasTwoFactorKey
         ? (parts[idx++] ?? "")
         : undefined;
-      const extraInfo = parts[idx++] ?? "";
+      const extraInfo = parts.slice(idx).join("|");
 
       const isValid =
         Boolean(username) &&

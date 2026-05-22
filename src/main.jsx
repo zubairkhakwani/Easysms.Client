@@ -17,9 +17,11 @@ import App from "./App.jsx";
 import RequestNumberContainer from "./components/RequestNumber/Container/RequestNumberContainer.jsx";
 import RequestAccount from "./components/RequestAccount/RequestAccount.jsx";
 import RequestMailContainer from "./components/RequestMail/Container/RequestMailContainer.jsx";
+import RequestProxyContainer from "./components/RequestProxy/Contaner/RequestProxyContainer.jsx";
 import NumberHistory from "./components/Order/NumberHistory/NumberHistory.jsx";
 import AccountHistory from "./components/Order/AccountHistory/AccountHistory.jsx";
 import MailHistory from "./components/Order/MailHistory/MailHistory.jsx";
+import ProxyHistory from "./components/Order/ProxyHistory/ProxyHistory.jsx";
 import Register from "./components/Auth/Register/Register.jsx";
 import Login from "./components/Auth/Login/Login.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPasword.jsx";
@@ -70,12 +72,18 @@ createRoot(document.getElementById("root")).render(
                   />
                   <Route path="/get-account" element={<RequestAccount />} />
                   <Route path="/get-mail" element={<RequestMailContainer />} />
+                  <Route
+                    path="/get-proxy"
+                    element={<RequestProxyContainer />}
+                  />
+
                   <Route path="/history/numbers" element={<NumberHistory />} />
                   <Route
                     path="/history/accounts"
                     element={<AccountHistory />}
                   />
                   <Route path="/history/mails" element={<MailHistory />} />
+                  <Route path="/history/proxy" element={<ProxyHistory />} />
                 </Route>
 
                 <Route path="/topup" element={<TopUp />} />

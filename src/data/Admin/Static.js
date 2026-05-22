@@ -107,6 +107,12 @@ export const navItems = [
         id: "getMail",
         url: "/get-mail",
       },
+      {
+        icon: "⊞",
+        label: "Buy Proxy",
+        id: "getproxy",
+        url: "/get-proxy",
+      },
     ],
   },
   {

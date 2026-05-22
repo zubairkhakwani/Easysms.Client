@@ -69,7 +69,6 @@ export default function RequestMailForm({ onNewTempMail }) {
       errorToast("Failed to fetch services, please try later.");
     } finally {
       setServices(sercices);
-      console.log(services);
     }
   };
 

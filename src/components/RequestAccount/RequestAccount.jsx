@@ -143,7 +143,7 @@ export default function RequestAccount() {
         platformId: platform,
         categoryId: category,
       });
-
+      console.log(responseData);
       if (!response.isSuccess) {
         errorToast(response.message);
       } else {

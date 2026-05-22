@@ -9,6 +9,33 @@ export const CopyToClipboard = async (type, text) => {
   }
 };
 
+export const copyAndDownloadTextFile = async (fileName, text, type = "") => {
+  try {
+    // 1. Copy to clipboard
+    await navigator.clipboard.writeText(text);
+
+    // 2. Create downloadable file
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${fileName || "file"}.txt`;
+
+    document.body.appendChild(link);
+    link.click();
+
+    // cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    successTaost(`${type ? type : "Text"} copied & downloaded successfully.`);
+  } catch (error) {
+    console.error(error);
+    errorToast(`Failed to copy/download ${type || "text"}`);
+  }
+};
+
 export const GetRemainingTime = (order, onExpired) => {
   if (!order.activationStartTime || !order.activationLimit) return "Invalid";
   const startTime = new Date(order.activationStartTime).getTime();

@@ -34,11 +34,24 @@ export const FormatterHelper = {
   },
 
   formatDateToLocal: (date) => {
-    //new Date(date) will auto convert to local timezone.
-    const localDate = new Date(date);
+    if (!date) return "-";
 
-    //en-US is a formate not timezone.
-    const formattedDate = localDate.toLocaleString("en-US", {
+    let localDate = new Date(date);
+
+    // Handle dd.MM.yyyy format if normal parsing fails
+    if (isNaN(localDate)) {
+      const parts = date.split(".");
+
+      if (parts.length === 3) {
+        const [day, month, year] = parts;
+        localDate = new Date(year, month - 1, day);
+      }
+    }
+
+    // Final safety check
+    if (isNaN(localDate)) return "-";
+
+    return localDate.toLocaleString("en-US", {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -46,7 +59,5 @@ export const FormatterHelper = {
       minute: "2-digit",
       hour12: true,
     });
-
-    return formattedDate;
   },
 };

@@ -50,6 +50,7 @@ export default function AccountGroups() {
     purchasePrice: 0,
     salePrice: 0,
     descripion: "",
+    customTitle: "",
     hasCookie: false,
     hasTwoFactorKey: false,
     isActive: false,
@@ -81,7 +82,7 @@ export default function AccountGroups() {
     getLookupsData();
   }, []);
 
-  //Fetch Data From Api+
+  //Fetch Data From Api
   async function getAccountGroupsData() {
     setIsLoading(true);
     try {
@@ -122,6 +123,7 @@ export default function AccountGroups() {
 
   //Upsert Account Group
   const handleUpsertAccountGroup = async (data) => {
+    console.log(data);
     setIsAddingAccountGroup(true);
     let accountGroupId = accountGroupConfig.accountGroupId;
     let isEdit = accountGroupId > 0;
@@ -168,15 +170,9 @@ export default function AccountGroups() {
       );
 
       if (response.isSuccess) {
-        const responseData = response.data;
         setAccountGroups((previous) =>
-          previous.map((item) =>
-            item.id === accountGroupConfig.accountGroupId
-              ? {
-                  ...item,
-                  isActive: responseData.isActive,
-                }
-              : item,
+          previous.filter(
+            (item) => item.id !== accountGroupConfig.accountGroupId,
           ),
         );
 
@@ -278,6 +274,7 @@ export default function AccountGroups() {
       purchasePrice: 0,
       salePrice: 0,
       descripion: "",
+      customTitle: "",
       hasCookie: false,
       hasTwoFactorKey: false,
     };
@@ -349,7 +346,7 @@ export default function AccountGroups() {
                   <tr>
                     <th>#</th>
                     <th>Id</th>
-                    <th>Title</th>
+                    <th>Custom Title</th>
                     <th>Platform</th>
                     <th>Category</th>
                     <th>Total Available</th>
@@ -370,8 +367,11 @@ export default function AccountGroups() {
                     <tr key={r.id}>
                       <td className="ph-col-id">{index + 1}</td>
                       <td className="ph-col-id">{r.id}</td>
-                      <td className="um-user-name title-cell" title={r.title}>
-                        {r.title}
+                      <td
+                        className="um-user-name title-cell"
+                        title={r.customTitle}
+                      >
+                        {r.customTitle}
                       </td>
 
                       <td className="um-user-name">{r.platform}</td>

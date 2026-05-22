@@ -161,6 +161,10 @@ export default function Navbar() {
                     <i className="fa-solid fa-clock-rotate-left"></i>
                     Mail History
                   </Link>
+                  <Link className="nav-dropdown-item" to="/history/proxy">
+                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    My Active Proxies
+                  </Link>
                   <span
                     className="nav-dropdown-item"
                     onClick={() => handleOpenModal(modalKeys.changePassword)}
@@ -278,6 +282,12 @@ export default function Navbar() {
               {
                 label: "Buy Temp Mail",
                 to: "/get-mail",
+                icon: "fa-solid fa-envelope",
+                badge: "New",
+              },
+              {
+                label: "Buy Proxy",
+                to: "/get-proxy",
                 icon: "fa-solid fa-envelope",
                 badge: "New",
               },

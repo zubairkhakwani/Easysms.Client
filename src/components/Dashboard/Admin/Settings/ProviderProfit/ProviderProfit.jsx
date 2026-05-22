@@ -35,6 +35,7 @@ export default function ProviderProfit() {
       let response = await getProvidersProfit();
       var responseMessage = response.message;
       var responseData = !response.data ? [] : [response.data];
+      console.log(responseData);
       if (!response.isSuccess) {
         errorToast(responseMessage);
       }
@@ -122,8 +123,9 @@ export default function ProviderProfit() {
                   <th>#</th>
                   <th>HeroSms TempNumber</th>
                   <th>HeroSms Mail</th>
-                  <th>FiveSim</th>
                   <th>Physical Numbers</th>
+                  <th>Proxy Seller Profit</th>
+                  <th>FiveSim</th>
                   <th>Created By</th>
                   <th>Created At</th>
                   <th>Updated By</th>
@@ -141,10 +143,13 @@ export default function ProviderProfit() {
                     <td className="ph-col-cost">
                       {FormatterHelper.formatNumber(r.heroSms_Mails)}%
                     </td>
-                    <td className="ph-col-cost">{r.fiveSim}%</td>
                     <td className="ph-col-cost">
                       {FormatterHelper.formatCurrency(r.physicalNumbers)}
                     </td>
+                    <td className="ph-col-cost">
+                      {FormatterHelper.formatNumber(r.proxySeller_Profit)}%
+                    </td>
+                    <td className="ph-col-cost">{r.fiveSim}%</td>
 
                     <td className="um-user-cell">
                       <div>
