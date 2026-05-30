@@ -288,7 +288,7 @@ export default function Navbar() {
               {
                 label: "Buy Proxy",
                 to: "/get-proxy",
-                icon: "fa-solid fa-envelope",
+                icon: "fa-solid fa-shield-halved",
                 badge: "New",
               },
             ]}

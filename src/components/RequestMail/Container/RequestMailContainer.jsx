@@ -17,6 +17,9 @@ import Guideline from "../../Helper/Guideline/Guideline";
 import RequestMailForm from "../RequesMailForm/RequesttMailForm";
 import ActiveOrders from "../ActiveOrder/ActiveOrder";
 
+//Sound
+import { playCodeReceivedSound } from "../../../helper/UtilityHelper";
+
 export default function RequestMailContainer() {
   //Contexts
   const { latestMail, addMail, setReconnected, isReconnected } =
@@ -87,7 +90,7 @@ export default function RequestMailContainer() {
   //Update the UI when sms code receives
   useEffect(() => {
     if (!latestMail) return;
-
+    playCodeReceivedSound();
     setActiveTempMails((prevOrders) =>
       prevOrders.map((order) => {
         if (order.id === latestMail.id) {

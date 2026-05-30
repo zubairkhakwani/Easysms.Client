@@ -11,9 +11,6 @@ import {
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 import { copyAndDownloadTextFile } from "../../../helper/UtilityHelper";
 
-//DropDown
-import { ActionDropdown } from "../../Helper/ProxyHistory/DropwDown/ActionDropDown";
-
 //Toaster
 import { errorToast, successTaost } from "../../../helper/Toaster";
 
@@ -23,8 +20,14 @@ import { modalKeys } from "../../../data/Static";
 //Modals
 import { ProxyAuthChangeModal } from "../../Helper/Modals/Proxy/ProxyAuthChangeModal";
 
+//Components
+import { ProxyOrderGroup } from "../../Helper/Proxy/ProxyOrderGroup";
+
 //Paginations
 import Paginations from "../../Shared/Pagination";
+
+//Css
+import "./ProxyHistory.css";
 
 export default function ProxyHistory() {
   //Data
@@ -33,7 +36,7 @@ export default function ProxyHistory() {
     orderNumber: "",
     login: "",
     password: "",
-    ip: "",
+    authIp: "",
   });
 
   //Loading
@@ -98,43 +101,72 @@ export default function ProxyHistory() {
 
   //Handle Export
   function handleExport(orderNumber) {
-    const proxy = myActiveProxies?.find((x) => x.orderNumber === orderNumber);
+    const order = myActiveProxies?.find((x) => x.orderNumber === orderNumber);
 
-    if (!proxy) {
-      console.warn("Proxy not found:", orderNumber);
+    if (!order) {
+      console.warn("Order not found:", orderNumber);
       return;
     }
-    let text = `
-IP: ${proxy.ip}
-HTTP Port: ${proxy.portHttp}
-SOCKS Port: ${proxy.portSocks}
-Login: ${proxy.login}
-Password: ${proxy.password}
-`.trim();
 
-    copyAndDownloadTextFile(`proxy_${proxy.ip}`, text, "proxy");
+    const proxies = order.proxies ?? [];
+
+    if (proxies.length === 0) {
+      console.warn("No proxies in order:", orderNumber);
+      return;
+    }
+
+    const text = proxies
+      .map(
+        (proxy, idx) =>
+          `# Proxy ${idx + 1}
+IP:       ${proxy.ip}
+HTTP Port:  ${proxy.portHttp}
+SOCKS Port: ${proxy.portSocks}
+Login:    ${proxy.login || "—"}
+Password: ${proxy.password || "—"}
+WhiteList IP: ${proxy.authIp || "—"}
+Country:  ${proxy.country}
+Starts:   ${proxy.startDate}
+Expires:  ${proxy.endDate}`,
+      )
+      .join("\n\n---\n\n");
+
+    const fileContent = `# Order #${orderNumber}
+# Total Proxies: ${proxies.length}
+# Exported: ${new Date().toLocaleString()}
+
+${"=".repeat(40)}
+
+${text}`;
+
+    copyAndDownloadTextFile(
+      `proxies_order_${orderNumber}`,
+      fileContent,
+      "proxy",
+    );
   }
 
   //Populate modal to change proxy auth
   function populateProxyAuthChange(orderNumber) {
-    let proxy = myActiveProxies.find((x) => x.orderNumber == orderNumber);
+    const order = myActiveProxies?.find((x) => x.orderNumber === orderNumber);
+    const proxy = order?.proxies?.[0];
+
     if (proxy) {
       setMyProxyAuth({
         orderNumber: orderNumber,
         login: proxy.login,
         password: proxy.password,
-        ip: proxy.ip,
+        authIp: proxy.authIp,
       });
     } else {
       setMyProxyAuth({
         orderNumber: "",
         login: "",
         password: "",
-        ip: "",
+        authIp: "",
       });
     }
   }
-
   //Open Modal
   function openModal(key) {
     setModals(key);
@@ -148,34 +180,37 @@ Password: ${proxy.password}
   //Handle Change Auth
   async function handleChangeAuth(request) {
     setIsChangingAuth(true);
-    let response = await changeAuth(request);
-    if (response.isSuccess) {
-      successTaost(response.message);
-    } else {
-      errorToast(response.message);
-    }
 
     try {
+      let response = await changeAuth(request);
+      let responseData = response.data;
+      if (response.isSuccess) {
+        setModals(null);
+        successTaost(response.message);
+      } else {
+        errorToast(response.message);
+      }
+      setMyActiveProxies((prev) =>
+        prev.map((order) => {
+          if (order.orderNumber !== responseData.orderNumber) return order;
+
+          return {
+            ...order,
+            proxies: order.proxies.map((proxy) => ({
+              ...proxy,
+              ...(responseData.login && { login: responseData.login }),
+              ...(responseData.password && { password: responseData.password }),
+              ...(responseData.ip && { authIp: responseData.ip }),
+            })),
+          };
+        }),
+      );
     } catch {
       errorToast("Failed to change proxy auth, please try later.");
     } finally {
       setIsChangingAuth(false);
     }
   }
-
-  //   const stats = [
-  //     {
-  //       label: "Total mails",
-  //       val: myActiveProxies?.length ?? 0,
-  //     },
-
-  //     {
-  //       label: "Total Cost",
-  //       val: FormatterHelper.formatCurrency(
-  //         myActiveProxies?.reduce((sum, x) => sum + (x.totalCost || 0), 0) ?? 0,
-  //       ),
-  //     },
-  //   ];
 
   return (
     <>
@@ -189,87 +224,24 @@ Password: ${proxy.password}
           </div>
         </div>
 
-        {/* <div className="um-stats-row">
-        {stats.map((s) => (
-          <div key={s.label} className="um-stat-card">
-            <div className="um-stat-val">{s.val}</div>
-            <div className="um-stat-label">{s.label}</div>
+        <div className="map__wrap">
+          <div className="map__panel-header">
+            <span className="map__panel-title">Active Proxies</span>
+            <span className="map__panel-count">
+              {myActiveProxies.length} order
+              {myActiveProxies.length !== 1 ? "s" : ""}
+            </span>
           </div>
-        ))}
-      </div> */}
-
-        <div className="um-table-wrap">
-          <div className="um-table-header">
-            <span className="um-table-title">Active Proxies</span>
-            {/* <input
-            className="adm-search-input"
-            placeholder="🔍  Search proxies..."
-            onChange={(e) => setFilter("keyword", e.target.value)}
-          /> */}
-          </div>
-
-          <table className="um-table">
-            <thead>
-              <tr>
-                {[
-                  "#",
-                  "IP",
-                  "Port HTTP",
-                  "Port SOCKS",
-                  "User Name",
-                  "Password",
-                  "Country",
-                  "Status",
-                  "Start Date",
-                  "End Date",
-                  "Actions",
-                ].map((h) => (
-                  <th key={h} className="um-th">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            {!isLoading && (
-              <tbody>
-                {myActiveProxies.map((item, index) => {
-                  return (
-                    <tr key={index} className="um-tr">
-                      <td className="um-td">{index + 1}</td>
-                      <td className="um-td">{item.ip}</td>
-                      <td className="um-td">{item.portHttp}</td>
-                      <td className="um-td">{item.portSocks}</td>
-                      <td className="um-td">{item.login}</td>
-                      <td className="um-td">{item.password}</td>
-                      <td className="um-td">{item.country}</td>
-                      <td className="um-td">{item.status}</td>
-                      <td className="um-td">
-                        {FormatterHelper.formatDateToLocal(item.startDate)}
-                      </td>
-                      <td className="um-td">
-                        {FormatterHelper.formatDateToLocal(item.endDate)}
-                      </td>
-                      <td className="um-td">
-                        <ActionDropdown
-                          orderNumber={item.orderNumber}
-                          onAction={handleActions}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            )}
-          </table>
 
           {/* Loading */}
           {isLoading && (
             <div className="ph-state-row">
-              <div className="ph-spinner  ph-spinner--lg ph-spinner-thick ph-spinner--light" />
+              <div className="ph-spinner ph-spinner--lg ph-spinner-thick ph-spinner--light" />
               <span className="ph-state-text">Fetching records…</span>
             </div>
           )}
-          {/* Empty result */}
+
+          {/* Empty */}
           {!isLoading && myActiveProxies.length === 0 && (
             <div className="ph-state-row">
               <div className="ph-state-icon">⊟</div>
@@ -278,7 +250,18 @@ Password: ${proxy.password}
               </span>
             </div>
           )}
-          {!isLoading && (
+
+          {/* Order groups */}
+          {!isLoading &&
+            myActiveProxies.map((order) => (
+              <ProxyOrderGroup
+                key={order.orderNumber}
+                order={order}
+                onAction={handleActions}
+              />
+            ))}
+
+          {!isLoading && myActiveProxies.length > 0 && (
             <Paginations
               page={pageNo}
               rowsPerPage={pageSize}
@@ -289,6 +272,7 @@ Password: ${proxy.password}
           )}
         </div>
       </div>
+
       {modals === modalKeys.proxyAuthChange && (
         <ProxyAuthChangeModal
           onClose={closeModal}

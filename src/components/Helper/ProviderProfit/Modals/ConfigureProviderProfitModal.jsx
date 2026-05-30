@@ -20,6 +20,7 @@ export function ConfigureProviderProfitModal({
     fiveSim: providersProfit[0]?.fiveSim ?? "",
     physicalNumbers: providersProfit[0]?.physicalNumbers ?? "",
     proxySellerProfit: providersProfit[0]?.proxySeller_Profit ?? "",
+    smsBowerTempNumbers: providersProfit[0]?.smsBower_TempNumbers ?? "",
   });
 
   const isValid =
@@ -27,7 +28,8 @@ export function ConfigureProviderProfitModal({
     Number(profits.heroSmsMails) > 0 &&
     Number(profits.fiveSim) > 0 &&
     Number(profits.physicalNumbers) > 0 &&
-    Number(profits.proxySellerProfit) > 0;
+    Number(profits.proxySellerProfit) > 0 &&
+    Number(profits.smsBowerTempNumbers) > 0;
 
   const handleSubmit = () => {
     onConfirm({
@@ -36,6 +38,7 @@ export function ConfigureProviderProfitModal({
       fiveSim: Number(profits.fiveSim),
       physicalNumbers: Number(profits.physicalNumbers),
       proxySellerProfit: Number(profits.proxySellerProfit),
+      smsBowerTempNumbers: Number(profits.smsBowerTempNumbers),
     });
   };
 
@@ -85,6 +88,23 @@ export function ConfigureProviderProfitModal({
             setProfits((prev) => ({
               ...prev,
               heroSmsMails: e.target.value,
+            }))
+          }
+        />
+
+        {/* Sms Bower  Temp Number Profit */}
+
+        <label className="cpp-label">SmsBower TempNumber Profit (%)</label>
+        <input
+          className="cpp-input"
+          type="number"
+          min="0"
+          placeholder="Enter percentage"
+          value={profits.smsBowerTempNumbers}
+          onChange={(e) =>
+            setProfits((prev) => ({
+              ...prev,
+              smsBowerTempNumbers: e.target.value,
             }))
           }
         />
@@ -148,10 +168,11 @@ export function ConfigureProviderProfitModal({
           profits.heroSmsMails ||
           profits.fiveSim ||
           profits.physicalNumbers ||
+          profits.smsBowerTempNumbers ||
           profits.proxySellerProfit) && (
           <div className="cpp-preview-box">
             <div>
-              HeroSms TempNumbers:{" "}
+              HeroSms Temp Numbers:{" "}
               <span>
                 {FormatterHelper.formatNumber(profits.heroSmsTempNumbers) || 0}%
               </span>
@@ -160,6 +181,13 @@ export function ConfigureProviderProfitModal({
               HeroSms Mails:{" "}
               <span>
                 {FormatterHelper.formatNumber(profits.heroSmsMails) || 0}%
+              </span>
+            </div>
+            <div>
+              SmsBower Temp Numbers:{" "}
+              <span>
+                {FormatterHelper.formatNumber(profits.smsBowerTempNumbers) || 0}
+                %
               </span>
             </div>
             <div>

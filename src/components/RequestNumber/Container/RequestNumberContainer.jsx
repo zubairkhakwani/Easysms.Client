@@ -15,6 +15,9 @@ import Guideline from "../../Helper/Guideline/Guideline";
 import { connectSignalR } from "../../../services/SignalR/SignalRService";
 import Header from "../../Helper/Header/Header";
 
+//Sound
+import { playCodeReceivedSound } from "../../../helper/UtilityHelper";
+
 //Css
 import "./RequestNumberContainer.css";
 
@@ -108,6 +111,8 @@ export default function RequestNumberContainer() {
   useEffect(() => {
     if (!latestSms) return;
 
+    playCodeReceivedSound();
+
     setActiveOrders((prevOrders) =>
       prevOrders.map((order) => {
         if (order.id === latestSms.id) {
@@ -164,10 +169,9 @@ export default function RequestNumberContainer() {
             },
           ]}
           notes={[
-            "Numbers are temporary and expire after 15–20 minutes",
+            "Numbers are temporary and expire after 20–25 minutes",
             "Make sure you have sufficient balance before ordering",
-            "Use the number immediately after receiving it",
-            "Some services may take longer to deliver SMS codes",
+            "We also recommend using an IP VPN or Proxy from the country you are trying to purchase from.",
           ]}
         />
 

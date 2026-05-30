@@ -43,7 +43,7 @@ export const getServices = async (providerId) => {
   const response = await httpClient.get(
     `/api/providers/${providerId}/services`,
   );
-  return response.data.data;
+  return response.data;
 };
 
 export const getCountries = async (providerId) => {

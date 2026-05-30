@@ -16,7 +16,7 @@ export function ActionDropdown({ orderNumber, onAction }) {
     },
     {
       key: modalKeys.proxyAuthChange,
-      label: "Change Authorization",
+      label: "Change Auth",
       icon: "",
       color: "cyan",
     },

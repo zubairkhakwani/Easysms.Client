@@ -167,11 +167,18 @@ export default function RequestNumberForm({ onNewNumber }) {
 
     resetOperators_pricing(); //When provider changes we default back to operators_pricing
 
-    let servicesResponse = await getServices(providerId);
-
-    setServices(servicesResponse);
-
-    setServiceLoading(false);
+    try {
+      let response = await getServices(providerId);
+      if (response.isSuccess) {
+        setServices(response.data);
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to fetch services, please try later.");
+    } finally {
+      setServiceLoading(false);
+    }
   };
 
   const handleServiceChange = async (e) => {
@@ -183,22 +190,24 @@ export default function RequestNumberForm({ onNewNumber }) {
 
     resetOperators_pricing(); //When service change we default back to operators_pricings;
 
-    let countriesMetaData = await getCountriesMetaData(
-      selectedProvider,
-      serviceId,
-    );
+    try {
+      let countriesMetaData = await getCountriesMetaData(
+        selectedProvider,
+        serviceId,
+      );
 
-    let countriesData = countriesMetaData.map((item) => ({
-      id: item.countryId,
-      name: item.name,
-      total: item.total,
-    }));
-
-    setCountries(countriesData);
-
-    setCountryLoading(false);
-
-    setCountriesMetadata(countriesMetaData);
+      let countriesData = countriesMetaData.map((item) => ({
+        id: item.countryId,
+        name: item.name,
+        total: item.total,
+      }));
+      setCountries(countriesData);
+      setCountriesMetadata(countriesMetaData);
+    } catch {
+      errorToast("Failed to load countries metadata, please try later.");
+    } finally {
+      setCountryLoading(false);
+    }
   };
 
   const handleCountryChange = async (e) => {
@@ -252,49 +261,52 @@ export default function RequestNumberForm({ onNewNumber }) {
 
     setPurchaseState(true);
     setRequestedNumber(updatedRequestedNumber);
+    try {
+      var response = await requestNumber(
+        selectedProvider,
+        selectedService,
+        selectedCountry,
+        updatedRequestedNumber,
+      );
 
-    var response = await requestNumber(
-      selectedProvider,
-      selectedService,
-      selectedCountry,
-      updatedRequestedNumber,
-    );
+      let responseMessage = response.message;
 
-    let responseMessage = response.message;
+      let responseData = response.data;
+      if (response.isSuccess) {
+        let activationCost = 0;
+        let phoneNumber_Url = "";
 
-    let responseData = response.data;
-    if (response.isSuccess) {
-      let activationCost = 0;
-      let phoneNumber_Url = "";
+        successTaost(responseMessage);
 
-      successTaost(responseMessage);
-
-      responseData.forEach((data) => {
-        if (numberType !== "physical") {
-          //Add only numbers except virtual
-          onNewNumber(data);
-        }
-        if (selectedProvider == 3 && numberType === "physical") {
-          phoneNumber_Url += data.phoneNumber + "\n";
-        }
-        activationCost += data.activationCost;
-      });
-
-      //For physical numbers we display users the popup so the user can copy and use them links
-      if (selectedProvider == 3 && numberType === "physical") {
-        handlePhysicalNumberRequest(responseData.length, phoneNumber_Url, {
-          numbersText: phoneNumber_Url.trim(),
+        responseData.forEach((data) => {
+          if (numberType !== "physical") {
+            //Add only numbers except virtual
+            onNewNumber(data);
+          }
+          if (selectedProvider == 3 && numberType === "physical") {
+            phoneNumber_Url += data.phoneNumber + "\n";
+          }
+          activationCost += data.activationCost;
         });
+
+        //For physical numbers we display users the popup so the user can copy and use them links
+        if (selectedProvider == 3 && numberType === "physical") {
+          handlePhysicalNumberRequest(responseData.length, phoneNumber_Url, {
+            numbersText: phoneNumber_Url.trim(),
+          });
+        }
+
+        //Update the balance
+        balanceDebit(activationCost);
+      } else {
+        errorToast(responseMessage);
       }
-
-      //Update the balance
-      balanceDebit(activationCost);
-    } else {
-      errorToast(responseMessage);
+    } catch {
+      errorToast("Failed to request number, please try later.");
+    } finally {
+      setIsRequestingNumber(false);
+      setPurchaseState(false);
     }
-
-    setIsRequestingNumber(false);
-    setPurchaseState(false);
   };
 
   function handlePhysicalNumberRequest(count, phoneNumber_Url, numbersText) {

@@ -39,7 +39,6 @@ export default function ProviderProfit() {
       if (!response.isSuccess) {
         errorToast(responseMessage);
       }
-      console.log(responseData);
       setProvidersProfit(responseData);
     } catch {
       errorToast("Failed to load provider pricings");
@@ -123,6 +122,7 @@ export default function ProviderProfit() {
                   <th>#</th>
                   <th>HeroSms TempNumber</th>
                   <th>HeroSms Mail</th>
+                  <th>SmsBower TempNumber</th>
                   <th>Physical Numbers</th>
                   <th>Proxy Seller Profit</th>
                   <th>FiveSim</th>
@@ -142,6 +142,9 @@ export default function ProviderProfit() {
                     </td>
                     <td className="ph-col-cost">
                       {FormatterHelper.formatNumber(r.heroSms_Mails)}%
+                    </td>
+                    <td className="ph-col-cost">
+                      {FormatterHelper.formatNumber(r.smsBower_TempNumbers)}%
                     </td>
                     <td className="ph-col-cost">
                       {FormatterHelper.formatCurrency(r.physicalNumbers)}

@@ -61,30 +61,26 @@ export const GetRemainingTime = (order, onExpired) => {
 export const GetCancelTooltip = (provider) => {
   const name = provider?.toLowerCase();
 
-  if (name?.includes("provider a")) {
-    return "You can cancel the number after 3 minutes";
-  } else if (name?.includes("provider b")) {
-    return "You can cancel the number";
-  } else if (name?.includes("premium numbers"))
+  if (
+    name?.includes("provider a") ||
+    name?.includes("provider b") ||
+    name?.includes("premium numbers")
+  ) {
     return "You can cancel the number after 5 minutes";
+  }
 
   return "You can cancel the number after 3 minutes";
 };
 
 export const CanMakeCancelRequest = (order) => {
   let provider = order.provider?.toLowerCase();
-  let isProviderB = provider?.includes("provider b");
-
-  if (isProviderB) {
-    return true;
-  }
 
   let isProviderPremiumNumbers = provider?.includes("premium numbers");
-  let time = 3;
+  let time = 5;
 
-  if (isProviderPremiumNumbers) {
-    time = 5;
-  }
+  // if (isProviderPremiumNumbers) {
+  //   time = 5;
+  // }
 
   if (!order.activationStartTime) return false;
 
@@ -95,3 +91,74 @@ export const CanMakeCancelRequest = (order) => {
 
   return now >= startTime + time * 60 * 1000;
 };
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const VOLUME = 0.08;
+
+// ✅ Code received — double beep + high confirm
+export function playCodeReceivedSound() {
+  const beeps = [
+    { freq: 880, start: 0.0, duration: 0.12 },
+    { freq: 880, start: 0.15, duration: 0.12 },
+    { freq: 1320, start: 0.3, duration: 0.25 },
+  ];
+  playBeeps(beeps);
+}
+
+// 🛒 Number purchased — ascending happy chime
+export function playNumberPurchasedSound() {
+  const beeps = [
+    { freq: 523, start: 0.0, duration: 0.12 }, // C
+    { freq: 659, start: 0.13, duration: 0.12 }, // E
+    { freq: 784, start: 0.26, duration: 0.12 }, // G
+    { freq: 1046, start: 0.39, duration: 0.3 }, // C (high)
+  ];
+  playBeeps(beeps);
+}
+
+// ❌ Number cancelled — descending dull drop
+export function playNumberCancelledSound() {
+  const beeps = [
+    { freq: 440, start: 0.0, duration: 0.15 },
+    { freq: 349, start: 0.18, duration: 0.15 },
+    { freq: 261, start: 0.36, duration: 0.3 },
+  ];
+  playBeeps(beeps);
+}
+
+// ✔️ Number completed — smooth success chime
+export function playNumberCompletedSound() {
+  const beeps = [
+    { freq: 784, start: 0.0, duration: 0.12 }, // G
+    { freq: 1046, start: 0.13, duration: 0.12 }, // C
+    { freq: 1318, start: 0.26, duration: 0.35 }, // E (long hold)
+  ];
+  playBeeps(beeps);
+}
+
+// Shared player
+function playBeeps(beeps) {
+  beeps.forEach(({ freq, start, duration }) => {
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime + start);
+
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime + start);
+    gainNode.gain.linearRampToValueAtTime(
+      VOLUME,
+      audioCtx.currentTime + start + 0.01,
+    );
+    gainNode.gain.linearRampToValueAtTime(
+      0,
+      audioCtx.currentTime + start + duration,
+    );
+
+    oscillator.start(audioCtx.currentTime + start);
+    oscillator.stop(audioCtx.currentTime + start + duration);
+  });
+}

@@ -129,6 +129,13 @@ export default function ActiveOrders({
       ) : (
         <>
           <div className="orders-list">
+            {incomingOrders.length > 0 && (
+              <div className="orders-list-notice">
+                <span className="orders-list-notice-dot"></span>
+                Please wait at least 5 minutes as some services take time to
+                deliver the OTP.
+              </div>
+            )}
             {incomingOrders.map((order) => (
               <div className="order-row" key={order.activationId}>
                 <div className="order-row-top">
@@ -168,7 +175,7 @@ export default function ActiveOrders({
                 </div>
 
                 {/* SMS Block ( hidden until sms arrives) */}
-                {order.hasSms && (
+                {order.hasSms ? (
                   <div className="sms-block">
                     <div className="sms-label">
                       <span className="sms-label-dot"></span>
@@ -189,6 +196,11 @@ export default function ActiveOrders({
                         📋
                       </button>
                     </div>
+                  </div>
+                ) : (
+                  <div className="sms-waiting">
+                    <span className="sms-waiting-dot"></span>
+                    Your OTP will appear here once received
                   </div>
                 )}
 
