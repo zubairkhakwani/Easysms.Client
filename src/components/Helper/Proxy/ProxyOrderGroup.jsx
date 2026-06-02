@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { FormatterHelper } from "../../../helper/FormatterHelper";
-import { ActionDropdown } from "../../Helper/ProxyHistory/DropwDown/ActionDropDown";
+import { ProxyOrderActionDropdown } from "../ProxyHistory/DropwDown/ProxyOrderActionDropDown";
+import { ProxyActionDropdown } from "../ProxyHistory/DropwDown/ProxyActionDropDown";
 
 export function ProxyOrderGroup({ order, onAction }) {
   const [open, setOpen] = useState(true);
   const proxies = order.proxies ?? [];
 
   const first = proxies[0];
-  const expiryDate = first
-    ? FormatterHelper.formatDateToLocal(first.endDate)
-    : "—";
 
   return (
     <div className={`map__order ${open ? "map__order--open" : ""}`}>
@@ -39,11 +37,6 @@ export function ProxyOrderGroup({ order, onAction }) {
                   <span className="map__order-meta-label">Country</span>
                   <span className="map__order-meta-val">{first.country}</span>
                 </span>
-                <span className="map__order-meta-sep" />
-                <span className="map__order-meta-item">
-                  <span className="map__order-meta-label">Expires</span>
-                  <span className="map__order-meta-val">{expiryDate}</span>
-                </span>
               </>
             )}
           </span>
@@ -60,7 +53,10 @@ export function ProxyOrderGroup({ order, onAction }) {
           className="map__order-actions"
           onClick={(e) => e.stopPropagation()}
         >
-          <ActionDropdown orderNumber={order.orderNumber} onAction={onAction} />
+          <ProxyOrderActionDropdown
+            orderNumber={order.orderNumber}
+            onAction={onAction}
+          />
         </div>
       </div>
 
@@ -80,9 +76,8 @@ export function ProxyOrderGroup({ order, onAction }) {
                   "Password",
                   "Country",
                   "Status",
-                  "Start Date",
                   "End Date",
-                  //   "Actions",
+                  "Actions",
                 ].map((h) => (
                   <th key={h} className="map__th">
                     {h}
@@ -116,18 +111,13 @@ export function ProxyOrderGroup({ order, onAction }) {
                       {item.status}
                     </span>
                   </td>
-                  <td className="map__td map__td--date">
-                    {FormatterHelper.formatDateToLocal(item.startDate)}
-                  </td>
+
                   <td className="map__td map__td--date">
                     {FormatterHelper.formatDateToLocal(item.endDate)}
                   </td>
-                  {/* <td className="map__td">
-                    <ActionDropdown
-                      orderNumber={order.orderNumber}
-                      onAction={onAction}
-                    />
-                  </td> */}
+                  <td className="map__td">
+                    <ProxyActionDropdown id={item.id} onAction={onAction} />
+                  </td>
                 </tr>
               ))}
             </tbody>

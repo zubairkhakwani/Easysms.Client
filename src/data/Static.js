@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-//export const Base_Url = "https://api.easyotps.com";
-export const Base_Url = "https://localhost:7265";
+export const Base_Url = "https://api.easyotps.com";
+//export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -252,6 +252,8 @@ export const modalKeys = {
   contactUsReply: "contact-us-reply",
   proxyAuthChange: "proxy-auth-change",
   exportProxy: "export-proxy",
+  replaceIp: "replace-ip",
+  extendProxy: "extend-proxy",
 };
 
 export const NumberStatus = [
@@ -290,3 +292,25 @@ export const AdminConst = {
   email: "zbrkhakwani@gmail.com",
   phoneNumber: "923185924729",
 };
+export const proxyIssueTypes = [
+  {
+    label: "Not Working",
+    value: "1",
+  },
+  {
+    label: "Incorrect Location",
+    value: "2",
+  },
+  {
+    label: "Can't Change Network",
+    value: "3",
+  },
+  {
+    label: "Low Speed",
+    value: "4",
+  },
+  {
+    label: "Custom",
+    value: "5",
+  },
+];

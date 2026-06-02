@@ -1,0 +1,147 @@
+/* ── overlay ── */
+.pim-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* ── modal ── */
+.pim-modal {
+  position: relative;
+  background: var(--modal-bg, #1e1e2e);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 32px 24px 24px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ── close ── */
+.pim-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, #aaa);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+.pim-close:hover {
+  color: var(--text-primary, #fff);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── header ── */
+.pim-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.pim-icon-wrap {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+.pim-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+  margin-bottom: 6px;
+}
+.pim-sub {
+  font-size: 13px;
+  color: var(--text-secondary, #aaa);
+  line-height: 1.5;
+}
+
+/* ── form ── */
+.pim-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pim-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pim-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+.pim-label-optional {
+  font-weight: 400;
+  color: var(--text-secondary, #aaa);
+}
+.required {
+  color: #f87171;
+}
+
+/* ── select ── */
+.pim-select-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.pim-select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary, #fff);
+  border: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+.pim-select option {
+  background: #1e1e2e;
+}
+
+/* ── textarea ── */
+.pim-input-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.pim-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary, #fff);
+  border: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.pim-textarea::placeholder {
+  color: var(--text-secondary, #aaa);
+}
+
+/* ── error states ── */
+.pim-input-error {
+  border-color: #f87171 !important;
+}
+.pim-field-error {
+  font-size: 12px;
+  color: #f87171;
+}
+
+/* ── actions ── */
+.pim-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}

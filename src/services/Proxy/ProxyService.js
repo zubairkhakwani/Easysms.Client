@@ -29,3 +29,21 @@ export const changeAuth = async (httpRequest) => {
   const response = await httpClient.post(`/api/proxy/change-auth`, httpRequest);
   return response.data;
 };
+
+export const replaceIps = async (httpRequest) => {
+  const response = await httpClient.post(`/api/proxy/replace`, httpRequest);
+  return response.data;
+};
+
+export const calculateRenewProxyOrder = async (httpRequest) => {
+  const response = await httpClient.post(
+    `/api/proxy/calculate-renew-order`,
+    httpRequest,
+  );
+  return response.data;
+};
+
+export const renewProxyOrder = async (httpRequest) => {
+  const response = await httpClient.post(`/api/proxy/renew`, httpRequest);
+  return response.data;
+};

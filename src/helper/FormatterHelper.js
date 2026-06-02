@@ -36,20 +36,23 @@ export const FormatterHelper = {
   formatDateToLocal: (date) => {
     if (!date) return "-";
 
-    let localDate = new Date(date);
+    let localDate;
 
-    // Handle dd.MM.yyyy format if normal parsing fails
-    if (isNaN(localDate)) {
-      const parts = date.split(".");
+    // Try dd.MM.yyyy or dd.MM.yyyy HH:mm:ss format first
+    const ddMmYyyy =
+      /^(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?$/;
+    const match = String(date).trim().match(ddMmYyyy);
 
-      if (parts.length === 3) {
-        const [day, month, year] = parts;
-        localDate = new Date(year, month - 1, day);
-      }
+    if (match) {
+      const [, day, month, year, hours = "0", minutes = "0", seconds = "0"] =
+        match;
+      localDate = new Date(+year, +month - 1, +day, +hours, +minutes, +seconds);
+    } else {
+      // Fall back to native parsing (ISO 8601, etc.)
+      localDate = new Date(date);
     }
 
-    // Final safety check
-    if (isNaN(localDate)) return "-";
+    if (isNaN(localDate.getTime())) return "-";
 
     return localDate.toLocaleString("en-US", {
       day: "numeric",

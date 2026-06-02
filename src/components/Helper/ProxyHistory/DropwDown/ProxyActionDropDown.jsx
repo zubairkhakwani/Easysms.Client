@@ -4,19 +4,19 @@ import { useState } from "react";
 //Helper
 import { modalKeys } from "../../../../data/Static";
 
-export function ActionDropdown({ orderNumber, onAction }) {
+export function ProxyActionDropdown({ id, onAction }) {
   const [open, setOpen] = useState(false);
 
   const items = [
     {
-      key: modalKeys.exportProxy,
-      label: "Export",
+      key: modalKeys.replaceIp,
+      label: "Replace Ip",
       icon: "",
       color: "cyan",
     },
     {
-      key: modalKeys.proxyAuthChange,
-      label: "Change Auth",
+      key: modalKeys.extendProxy,
+      label: "Extend Proxy",
       icon: "",
       color: "cyan",
     },
@@ -35,7 +35,7 @@ export function ActionDropdown({ orderNumber, onAction }) {
               className={`um-drop-item ${item.color}`}
               onClick={() => {
                 setOpen(false);
-                onAction(item.key, orderNumber);
+                onAction(item.key, id);
               }}
             >
               <span>{item.icon}</span> {item.label}

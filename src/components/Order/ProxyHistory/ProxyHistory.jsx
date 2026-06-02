@@ -3,8 +3,11 @@ import { useState, useEffect } from "react";
 
 //Services
 import {
+  getProxyMetaData,
   getMyActiveProxies,
   changeAuth,
+  replaceIps,
+  renewProxyOrder,
 } from "../../../services/Proxy/ProxyService";
 
 //Helper
@@ -19,6 +22,8 @@ import { modalKeys } from "../../../data/Static";
 
 //Modals
 import { ProxyAuthChangeModal } from "../../Helper/Modals/Proxy/ProxyAuthChangeModal";
+import { ProxyIpConfirm } from "../../Helper/Modals/Proxy/ProxyIpConfirm";
+import { ProxyExtendModal } from "../../Helper/Modals/Proxy/ProxyExtendModal";
 
 //Components
 import { ProxyOrderGroup } from "../../Helper/Proxy/ProxyOrderGroup";
@@ -28,10 +33,12 @@ import Paginations from "../../Shared/Pagination";
 
 //Css
 import "./ProxyHistory.css";
+import Modal from "@mui/material/Modal";
 
 export default function ProxyHistory() {
   //Data
   const [myActiveProxies, setMyActiveProxies] = useState([]);
+  const [metaData, setMetaData] = useState([]);
   const [myProxyAuth, setMyProxyAuth] = useState({
     orderNumber: "",
     login: "",
@@ -39,9 +46,13 @@ export default function ProxyHistory() {
     authIp: "",
   });
 
+  const [IpIds, setIpIds] = useState([]);
+
   //Loading
   const [isLoading, setIsLoading] = useState(false);
   const [isChangingAuth, setIsChangingAuth] = useState(false);
+  const [isReplacingIps, setIsReplacingIps] = useState(false);
+  const [isExtendingProxy, setIsExtedingProxy] = useState(false);
 
   //Pagination
   const [count, setCount] = useState(0);
@@ -70,6 +81,23 @@ export default function ProxyHistory() {
     }
   };
 
+  //Load Proxy MetaData from the API
+  const fetchProxyMetaData = async () => {
+    let metaData = [];
+
+    try {
+      metaData = await getProxyMetaData();
+    } catch {
+      errorToast("Failed to fetch proxy metadata, please try later.");
+    } finally {
+      setMetaData(metaData);
+    }
+  };
+
+  useEffect(() => {
+    fetchProxyMetaData();
+  }, []);
+
   useEffect(() => {
     fetchMyActiveProxies();
   }, [pageNo, pageSize, filters.keyword]);
@@ -91,12 +119,16 @@ export default function ProxyHistory() {
 
   //Handle Actions
   function handleActions(key, orderNumber) {
+    //when replacing ip or extending proxy here we will recieve id with underscore e.g 123456_2 for order number
     if (key === modalKeys.exportProxy) {
       handleExport(orderNumber);
+      return;
     } else if (key === modalKeys.proxyAuthChange) {
       populateProxyAuthChange(orderNumber);
-      openModal(key);
+    } else if (key === modalKeys.replaceIp || key === modalKeys.extendProxy) {
+      setIpIds([orderNumber]);
     }
+    openModal(key);
   }
 
   //Handle Export
@@ -212,6 +244,54 @@ ${text}`;
     }
   }
 
+  //Handle Replace IP
+  async function handleReplaceIp(request) {
+    const payload = {
+      ...{ ids: IpIds },
+      ...{ ...request },
+    };
+
+    setIsReplacingIps(true);
+
+    try {
+      let response = await replaceIps(payload);
+      if (response.isSuccess) {
+        setModals(null);
+        successTaost(response.message);
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to change ip, please try later.");
+    } finally {
+      setIsReplacingIps(false);
+    }
+  }
+
+  //Handle Exptend Proxy
+  async function handleExtendProxy(request) {
+    const payload = {
+      ...{ ids: IpIds },
+      ...{ ...request },
+    };
+
+    setIsExtedingProxy(true);
+
+    try {
+      let response = await renewProxyOrder(payload);
+      if (response.isSuccess) {
+        setModals(null);
+        successTaost(response.message);
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to extend proxy, please try later.");
+    } finally {
+      setIsExtedingProxy(false);
+    }
+  }
+
   return (
     <>
       <div className="um-page">
@@ -279,6 +359,23 @@ ${text}`;
           onConfirm={handleChangeAuth}
           isChanging={isChangingAuth}
           myProxyAuth={myProxyAuth}
+        />
+      )}
+      {modals === modalKeys.replaceIp && (
+        <ProxyIpConfirm
+          onClose={closeModal}
+          onConfirm={handleReplaceIp}
+          isSubmitting={isReplacingIps}
+        />
+      )}
+
+      {modals === modalKeys.extendProxy && (
+        <ProxyExtendModal
+          metaData={metaData}
+          ids={IpIds}
+          isSubmitting={isExtendingProxy}
+          onClose={closeModal}
+          onConfirm={handleExtendProxy}
         />
       )}
     </>

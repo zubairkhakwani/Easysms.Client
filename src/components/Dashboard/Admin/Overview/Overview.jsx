@@ -59,7 +59,12 @@ export default function Overview() {
     try {
       let response = await getProvidersInfo();
       if (response.isSuccess) {
-        setBalances(response.data.info);
+        const allProviders = [
+          ...(response.data.tempNumberProviders ?? []),
+          ...(response.data.proxyProviders ?? []),
+        ];
+
+        setBalances(allProviders);
       }
     } catch {
       errorToast("Failed to load providers data");

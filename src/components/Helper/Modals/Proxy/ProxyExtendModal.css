@@ -1,0 +1,177 @@
+/* ── overlay ── */
+.pem-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* ── modal ── */
+.pem-modal {
+  position: relative;
+  background: var(--modal-bg, #1e1e2e);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 32px 24px 24px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ── close ── */
+.pem-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, #aaa);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+.pem-close:hover {
+  color: var(--text-primary, #fff);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── header ── */
+.pem-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.pem-icon-wrap {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+.pem-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+  margin-bottom: 6px;
+}
+.pem-sub {
+  font-size: 13px;
+  color: var(--text-secondary, #aaa);
+  line-height: 1.5;
+}
+
+/* ── form ── */
+.pem-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pem-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pem-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+.required {
+  color: #f87171;
+}
+
+/* ── select ── */
+.pem-select-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.pem-select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary, #fff);
+  border: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+.pem-select option {
+  background: #1e1e2e;
+}
+
+/* ── price box ── */
+.pem-price-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.pem-price-label {
+  font-size: 13px;
+  color: var(--text-secondary, #aaa);
+  font-weight: 500;
+}
+
+.pem-price-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+}
+
+.pem-price-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary, #aaa);
+  font-size: 13px;
+}
+
+.pem-price-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: pem-spin 0.7s linear infinite;
+}
+
+@keyframes pem-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pem-price-error {
+  font-size: 12px;
+  color: #f87171;
+}
+
+/* ── error ── */
+.pem-input-error {
+  border-color: #f87171 !important;
+}
+.pem-field-error {
+  font-size: 12px;
+  color: #f87171;
+}
+
+/* ── actions ── */
+.pem-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.pac-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
