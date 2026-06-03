@@ -209,8 +209,8 @@ export default function Overview() {
           <StatCard
             label="Total Profit"
             value={FormatterHelper.formatCurrency(
-              overview?.totalTempMailRevenue
-                ? overview.totalProxiesRevenue - overview?.totalProxiesCost
+              overview?.totalProxiesRevenue
+                ? overview.totalProxiesRevenue - overview.totalProxiesCost
                 : 0,
             )}
             trendUp={true}
