@@ -48,6 +48,7 @@
   width: 100%;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--space-3);
   padding: var(--space-4) var(--space-6);
   background: transparent;
@@ -292,27 +293,12 @@
   border: 1px solid var(--border);
 }
 
-.map__order-hd {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  background: transparent;
-  border: none;
-  transition: background var(--transition-fast);
-}
-.map__order-hd:hover {
-  background: var(--sidebar-item-hover);
-}
-.map__order--open .map__order-hd {
-  background: var(--sidebar-item-active);
-  border-bottom: 1px solid var(--border-accent);
-}
-
 /* The toggle area stretches to fill, acting like the old button */
 .map__order-toggle {
   flex: 1;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--space-3);
   padding: var(--space-4) var(--space-6);
   background: transparent;

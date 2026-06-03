@@ -149,22 +149,29 @@ export default function Navbar() {
                   // onClick={() => setActionOpen(false)}
                 /> */}
                 <div className="nav-dropdown">
+                  {/* History Section */}
+                  <span className="nav-dropdown-section-label">History</span>
                   <Link className="nav-dropdown-item" to="/history/numbers">
-                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    <i className="fa-solid fa-phone-volume"></i>
                     <span onClick={() => handleNavClick()}>Number History</span>
                   </Link>
                   <Link className="nav-dropdown-item" to="/history/accounts">
-                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    <i className="fa-solid fa-user-clock"></i>
                     Account History
                   </Link>
                   <Link className="nav-dropdown-item" to="/history/mails">
-                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    <i className="fa-solid fa-envelope-open-text"></i>
                     Mail History
                   </Link>
                   <Link className="nav-dropdown-item" to="/history/proxy">
-                    <i className="fa-solid fa-clock-rotate-left"></i>
+                    <i className="fa-solid fa-network-wired"></i>
                     My Active Proxies
                   </Link>
+
+                  <div className="nav-dropdown-divider" />
+
+                  {/* Account Section */}
+                  <span className="nav-dropdown-section-label">Account</span>
                   <span
                     className="nav-dropdown-item"
                     onClick={() => handleOpenModal(modalKeys.changePassword)}
@@ -172,7 +179,10 @@ export default function Navbar() {
                     <i className="fa-solid fa-lock"></i>
                     Change Password
                   </span>
+
                   <div className="nav-dropdown-divider" />
+
+                  {/* Danger Zone */}
                   <button
                     className="nav-dropdown-item danger"
                     onClick={handleLogout}
