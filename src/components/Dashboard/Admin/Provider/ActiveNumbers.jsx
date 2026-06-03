@@ -164,6 +164,7 @@ export default function ActiveNumbers() {
                     <th>Name</th>
                     <th>Email</th>
                     <th>Provider</th>
+                    <th>Country</th>
                     <th>Purchased At</th>
                   </tr>
                 </thead>
@@ -184,7 +185,8 @@ export default function ActiveNumbers() {
                       <td className="ph-col-id">{r.name}</td>
                       <td className="ph-col-id">{r.email}</td>
                       <td className="ph-col-id">{r.provider}</td>
-                      <td className="ph-col-sms" title={r.otp}>
+                      <td className="ph-col-id">{r.country}</td>
+                      <td className="ph-col-sms" title={r.purchasedAt}>
                         {FormatterHelper.formatDateToLocal(r.purchasedAt)}
                       </td>
                     </tr>

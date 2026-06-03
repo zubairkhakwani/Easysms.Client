@@ -219,24 +219,26 @@ ${text}`;
       if (response.isSuccess) {
         setModals(null);
         successTaost(response.message);
+        setMyActiveProxies((prev) =>
+          prev.map((order) => {
+            if (order.orderNumber !== responseData?.orderNumber) return order;
+
+            return {
+              ...order,
+              proxies: order.proxies.map((proxy) => ({
+                ...proxy,
+                ...(responseData.login && { login: responseData.login }),
+                ...(responseData.password && {
+                  password: responseData.password,
+                }),
+                ...(responseData.ip && { authIp: responseData.ip }),
+              })),
+            };
+          }),
+        );
       } else {
         errorToast(response.message);
       }
-      setMyActiveProxies((prev) =>
-        prev.map((order) => {
-          if (order.orderNumber !== responseData.orderNumber) return order;
-
-          return {
-            ...order,
-            proxies: order.proxies.map((proxy) => ({
-              ...proxy,
-              ...(responseData.login && { login: responseData.login }),
-              ...(responseData.password && { password: responseData.password }),
-              ...(responseData.ip && { authIp: responseData.ip }),
-            })),
-          };
-        }),
-      );
     } catch {
       errorToast("Failed to change proxy auth, please try later.");
     } finally {

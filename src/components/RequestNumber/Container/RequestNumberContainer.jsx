@@ -90,23 +90,6 @@ export default function RequestNumberContainer() {
     setActiveOrders((prev) => prev.filter((order) => order.id !== id));
   }
 
-  // //Checks the expiry of the temp numbers, if expired remove from the DOM.
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     activeOrders.forEach((order) => {
-  //       const startTime = new Date(order.activationStartTime).getTime();
-
-  //       const expiryTime = startTime + order.activationLimit * 60 * 1000;
-
-  //       if (expiryTime - Date.now() <= 0) {
-  //         handleNumberExpired(order.id);
-  //       }
-  //     });
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, [activeOrders]);
-
   //Update the UI when sms code receives
   useEffect(() => {
     if (!latestSms) return;

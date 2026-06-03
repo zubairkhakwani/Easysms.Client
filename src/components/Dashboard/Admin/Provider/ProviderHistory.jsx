@@ -155,9 +155,6 @@ export default function ProviderHistory() {
 
   return (
     <AdminPage>
-
-  
-
       <div className="ph-filters">
         <div className="ph-filter-field">
           <label className="ph-filter-label">From Date</label>
@@ -266,6 +263,7 @@ export default function ProviderHistory() {
                   <th>User</th>
                   <th>Phone</th>
                   <th>Provider</th>
+                  <th>Country</th>
                   <th>Code</th>
                   <th>Actual Cost</th>
                   <th>User Cost</th>
@@ -287,7 +285,7 @@ export default function ProviderHistory() {
                     </td>
                     <td className="ph-col-phone">{r.phone}</td>
                     <td className="ph-col-phone">{r.provider}</td>
-
+                    <td className="ph-col-phone">{r.country}</td>
                     <td className="ph-col-sms" title={r.verificationCode}>
                       {r.verificationCode ?? "-"}
                     </td>

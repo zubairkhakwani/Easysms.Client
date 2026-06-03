@@ -105,37 +105,6 @@ export function playCodeReceivedSound() {
   playBeeps(beeps);
 }
 
-// 🛒 Number purchased — ascending happy chime
-export function playNumberPurchasedSound() {
-  const beeps = [
-    { freq: 523, start: 0.0, duration: 0.12 }, // C
-    { freq: 659, start: 0.13, duration: 0.12 }, // E
-    { freq: 784, start: 0.26, duration: 0.12 }, // G
-    { freq: 1046, start: 0.39, duration: 0.3 }, // C (high)
-  ];
-  playBeeps(beeps);
-}
-
-// ❌ Number cancelled — descending dull drop
-export function playNumberCancelledSound() {
-  const beeps = [
-    { freq: 440, start: 0.0, duration: 0.15 },
-    { freq: 349, start: 0.18, duration: 0.15 },
-    { freq: 261, start: 0.36, duration: 0.3 },
-  ];
-  playBeeps(beeps);
-}
-
-// ✔️ Number completed — smooth success chime
-export function playNumberCompletedSound() {
-  const beeps = [
-    { freq: 784, start: 0.0, duration: 0.12 }, // G
-    { freq: 1046, start: 0.13, duration: 0.12 }, // C
-    { freq: 1318, start: 0.26, duration: 0.35 }, // E (long hold)
-  ];
-  playBeeps(beeps);
-}
-
 // Shared player
 function playBeeps(beeps) {
   beeps.forEach(({ freq, start, duration }) => {
