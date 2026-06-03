@@ -11,13 +11,13 @@ export function ProxyActionDropdown({ id, onAction }) {
     {
       key: modalKeys.replaceIp,
       label: "Replace Ip",
-      icon: "",
+      icon: <i className="fa-solid fa-arrows-rotate" />,
       color: "cyan",
     },
     {
       key: modalKeys.extendProxy,
       label: "Extend Proxy",
-      icon: "",
+      icon: <i className="fa-solid fa-clock" />,
       color: "cyan",
     },
   ];

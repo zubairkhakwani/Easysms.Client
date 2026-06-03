@@ -283,7 +283,6 @@ export default function Navbar() {
                 label: "Buy Temp Mail",
                 to: "/get-mail",
                 icon: "fa-solid fa-envelope",
-                badge: "New",
               },
               {
                 label: "Buy Proxy",

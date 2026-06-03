@@ -11,13 +11,13 @@ export function ProxyOrderActionDropdown({ orderNumber, onAction }) {
     {
       key: modalKeys.exportProxy,
       label: "Export",
-      icon: "",
+      icon: <i className="fa-solid fa-download" />,
       color: "cyan",
     },
     {
       key: modalKeys.proxyAuthChange,
       label: "Change Auth",
-      icon: "",
+      icon: <i className="fa-solid fa-user-shield" />,
       color: "cyan",
     },
   ];
