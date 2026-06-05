@@ -62,9 +62,9 @@ createRoot(document.getElementById("root")).render(
         <NumberProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<MaintenancePage />}></Route>
+              {/* <Route path="/" element={<MaintenancePage />}></Route> */}
               {/* User Layout */}
-              {/* <Route element={<UserLayout />}>
+              <Route element={<UserLayout />}>
                 <Route path="/" element={<App />} />
 
                 <Route element={<PrivateRoute />}>
@@ -102,10 +102,10 @@ createRoot(document.getElementById("root")).render(
                   element={<ResetPassword />}
                 />
                 <Route path="/thankyou" element={<ThankYouPage />} />
-              </Route> */}
+              </Route>
 
               {/* Admin Layout */}
-              {/* <Route element={<PrivateRoute requireAuthorized={true} />}>
+              <Route element={<PrivateRoute requireAuthorized={true} />}>
                 <Route element={<AdminLayout />}>
                   <Route path="admin-dashboard" element={<AdminDashobard />}>
                     <Route
@@ -235,7 +235,7 @@ createRoot(document.getElementById("root")).render(
                     </Route>
                   </Route>
                 </Route>
-              </Route> */}
+              </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ToastContainer />
