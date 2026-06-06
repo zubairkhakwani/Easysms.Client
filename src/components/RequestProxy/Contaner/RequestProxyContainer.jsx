@@ -8,8 +8,8 @@ export default function RequestProxyContainer() {
   return (
     <>
       <Header
-        title="Get IPv4 Proxy"
-        description="Select your preferred location, duration, and usage type to instantly purchase high-quality IPv4 proxies."
+        title="Get Proxy"
+        description="Select your preferred service, location, duration, and usage type to instantly purchase high-quality proxies."
       />
 
       <div className="grid">
@@ -21,7 +21,7 @@ export default function RequestProxyContainer() {
             {
               title: "Select Proxy Type",
               description:
-                "Currently, we provide IPv4 proxies only. Additional proxy services and types will be added in the future.",
+                "Currently, we provide IPv4 & Isp proxies only. Additional proxy services and types will be added in the future.",
             },
             {
               title: "Choose a Location",

@@ -12,8 +12,11 @@ export const getAll = async (httpRequest) => {
   return response.data;
 };
 
-export const topUpBalance = async (userId, amount) => {
-  const response = await httpClient.post(`/api/users/${userId}`, { amount });
+export const topUpBalance = async (httpRequest) => {
+  const response = await httpClient.post(
+    `/api/users/${httpRequest.userId}`,
+    httpRequest,
+  );
   return response.data;
 };
 

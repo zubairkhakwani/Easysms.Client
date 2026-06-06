@@ -12,6 +12,7 @@ import { successTaost, errorToast } from "../../../../../helper/Toaster";
 
 //Helper
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
+import { BalanceCorrectionReasons } from "../../../../../data/Static";
 
 //Components
 import { AdminPage } from "../../../../Helper/AdminPage/AdminPage";
@@ -57,10 +58,30 @@ function ActionDropdown({ user, onAction }) {
 
 function TopupModal({ user, isTopUp, onClose, onConfirm }) {
   const [amount, setAmount] = useState("");
+  const [correctionReason, setCorrectionReason] = useState("");
+  const [correctionReasonText, setCorrectionReasonText] = useState("");
   const presets = [5, 10, 25, 50];
 
+  const isNegative = Number(amount) < 0;
+
+  const isConfirmDisabled =
+    isTopUp ||
+    !amount ||
+    Number(amount) === 0 ||
+    (isNegative && !correctionReason) ||
+    (isNegative && correctionReasonText.trim().length < 15);
+
+  const handleConfirm = () => {
+    onConfirm(
+      user.id,
+      Number(amount),
+      isNegative ? correctionReason : null,
+      isNegative ? correctionReasonText : null,
+    );
+  };
+
   return (
-    <div className="um-overlay" onClick={onClose}>
+    <div className="um-overlay">
       <div className="um-modal" onClick={(e) => e.stopPropagation()}>
         <button className="um-close-btn" onClick={onClose}>
           ✕
@@ -91,7 +112,9 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
           ))}
         </div>
 
-        <label className="um-label">Custom Amount ($)</label>
+        <label className="um-label">
+          Custom Amount ($) <span className="required">*</span>
+        </label>
         <input
           className="um-input"
           type="number"
@@ -100,7 +123,65 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
           onChange={(e) => setAmount(e.target.value)}
         />
 
-        {amount && Number(amount) > 0 && (
+        {/* Negative entry fields — only shown when amount is negative */}
+        {isNegative && (
+          <>
+            <label className="um-label">
+              Correction Reason <span className="required">*</span>
+            </label>
+            <select
+              className="um-input"
+              value={correctionReason}
+              onChange={(e) => setCorrectionReason(e.target.value)}
+            >
+              <option value="">Select a reason</option>
+              {BalanceCorrectionReasons.map((reason) => (
+                <option key={reason.value} value={reason.value}>
+                  {reason.displayName}
+                </option>
+              ))}
+            </select>
+
+            <label className="um-label">
+              Explain in your own words:{" "}
+              <span className="um-char-hint">
+                {correctionReasonText.trim().length} / 15 min{" "}
+                <span className="required">*</span>
+              </span>
+            </label>
+            <textarea
+              className="um-input"
+              placeholder="Describe why this deduction is being made..."
+              value={correctionReasonText}
+              onChange={(e) => setCorrectionReasonText(e.target.value)}
+              rows={3}
+            />
+            {correctionReasonText.trim().length > 0 &&
+              correctionReasonText.trim().length < 15 && (
+                <span className="error-msg">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <circle
+                      cx="6"
+                      cy="6"
+                      r="5.25"
+                      stroke="#ff5f7e"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M6 3.5v3"
+                      stroke="#ff5f7e"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <circle cx="6" cy="8.25" r="0.6" fill="#ff5f7e" />
+                  </svg>
+                  Please enter at least 15 characters.
+                </span>
+              )}
+          </>
+        )}
+
+        {amount && Number(amount) !== 0 && (
           <p className="um-new-balance">
             New balance will be{" "}
             <span>
@@ -113,16 +194,19 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
           <button className="um-btn ghost" onClick={onClose}>
             Cancel
           </button>
-
           <button
             className={`um-btn ${!isTopUp ? "primary" : ""}`}
-            disabled={isTopUp || !amount || Number(amount) <= 0}
-            onClick={() => onConfirm(user.id, Number(amount))}
+            disabled={isConfirmDisabled}
+            onClick={handleConfirm}
           >
             {isTopUp ? (
               <div className="ph-spinner" />
             ) : (
-              <span>💰 Add ${amount || "0"}</span>
+              <span>
+                {isNegative
+                  ? `⚠️ Deduct $${Math.abs(Number(amount)) || "0"}`
+                  : `💰 Add $${amount || "0"}`}
+              </span>
             )}
           </button>
         </div>
@@ -130,7 +214,6 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
     </div>
   );
 }
-
 export default function UserManagement() {
   const { currentUser, balanceCredit } = useContext(AuthContext);
 
@@ -204,18 +287,34 @@ export default function UserManagement() {
     }
   }
 
-  const handleTopup = async (userId, amount) => {
+  const handleTopup = async (
+    userId,
+    amount,
+    correctionReason,
+    correctionReasonText,
+  ) => {
     setIsTopUp(true);
+    let payLoad = {
+      userId,
+      amount,
+      correctionReason,
+      correctionReasonText,
+    };
+    try {
+      var response = await topUpBalance(payLoad);
 
-    var response = await topUpBalance(userId, amount);
-    setIsTopUp(false);
-    var responseMessage = response.message;
-    if (response.isSuccess) {
-      successTaost(responseMessage);
-      closeModal();
-      handleOnSuccessTopup(userId, amount);
-    } else {
-      errorToast(responseMessage);
+      var responseMessage = response.message;
+      if (response.isSuccess) {
+        successTaost(responseMessage);
+        closeModal();
+        handleOnSuccessTopup(userId, amount);
+      } else {
+        errorToast(responseMessage);
+      }
+    } catch {
+      errorToast("Failed to perform operation.");
+    } finally {
+      setIsTopUp(false);
     }
   };
 

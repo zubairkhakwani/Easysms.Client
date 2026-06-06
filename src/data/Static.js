@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-//export const Base_Url = "https://api.easyotps.com";
-export const Base_Url = "https://localhost:7265";
+export const Base_Url = "https://api.easyotps.com";
+//export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -295,10 +295,12 @@ export const AdminConst = {
 
 export const ProxyTypes = [
   {
+    displayName: "IPV4 (Data Center)",
     label: "Ipv4",
     value: "1",
   },
   {
+    displayName: "ISP (Static)",
     label: "Isp",
     value: "2",
   },
@@ -324,5 +326,43 @@ export const proxyIssueTypes = [
   {
     label: "Custom",
     value: "5",
+  },
+];
+
+export const BalanceCorrectionReasons = [
+  {
+    displayName: "Incorrect Amount Entry",
+    label: "IncorrectAmountEntry",
+    value: 1,
+  },
+  {
+    displayName: "Duplicate Transaction Entry",
+    label: "DuplicateTransactionEntry",
+    value: 2,
+  },
+  {
+    displayName: "Credited To Wrong User",
+    label: "CreditedToWrongUser",
+    value: 3,
+  },
+  {
+    displayName: "Service Not Delivered",
+    label: "ServiceNotDelivered",
+    value: 4,
+  },
+  {
+    displayName: "Overcharge Correction",
+    label: "OverchargeCorrection",
+    value: 5,
+  },
+  {
+    displayName: "Test Entry Reversal",
+    label: "TestEntryReversal",
+    value: 6,
+  },
+  {
+    displayName: "Admin Manual Adjustment",
+    label: "AdminManualAdjustment",
+    value: 7,
   },
 ];

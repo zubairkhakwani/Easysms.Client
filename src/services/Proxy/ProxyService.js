@@ -5,10 +5,11 @@ export const getProxyMetaData = async (proxyType) => {
   return response.data;
 };
 
-export const calculateProxyOrder = async (httpRequest) => {
+export const calculateProxyOrder = async (httpRequest, signal) => {
   const response = await httpClient.post(
     `/api/proxy/calculate-order`,
     httpRequest,
+    { signal },
   );
   return response.data;
 };

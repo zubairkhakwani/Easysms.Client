@@ -1,5 +1,5 @@
 //React
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 
 //Context
 import { AuthContext } from "../../../context/AuthContext";
@@ -106,26 +106,42 @@ export default function RequestProxyForm() {
   };
 
   //Calculate the order price
+  const abortControllerRef = useRef(null);
+
   const fetchOrderPrice = async () => {
+    // Cancel any in-flight request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
     setIsFetchingPrice(true);
     try {
-      let response = await calculateProxyOrder({
-        service: selectedService,
-        location: selectedLocation,
-        period: selectedPeriod,
-        purpose: selectedPurpose,
-        staticIp: getValidStaticIp(),
-        quantity: quantityState.current,
-      });
+      let response = await calculateProxyOrder(
+        {
+          service: selectedService,
+          location: selectedLocation,
+          period: selectedPeriod,
+          purpose: selectedPurpose,
+          staticIp: getValidStaticIp(),
+          quantity: quantityState.current,
+        },
+        signal,
+      );
+
+      if (signal.aborted) return;
+
       if (response.isSuccess) {
         setPriceData(response.data);
       } else {
         errorToast(response.message);
       }
-    } catch {
+    } catch (err) {
+      if (err.name === "CanceledError") return; // axios cancel
       errorToast("Failed to calculate proxy order.");
     } finally {
-      setIsFetchingPrice(false);
+      if (!signal.aborted) setIsFetchingPrice(false);
     }
   };
 
@@ -299,7 +315,7 @@ export default function RequestProxyForm() {
               </option>
               {ProxyTypes.map((s) => (
                 <option key={s.value} value={s.label}>
-                  {s.label}
+                  {s.displayName}
                 </option>
               ))}
             </select>

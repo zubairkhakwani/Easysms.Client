@@ -152,8 +152,6 @@ export default function RequestAccount() {
       errorToast("Unable to load accounts. Please try again.");
     } finally {
       setAccounts(responseData);
-      console.log(responseData);
-
       setIsAccountsLoading(false);
     }
   }
