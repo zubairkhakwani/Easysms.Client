@@ -143,7 +143,6 @@ export default function RequestAccount() {
         platformId: platform,
         categoryId: category,
       });
-      console.log(responseData);
       if (!response.isSuccess) {
         errorToast(response.message);
       } else {
@@ -153,6 +152,8 @@ export default function RequestAccount() {
       errorToast("Unable to load accounts. Please try again.");
     } finally {
       setAccounts(responseData);
+      console.log(responseData);
+
       setIsAccountsLoading(false);
     }
   }

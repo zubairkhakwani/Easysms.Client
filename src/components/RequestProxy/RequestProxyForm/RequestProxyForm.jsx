@@ -12,6 +12,7 @@ import { successTaost, errorToast } from "../../../helper/Toaster";
 
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper.js";
+import { ProxyTypes } from "../../../data/Static";
 
 //Services
 
@@ -49,7 +50,7 @@ export default function RequestProxyForm() {
   const [orderConfirmationData, setOrderConfirmationData] = useState(null);
 
   //Selected Values
-  const [selectedService, setSelectedService] = useState("Ipv4");
+  const [selectedService, setSelectedService] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedPeriod, setSelectedPeriod] = useState(null);
   const [selectedPurpose, setSelectedPurpose] = useState(null);
@@ -92,21 +93,17 @@ export default function RequestProxyForm() {
     isStaticIpValid();
 
   //Load Proxy MetaData from the API
-  const fetchProxyMetaData = async () => {
+  const fetchProxyMetaData = async (proxyType) => {
     let metaData = [];
 
     try {
-      metaData = await getProxyMetaData();
+      metaData = await getProxyMetaData(proxyType);
     } catch {
       errorToast("Failed to fetch proxy metadata, please try later.");
     } finally {
       setMetaData(metaData);
     }
   };
-
-  useEffect(() => {
-    fetchProxyMetaData();
-  }, []);
 
   //Calculate the order price
   const fetchOrderPrice = async () => {
@@ -152,13 +149,26 @@ export default function RequestProxyForm() {
     selectedPurpose,
   ]);
 
+  //Handle Service Change
+  const handleServiceChange = async (e) => {
+    let value = e.target.value;
+    setSelectedService(value);
+    await fetchProxyMetaData(value);
+
+    //Reset as the service change, so we want user to select again
+    setSelectedLocation("");
+    setSelectedPeriod("");
+    setSelectedPurpose("");
+    setPriceData(null);
+  };
+
   //Handle Location Change
   const handleLocationChange = (e) => {
     let value = e.target.value;
     setSelectedLocation(value);
   };
 
-  //Handle Location Change
+  //Handle Period Change
   const handlePeriodChange = (e) => {
     let value = e.target.value;
     setSelectedPeriod(value);
@@ -267,7 +277,7 @@ export default function RequestProxyForm() {
             <i className="fa-solid fa-sim-card number-type-icon"></i>
           </span>
           <div>
-            <div className="card-title">Get Ipv4 Proxy</div>
+            <div className="card-title">Get Proxy</div>
             <div className="card-sub">Configure your options below</div>
           </div>
         </div>
@@ -279,10 +289,19 @@ export default function RequestProxyForm() {
               Service
             </label>
 
-            <select defaultValue="">
+            <select
+              defaultValue=""
+              onChange={handleServiceChange}
+              value={selectedService}
+            >
               <option value="" disabled>
-                Proxy Ipv4
+                Select Service
               </option>
+              {ProxyTypes.map((s) => (
+                <option key={s.value} value={s.label}>
+                  {s.label}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -297,6 +316,7 @@ export default function RequestProxyForm() {
               id="operator"
               className="operator-select"
               defaultValue=""
+              value={selectedLocation}
               disabled={!selectedService}
               onChange={handleLocationChange}
             >
@@ -321,10 +341,12 @@ export default function RequestProxyForm() {
               id="operator"
               defaultValue=""
               onChange={handlePeriodChange}
+              value={selectedPeriod}
+              disabled={!selectedLocation}
               className="operator-select"
             >
               <option value="" disabled>
-                Select Period
+                {!selectedLocation ? "First select location" : "Select Period"}
               </option>
 
               {metaData.data?.periods?.map((s) => (
@@ -345,10 +367,12 @@ export default function RequestProxyForm() {
               defaultValue=""
               id="operator"
               onChange={handlePurposeChange}
+              value={selectedPurpose}
+              disabled={!selectedPeriod}
               className="operator-select"
             >
               <option value="" disabled>
-                Select purpose
+                {!selectedPeriod ? "First select period" : "Select purpose"}
               </option>
 
               {metaData.data?.purposes?.map((s) => (

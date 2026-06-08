@@ -75,6 +75,7 @@ export function ProxyOrderGroup({ order, onAction }) {
                   "Username",
                   "Password",
                   "Country",
+                  "Proxy type",
                   "Status",
                   "End Date",
                   "Actions",
@@ -103,6 +104,9 @@ export function ProxyOrderGroup({ order, onAction }) {
                   </td>
                   <td className="map__td">
                     <span className="map__country-tag">{item.country}</span>
+                  </td>
+                  <td className="map__td">
+                    <span className="map__country-tag">{item.proxyType}</span>
                   </td>
                   <td className="map__td">
                     <span

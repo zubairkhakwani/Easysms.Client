@@ -1,7 +1,7 @@
 import httpClient from "../Base/HttpClient";
 
-export const getProxyMetaData = async () => {
-  const response = await httpClient.get(`/api/proxy/metadata`);
+export const getProxyMetaData = async (proxyType) => {
+  const response = await httpClient.get(`/api/proxy/metadata/${proxyType}`);
   return response.data;
 };
 
