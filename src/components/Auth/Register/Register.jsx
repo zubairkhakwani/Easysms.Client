@@ -1,12 +1,15 @@
 //React
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 //Password Strength Bar
 import StrengthBar from "../../Helper/Auth/StrengthBar";
 
 //Services
-import { registerUser } from "../../../services/Auth/AuthService";
+import { registerUser, loginUser } from "../../../services/Auth/AuthService";
+
+//Context
+import { AuthContext } from "../../../context/AuthContext";
 
 //Toaster
 import { errorToast, successTaost } from "../../../helper/Toaster";
@@ -20,6 +23,7 @@ import Tooltip from "../../../portal/Tooltip";
 
 export default function Register() {
   var navigate = useNavigate();
+  const { login } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -102,7 +106,26 @@ export default function Register() {
       let responseMessage = response.message;
       if (response.isSuccess) {
         successTaost(responseMessage);
-        navigate("/login");
+
+        try {
+          const loginResponse = await loginUser({
+            email: formData.email,
+            password: formData.password,
+          });
+
+          if (loginResponse.isSuccess) {
+            await login(loginResponse.data.token);
+            navigate("/welcome");
+          } else {
+            errorToast(
+              loginResponse.message || "Account created. Please log in.",
+            );
+            navigate("/login");
+          }
+        } catch {
+          errorToast("Account created but auto-login failed. Please log in.");
+          navigate("/login");
+        }
       } else {
         if (response.data && response.data.errorKey) {
           setErrors({ [response.data.errorKey]: responseMessage });

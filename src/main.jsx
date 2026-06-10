@@ -30,6 +30,7 @@ import ResetPassword from "./components/Auth/ResetPassword/ResetPassword.jsx";
 import PrivateRoute from "./components/Route/PrivateRoute.jsx";
 import TopUp from "./components/LandingPage/TopUp/TopUp.jsx";
 import ThankYouPage from "./components/LandingPage/Thankyou/ThankyouPage.jsx";
+import WelcomePage from "./components/Auth/Welcome/WelcomePage.jsx";
 import NotFound from "./components/Shared/NotFound.jsx";
 import MaintenancePage from "./components/Maintenance/Mainetance.jsx";
 
@@ -102,6 +103,7 @@ createRoot(document.getElementById("root")).render(
                   element={<ResetPassword />}
                 />
                 <Route path="/thankyou" element={<ThankYouPage />} />
+                <Route path="/welcome" element={<WelcomePage />} />
               </Route>
 
               {/* Admin Layout */}

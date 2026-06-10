@@ -68,8 +68,8 @@ export default function TopUp() {
                 <strong>Choose Your Amount</strong>
                 <p>
                   Minimum recommended balance is{" "}
-                  <span className="topup-highlight">PKR 3,000</span> for
-                  uninterrupted access.
+                  <span className="topup-highlight">$5</span> for uninterrupted
+                  access.
                 </p>
               </div>
             </li>
@@ -127,12 +127,12 @@ export default function TopUp() {
               <h2>Minimum Balance</h2>
             </div>
             <div className="topup-amount-display">
-              <span className="topup-currency">PKR</span>
-              <span className="topup-amount">3,000</span>
+              <span className="topup-currency">$</span>
+              <span className="topup-amount">5</span>
             </div>
             <p className="topup-min-desc">
-              We recommend keeping at least <strong>PKR 3,000</strong> to ensure
-              you never run out mid-verification.
+              We recommend keeping at least <strong>$5</strong> to ensure you
+              never run out mid-verification.
             </p>
             <div className="topup-warning">
               <i className="fa-solid fa-triangle-exclamation"></i> Low balance =
