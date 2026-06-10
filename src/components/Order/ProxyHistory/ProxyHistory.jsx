@@ -81,22 +81,18 @@ export default function ProxyHistory() {
     }
   };
 
-  //Load Proxy MetaData from the API
-  const fetchProxyMetaData = async () => {
+  //Load Proxy MetaData from the API when the user extend a proxy we need the periods e.g 1 week etc. so the periods    might be different for each proxy type.
+  const fetchProxyMetaData = async (proxyType) => {
     let metaData = [];
 
     try {
-      metaData = await getProxyMetaData();
+      metaData = await getProxyMetaData(proxyType);
     } catch {
       errorToast("Failed to fetch proxy metadata, please try later.");
     } finally {
       setMetaData(metaData);
     }
   };
-
-  useEffect(() => {
-    fetchProxyMetaData();
-  }, []);
 
   useEffect(() => {
     fetchMyActiveProxies();
@@ -125,8 +121,21 @@ export default function ProxyHistory() {
       return;
     } else if (key === modalKeys.proxyAuthChange) {
       populateProxyAuthChange(orderNumber);
-    } else if (key === modalKeys.replaceIp || key === modalKeys.extendProxy) {
+    } else if (key === modalKeys.replaceIp) {
       setIpIds([orderNumber]);
+    } else if (key === modalKeys.extendProxy) {
+      setIpIds([orderNumber]);
+
+      const proxy = myActiveProxies
+        .flatMap((x) => x.proxies)
+        .find((p) => p.id === orderNumber);
+
+      if (!proxy) {
+        errorToast("Cannot load periods, please contact support team.");
+        return;
+      }
+
+      fetchProxyMetaData(proxy.proxyType);
     }
     openModal(key);
   }
@@ -376,6 +385,7 @@ ${text}`;
           metaData={metaData}
           ids={IpIds}
           isSubmitting={isExtendingProxy}
+          isLoadingPeriods={!metaData}
           onClose={closeModal}
           onConfirm={handleExtendProxy}
         />

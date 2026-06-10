@@ -14,6 +14,7 @@ export function ProxyExtendModal({
   onClose,
   onConfirm,
   isSubmitting,
+  isLoadingPeriods,
   metaData,
   ids,
 }) {
@@ -22,7 +23,7 @@ export function ProxyExtendModal({
   const [isFetchingPrice, setIsFetchingPrice] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const periods = metaData?.data.periods ?? [];
+  const periods = metaData?.data?.periods ?? [];
 
   // Fetch price whenever periodId changes
   useEffect(() => {
@@ -94,23 +95,30 @@ export function ProxyExtendModal({
             <div
               className={`pem-select-wrap ${errors.period ? "pem-input-error" : ""}`}
             >
-              <select
-                className="pem-select"
-                value={periodId}
-                onChange={(e) => {
-                  setPeriodId(e.target.value);
-                  setErrors((prev) => ({ ...prev, period: undefined }));
-                }}
-              >
-                <option value="" disabled>
-                  Select a period...
-                </option>
-                {periods.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
+              {isLoadingPeriods ? (
+                <div className="pem-select-loading">
+                  <div className="pem-price-spinner" />
+                  <span>Loading periods...</span>
+                </div>
+              ) : (
+                <select
+                  className="pem-select"
+                  value={periodId}
+                  onChange={(e) => {
+                    setPeriodId(e.target.value);
+                    setErrors((prev) => ({ ...prev, period: undefined }));
+                  }}
+                >
+                  <option value="" disabled>
+                    Select a period...
                   </option>
-                ))}
-              </select>
+                  {periods.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
             {errors.period && (
               <span className="pem-field-error">{errors.period}</span>

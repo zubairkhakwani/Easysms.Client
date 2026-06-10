@@ -175,3 +175,14 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+.pem-select-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--input-bg);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
