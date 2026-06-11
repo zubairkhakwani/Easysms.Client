@@ -34,7 +34,7 @@ function getTypeLabel(type) {
 export default function TransactionHistory() {
   const [summary, setSummary] = useState({
     currentBalance: 0,
-    totalCredited: 0,
+    totalDeposited: 0,
     totalSpent: 0,
     totalRefunded: 0,
     transactionCount: 0,
@@ -58,7 +58,7 @@ export default function TransactionHistory() {
       if (res.isSuccess) {
         setSummary({
           currentBalance: res.data.currentBalance ?? 0,
-          totalCredited: res.data.totalCredited ?? 0,
+          totalDeposited: res.data.totalDeposited ?? 0,
           totalSpent: res.data.totalSpent ?? 0,
           totalRefunded: res.data.totalRefunded ?? 0,
           transactionCount: res.data.transactionCount ?? 0,
@@ -115,11 +115,11 @@ export default function TransactionHistory() {
       val: FormatterHelper.formatCurrency(summary.currentBalance),
     },
     {
-      label: "Total Added",
-      val: FormatterHelper.formatCurrency(summary.totalCredited),
+      label: "Total Deposited",
+      val: FormatterHelper.formatCurrency(summary.totalDeposited),
     },
     {
-      label: "Total Spent",
+      label: "Total Purchases",
       val: FormatterHelper.formatCurrency(summary.totalSpent),
     },
     {
@@ -132,6 +132,30 @@ export default function TransactionHistory() {
     },
   ];
 
+  const breakdownRows = [
+    {
+      label: "Total Deposited",
+      sub: "Funds added to your account",
+      amount: summary.totalDeposited,
+      sign: "+",
+      tone: "credit",
+    },
+    {
+      label: "Total Purchases",
+      sub: "Spent on numbers, mails, accounts & proxies",
+      amount: summary.totalSpent,
+      sign: "−",
+      tone: "debit",
+    },
+    {
+      label: "Total Refunded",
+      sub: "Returned when orders are cancelled",
+      amount: summary.totalRefunded,
+      sign: "+",
+      tone: "credit",
+    },
+  ];
+
   return (
     <div className="th-page">
       <div className="th-header">
@@ -141,6 +165,39 @@ export default function TransactionHistory() {
             Your complete wallet ledger — every credit, purchase, and refund in
             one place
           </div>
+        </div>
+      </div>
+
+      <div className="th-breakdown">
+        <div className="th-breakdown-header">
+          <span className="th-breakdown-title">How your balance is calculated</span>
+          <span className="th-breakdown-note">Lifetime totals</span>
+        </div>
+        <div className="th-breakdown-rows">
+          {breakdownRows.map((row) => (
+            <div key={row.label} className="th-breakdown-row">
+              <div className="th-breakdown-row-label">
+                <span>{row.label}</span>
+                <span className="th-breakdown-row-sub">{row.sub}</span>
+              </div>
+              <span className={`th-breakdown-row-val th-breakdown-${row.tone}`}>
+                {row.sign}
+                {FormatterHelper.formatCurrency(row.amount)}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="th-breakdown-divider" />
+        <div className="th-breakdown-row th-breakdown-result">
+          <div className="th-breakdown-row-label">
+            <span>Current Balance</span>
+            <span className="th-breakdown-row-sub">
+              Deposited − Purchases + Refunds
+            </span>
+          </div>
+          <span className="th-breakdown-row-val th-breakdown-balance">
+            {FormatterHelper.formatCurrency(summary.currentBalance)}
+          </span>
         </div>
       </div>
 
