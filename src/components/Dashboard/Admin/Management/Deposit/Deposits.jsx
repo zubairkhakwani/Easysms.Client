@@ -43,15 +43,17 @@ export default function Deposits() {
   const [count, setCount] = useState(0);
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [keyword, setKeyword] = useState("");
 
-  async function getDepositsData() {
+  async function getDepositsData(overrides = {}) {
     setIsLoading(true);
     try {
       let response = await getDeposts({
         startDate,
         endDate,
-        pageNo,
+        pageNo: overrides.pageNo ?? pageNo,
         pageSize,
+        keyword: overrides.keyword ?? keyword,
       });
       var responseMessage = response.message;
       if (response.isSuccess) {
@@ -73,15 +75,20 @@ export default function Deposits() {
 
   useEffect(() => {
     getDepositsData();
-  }, [pageNo, pageSize]);
+  }, [pageNo, pageSize, keyword]);
 
   const handleApply = async () => {
-    await getDepositsData();
+    if (pageNo !== 0) {
+      setPageNo(0);
+    }
+    await getDepositsData({ pageNo: 0 });
   };
 
   const handleReset = async () => {
     setStartDate(toDS(twoWeeks));
     setEndDate(toDS(today));
+    setKeyword("");
+    setPageNo(0);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -149,6 +156,12 @@ export default function Deposits() {
       <div className="ph-table-panel">
         <div className="ph-table-header">
           <span className="ph-table-title">Deposit History</span>
+          <input
+            className="adm-search-input"
+            placeholder="🔍  Search deposits..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
         </div>
         {/* Table */}
         {!isLoading && (

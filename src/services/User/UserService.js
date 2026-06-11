@@ -21,9 +21,20 @@ export const topUpBalance = async (httpRequest) => {
 };
 
 export const getDeposts = async (httpRequest) => {
-  const response = await httpClient.post(
-    `/api/users/deposits?startDate=${httpRequest.startDate}&endDate=${httpRequest.endDate}&pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
-  );
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const params = new URLSearchParams({
+    startDate: httpRequest.startDate,
+    endDate: httpRequest.endDate,
+    pageNumber: String(httpRequest.pageNo ?? 0),
+    pageSize: String(httpRequest.pageSize ?? 10),
+    timezone,
+  });
+
+  if (httpRequest.keyword) {
+    params.append("keyword", httpRequest.keyword);
+  }
+
+  const response = await httpClient.post(`/api/users/deposits?${params}`);
   return response.data;
 };
 
