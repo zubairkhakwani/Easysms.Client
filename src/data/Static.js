@@ -293,6 +293,15 @@ export const AdminConst = {
   phoneNumber: "923185924729",
 };
 
+export const WalletTransactionTypes = [
+  { label: "All Types", value: "" },
+  { label: "Top Up", value: "1" },
+  { label: "Purchase", value: "2" },
+  { label: "Refund", value: "3" },
+  { label: "Re-order", value: "4" },
+  { label: "Adjustment", value: "5" },
+];
+
 export const ProxyTypes = [
   {
     displayName: "IPV4 (Data Center)",

@@ -14,3 +14,8 @@ export const completeTempMail = async (id) => {
   const response = await httpClient.get(`/api/mails/${id}/complete`);
   return response.data;
 };
+
+export const reorderTempMail = async (id) => {
+  const response = await httpClient.post(`/api/mails/${id}/reorder`);
+  return response.data;
+};

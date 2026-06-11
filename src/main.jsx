@@ -21,6 +21,7 @@ import RequestProxyContainer from "./components/RequestProxy/Contaner/RequestPro
 import NumberHistory from "./components/Order/NumberHistory/NumberHistory.jsx";
 import AccountHistory from "./components/Order/AccountHistory/AccountHistory.jsx";
 import MailHistory from "./components/Order/MailHistory/MailHistory.jsx";
+import TransactionHistory from "./components/Order/TransactionHistory/TransactionHistory.jsx";
 import ProxyHistory from "./components/Order/ProxyHistory/ProxyHistory.jsx";
 import Register from "./components/Auth/Register/Register.jsx";
 import Login from "./components/Auth/Login/Login.jsx";
@@ -86,6 +87,10 @@ createRoot(document.getElementById("root")).render(
                     element={<AccountHistory />}
                   />
                   <Route path="/history/mails" element={<MailHistory />} />
+                  <Route
+                    path="/history/transactions"
+                    element={<TransactionHistory />}
+                  />
                   <Route path="/history/proxy" element={<ProxyHistory />} />
                 </Route>
 

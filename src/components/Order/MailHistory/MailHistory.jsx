@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 
 //Services
 import { getMyMailHistory } from "../../../services/Order/Order";
+import { reorderTempMail } from "../../../services/TempMail/TempMailService";
 
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 import { CopyToClipboard } from "../../../helper/UtilityHelper";
 
 //Toaster
-import { errorToast } from "../../../helper/Toaster";
+import { errorToast, successTaost } from "../../../helper/Toaster";
 
 //Paginations
 import Paginations from "../../Shared/Pagination";
@@ -30,6 +31,8 @@ export default function MailHistory() {
   const [filters, setFilters] = useState({
     keyword: "",
   });
+
+  const [reorderingId, setReorderingId] = useState(null);
 
   const fetchMyMailHistory = async () => {
     setIsLoading(true);
@@ -59,6 +62,23 @@ export default function MailHistory() {
   const handleChangeRowsPerPage = (event) => {
     setPageSize(parseInt(event.target.value, 10));
     setPageNo(0);
+  };
+
+  const handleReorder = async (mailId) => {
+    setReorderingId(mailId);
+    try {
+      const res = await reorderTempMail(mailId);
+      if (res.isSuccess) {
+        successTaost(res.message || "Email re-ordered successfully.");
+        await fetchMyMailHistory();
+      } else {
+        errorToast(res.message || "Failed to re-order mail.");
+      }
+    } catch {
+      errorToast("Failed to re-order mail.");
+    } finally {
+      setReorderingId(null);
+    }
   };
 
   const stats = [
@@ -123,25 +143,42 @@ export default function MailHistory() {
           {!isLoading && (
             <tbody>
               {mailHistory.map((mail, index) => {
-                const mails = mail.data.map((a) => a.mail);
-                const mailText = mails.join(", ");
-                const mailCopyText = mails.join("\n");
+                const mailItems = mail.data ?? [];
 
                 return (
                   <tr key={index} className="um-tr">
                     <td className="um-td">{index + 1}</td>
 
                     <td className="um-td">
-                      {mails.length > 0 ? (
-                        <div className="um-ellipsis-copy">
-                          <span className="um-ellipsis-text">{mailText}</span>
+                      {mailItems.length > 0 ? (
+                        <div className="um-mail-list">
+                          {mailItems.map((item) => (
+                            <div key={item.id} className="um-ellipsis-copy">
+                              <span className="um-ellipsis-text">
+                                {item.mail}
+                              </span>
 
-                          <button
-                            className="um-copy-btn"
-                            onClick={() => CopyToClipboard("Mail", mailCopyText)}
-                          >
-                            📋
-                          </button>
+                              <button
+                                className="um-copy-btn"
+                                onClick={() =>
+                                  CopyToClipboard("Mail", item.mail)
+                                }
+                              >
+                                📋
+                              </button>
+
+                              {item.hasCode && (
+                                <button
+                                  className="um-copy-btn"
+                                  disabled={reorderingId === item.id}
+                                  onClick={() => handleReorder(item.id)}
+                                  title="Re-order this mail"
+                                >
+                                  {reorderingId === item.id ? "…" : "↻"}
+                                </button>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       ) : (
                         "-"

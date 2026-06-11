@@ -163,6 +163,7 @@ export default function Navbar() {
                     <i className="fa-solid fa-envelope-open-text"></i>
                     Mail History
                   </Link>
+
                   <Link className="nav-dropdown-item" to="/history/proxy">
                     <i className="fa-solid fa-network-wired"></i>
                     My Active Proxies
@@ -172,6 +173,13 @@ export default function Navbar() {
 
                   {/* Account Section */}
                   <span className="nav-dropdown-section-label">Account</span>
+                  <Link
+                    className="nav-dropdown-item"
+                    to="/history/transactions"
+                  >
+                    <i className="fa-solid fa-receipt"></i>
+                    Transaction History
+                  </Link>
                   <span
                     className="nav-dropdown-item"
                     onClick={() => handleOpenModal(modalKeys.changePassword)}

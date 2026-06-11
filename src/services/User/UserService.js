@@ -26,3 +26,29 @@ export const getDeposts = async (httpRequest) => {
   );
   return response.data;
 };
+
+// User wallet ledger — maps to GET /api/users/me/history
+export const getMyWalletHistory = async (httpRequest) => {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const params = new URLSearchParams({
+    pageNumber: String(httpRequest.pageNo ?? 0),
+    pageSize: String(httpRequest.pageSize ?? 10),
+    timezone,
+  });
+
+  if (httpRequest.filters?.keyword) {
+    params.append("keyword", httpRequest.filters.keyword);
+  }
+  if (httpRequest.filters?.startDate) {
+    params.append("startDate", httpRequest.filters.startDate);
+  }
+  if (httpRequest.filters?.endDate) {
+    params.append("endDate", httpRequest.filters.endDate);
+  }
+  if (httpRequest.filters?.type) {
+    params.append("type", httpRequest.filters.type);
+  }
+
+  const response = await httpClient.get(`/api/users/me/history?${params}`);
+  return response.data;
+};
