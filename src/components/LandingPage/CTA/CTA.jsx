@@ -8,7 +8,7 @@ export default function CTA() {
         <h2>Ready to Get Started?</h2>
         <p>
           Create your account, top up your wallet, and choose from temp numbers,
-          temp mail, accounts, or proxies.
+          proxies, mail rental, or accounts.
         </p>
         <div className="cta-actions">
           <Link to="/register">

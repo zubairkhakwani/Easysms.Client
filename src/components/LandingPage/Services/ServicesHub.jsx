@@ -38,8 +38,8 @@ export default function ServicesHub() {
             <span className="services-hero-highlight">Your Workflow</span>
           </h1>
           <p className="services-hero-sub">
-            EasyOtps offers temp numbers, temp mail, ready accounts, and
-            proxies from one wallet and one dashboard.
+            EasyOtps offers temp numbers, proxies, mail rental, and ready
+            accounts from one wallet and one dashboard.
           </p>
         </div>
       </section>

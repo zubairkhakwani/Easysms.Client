@@ -18,9 +18,19 @@ export const platformServices = [
     buyPath: "/get-number",
   },
   {
+    slug: "proxies",
+    name: "Proxies",
+    tagline: "Rent high-quality IPv4 & ISP proxies by location, period, and purpose.",
+    icon: "fa-solid fa-shield-halved",
+    accent: "orange",
+    detailPath: "/services/proxies",
+    buyPath: "/get-proxy",
+  },
+  {
     slug: "temp-mail",
-    name: "Temp Mail",
-    tagline: "Get disposable emails and verification codes without using your inbox.",
+    name: "Mail Rental",
+    tagline:
+      "Rent mail inboxes on Gmail, Outlook, and many more for verification.",
     icon: "fa-solid fa-envelope-open-text",
     accent: "blue",
     detailPath: "/services/temp-mail",
@@ -34,15 +44,6 @@ export const platformServices = [
     accent: "green",
     detailPath: "/services/accounts",
     buyPath: "/get-account",
-  },
-  {
-    slug: "proxies",
-    name: "Proxies",
-    tagline: "Rent high-quality IPv4 & ISP proxies by location, period, and purpose.",
-    icon: "fa-solid fa-shield-halved",
-    accent: "orange",
-    detailPath: "/services/proxies",
-    buyPath: "/get-proxy",
   },
 ];
 
@@ -62,13 +63,13 @@ export const platformSteps = [
   {
     number: "03",
     title: "Pick a Service",
-    desc: "Choose temp numbers, temp mail, accounts, or proxies based on what you need.",
+    desc: "Choose temp numbers, proxies, mail rental, or accounts based on what you need.",
     icon: "fa-solid fa-layer-group",
   },
   {
     number: "04",
     title: "Get Results Instantly",
-    desc: "OTP codes, emails, account credentials, or proxy details appear in your dashboard.",
+    desc: "OTP codes, mail, account credentials, or proxy details appear in your dashboard.",
     icon: "fa-solid fa-bolt",
   },
 ];
@@ -77,7 +78,7 @@ export const platformWhyUs = [
   {
     icon: "fa-solid fa-bolt-lightning",
     title: "Instant Delivery",
-    desc: "Numbers, mails, accounts, and proxies are delivered in real time with no manual waiting.",
+    desc: "Numbers, proxies, rented inboxes, and accounts are delivered in real time with no manual waiting.",
   },
   {
     icon: "fa-solid fa-lock",
@@ -87,7 +88,7 @@ export const platformWhyUs = [
   {
     icon: "fa-solid fa-layer-group",
     title: "Unified Platform",
-    desc: "Temp numbers, temp mail, accounts, and proxies in one place with a single wallet.",
+    desc: "Temp numbers, proxies, mail rental, and accounts in one place with a single wallet.",
   },
   {
     icon: "fa-solid fa-globe",
@@ -159,47 +160,41 @@ export const serviceDetails = {
           "Your OTP appears on the active orders panel within minutes.",
       },
     ],
-    notes: [
-      "Numbers are temporary and typically expire after 20 to 25 minutes",
-      "Ensure sufficient wallet balance before ordering",
-      "Using a VPN or proxy from the target country may improve success rates",
-    ],
   },
   "temp-mail": {
     slug: "temp-mail",
-    name: "Temp Mail",
-    badge: "Email Verification",
+    name: "Mail Rental",
+    badge: "Mail Verification",
     icon: "fa-solid fa-envelope-open-text",
     accent: "blue",
     buyPath: "/get-mail",
-    buyLabel: "Get Temp Mail",
-    headline: "Temporary Emails for Verification Codes",
+    buyLabel: "Rent Mail",
+    headline: "Rent a Mail Inbox for Verification",
     subtitle:
-      "Purchase disposable email inboxes by service and domain. Incoming verification codes appear automatically on your order page.",
+      "Access mail inboxes on Gmail, Outlook, and many more. Incoming verification codes are delivered automatically to your order page.",
     intro:
-      "When a platform sends email OTPs instead of SMS, temp mail gives you a private inbox for that verification without cluttering your personal email.",
+      "When a platform requires mail verification instead of SMS, rent an inbox for that workflow. EasyOtps gives you provider-backed mail addresses across multiple services and domains — without using your personal inbox.",
     useCases: [
-      "Email-based sign-ups on social and gaming platforms",
-      "Services that send codes to Gmail, Outlook, or custom domains",
-      "Bulk email verifications with quantity selection",
-      "Re-order the same email for a new OTP when supported",
+      "Mail-based sign-ups across social, gaming, and business platforms",
+      "Verification on Gmail, Outlook, and many more",
+      "Bulk inbox rental with quantity selection for larger workflows",
+      "Re-order the same address for a new OTP when supported",
     ],
     features: [
-      "Wide range of target services and email domains",
+      "Inboxes on Gmail, Outlook, and many more",
+      "Wide range of target services and mail domains",
       "Live code delivery on the order page",
-      "Purchase multiple inboxes in one order",
       "Mail history with reorder support when a code was received",
     ],
     steps: [
       {
         title: "Select a Service",
         description:
-          "Choose the platform you need the email for, such as Facebook, Google, Telegram, or Discord.",
+          "Choose the platform you need the inbox for from our supported service list.",
       },
       {
-        title: "Choose Email Type",
-        description:
-          "Pick your preferred email domain or provider such as Gmail, Outlook, or Mail.com.",
+        title: "Choose Mail Provider",
+        description: "Pick from Gmail, Outlook, and many more.",
       },
       {
         title: "Review Pricing",
@@ -208,23 +203,17 @@ export const serviceDetails = {
       },
       {
         title: "Select Quantity",
-        description: "Choose how many temporary email accounts you need.",
+        description: "Choose how many mail inboxes you need to rent.",
       },
       {
-        title: 'Click "Get Mail"',
-        description: "Instantly generate your temporary email account(s).",
+        title: 'Click "Rent Mail"',
+        description: "Your rented inbox is assigned instantly after confirming.",
       },
       {
-        title: "Receive Verification Emails",
+        title: "Receive Verification Mail",
         description:
-          "Incoming emails and OTP codes appear automatically on your active orders panel.",
+          "Incoming mail and OTP codes appear automatically on your active orders panel.",
       },
-    ],
-    notes: [
-      "Email accounts are temporary and may expire after a limited time",
-      "Ensure sufficient wallet balance before ordering",
-      "Use the email immediately after receiving it",
-      "Some services may take longer to deliver verification emails",
     ],
   },
   accounts: {
@@ -278,12 +267,6 @@ export const serviceDetails = {
         description:
           "Save your purchase receipt for your records after checkout.",
       },
-    ],
-    notes: [
-      "Stock is limited per listing, so order while available",
-      "Ensure sufficient wallet balance before purchasing",
-      "Use credentials responsibly and follow platform terms",
-      "Some listings include cookies or 2FA keys. Check listing details before buying.",
     ],
   },
   proxies: {
@@ -341,12 +324,6 @@ export const serviceDetails = {
         description:
           "Receive your proxy details and access credentials instantly.",
       },
-    ],
-    notes: [
-      "Currently IPv4 and ISP proxy types are available",
-      "Ensure sufficient wallet balance before placing an order",
-      "Proxy availability may vary by location and demand",
-      "Use proxies according to each platform's terms and policies",
     ],
   },
 };

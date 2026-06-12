@@ -25,8 +25,8 @@ const offerings = [
   },
   {
     icon: "fa-solid fa-envelope",
-    title: "Temp Mails",
-    desc: "Get temporary email addresses and receive verification emails and codes directly on your dashboard.",
+    title: "Mail Rental",
+    desc: "Rent mail inboxes on Gmail, Outlook, and many more. Receive verification codes directly on your dashboard.",
     to: "/get-mail",
   },
   {
@@ -61,14 +61,14 @@ const welcomeSteps = [
   {
     number: "03",
     title: "Choose a Service",
-    desc: "Pick what you need: a temp number, temp mail, account, or proxy — then configure your order.",
+    desc: "Pick what you need: a temp number, proxy, mail rental, or account — then configure your order.",
     icon: "fa-solid fa-layer-group",
     scrollTo: "services",
   },
   {
     number: "04",
     title: "Receive & Use Instantly",
-    desc: "Your number, mail, account, or proxy details appear on your dashboard — codes and emails arrive in real time.",
+    desc: "Your number, mail, account, or proxy details appear on your dashboard — codes arrive in real time.",
     icon: "fa-solid fa-bolt",
   },
 ];
@@ -134,9 +134,9 @@ export default function WelcomePage() {
           <h1 className="wp-heading">{heading}</h1>
           <p className="wp-overview">
             EasyOTPs is your all-in-one platform for online verification and
-            digital access — buy temporary phone numbers, temporary emails,
-            ready-made accounts, and proxies from a single wallet. No SIM card,
-            no hassle, pay only for what you use.
+            digital access — buy temporary phone numbers, rent mail on Gmail,
+            Outlook, and many more, ready-made accounts, and proxies from a
+            single wallet. No SIM card, no hassle, pay only for what you use.
           </p>
           <p className="wp-sub">
             You're already signed in. Top up your balance, pick a service below,

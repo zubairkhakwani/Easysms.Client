@@ -11,9 +11,9 @@ export default function Footer() {
             Easy<span style={{ color: "var(--accent)" }}>Otps</span>
           </div>
           <p>
-            Your all-in-one platform for SMS and email verification, ready
-            accounts, and proxy rentals. Instant delivery with pay-as-you-go
-            pricing.
+            Your all-in-one platform for SMS verification, proxy rentals,
+            mail inbox rental, and ready accounts. Instant delivery with
+            pay-as-you-go pricing.
           </p>
         </div>
         <div className="footer-col">

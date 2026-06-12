@@ -187,8 +187,8 @@ export default function RequestMailForm({ onNewTempMail }) {
           <i className="fa-solid fa-sim-card number-type-icon"></i>
         </span>
         <div>
-          <div className="card-title">Get Mail</div>
-          <div className="card-sub">Configure your options below</div>
+          <div className="card-title">Rent Mail</div>
+          <div className="card-sub">Configure your rental options below</div>
         </div>
       </div>
       <div className="fields">
@@ -214,7 +214,7 @@ export default function RequestMailForm({ onNewTempMail }) {
         <div className="field">
           <label>
             <i className="fa-solid fa-envelope number-type-icon"></i>
-            Email Type
+            Mail Type
           </label>
           {isEmailMetaDataLoading ? (
             <div className="select-skeleton"></div>
@@ -229,7 +229,7 @@ export default function RequestMailForm({ onNewTempMail }) {
               <option value="" disabled>
                 {!selectedService
                   ? "First select service"
-                  : "Select email type"}
+                  : "Select mail type"}
               </option>
               {emailTypes.map((s) => (
                 <option key={s} value={s}>
@@ -254,7 +254,7 @@ export default function RequestMailForm({ onNewTempMail }) {
           >
             <option value="">
               {!selectedEmailType
-                ? "First select email type"
+                ? "First select mail type"
                 : "Select pricing"}
             </option>
 
@@ -306,7 +306,7 @@ export default function RequestMailForm({ onNewTempMail }) {
         {isRequestingNumber ? (
           <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
         ) : (
-          "⚡ Get Mail"
+          "⚡ Rent Mail"
         )}
       </button>
     </div>

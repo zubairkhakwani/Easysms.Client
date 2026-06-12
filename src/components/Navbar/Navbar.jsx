@@ -289,21 +289,21 @@ export default function Navbar() {
                 icon: "fa-solid fa-sim-card",
               },
               {
-                label: "Buy Account",
-                to: "/get-account",
-                icon: "fa-solid fa-user-check",
-                badge: "Hot",
-              },
-              {
-                label: "Buy Temp Mail",
-                to: "/get-mail",
-                icon: "fa-solid fa-envelope",
-              },
-              {
                 label: "Buy Proxy",
                 to: "/get-proxy",
                 icon: "fa-solid fa-shield-halved",
                 badge: "New",
+              },
+              {
+                label: "Rent Mail",
+                to: "/get-mail",
+                icon: "fa-solid fa-envelope",
+              },
+              {
+                label: "Buy Account",
+                to: "/get-account",
+                icon: "fa-solid fa-user-check",
+                badge: "Hot",
               },
             ]}
           />

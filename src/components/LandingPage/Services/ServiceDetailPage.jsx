@@ -123,19 +123,6 @@ export default function ServiceDetailPage() {
           </div>
         </div>
 
-        {service.notes.length > 0 && (
-          <div className="service-detail-notes">
-            <div className="service-detail-notes-title">
-              Important Notes
-            </div>
-            <ul>
-              {service.notes.map((note) => (
-                <li key={note}>{note}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         <div className="service-detail-cta card-surface">
           <h2>Ready to get started with {service.name}?</h2>
           <p>Sign up, top up your wallet, and place your first order in minutes.</p>

@@ -109,53 +109,44 @@ export default function RequestMailContainer() {
   return (
     <>
       <Header
-        title="Get a Temporary Mail"
-        description="Choose your options, get a mail, receive your SMS — all
-        in one place."
+        title="Rent a Mail Inbox"
+        description="Choose your service, pick from Gmail, Outlook, and many more, and receive verification codes — all in one place."
       />
 
       <div className="grid">
         <Guideline
           title="Getting Started"
-          subtitle="Follow these steps to receive your temporary email"
+          subtitle="Follow these steps to rent your mail inbox"
           icon="fa-solid fa-envelope-open-text number-type-icon"
           steps={[
             {
               title: "Select a Service",
               description:
-                "Choose the platform or service you need the email for, such as Facebook, Google, Telegram, or Discord.",
+                "Choose the platform you need the inbox for from our supported service list.",
             },
             {
-              title: "Choose Email Type",
-              description:
-                "Select your preferred email domain or provider, such as Gmail, Mail.com, Outlook, and more.",
+              title: "Choose Mail Provider",
+              description: "Pick from Gmail, Outlook, and many more.",
             },
             {
               title: "Review Pricing",
               description:
-                "Check the price, stock availability, and delivery information before placing your order.",
+                "Check price, stock, and delivery information before ordering.",
             },
             {
               title: "Select Quantity",
-              description:
-                "Choose how many temporary email accounts you want to purchase.",
+              description: "Choose how many mail inboxes you need to rent.",
             },
             {
-              title: 'Click "Get Mail"',
+              title: 'Click "Rent Mail"',
               description:
-                "Press the button to instantly generate your temporary email account(s).",
+                "Your rented inbox is assigned instantly after confirming.",
             },
             {
-              title: "Receive Verification Emails",
+              title: "Receive Verification Mail",
               description:
-                "Incoming emails and verification codes will automatically appear on this page.",
+                "Incoming mail and OTP codes appear automatically on this page.",
             },
-          ]}
-          notes={[
-            "Email accounts are temporary and may expire after a limited time",
-            "Make sure you have sufficient balance before ordering",
-            "Use the email immediately after receiving it",
-            "Some services may take longer to deliver verification emails",
           ]}
         />
         <RequestMailForm onNewTempMail={addNewTempMail} />

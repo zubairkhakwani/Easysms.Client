@@ -34,8 +34,8 @@ export default function OurServices() {
         <div>
           <h2 className="section-title">Everything You Need in One Platform</h2>
           <p className="section-sub">
-            From SMS and email verification to ready accounts and proxies.
-            EasyOtps keeps every service in one place.
+            Temp numbers and proxies at the core — plus mail rental and ready
+            accounts. EasyOtps keeps every service in one place.
           </p>
         </div>
         <Link to="/services" className="btn-secondary our-services-link">
