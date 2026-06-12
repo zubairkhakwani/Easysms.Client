@@ -4,30 +4,18 @@ import { useEffect, useState, useContext, useRef } from "react";
 //Context
 import { AuthContext } from "../../../context/AuthContext";
 
-//Providers
-import { Providers } from "../../../data/Static";
-
 //Toaster
 import { successTaost, errorToast } from "../../../helper/Toaster";
 
 //Helper
-import { FormatterHelper } from "../../../helper/FormatterHelper.js";
 import { ProxyTypes } from "../../../data/Static";
 
 //Services
-
 import {
   getProxyMetaData,
   calculateProxyOrder,
   requestProxy,
 } from "../../../services/Proxy/ProxyService.js";
-
-//Components
-import { PhysicalNumberContainer } from "../../Helper/PhysicalNumberContainer";
-import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions";
-
-//Skeltons
-import { PhysicalNumberSkelton } from "../../Skeltons/PhysicalNumberSkelton.jsx";
 
 //Modals
 import { ProxyOrderConfirmationModal } from "../../Helper/Modals/Proxy/ProxyOrderConfirmationModal.jsx";
@@ -35,7 +23,7 @@ import { ProxyOrderConfirmationModal } from "../../Helper/Modals/Proxy/ProxyOrde
 //Css
 import "./RequestProxyForm.css";
 
-export default function RequestProxyForm() {
+export default function RequestProxyForm({ onSummaryChange }) {
   const { balanceDebit } = useContext(AuthContext);
 
   //Data
@@ -169,6 +157,14 @@ export default function RequestProxyForm() {
     selectedPeriod,
     selectedPurpose,
   ]);
+
+  useEffect(() => {
+    onSummaryChange?.({
+      priceData,
+      isFetchingPrice,
+      quantity: quantityState.current,
+    });
+  }, [priceData, isFetchingPrice, quantityState.current, onSummaryChange]);
 
   //Handle Service Change
   const handleServiceChange = async (e) => {
@@ -488,40 +484,6 @@ export default function RequestProxyForm() {
               </div>
             </div>
           </div>
-
-          {/* Price Summary */}
-          {(isFetchingPrice || priceData) && (
-            <div className="field">
-              <div className="price-summary-box">
-                <div className="price-summary-title">
-                  <i className="fa-solid fa-receipt number-type-icon"></i>
-                  Order Summary
-                </div>
-
-                <>
-                  <div className="price-row">
-                    <span className="price-label">Unit Price</span>
-                    <span className="price-value">
-                      ${priceData?.unitPrice?.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="price-row">
-                    <span className="price-label">Quantity</span>
-                    <span className="price-value">
-                      × {quantityState.current}
-                    </span>
-                  </div>
-                  <div className="price-divider" />
-                  <div className="price-row total-row">
-                    <span className="price-label">Total Cost</span>
-                    <span className="price-value total-value">
-                      ${priceData?.totalCost?.toFixed(2)}
-                    </span>
-                  </div>
-                </>
-              </div>
-            </div>
-          )}
         </div>
 
         <button

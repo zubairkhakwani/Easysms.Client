@@ -1,10 +1,22 @@
+//React
+import { useState } from "react";
+
 //Components
 import Header from "../../Helper/Header/Header";
 import Guideline from "../../Helper/Guideline/Guideline";
 import RequestProxyForm from "../RequestProxyForm/RequestProxyForm";
-import ActiveOrders from "../ActiveOrder/ActiveOrder";
+import ProxyOrderSummary from "../ProxyOrderSummary/ProxyOrderSummary";
+
+//Css
+import "../../RequestNumber/Container/RequestNumberContainer.css";
 
 export default function RequestProxyContainer() {
+  const [orderSummary, setOrderSummary] = useState({
+    priceData: null,
+    isFetchingPrice: false,
+    quantity: 1,
+  });
+
   return (
     <>
       <Header
@@ -57,7 +69,12 @@ export default function RequestProxyContainer() {
           //     "Use proxies according to the platform's terms and policies",
           //   ]}
         />
-        <RequestProxyForm />
+        <RequestProxyForm onSummaryChange={setOrderSummary} />
+        <ProxyOrderSummary
+          priceData={orderSummary.priceData}
+          isFetchingPrice={orderSummary.isFetchingPrice}
+          quantity={orderSummary.quantity}
+        />
       </div>
     </>
   );

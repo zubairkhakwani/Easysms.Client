@@ -1,0 +1,97 @@
+.proxy-order-summary .price-summary-box {
+  background: var(--accent-blue-subtle);
+  border: 1px solid var(--accent-blue-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  width: 100%;
+}
+
+.proxy-order-summary .price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-1) 0;
+  font-size: var(--text-sm);
+}
+
+.proxy-order-summary .price-label {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  font-weight: var(--fw-light);
+}
+
+.proxy-order-summary .price-value {
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--accent);
+}
+
+.proxy-order-summary .price-divider {
+  border: none;
+  border-top: 1px dashed var(--accent-blue-border);
+  margin: var(--space-2) 0;
+}
+
+.proxy-order-summary .total-row {
+  margin-top: var(--space-1);
+}
+
+.proxy-order-summary .total-value {
+  font-size: var(--text-xl);
+  font-weight: var(--fw-extrabold);
+  color: var(--accent);
+}
+
+.proxy-summary-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 148px;
+  padding: var(--space-8) var(--space-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  text-align: center;
+}
+
+.proxy-summary-spinner {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.proxy-summary-loading-text {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.proxy-summary-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 148px;
+  padding: var(--space-8) var(--space-4);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+}
+
+.proxy-summary-empty-icon {
+  font-size: 1.75rem;
+  color: var(--text-dim);
+  margin-bottom: var(--space-3);
+  opacity: 0.7;
+}
+
+.proxy-summary-empty-text {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  line-height: 1.5;
+  max-width: 260px;
+}
