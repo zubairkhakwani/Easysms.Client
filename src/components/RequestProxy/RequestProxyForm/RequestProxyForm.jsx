@@ -58,6 +58,7 @@ export default function RequestProxyForm() {
   //Loading
   const [isRequestingProxy, setIsRequestingProxy] = useState(false);
   const [isFetchingPrice, setIsFetchingPrice] = useState(false);
+  const [isMetaDataLoading, setIsMetaDataLoading] = useState(false);
 
   const [quantityState, setQuantityState] = useState({
     current: 1,
@@ -96,12 +97,16 @@ export default function RequestProxyForm() {
   const fetchProxyMetaData = async (proxyType) => {
     let metaData = [];
 
+    setIsMetaDataLoading(true);
+    setMetaData([]);
+
     try {
       metaData = await getProxyMetaData(proxyType);
     } catch {
       errorToast("Failed to fetch proxy metadata, please try later.");
     } finally {
       setMetaData(metaData);
+      setIsMetaDataLoading(false);
     }
   };
 
@@ -328,23 +333,27 @@ export default function RequestProxyForm() {
               Location
             </label>
 
-            <select
-              id="operator"
-              className="operator-select"
-              defaultValue=""
-              value={selectedLocation}
-              disabled={!selectedService}
-              onChange={handleLocationChange}
-            >
-              <option value="" disabled>
-                {!selectedService ? "First select service" : "Select location"}
-              </option>
-              {metaData.data?.countries?.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
+            {isMetaDataLoading ? (
+              <div className="select-skeleton"></div>
+            ) : (
+              <select
+                id="operator"
+                className="operator-select"
+                defaultValue=""
+                value={selectedLocation}
+                disabled={!selectedService}
+                onChange={handleLocationChange}
+              >
+                <option value="" disabled>
+                  {!selectedService ? "First select service" : "Select location"}
                 </option>
-              ))}
-            </select>
+                {metaData.data?.countries?.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           {/* Period */}
