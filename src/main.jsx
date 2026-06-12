@@ -45,6 +45,7 @@ import UserManagement from "./components/Dashboard/Admin/Management/User/UserMan
 import AddPhysicalNumber from "./components/Dashboard/Admin/Management/Provider/AddPhysicalNumber.jsx";
 import ProviderHistory from "./components/Dashboard/Admin/Provider/ProviderHistory.jsx";
 import ActiveNumbers from "./components/Dashboard/Admin/Provider/ActiveNumbers.jsx";
+import AdminActiveProxies from "./components/Dashboard/Admin/Provider/AdminActiveProxies.jsx";
 import Deposits from "./components/Dashboard/Admin/Management/Deposit/Deposits.jsx";
 import ContactUs from "./components/Dashboard/Admin/Management/ContactUs/ContactUs.jsx";
 import Platforms from "./components/Dashboard/Admin/Account/Platform/Platforms.jsx";
@@ -186,6 +187,19 @@ createRoot(document.getElementById("root")).render(
                       <Route
                         path="active-numbers"
                         element={<ActiveNumbers />}
+                      />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewActiveProxies]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="active-proxies"
+                        element={<AdminActiveProxies />}
                       />
                     </Route>
 

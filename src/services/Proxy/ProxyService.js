@@ -26,6 +26,13 @@ export const getMyActiveProxies = async (httpRequest) => {
   return response.data;
 };
 
+export const getAllActiveProxies = async (httpRequest) => {
+  const response = await httpClient.get(
+    `/api/orders/proxy/active?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&keyword=${httpRequest.filters.keyword}`,
+  );
+  return response.data;
+};
+
 export const changeAuth = async (httpRequest) => {
   const response = await httpClient.post(`/api/proxy/change-auth`, httpRequest);
   return response.data;

@@ -35,7 +35,11 @@ import Paginations from "../../Shared/Pagination";
 import "./ProxyHistory.css";
 import Modal from "@mui/material/Modal";
 
-export default function ProxyHistory() {
+export default function ProxyHistory({
+  fetchActiveProxies = getMyActiveProxies,
+  pageTitle = "My Active Proxies",
+  pageSubtitle = "View your purchased active proxies",
+}) {
   //Data
   const [myActiveProxies, setMyActiveProxies] = useState([]);
   const [metaData, setMetaData] = useState([]);
@@ -71,7 +75,7 @@ export default function ProxyHistory() {
   const fetchMyActiveProxies = async () => {
     setIsLoading(true);
     try {
-      const res = await getMyActiveProxies({ pageNo, pageSize, filters });
+      const res = await fetchActiveProxies({ pageNo, pageSize, filters });
       setMyActiveProxies(res.data.items ?? []);
       setCount(res.data.count ?? 0);
     } catch {
@@ -308,20 +312,26 @@ ${text}`;
       <div className="um-page">
         <div className="um-header">
           <div>
-            <div className="um-page-title">My Active Proxies</div>
-            <div className="um-page-sub">
-              View your purchased active proxies
-            </div>
+            <div className="um-page-title">{pageTitle}</div>
+            <div className="um-page-sub">{pageSubtitle}</div>
           </div>
         </div>
 
         <div className="map__wrap">
           <div className="map__panel-header">
-            <span className="map__panel-title">Active Proxies</span>
-            <span className="map__panel-count">
-              {myActiveProxies.length} order
-              {myActiveProxies.length !== 1 ? "s" : ""}
-            </span>
+            <div className="map__panel-header-left">
+              <span className="map__panel-title">Active Proxies</span>
+              <span className="map__panel-count">
+                {myActiveProxies.length} order
+                {myActiveProxies.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+            <input
+              className="adm-search-input map__panel-search"
+              placeholder="Search IP, order, login…"
+              value={filters.keyword}
+              onChange={(e) => setFilter("keyword", e.target.value)}
+            />
           </div>
 
           {/* Loading */}
