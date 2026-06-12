@@ -1,15 +1,13 @@
-//Static data
-import { WhyUs } from "../../../data/Static";
-
-//Css
+import { platformWhyUs } from "../../../data/Landing";
 import "./WhyChooseUs.css";
+
 export default function WhyChooseUs() {
   return (
     <section className="section" id="why-us">
       <div className="section-label">Why Choose Us</div>
       <h2 className="section-title">Built for Speed, Privacy & Reliability</h2>
       <div className="why-grid">
-        {WhyUs.map((item, i) => (
+        {platformWhyUs.map((item, i) => (
           <div key={i} className="why-card">
             <span className="why-icon">
               <i className={item.icon}></i>

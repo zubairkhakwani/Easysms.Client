@@ -1,11 +1,12 @@
 import HeroSection from "./components/LandingPage/HeroSection/HeroSection";
-import PopularServices from "./components/LandingPage/PopularServices/PopularServices";
+import OurServices from "./components/LandingPage/OurServices/OurServices";
 import HowItWorks from "./components/LandingPage/HowItWorks/HowItWorks";
 import WhyChooseUs from "./components/LandingPage/WhyChooseUs/WhyChooseUs";
 import CTA from "./components/LandingPage/CTA/CTA";
 import Footer from "./components/LandingPage/Footer/Footer";
 import ContactUs from "./components/LandingPage/ContactUs/ContactUs";
 
+import "./components/LandingPage/LandingShared.css";
 import "./App.css";
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
     <>
       <div className="parent-container">
         <HeroSection />
-        <PopularServices />
+        <OurServices />
         <HowItWorks />
         <WhyChooseUs />
         <CTA />

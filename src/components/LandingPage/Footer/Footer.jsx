@@ -1,4 +1,5 @@
-//Css
+import { Link } from "react-router-dom";
+import { footerServiceLinks, footerCompanyLinks } from "../../../data/Landing";
 import "./Footer.css";
 
 export default function Footer() {
@@ -7,31 +8,30 @@ export default function Footer() {
       <div className="footer-grid">
         <div className="footer-brand">
           <div className="logo">
-            Easy<span style={{ color: "var(--accent)" }}>sms</span>
+            Easy<span style={{ color: "var(--accent)" }}>Otps</span>
           </div>
           <p>
-            Instant temporary phone numbers for SMS verification. Anonymous,
-            affordable, and always available.
+            Your all-in-one platform for SMS and email verification, ready
+            accounts, and proxy rentals. Instant delivery with pay-as-you-go
+            pricing.
           </p>
         </div>
         <div className="footer-col">
           <h4>Services</h4>
           <ul>
-            {["WhatsApp", "Telegram", "Facebook", "Instagram", "Gmail"].map(
-              (s) => (
-                <li key={s}>
-                  <a href="#">{s}</a>
-                </li>
-              ),
-            )}
+            {footerServiceLinks.map((s) => (
+              <li key={s.label}>
+                <Link to={s.to}>{s.label}</Link>
+              </li>
+            ))}
           </ul>
         </div>
         <div className="footer-col">
           <h4>Company</h4>
           <ul>
-            {["About Us", "Blog", "API Docs", "Pricing", "Contact"].map((s) => (
-              <li key={s}>
-                <a href="#">{s}</a>
+            {footerCompanyLinks.map((s) => (
+              <li key={s.label}>
+                <Link to={s.to}>{s.label}</Link>
               </li>
             ))}
           </ul>
@@ -54,7 +54,7 @@ export default function Footer() {
       </div>
       <div className="footer-bottom">
         <span>
-          © {new Date().getFullYear()} Easyotps . All rights reserved.
+          © {new Date().getFullYear()} EasyOtps. All rights reserved.
         </span>
       </div>
     </footer>

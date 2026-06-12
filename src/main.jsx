@@ -32,6 +32,8 @@ import PrivateRoute from "./components/Route/PrivateRoute.jsx";
 import TopUp from "./components/LandingPage/TopUp/TopUp.jsx";
 import ThankYouPage from "./components/LandingPage/Thankyou/ThankyouPage.jsx";
 import WelcomePage from "./components/Auth/Welcome/WelcomePage.jsx";
+import ServicesHub from "./components/LandingPage/Services/ServicesHub.jsx";
+import ServiceDetailPage from "./components/LandingPage/Services/ServiceDetailPage.jsx";
 import NotFound from "./components/Shared/NotFound.jsx";
 import MaintenancePage from "./components/Maintenance/Mainetance.jsx";
 
@@ -68,6 +70,11 @@ createRoot(document.getElementById("root")).render(
               {/* User Layout */}
               <Route element={<UserLayout />}>
                 <Route path="/" element={<App />} />
+                <Route path="/services" element={<ServicesHub />} />
+                <Route
+                  path="/services/:slug"
+                  element={<ServiceDetailPage />}
+                />
 
                 <Route element={<PrivateRoute />}>
                   <Route

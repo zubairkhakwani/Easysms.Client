@@ -1,7 +1,4 @@
-//Static Data
-import { steps } from "../../../data/Static";
-
-//Css
+import { platformSteps } from "../../../data/Landing";
 import "./HowItWorks.css";
 
 export default function HowItWorks() {
@@ -10,14 +7,13 @@ export default function HowItWorks() {
       <div className="how-inner">
         <div>
           <div className="section-label">How It Works</div>
-          <h2 className="section-title">4 Steps to Anonymous Verification</h2>
+          <h2 className="section-title">Four Steps to Get Started</h2>
           <p className="section-sub">
-            No technical skills needed. Start receiving SMS codes in under 2
-            minutes.
+            One account, one wallet. Use any service on EasyOtps in minutes.
           </p>
         </div>
         <div className="steps-grid">
-          {steps.map((step, i) => (
+          {platformSteps.map((step, i) => (
             <div key={i} className="step-card">
               <div className="step-num">Step {step.number}</div>
               <div className="step-icon-wrap">

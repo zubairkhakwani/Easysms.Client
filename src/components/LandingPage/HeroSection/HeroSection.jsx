@@ -1,37 +1,40 @@
 import { Link } from "react-router-dom";
-import { stats } from "../../../data";
+import { platformStats, heroBadge } from "../../../data/Landing";
 import "./HeroSection.css";
 
 export default function HeroSection() {
   return (
     <section className="hero">
-      <div className="hero-grid" />
-
       <div className="hero-content">
-        <div className="hero-badge">⚡ 500+ Services · 100+ Countries</div>
+        <div className="hero-badge">{heroBadge}</div>
 
         <h1 className="hero-title">
-          Temporary Phone Numbers
+          Your Complete Platform for
           <br />
-          <span className="highlight">Without the Hassle</span>
+          <span className="highlight">Verification and Access</span>
         </h1>
 
+        <p className="hero-punchline">
+          One wallet for the entire platform. Top up once, buy any service, and
+          manage everything from a single dashboard.
+        </p>
+
         <p className="hero-subtitle">
-          Receive SMS verification codes instantly — no SIM card, no
-          subscription. Stay anonymous, stay protected.
+          Instant delivery from a single dashboard built for privacy, speed, and
+          scale.
         </p>
 
         <div className="hero-btns">
-          <Link to="/get-number">
-            <button className="btn-primary">Get a Number Now</button>
+          <Link to="/register">
+            <button className="btn-primary">Create Free Account</button>
           </Link>
-          <a href="#how-it-works" className="btn-secondary">
-            See How It Works
-          </a>
+          <Link to="/services" className="btn-secondary">
+            Explore Services
+          </Link>
         </div>
 
         <div className="hero-stats">
-          {stats.map((stat) => (
+          {platformStats.map((stat) => (
             <div key={stat.label} className="hero-stat">
               <div className="stat-num">
                 {stat.num}

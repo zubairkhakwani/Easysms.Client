@@ -247,12 +247,9 @@ export default function Navbar() {
 
         <ul className="nav-links">
           <li>
-            <span
-              className="hvr-undr"
-              onClick={() => handleNavClick("services")}
-            >
+            <Link to="/services" className="hvr-undr" onClick={handleHamburgerClick}>
               Services
-            </span>
+            </Link>
           </li>
           <li>
             <span

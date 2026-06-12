@@ -10,43 +10,19 @@
   text-align: center;
   padding: 45px;
   background: var(--bg);
+  overflow: hidden;
 }
 
-/* Warm radial glow — replaces the old cyan/purple dark glows */
-.hero-bg {
+.hero::before {
+  content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(
-      ellipse 80% 60% at 50% 0%,
-      rgba(232, 108, 47, 0.07) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 50% 40% at 80% 80%,
-      rgba(245, 158, 63, 0.06) 0%,
-      transparent 60%
-    );
-}
-
-/* Subtle warm grid — replaces white lines on dark */
-.hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(160, 110, 60, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(160, 110, 60, 0.06) 1px, transparent 1px);
-  background-size: 50px 50px;
-  mask-image: radial-gradient(
-    ellipse 80% 80% at 50% 50%,
-    black 30%,
-    transparent 100%
+  background: radial-gradient(
+    ellipse 75% 55% at 50% -15%,
+    rgba(0, 229, 255, 0.07),
+    transparent 65%
   );
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
+  pointer-events: none;
 }
 
 /* Badge */
@@ -83,9 +59,26 @@
   background-clip: text;
 }
 
-/* Subtitle */
-.hero p {
-  font-size: clamp(1rem, 2vw, 1.15rem);
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-punchline {
+  font-size: clamp(1.05rem, 2.2vw, 1.22rem);
+  color: var(--text-heading);
+  max-width: 640px;
+  margin: 0 auto 16px;
+  line-height: var(--lh-relaxed);
+  font-weight: var(--fw-semibold);
+  padding: 16px 22px;
+  border-radius: var(--radius);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+}
+
+.hero-subtitle {
+  font-size: clamp(0.95rem, 1.8vw, 1.05rem);
   color: var(--text-mid);
   max-width: 520px;
   margin: 0 auto 40px;
@@ -135,4 +128,21 @@
   letter-spacing: var(--ls-wider);
   text-transform: uppercase;
   font-weight: var(--fw-medium);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 32px 20px;
+  }
+
+  .hero-punchline {
+    padding: 14px 16px;
+    font-size: 0.98rem;
+  }
+
+  .hero-stats {
+    gap: 28px;
+    margin-top: 40px;
+    padding: 28px 0;
+  }
 }
