@@ -1,6 +1,8 @@
 import "../../RequestNumber/ActiveOrder/ActiveOrders.css";
 import "./ProxyOrderSummary.css";
 
+import { FormatterHelper } from "../../../helper/FormatterHelper";
+
 export default function ProxyOrderSummary({
   priceData,
   isFetchingPrice,
@@ -30,7 +32,7 @@ export default function ProxyOrderSummary({
           <div className="price-row">
             <span className="price-label">Unit Price</span>
             <span className="price-value">
-              ${priceData.unitPrice?.toFixed(2)}
+              {FormatterHelper.formatCurrency(priceData.unitPrice)}
             </span>
           </div>
           <div className="price-row">
@@ -41,7 +43,7 @@ export default function ProxyOrderSummary({
           <div className="price-row total-row">
             <span className="price-label">Total Cost</span>
             <span className="price-value total-value">
-              ${priceData.totalCost?.toFixed(2)}
+              {FormatterHelper.formatCurrency(priceData.totalCost)}
             </span>
           </div>
         </div>
