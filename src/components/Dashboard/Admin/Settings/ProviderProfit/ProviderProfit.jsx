@@ -125,6 +125,7 @@ export default function ProviderProfit() {
                   <th>SmsBower TempNumber</th>
                   <th>Physical Numbers</th>
                   <th>Proxy Seller Profit</th>
+                  <th>Proxy Seller Coupon</th>
                   <th>FiveSim</th>
                   <th>Created By</th>
                   <th>Created At</th>
@@ -151,6 +152,9 @@ export default function ProviderProfit() {
                     </td>
                     <td className="ph-col-cost">
                       {FormatterHelper.formatNumber(r.proxySeller_Profit)}%
+                    </td>
+                    <td className="ph-col-cost">
+                      {r.proxySeller_Coupon ?? "-"}
                     </td>
                     <td className="ph-col-cost">{r.fiveSim}%</td>
 

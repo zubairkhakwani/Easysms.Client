@@ -20,6 +20,7 @@ export function ConfigureProviderProfitModal({
     fiveSim: providersProfit[0]?.fiveSim ?? "",
     physicalNumbers: providersProfit[0]?.physicalNumbers ?? "",
     proxySellerProfit: providersProfit[0]?.proxySeller_Profit ?? "",
+    proxySellerCoupon: providersProfit[0]?.proxySeller_Coupon ?? "",
     smsBowerTempNumbers: providersProfit[0]?.smsBower_TempNumbers ?? "",
   });
 
@@ -29,6 +30,7 @@ export function ConfigureProviderProfitModal({
     Number(profits.fiveSim) > 0 &&
     Number(profits.physicalNumbers) > 0 &&
     Number(profits.proxySellerProfit) > 0 &&
+    profits.proxySellerCoupon.trim().length > 0 &&
     Number(profits.smsBowerTempNumbers) > 0;
 
   const handleSubmit = () => {
@@ -38,6 +40,7 @@ export function ConfigureProviderProfitModal({
       fiveSim: Number(profits.fiveSim),
       physicalNumbers: Number(profits.physicalNumbers),
       proxySellerProfit: Number(profits.proxySellerProfit),
+      proxySellerCoupon: profits.proxySellerCoupon.trim(),
       smsBowerTempNumbers: Number(profits.smsBowerTempNumbers),
     });
   };
@@ -144,6 +147,21 @@ export function ConfigureProviderProfitModal({
           }
         />
 
+        <label className="cpp-label">Proxy Seller Coupon</label>
+
+        <input
+          className="cpp-input"
+          type="text"
+          placeholder="Enter coupon code"
+          value={profits.proxySellerCoupon}
+          onChange={(e) =>
+            setProfits((prev) => ({
+              ...prev,
+              proxySellerCoupon: e.target.value,
+            }))
+          }
+        />
+
         {/* FiveSim */}
 
         <label className="cpp-label">FiveSim Profit (%)</label>
@@ -169,7 +187,8 @@ export function ConfigureProviderProfitModal({
           profits.fiveSim ||
           profits.physicalNumbers ||
           profits.smsBowerTempNumbers ||
-          profits.proxySellerProfit) && (
+          profits.proxySellerProfit ||
+          profits.proxySellerCoupon) && (
           <div className="cpp-preview-box">
             <div>
               HeroSms Temp Numbers:{" "}
@@ -202,6 +221,10 @@ export function ConfigureProviderProfitModal({
               <span>
                 {FormatterHelper.formatNumber(profits.proxySellerProfit) || 0}%
               </span>
+            </div>
+            <div>
+              Proxy Seller Coupon:{" "}
+              <span>{profits.proxySellerCoupon || "-"}</span>
             </div>
             <div>
               FiveSim:{" "}
