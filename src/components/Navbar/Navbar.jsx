@@ -272,6 +272,15 @@ export default function Navbar() {
               Contact us
             </span>
           </li>
+          <li>
+            <Link
+              to="/earn-with-us"
+              className="hvr-undr"
+              onClick={handleHamburgerClick}
+            >
+              Earn With Us
+            </Link>
+          </li>
           {adminActionButtons}
 
           <NavDropdownMenu

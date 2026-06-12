@@ -14,6 +14,8 @@ import { AuthContext } from "../../../context/AuthContext";
 //Toaster
 import { errorToast, successTaost } from "../../../helper/Toaster";
 
+import { getStoredReferral, clearStoredReferral } from "../../../helper/ReferralStorage";
+
 //Modal
 import PhoneNudgeModal from "../../Helper/Auth/Modals/PhoneNudgeModal";
 
@@ -102,9 +104,15 @@ export default function Register() {
   async function handleRegisterUser() {
     setLoading(true);
     try {
-      let response = await registerUser(formData);
+      const referral = getStoredReferral();
+      let response = await registerUser({
+        ...formData,
+        referredByCode: referral.referredByCode,
+        source: referral.source,
+      });
       let responseMessage = response.message;
       if (response.isSuccess) {
+        clearStoredReferral();
         successTaost(responseMessage);
 
         try {
@@ -127,8 +135,10 @@ export default function Register() {
           navigate("/login");
         }
       } else {
-        if (response.data && response.data.errorKey) {
+        if (response.data?.errorKey) {
           setErrors({ [response.data.errorKey]: responseMessage });
+        } else {
+          errorToast(responseMessage);
         }
       }
     } catch {

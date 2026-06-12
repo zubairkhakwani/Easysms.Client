@@ -23,6 +23,7 @@ import AccountHistory from "./components/Order/AccountHistory/AccountHistory.jsx
 import MailHistory from "./components/Order/MailHistory/MailHistory.jsx";
 import TransactionHistory from "./components/Order/TransactionHistory/TransactionHistory.jsx";
 import ProxyHistory from "./components/Order/ProxyHistory/ProxyHistory.jsx";
+import EarnWithUs from "./components/EarnWithUs/EarnWithUs.jsx";
 import Register from "./components/Auth/Register/Register.jsx";
 import Login from "./components/Auth/Login/Login.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPasword.jsx";
@@ -99,6 +100,7 @@ createRoot(document.getElementById("root")).render(
                     element={<TransactionHistory />}
                   />
                   <Route path="/history/proxy" element={<ProxyHistory />} />
+                  <Route path="/earn-with-us" element={<EarnWithUs />} />
                 </Route>
 
                 <Route path="/topup" element={<TopUp />} />
