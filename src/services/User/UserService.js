@@ -20,6 +20,14 @@ export const topUpBalance = async (httpRequest) => {
   return response.data;
 };
 
+export const commissionWithdraw = async (userId, httpRequest) => {
+  const response = await httpClient.post(
+    `/api/users/${userId}/commission-withdraw`,
+    httpRequest,
+  );
+  return response.data;
+};
+
 export const getDeposts = async (httpRequest) => {
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const params = new URLSearchParams({

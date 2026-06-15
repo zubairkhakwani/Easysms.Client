@@ -9,7 +9,7 @@ export default function ReferralCapture() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    saveReferralFromQuery(params, currentUser?.referralCode);
+    saveReferralFromQuery(params);
   }, [location.search, currentUser?.referralCode]);
 
   return null;

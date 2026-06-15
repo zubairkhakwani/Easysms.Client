@@ -254,6 +254,8 @@ export const modalKeys = {
   exportProxy: "export-proxy",
   replaceIp: "replace-ip",
   extendProxy: "extend-proxy",
+  providerProfit: "provider-profit",
+  referralCommission: "referral-commission",
 };
 
 export const NumberStatus = [
@@ -300,6 +302,7 @@ export const WalletTransactionTypes = [
   { label: "Refund", value: "3" },
   { label: "Re-order", value: "4" },
   { label: "Adjustment", value: "5" },
+  { label: "Balance Withdrawal", value: "6" },
 ];
 
 export const ProxyTypes = [
@@ -367,11 +370,16 @@ export const BalanceCorrectionReasons = [
   {
     displayName: "Test Entry Reversal",
     label: "TestEntryReversal",
-    value: 6,
+    value: 5,
   },
   {
     displayName: "Admin Manual Adjustment",
     label: "AdminManualAdjustment",
+    value: 6,
+  },
+  {
+    displayName: "Withdraw",
+    label: "Withdraw",
     value: 7,
   },
 ];

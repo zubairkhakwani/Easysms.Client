@@ -5,7 +5,7 @@ import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../../../../context/AuthContext";
 
 //Services
-import { getAll, topUpBalance } from "../../../../../services/User/UserService";
+import { getAll, topUpBalance, commissionWithdraw } from "../../../../../services/User/UserService";
 
 //Toaster
 import { successTaost, errorToast } from "../../../../../helper/Toaster";
@@ -29,6 +29,7 @@ function ActionDropdown({ user, onAction }) {
 
   const items = [
     { key: "topup", label: "Top Up Balance", icon: "💰", color: "cyan" },
+    { key: "commissionWithdraw", label: "Commission Withdraw", icon: "📤", color: "orange" },
   ];
 
   return (
@@ -136,7 +137,7 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
             >
               <option value="">Select a reason</option>
               {BalanceCorrectionReasons.map((reason) => (
-                <option key={reason.value} value={reason.value}>
+                <option key={reason.label} value={reason.value}>
                   {reason.displayName}
                 </option>
               ))}
@@ -214,6 +215,99 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
     </div>
   );
 }
+
+function CommissionWithdrawModal({ user, isSubmitting, onClose, onConfirm }) {
+  const [amount, setAmount] = useState("");
+  const [reasonText, setReasonText] = useState("");
+
+  const isConfirmDisabled =
+    isSubmitting ||
+    !amount ||
+    Number(amount) <= 0 ||
+    reasonText.trim().length < 15;
+
+  const handleConfirm = () => {
+    onConfirm(user.id, Number(amount), reasonText.trim());
+  };
+
+  return (
+    <div className="um-overlay">
+      <div className="um-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="um-close-btn" onClick={onClose}>
+          ✕
+        </button>
+        <div className="um-modal-title">Commission Withdraw</div>
+        <div className="um-modal-sub">{user.name}</div>
+
+        <div className="um-topup-display">
+          <div>
+            <div className="um-topup-balance-label">Commission Balance</div>
+            <div className="um-topup-balance-val">
+              {FormatterHelper.formatCurrency(user.commissionBalance ?? 0)}
+            </div>
+          </div>
+          <span style={{ fontSize: "1.5rem" }}>📤</span>
+        </div>
+
+        <label className="um-label">
+          Amount ($) <span className="required">*</span>
+        </label>
+        <input
+          className="um-input"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+
+        <label className="um-label">
+          Reason <span className="required">*</span>
+          <span className="um-char-hint">
+            {reasonText.trim().length} / 15 min
+          </span>
+        </label>
+        <textarea
+          className="um-input"
+          placeholder="Describe why this commission withdrawal is being processed..."
+          value={reasonText}
+          onChange={(e) => setReasonText(e.target.value)}
+          rows={3}
+        />
+
+        {amount && Number(amount) > 0 && (
+          <p className="um-new-balance">
+            New commission balance will be{" "}
+            <span>
+              {FormatterHelper.formatCurrency(
+                Math.max(0, (user.commissionBalance ?? 0) - Number(amount)),
+              )}
+            </span>
+          </p>
+        )}
+
+        <div className="um-modal-actions">
+          <button className="um-btn ghost" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            className={`um-btn ${!isSubmitting ? "primary" : ""}`}
+            disabled={isConfirmDisabled}
+            onClick={handleConfirm}
+          >
+            {isSubmitting ? (
+              <div className="ph-spinner" />
+            ) : (
+              <span>📤 Withdraw ${amount || "0"}</span>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function UserManagement() {
   const { currentUser, balanceCredit } = useContext(AuthContext);
 
@@ -229,6 +323,7 @@ export default function UserManagement() {
   //Modal
   const [modal, setModal] = useState(null);
   const [isTopup, setIsTopUp] = useState(false);
+  const [isCommissionWithdrawing, setIsCommissionWithdrawing] = useState(false);
 
   //Loading
   const [isLoading, setIsLoading] = useState(false);
@@ -286,6 +381,40 @@ export default function UserManagement() {
       balanceCredit(amount);
     }
   }
+
+  function handleOnSuccessCommissionWithdraw(userId, withdrawnAmount) {
+    setUsers((prev) =>
+      prev.map((user) =>
+        user.id === userId
+          ? {
+              ...user,
+              commissionBalance: Math.max(
+                0,
+                (user.commissionBalance ?? 0) - withdrawnAmount,
+              ),
+            }
+          : user,
+      ),
+    );
+  }
+
+  const handleCommissionWithdraw = async (userId, amount, reasonText) => {
+    setIsCommissionWithdrawing(true);
+    try {
+      const response = await commissionWithdraw(userId, { amount, reasonText });
+      if (response.isSuccess) {
+        successTaost(response.message);
+        closeModal();
+        handleOnSuccessCommissionWithdraw(userId, amount);
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to process commission withdrawal.");
+    } finally {
+      setIsCommissionWithdrawing(false);
+    }
+  };
 
   const handleTopup = async (
     userId,
@@ -384,7 +513,7 @@ export default function UserManagement() {
           <span className="um-table-title">All Users</span>
           <input
             className="adm-search-input"
-            placeholder="🔍  Search users..."
+            placeholder="🔍  Search by name, email, phone, or source..."
             onChange={(e) => setKeyword(e.target.value)}
           />
         </div>
@@ -395,8 +524,10 @@ export default function UserManagement() {
                 {[
                   "User",
                   "Phone Number",
+                  "Source",
                   "Role",
                   "Balance",
+                  "Commission",
                   "Status",
                   "Joined",
                   "Actions",
@@ -427,6 +558,11 @@ export default function UserManagement() {
                     </span>
                   </td>
                   <td className="um-td">
+                    <span className="um-user-name">
+                      {user.source ? user.source : "-"}
+                    </span>
+                  </td>
+                  <td className="um-td">
                     <span
                       className={`um-role-badge ${user.role.toLowerCase()}`}
                     >
@@ -437,6 +573,11 @@ export default function UserManagement() {
                   <td className="um-td">
                     <span className="um-balance">
                       {FormatterHelper.formatCurrency(user.balance)}
+                    </span>
+                  </td>
+                  <td className="um-td">
+                    <span className="um-balance">
+                      {FormatterHelper.formatCurrency(user.commissionBalance ?? 0)}
                     </span>
                   </td>
                   <td className="um-td">
@@ -490,6 +631,15 @@ export default function UserManagement() {
           isTopUp={isTopup}
           onClose={closeModal}
           onConfirm={handleTopup}
+        />
+      )}
+
+      {modal?.type === "commissionWithdraw" && (
+        <CommissionWithdrawModal
+          user={modal.user}
+          isSubmitting={isCommissionWithdrawing}
+          onClose={closeModal}
+          onConfirm={handleCommissionWithdraw}
         />
       )}
     </AdminPage>

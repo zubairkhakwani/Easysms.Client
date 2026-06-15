@@ -18,6 +18,8 @@ export const Permissions = Object.freeze({
   ViewOverview: "ViewOverview",
   ViewProviderProfit: "ViewProviderProfit",
   UpsertProviderProfit: "UpsertProviderProfit",
+  ViewReferralCommission: "ViewReferralCommission",
+  UpsertReferralCommission: "UpsertReferralCommission",
 });
 
 export const navItems = [
@@ -157,8 +159,15 @@ export const navItems = [
         label: "Provider Profit",
         id: "proivderProfit",
         url: "provider-profit",
-        badge: "New",
         permission: Permissions.ViewProviderProfit,
+      },
+      {
+        icon: "⊞",
+        label: "Referral Commission",
+        id: "referralCommission",
+        url: "referral-commission",
+        badge: "New",
+        permission: Permissions.ViewReferralCommission,
       },
     ],
   },

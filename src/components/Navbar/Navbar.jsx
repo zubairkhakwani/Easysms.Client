@@ -176,9 +176,18 @@ export default function Navbar() {
                   <Link
                     className="nav-dropdown-item"
                     to="/history/transactions"
+                    onClick={() => setActionOpen(false)}
                   >
                     <i className="fa-solid fa-receipt"></i>
                     Transaction History
+                  </Link>
+                  <Link
+                    className="nav-dropdown-item"
+                    to="/referral-stats"
+                    onClick={() => setActionOpen(false)}
+                  >
+                    <i className="fa-solid fa-chart-pie"></i>
+                    Referral Stats
                   </Link>
                   <span
                     className="nav-dropdown-item"
@@ -272,16 +281,17 @@ export default function Navbar() {
               Contact us
             </span>
           </li>
+          {adminActionButtons}
+
           <li>
             <Link
               to="/earn-with-us"
-              className="hvr-undr"
+              className="hvr-undr cyan med-bold"
               onClick={handleHamburgerClick}
             >
               Earn With Us
             </Link>
           </li>
-          {adminActionButtons}
 
           <NavDropdownMenu
             label="Buy"

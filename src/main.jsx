@@ -24,6 +24,7 @@ import MailHistory from "./components/Order/MailHistory/MailHistory.jsx";
 import TransactionHistory from "./components/Order/TransactionHistory/TransactionHistory.jsx";
 import ProxyHistory from "./components/Order/ProxyHistory/ProxyHistory.jsx";
 import EarnWithUs from "./components/EarnWithUs/EarnWithUs.jsx";
+import ReferralStats from "./components/ReferralStats/ReferralStats.jsx";
 import Register from "./components/Auth/Register/Register.jsx";
 import Login from "./components/Auth/Login/Login.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPasword.jsx";
@@ -52,6 +53,7 @@ import Platforms from "./components/Dashboard/Admin/Account/Platform/Platforms.j
 import Categories from "./components/Dashboard/Admin/Account/Category/Categories.jsx";
 import AccountGroups from "./components/Dashboard/Admin/Account/AccountGroup/AccountGroups.jsx";
 import ProviderProfit from "./components/Dashboard/Admin/Settings/ProviderProfit/ProviderProfit.jsx";
+import ReferralCommission from "./components/Dashboard/Admin/Settings/ReferralCommission/ReferralCommission.jsx";
 
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -102,6 +104,7 @@ createRoot(document.getElementById("root")).render(
                   />
                   <Route path="/history/proxy" element={<ProxyHistory />} />
                   <Route path="/earn-with-us" element={<EarnWithUs />} />
+                  <Route path="/referral-stats" element={<ReferralStats />} />
                 </Route>
 
                 <Route path="/topup" element={<TopUp />} />
@@ -261,6 +264,21 @@ createRoot(document.getElementById("root")).render(
                       <Route
                         path="provider-profit"
                         element={<ProviderProfit />}
+                      />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermission={[
+                            Permissions.ViewReferralCommission,
+                          ]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="referral-commission"
+                        element={<ReferralCommission />}
                       />
                     </Route>
                   </Route>

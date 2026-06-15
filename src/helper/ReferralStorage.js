@@ -1,18 +1,11 @@
 const REFERRAL_CODE_KEY = "easysms_referral_code";
 const REFERRAL_SOURCE_KEY = "easysms_referral_source";
 
-export function saveReferralFromQuery(searchParams, currentUserReferralCode) {
+export function saveReferralFromQuery(searchParams) {
   const code = searchParams.get("referral")?.trim();
-  if (!code) return;
-
-  if (
-    currentUserReferralCode &&
-    code.toLowerCase() === currentUserReferralCode.toLowerCase()
-  ) {
-    return;
+  if (code) {
+    localStorage.setItem(REFERRAL_CODE_KEY, code);
   }
-
-  localStorage.setItem(REFERRAL_CODE_KEY, code);
 
   const source = searchParams.get("source")?.trim();
   if (source) {
