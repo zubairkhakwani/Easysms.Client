@@ -255,6 +255,11 @@
   color: #fb923c;
 }
 
+.rs-pill--withdraw-ready > i {
+  background: var(--accent-green-subtle);
+  color: var(--accent-green);
+}
+
 .rs-pill > div {
   display: flex;
   flex-direction: column;
@@ -345,52 +350,6 @@
   flex-wrap: wrap;
 }
 
-/* Withdraw notice */
-.rs-dashboard-notice {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-sm);
-  background: linear-gradient(
-    90deg,
-    rgba(0, 229, 255, 0.07) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  border: 1px solid var(--accent-border);
-}
-
-.rs-dashboard-notice-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background: var(--accent-subtle);
-  color: var(--accent);
-  font-size: 1rem;
-}
-
-.rs-dashboard-notice-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.rs-dashboard-notice-text strong {
-  font-size: var(--text-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-heading);
-}
-
-.rs-dashboard-notice-text span {
-  font-size: var(--text-sm);
-  color: var(--text-dim);
-  line-height: var(--lh-relaxed);
-}
-
 /* Section head */
 .rs-section-head {
   padding-top: var(--space-2);
@@ -409,48 +368,8 @@
   color: var(--text-dim);
 }
 
-.rs-stat--potential {
-  --stat-accent: #c084fc;
-  grid-column: span 2;
-}
-
-.rs-potential-card-title {
-  font-size: var(--text-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.rs-potential-rows {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
-}
-
-.rs-potential-row {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
-}
-
-.rs-potential-row-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.rs-potential-value {
-  margin: 0;
-  padding-left: calc(42px + var(--space-3));
-  font-size: var(--text-xl);
-  font-weight: var(--fw-bold);
-  color: var(--text-heading);
-  letter-spacing: -0.02em;
+.rs-stat-value--range {
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
 }
 
 /* Stat grid */
@@ -602,18 +521,6 @@
 
   .rs-grid {
     grid-template-columns: 1fr;
-  }
-
-  .rs-stat--potential {
-    grid-column: span 1;
-  }
-
-  .rs-potential-rows {
-    grid-template-columns: 1fr;
-  }
-
-  .rs-potential-value {
-    padding-left: 0;
   }
 
   .rs-stat-top {

@@ -6,6 +6,7 @@ import {
 } from "../../../../../services/Referral/ReferralCommissionService";
 
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
+import { getReferralCommissionRateBounds } from "../../../../../helper/ReferralCommissionHelper";
 import { errorToast, successTaost } from "../../../../../helper/Toaster";
 import { modalKeys } from "../../../../../data/Static";
 
@@ -67,6 +68,14 @@ export default function ReferralCommission() {
   }, []);
 
   const row = settings[0];
+  const rateBounds = row
+    ? getReferralCommissionRateBounds(
+        row.tempNumberCommissionPercent,
+        row.mailCommissionPercent,
+        row.accountCommissionPercent,
+        row.proxyCommissionPercent,
+      )
+    : { min: 0, max: 0 };
 
   return (
     <div className="pp-page">
@@ -125,24 +134,8 @@ export default function ReferralCommission() {
                     {FormatterHelper.formatNumber(row.proxyCommissionPercent)}%
                   </td>
                   <td className="ph-col-cost">
-                    {FormatterHelper.formatNumber(
-                      Math.min(
-                        row.tempNumberCommissionPercent,
-                        row.mailCommissionPercent,
-                        row.accountCommissionPercent,
-                        row.proxyCommissionPercent,
-                      ),
-                    )}
-                    % –{" "}
-                    {FormatterHelper.formatNumber(
-                      Math.max(
-                        row.tempNumberCommissionPercent,
-                        row.mailCommissionPercent,
-                        row.accountCommissionPercent,
-                        row.proxyCommissionPercent,
-                      ),
-                    )}
-                    %
+                    {FormatterHelper.formatNumber(rateBounds.min)}% –{" "}
+                    {FormatterHelper.formatNumber(rateBounds.max)}%
                   </td>
                   <td className="ph-col-cost">
                     {FormatterHelper.formatCurrency(row.minWithdrawalAmount)}

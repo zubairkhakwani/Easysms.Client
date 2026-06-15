@@ -25,6 +25,15 @@ const STAT_ITEMS = [
     tooltip: "How many people signed up on EasyOtps using your referral link.",
   },
   {
+    label: "Potential earnings",
+    icon: "fa-solid fa-chart-line",
+    accent: "purple",
+    tooltip:
+      "Conservative to best-case estimate of how much more you could earn if your referrals spend the balance they still have.",
+    getValue: (summary) =>
+      `${FormatterHelper.formatCurrency(summary.minPotentialEarnings ?? 0)} – ${FormatterHelper.formatCurrency(summary.maxPotentialEarnings ?? 0)}`,
+  },
+  {
     key: "totalCommissionEarned",
     label: "Total earned",
     icon: "fa-solid fa-coins",
@@ -43,23 +52,6 @@ const STAT_ITEMS = [
   },
 ];
 
-const POTENTIAL_EARNINGS = {
-  min: {
-    label: "Min potential",
-    icon: "fa-solid fa-chart-line",
-    accent: "purple",
-    tooltip:
-      "A conservative estimate of how much more you could earn if your referrals spend the balance they still have.",
-  },
-  max: {
-    label: "Max potential",
-    icon: "fa-solid fa-arrow-trend-up",
-    accent: "orange",
-    tooltip:
-      "The best-case estimate of how much more you could earn if your referrals spend the balance they still have.",
-  },
-};
-
 function getStatTooltip(item, summary) {
   if (item.key === "minWithdrawalAmount" && summary) {
     return `You need at least ${FormatterHelper.formatCurrency(summary.minWithdrawalAmount)} in your commission balance before you can transfer to your main balance or request a payout.`;
@@ -67,34 +59,18 @@ function getStatTooltip(item, summary) {
   return item.tooltip ?? "";
 }
 
-function PotentialEarningsCard({ summary }) {
-  return (
-    <article className="rs-stat rs-stat--potential">
-      <div className="rs-stat-top">
-        <span className="rs-potential-card-title">Potential earnings</span>
-      </div>
-      <div className="rs-potential-rows">
-        {(
-          [
-            ["minPotentialEarnings", POTENTIAL_EARNINGS.min],
-            ["maxPotentialEarnings", POTENTIAL_EARNINGS.max],
-          ]
-        ).map(([summaryKey, item]) => (
-          <div key={summaryKey} className="rs-potential-row">
-            <div className="rs-potential-row-head">
-              <div className={`rs-stat-icon rs-stat-icon--${item.accent}`}>
-                <i className={item.icon} />
-              </div>
-              <StatLabel label={item.label} tooltip={item.tooltip} />
-            </div>
-            <p className="rs-potential-value">
-              {FormatterHelper.formatCurrency(summary[summaryKey] ?? 0)}
-            </p>
-          </div>
-        ))}
-      </div>
-    </article>
-  );
+function getStatValue(item, summary) {
+  if (item.getValue) {
+    return item.getValue(summary);
+  }
+  return item.format(summary[item.key] ?? 0);
+}
+
+function getWithdrawPillTooltip(summary, withdrawRemaining) {
+  if (summary.canTransferOrWithdraw) {
+    return "You've reached the minimum. Transfer to your main balance or request a WhatsApp payout.";
+  }
+  return `You need ${FormatterHelper.formatCurrency(summary.minWithdrawalAmount)} in commission balance. ${FormatterHelper.formatCurrency(withdrawRemaining)} left to unlock transfer and WhatsApp payout.`;
 }
 
 function StatLabel({ label, tooltip }) {
@@ -278,29 +254,38 @@ export default function ReferralStats() {
                       </div>
                     </div>
                   </div>
-                </div>
-
-                {!summary.canTransferOrWithdraw && (
-                  <div className="rs-dashboard-notice">
-                    <div className="rs-dashboard-notice-icon">
-                      <i className="fa-solid fa-wallet" />
-                    </div>
-                    <div className="rs-dashboard-notice-text">
-                      <strong>
-                        {FormatterHelper.formatCurrency(withdrawRemaining)} away
-                        from transfer / withdrawal
-                      </strong>
-                      <span>
-                        Minimum is{" "}
-                        {FormatterHelper.formatCurrency(
-                          summary.minWithdrawalAmount,
-                        )}
-                        . Keep referring users and earning commission to unlock
-                        transfer and WhatsApp payout.
+                  <div
+                    className={`rs-pill rs-pill--withdraw${summary.canTransferOrWithdraw ? " rs-pill--withdraw-ready" : ""}`}
+                  >
+                    <i
+                      className={
+                        summary.canTransferOrWithdraw
+                          ? "fa-solid fa-circle-check"
+                          : "fa-solid fa-wallet"
+                      }
+                    />
+                    <div>
+                      <span className="rs-pill-val">
+                        {summary.canTransferOrWithdraw
+                          ? "Ready"
+                          : `${FormatterHelper.formatCurrency(withdrawRemaining)} away`}
                       </span>
+                      <div className="rs-pill-label-row">
+                        <span className="rs-pill-lbl">
+                          {summary.canTransferOrWithdraw
+                            ? "Transfer / withdraw"
+                            : "Until transfer / withdrawal"}
+                        </span>
+                        <Tooltip
+                          tooltip={getWithdrawPillTooltip(
+                            summary,
+                            withdrawRemaining,
+                          )}
+                        />
+                      </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             </section>
 
@@ -310,10 +295,9 @@ export default function ReferralStats() {
             </div>
 
             <section className="rs-grid">
-              <PotentialEarningsCard summary={summary} />
               {STAT_ITEMS.map((item) => (
                 <article
-                  key={item.key}
+                  key={item.key ?? item.label}
                   className={`rs-stat rs-stat--${item.accent}`}
                 >
                   <div className="rs-stat-top">
@@ -327,8 +311,10 @@ export default function ReferralStats() {
                       tooltip={getStatTooltip(item, summary)}
                     />
                   </div>
-                  <p className="rs-stat-value">
-                    {item.format(summary[item.key] ?? 0)}
+                  <p
+                    className={`rs-stat-value${item.getValue ? " rs-stat-value--range" : ""}`}
+                  >
+                    {getStatValue(item, summary)}
                   </p>
                 </article>
               ))}
