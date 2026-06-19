@@ -264,6 +264,44 @@
   color: var(--text-disabled);
 }
 
+/* Copyable cell */
+.map__cell-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.map__cell-copy-val--mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-mid);
+}
+
+.map__cell-copy-val--secret {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+}
+
+.map__copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--text-xs);
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+
+.map__copy-btn:hover {
+  opacity: 1;
+}
+
 /* Country tag */
 .map__country-tag {
   display: inline-block;

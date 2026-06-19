@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 import { ProxyOrderActionDropdown } from "../ProxyHistory/DropwDown/ProxyOrderActionDropDown";
 import { ProxyActionDropdown } from "../ProxyHistory/DropwDown/ProxyActionDropDown";
+import { CopyableCell } from "./CopyableCell";
 
 export function ProxyOrderGroup({ order, onAction }) {
   const [open, setOpen] = useState(true);
@@ -90,17 +91,39 @@ export function ProxyOrderGroup({ order, onAction }) {
               {proxies.map((item, idx) => (
                 <tr key={idx} className="map__tr">
                   <td className="map__td map__td--idx">{idx + 1}</td>
-                  <td className="map__td map__td--mono">{item.ip}</td>
                   <td className="map__td map__td--mono">
-                    {item.authIp || <span className="map__empty">—</span>}
+                    <CopyableCell label="IP" value={item.ip} mono />
                   </td>
-                  <td className="map__td map__td--mono">{item.portHttp}</td>
-                  <td className="map__td map__td--mono">{item.portSocks}</td>
+                  <td className="map__td map__td--mono">
+                    <CopyableCell
+                      label="Whitelist IP"
+                      value={item.authIp}
+                      mono
+                    />
+                  </td>
+                  <td className="map__td map__td--mono">
+                    <CopyableCell
+                      label="HTTP Port"
+                      value={item.portHttp}
+                      mono
+                    />
+                  </td>
+                  <td className="map__td map__td--mono">
+                    <CopyableCell
+                      label="SOCKS Port"
+                      value={item.portSocks}
+                      mono
+                    />
+                  </td>
                   <td className="map__td">
-                    {item.login || <span className="map__empty">—</span>}
+                    <CopyableCell label="Username" value={item.login} />
                   </td>
                   <td className="map__td map__td--secret">
-                    {item.password || <span className="map__empty">—</span>}
+                    <CopyableCell
+                      label="Password"
+                      value={item.password}
+                      secret
+                    />
                   </td>
                   <td className="map__td">
                     <span className="map__country-tag">{item.country}</span>

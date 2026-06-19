@@ -1,5 +1,5 @@
 //React
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 
 //Toaster
 import { successTaost, errorToast } from "../../../helper/Toaster";
@@ -22,7 +22,7 @@ import { FormatterHelper } from "../../../helper/FormatterHelper";
 
 import {
   CopyToClipboard,
-  GetRemainingTime,
+  FormatRemainingTime,
   CanMakeCancelRequest,
   GetCancelTooltip,
 } from "../../../helper/UtilityHelper";
@@ -35,20 +35,10 @@ export default function ActiveOrders({
   activeMails,
   onCancelTempEmail,
   OnTempEmailCancelFailure,
-  OnTempMailExpiration,
 }) {
   const { balanceCredit } = useContext(AuthContext);
-  const [now, setNow] = useState(Date.now());
   const [cancel, setCancel] = useState([]);
   const [complete, setComplete] = useState([]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNow(Date.now());
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   async function handleCancel(id) {
     setCancel((prev) => [...prev, id]);
@@ -164,7 +154,8 @@ export default function ActiveOrders({
                 <div className="order-number">{order.email}</div>
 
                 <div className="order-expiry">
-                  Expires in {GetRemainingTime(order, OnTempMailExpiration)}
+                  Expires in{" "}
+                  {FormatRemainingTime(order.remainingSeconds)}
                 </div>
 
                 {/* SMS Block ( hidden until sms arrives) */}
@@ -224,11 +215,11 @@ export default function ActiveOrders({
                   />
 
                   <Tooltip
-                    tooltip={GetCancelTooltip()}
+                    tooltip={GetCancelTooltip(null, true)}
                     btn={
                       <button
                         disabled={
-                          !CanMakeCancelRequest(order) ||
+                          !CanMakeCancelRequest(order, true) ||
                           cancel.includes(order.id)
                         }
                         className="btn-action btn-cancel"

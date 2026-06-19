@@ -36,29 +36,26 @@ export const copyAndDownloadTextFile = async (fileName, text, type = "") => {
   }
 };
 
-export const GetRemainingTime = (order, onExpired) => {
-  if (!order.activationStartTime || !order.activationLimit) return "Invalid";
-  const startTime = new Date(order.activationStartTime).getTime();
-  if (isNaN(startTime)) return "Invalid date";
 
-  const expiryTime = startTime + order.activationLimit * 60 * 1000;
-
-  const remaining = expiryTime - Date.now();
+// Formats server-provided remainingSeconds (ticks down in the container each second).
+export const FormatRemainingTime = (remainingSeconds) => {
+  const remaining = Math.max(0, remainingSeconds ?? 0);
 
   if (remaining <= 0) {
-    if (onExpired) {
-      onExpired(order.id);
-    }
     return "Expired";
   }
 
-  const minutes = Math.floor(remaining / 60000);
-  const seconds = Math.floor((remaining % 60000) / 1000);
+  const minutes = Math.floor(remaining / 60);
+  const seconds = remaining % 60;
 
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 };
 
-export const GetCancelTooltip = (provider) => {
+export const GetCancelTooltip = (provider, isTempMail = false) => {
+  if (isTempMail) {
+    return "You can cancel the temp mail after 3 minutes";
+  }
+
   const name = provider?.toLowerCase();
 
   if (
@@ -72,25 +69,40 @@ export const GetCancelTooltip = (provider) => {
   return "You can cancel the number after 3 minutes";
 };
 
-export const CanMakeCancelRequest = (order) => {
-  let provider = order.provider?.toLowerCase();
+// Cancel eligibility from the same server-synced countdown (not Date.now()).
+export const CanMakeCancelRequest = (order, isTempMail = false) => {
+  const activationLimit = order?.activationLimit;
+  const remainingSeconds = order?.remainingSeconds;
 
-  let isProviderPremiumNumbers = provider?.includes("premium numbers");
-  let time = 5;
+  if (activationLimit == null || remainingSeconds == null) {
+    return false;
+  }
 
-  // if (isProviderPremiumNumbers) {
-  //   time = 5;
-  // }
+  const cancelWaitMinutes = isTempMail
+    ? 3
+    : getNumberCancelWaitMinutes(order.provider);
 
-  if (!order.activationStartTime) return false;
+  const totalSeconds = activationLimit * 60;
+  const elapsedSeconds = totalSeconds - Math.max(0, remainingSeconds);
 
-  const startTime = new Date(order.activationStartTime).getTime();
-  if (isNaN(startTime)) return false;
-
-  const now = Date.now();
-
-  return now >= startTime + time * 60 * 1000;
+  return elapsedSeconds >= cancelWaitMinutes * 60;
 };
+
+function getNumberCancelWaitMinutes(provider) {
+  const name = provider?.toLowerCase();
+
+  if (
+    name?.includes("provider a") ||
+    name?.includes("provider b") ||
+    name?.includes("premium numbers")
+  ) {
+    return 5;
+  }
+
+  return 3;
+}
+
+
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const VOLUME = 0.08;
