@@ -6,9 +6,20 @@ export const getCurrentUser = async () => {
 };
 
 export const getAll = async (httpRequest) => {
-  const response = await httpClient.get(
-    `/api/users?pageNumber=${httpRequest?.pageNo ?? 0}&pageSize=${httpRequest?.pageSize ?? 0}&keyword=${httpRequest?.keyword ?? ""}`,
-  );
+  const params = new URLSearchParams({
+    pageNumber: String(httpRequest?.pageNo ?? 0),
+    pageSize: String(httpRequest?.pageSize ?? 10),
+    keyword: httpRequest?.keyword ?? "",
+  });
+
+  if (httpRequest?.hasSource) {
+    params.append("hasSource", "true");
+  }
+  if (httpRequest?.hasReferrer) {
+    params.append("hasReferrer", "true");
+  }
+
+  const response = await httpClient.get(`/api/users?${params}`);
   return response.data;
 };
 

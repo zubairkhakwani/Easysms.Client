@@ -335,12 +335,22 @@ export default function UserManagement() {
 
   //Filter
   const [keyword, setKeyword] = useState("");
+  const [hasSourceFilter, setHasSourceFilter] = useState(false);
+  const [hasReferrerFilter, setHasReferrerFilter] = useState(false);
+
+  const hasActiveFilters = hasSourceFilter || hasReferrerFilter;
 
   useEffect(() => {
     const fetchAllUsers = async () => {
       setIsLoading(true);
       try {
-        const res = await getAll({ pageNo, pageSize, keyword });
+        const res = await getAll({
+          pageNo,
+          pageSize,
+          keyword,
+          hasSource: hasSourceFilter,
+          hasReferrer: hasReferrerFilter,
+        });
         let responseData = res.data;
         setUsers(responseData.users.items ?? []);
         setCount(responseData.users.count ?? 0);
@@ -357,7 +367,23 @@ export default function UserManagement() {
       }
     };
     fetchAllUsers();
-  }, [pageNo, pageSize, keyword]);
+  }, [pageNo, pageSize, keyword, hasSourceFilter, hasReferrerFilter]);
+
+  function clearFilters() {
+    setHasSourceFilter(false);
+    setHasReferrerFilter(false);
+    setPageNo(0);
+  }
+
+  function toggleSourceFilter() {
+    setHasSourceFilter((v) => !v);
+    setPageNo(0);
+  }
+
+  function toggleReferrerFilter() {
+    setHasReferrerFilter((v) => !v);
+    setPageNo(0);
+  }
 
   function handleSearch(keyword) {
     setKeyword(keyword);
@@ -510,11 +536,58 @@ export default function UserManagement() {
 
       <div className="um-table-wrap">
         <div className="um-table-header">
-          <span className="um-table-title">All Users</span>
+          <div className="um-table-header-left">
+            <span className="um-table-title">All Users</span>
+            <div className="um-filter-bar">
+              <span className="um-filter-label">Filters</span>
+              <div className="um-filter-group" role="group" aria-label="User filters">
+                <button
+                  type="button"
+                  className={`um-filter-chip ${hasSourceFilter ? "um-filter-chip--active" : ""}`}
+                  onClick={toggleSourceFilter}
+                  aria-pressed={hasSourceFilter}
+                >
+                  <i className="fa-solid fa-tag um-filter-chip-icon" aria-hidden />
+                  <span>With source</span>
+                  {hasSourceFilter && (
+                    <i className="fa-solid fa-check um-filter-chip-check" aria-hidden />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className={`um-filter-chip ${hasReferrerFilter ? "um-filter-chip--active" : ""}`}
+                  onClick={toggleReferrerFilter}
+                  aria-pressed={hasReferrerFilter}
+                >
+                  <i className="fa-solid fa-user-group um-filter-chip-icon" aria-hidden />
+                  <span>Referred</span>
+                  {hasReferrerFilter && (
+                    <i className="fa-solid fa-check um-filter-chip-check" aria-hidden />
+                  )}
+                </button>
+              </div>
+              {hasActiveFilters && (
+                <>
+                  <span className="um-filter-divider" aria-hidden />
+                  <button
+                    type="button"
+                    className="um-filter-clear"
+                    onClick={clearFilters}
+                  >
+                    <i className="fa-solid fa-xmark" aria-hidden />
+                    Clear filters
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
           <input
             className="adm-search-input"
             placeholder="🔍  Search by name, email, phone, or source..."
-            onChange={(e) => setKeyword(e.target.value)}
+            onChange={(e) => {
+              setKeyword(e.target.value);
+              setPageNo(0);
+            }}
           />
         </div>
         {!isLoading && (
@@ -522,8 +595,10 @@ export default function UserManagement() {
             <thead>
               <tr>
                 {[
+                  "#",
                   "User",
                   "Phone Number",
+                  "Referred by",
                   "Source",
                   "Role",
                   "Balance",
@@ -539,8 +614,9 @@ export default function UserManagement() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {users.map((user, index) => (
                 <tr key={user.id} className="um-tr">
+                  <td className="um-td um-col-id">{index + 1}</td>
                   <td className="um-td">
                     <div className="um-user-cell">
                       <div className="um-avatar">{user.avatar}</div>
@@ -556,6 +632,19 @@ export default function UserManagement() {
                         ? FormatterHelper.formatPhoneNumber(user.phoneNumber)
                         : "-"}
                     </span>
+                  </td>
+                  <td className="um-td">
+                    {user.referredByName ? (
+                      <div className="um-user-cell">
+                        <div className="um-avatar">{user.referredByAvatar}</div>
+                        <div>
+                          <div className="um-user-name">{user.referredByName}</div>
+                          <div className="um-user-email">{user.referredByEmail}</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="um-user-name">-</span>
+                    )}
                   </td>
                   <td className="um-td">
                     <span className="um-user-name">
