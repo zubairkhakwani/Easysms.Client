@@ -3,6 +3,7 @@ import "./PhysicalNumberContainer.css";
 
 //Helper
 import { FormatterHelper } from "../../helper/FormatterHelper";
+import QuantityStepper from "../Shared/QuantityStepper/QuantityStepper";
 
 export const PhysicalNumberContainer = ({
   availability,
@@ -81,27 +82,13 @@ export const PhysicalNumberContainer = ({
           <div className="summary-col">
             <label className="summary-label">Quantity</label>
 
-            <div className="qty-stepper">
-              <button
-                className="num-qty-btn"
-                onClick={() =>
-                  setQuantity((q) => Math.max(availability > 0 ? 1 : 0, q - 1))
-                }
-              >
-                −
-              </button>
-
-              <span className="qty-val">{quantity}</span>
-
-              <button
-                className="num-qty-btn"
-                onClick={() =>
-                  setQuantity((q) => Math.min(availability, q + 1))
-                }
-              >
-                +
-              </button>
-            </div>
+            <QuantityStepper
+              value={quantity}
+              onChange={setQuantity}
+              min={availability > 0 ? 1 : 0}
+              max={availability}
+              disabled={availability === 0}
+            />
             {getAvailabilityMessage()}
           </div>
         </div>

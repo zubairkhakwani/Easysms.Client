@@ -1,0 +1,50 @@
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  background: var(--inner);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: var(--control-height);
+}
+
+.qty-stepper .num-qty-btn {
+  background: var(--card-active);
+  border: none;
+  color: var(--text-mid);
+  font-size: 1.5rem;
+  padding: 7px 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.qty-stepper .num-qty-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.qty-stepper .num-qty-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.qty-stepper .qty-val {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  text-align: center;
+  font-size: var(--text-base);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  padding: 0 var(--space-2);
+}
+
+.qty-stepper .qty-val:disabled {
+  color: var(--text-dim);
+  cursor: not-allowed;
+}

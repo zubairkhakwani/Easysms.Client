@@ -9,6 +9,7 @@ import { errorToast } from "../../../../helper/Toaster";
 
 //Css
 import "./ProxyExtendModal.css";
+import SearchableSelect from "../../../Shared/SearchableSelect/SearchableSelect";
 
 export function ProxyExtendModal({
   onClose,
@@ -96,28 +97,23 @@ export function ProxyExtendModal({
               className={`pem-select-wrap ${errors.period ? "pem-input-error" : ""}`}
             >
               {isLoadingPeriods ? (
-                <div className="pem-select-loading">
-                  <div className="pem-price-spinner" />
-                  <span>Loading periods...</span>
-                </div>
+                <SearchableSelect
+                  isLoading
+                  className="pem-select"
+                  placeholder="Select a period..."
+                  options={[]}
+                />
               ) : (
-                <select
+                <SearchableSelect
                   className="pem-select"
                   value={periodId}
-                  onChange={(e) => {
-                    setPeriodId(e.target.value);
+                  onChange={(val) => {
+                    setPeriodId(val);
                     setErrors((prev) => ({ ...prev, period: undefined }));
                   }}
-                >
-                  <option value="" disabled>
-                    Select a period...
-                  </option>
-                  {periods.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="Select a period..."
+                  options={periods.map((p) => ({ value: p.id, label: p.name }))}
+                />
               )}
             </div>
             {errors.period && (

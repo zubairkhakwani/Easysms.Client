@@ -23,6 +23,9 @@ import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions.jsx";
 //Skeltons
 import { PhysicalNumberSkelton } from "../../Skeltons/PhysicalNumberSkelton.jsx";
 
+//Shared
+import SearchableSelect from "../../Shared/SearchableSelect/SearchableSelect.jsx";
+
 //Css
 import "./RequestNumberForm.css";
 
@@ -339,20 +342,16 @@ export default function RequestNumberForm({ onNewNumber }) {
               <i className="fa-solid fa-building-columns number-type-icon"></i>
               SMS Provider
             </label>
-            <select
-              defaultValue=""
-              onChange={handleProviderChange}
+            <SearchableSelect
+              value={selectedProvider ?? ""}
+              onChange={(val) => handleProviderChange({ target: { value: val } })}
               disabled={providers.length === 0}
-            >
-              <option value="" disabled>
-                Select provider
-              </option>
-              {providers.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              placeholder="Select provider"
+              options={providers.map((p) => ({
+                value: p.id,
+                label: p.name,
+              }))}
+            />
           </>
         </div>
       </div>
@@ -381,24 +380,28 @@ export default function RequestNumberForm({ onNewNumber }) {
               Service
             </label>
             {isServiceLoading ? (
-              <div className="select-skeleton"></div>
+              <SearchableSelect isLoading placeholder="Select service" options={[]} />
             ) : (
-              <select
-                onChange={handleServiceChange}
+              <SearchableSelect
+                value={selectedService ?? ""}
+                onChange={(val) => handleServiceChange({ target: { value: val } })}
                 disabled={selectedProvider == null}
-              >
-                <option value="">
-                  {selectedProvider == null
+                placeholder={
+                  selectedProvider == null
                     ? "First select provider"
-                    : "Select service"}
-                </option>
-                {services.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} {s.price ? `— From ${s.price}` : ""}{" "}
-                    {s.qty ? `— Total ${s.qty} numbers` : ""}
-                  </option>
-                ))}
-              </select>
+                    : "Select service"
+                }
+                options={services.map((s) => ({
+                  value: s.id,
+                  label: s.name,
+                  sublabel: [
+                    s.price ? `From ${s.price}` : null,
+                    s.qty ? `${s.qty} available` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · "),
+                }))}
+              />
             )}
           </div>
           <div className="field">
@@ -407,24 +410,23 @@ export default function RequestNumberForm({ onNewNumber }) {
               Country
             </label>
             {isCountryLoadinig ? (
-              <div className="select-skeleton"></div>
+              <SearchableSelect isLoading placeholder="Select country" options={[]} />
             ) : (
-              <select
+              <SearchableSelect
                 id="country"
-                onChange={handleCountryChange}
+                value={selectedCountry ?? ""}
+                onChange={(val) => handleCountryChange({ target: { value: val } })}
                 disabled={selectedService == null}
-              >
-                <option value="">
-                  {selectedService == null
+                placeholder={
+                  selectedService == null
                     ? "First select service"
-                    : "Select country"}
-                </option>
-                {countries.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+                    : "Select country"
+                }
+                options={countries.map((s) => ({
+                  value: s.id,
+                  label: s.name,
+                }))}
+              />
             )}
           </div>
           <div className="field">
@@ -433,27 +435,36 @@ export default function RequestNumberForm({ onNewNumber }) {
               Operator / Pricing
             </label>
             {isCountryMetadataLoadinig ? (
-              <div className="select-skeleton"></div>
+              <SearchableSelect
+                isLoading
+                placeholder="Select operator / pricing"
+                options={[]}
+              />
             ) : (
-              <select
+              <SearchableSelect
                 id="operator"
                 className="operator-select"
-                onChange={handleOperators_PricingChange}
+                value={selectedOperator_Pricings ?? ""}
+                onChange={(val) =>
+                  handleOperators_PricingChange({ target: { value: val } })
+                }
                 disabled={selectedCountry == null}
-              >
-                <option value="">
-                  {selectedCountry == null
+                placeholder={
+                  selectedCountry == null
                     ? "First select country"
-                    : "Select operator / pricing"}
-                </option>
-                {operators_pricings.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name && s.name.trim() !== "" ? `${s.name} - ` : ""}$
-                    {Math.trunc((s.price ?? 0) * 10000) / 10000} ({s.count ?? 0}{" "}
-                    available)
-                  </option>
-                ))}
-              </select>
+                    : "Select operator / pricing"
+                }
+                options={operators_pricings.map((s) => {
+                  const price = `$${Math.trunc((s.price ?? 0) * 10000) / 10000}`;
+                  const count = s.count ?? 0;
+                  const name = s.name?.trim();
+                  return {
+                    value: s.id,
+                    label: name ? name : `${price} (${count} available)`,
+                    ...(name ? { sublabel: `${price} · ${count} available` } : {}),
+                  };
+                })}
+              />
             )}
           </div>
         </div>

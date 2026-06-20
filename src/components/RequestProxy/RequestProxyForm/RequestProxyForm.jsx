@@ -20,6 +20,10 @@ import {
 //Modals
 import { ProxyOrderConfirmationModal } from "../../Helper/Modals/Proxy/ProxyOrderConfirmationModal.jsx";
 
+//Shared
+import SearchableSelect from "../../Shared/SearchableSelect/SearchableSelect.jsx";
+import QuantityStepper from "../../Shared/QuantityStepper/QuantityStepper.jsx";
+
 //Css
 import "./RequestProxyForm.css";
 
@@ -197,22 +201,11 @@ export default function RequestProxyForm({ onSummaryChange }) {
     setSelectedPurpose(value);
   };
 
-  //Handle Quanity Change
-  const handleQuantity = (action) => {
-    if (action === "plus") {
-      setQuantityState((prev) => ({
-        ...prev,
-        current: prev.current + 1,
-      }));
-    } else if (
-      action === "minus" &&
-      quantityState.current > quantityState.min
-    ) {
-      setQuantityState((prev) => ({
-        ...prev,
-        current: prev.current - 1,
-      }));
-    }
+  const handleQuantityChange = (next) => {
+    setQuantityState((prev) => ({
+      ...prev,
+      current: next,
+    }));
   };
 
   //Handle Ip Address Change
@@ -306,20 +299,15 @@ export default function RequestProxyForm({ onSummaryChange }) {
               Service
             </label>
 
-            <select
-              defaultValue=""
-              onChange={handleServiceChange}
-              value={selectedService}
-            >
-              <option value="" disabled>
-                Select Service
-              </option>
-              {ProxyTypes.map((s) => (
-                <option key={s.value} value={s.label}>
-                  {s.displayName}
-                </option>
-              ))}
-            </select>
+            <SearchableSelect
+              value={selectedService ?? ""}
+              onChange={(val) => handleServiceChange({ target: { value: val } })}
+              placeholder="Select Service"
+              options={ProxyTypes.map((s) => ({
+                value: s.label,
+                label: s.displayName,
+              }))}
+            />
           </div>
 
           {/* Location */}
@@ -330,25 +318,22 @@ export default function RequestProxyForm({ onSummaryChange }) {
             </label>
 
             {isMetaDataLoading ? (
-              <div className="select-skeleton"></div>
+              <SearchableSelect isLoading placeholder="Select location" options={[]} />
             ) : (
-              <select
+              <SearchableSelect
                 id="operator"
                 className="operator-select"
-                defaultValue=""
-                value={selectedLocation}
+                value={selectedLocation ?? ""}
                 disabled={!selectedService}
-                onChange={handleLocationChange}
-              >
-                <option value="" disabled>
-                  {!selectedService ? "First select service" : "Select location"}
-                </option>
-                {metaData.data?.countries?.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => handleLocationChange({ target: { value: val } })}
+                placeholder={
+                  !selectedService ? "First select service" : "Select location"
+                }
+                options={(metaData.data?.countries ?? []).map((s) => ({
+                  value: s.id,
+                  label: s.name,
+                }))}
+              />
             )}
           </div>
 
@@ -358,24 +343,20 @@ export default function RequestProxyForm({ onSummaryChange }) {
               <i className="fa-solid fa-dollar-sign number-type-icon"></i>
               Period
             </label>
-            <select
-              id="operator"
-              defaultValue=""
-              onChange={handlePeriodChange}
-              value={selectedPeriod}
-              disabled={!selectedLocation}
+            <SearchableSelect
+              id="period"
               className="operator-select"
-            >
-              <option value="" disabled>
-                {!selectedLocation ? "First select location" : "Select Period"}
-              </option>
-
-              {metaData.data?.periods?.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+              value={selectedPeriod ?? ""}
+              onChange={(val) => handlePeriodChange({ target: { value: val } })}
+              disabled={!selectedLocation}
+              placeholder={
+                !selectedLocation ? "First select location" : "Select Period"
+              }
+              options={(metaData.data?.periods ?? []).map((s) => ({
+                value: s.id,
+                label: s.name,
+              }))}
+            />
           </div>
 
           {/* Purpose */}
@@ -384,24 +365,20 @@ export default function RequestProxyForm({ onSummaryChange }) {
               <i className="fa-solid fa-dollar-sign number-type-icon"></i>
               Purpose
             </label>
-            <select
-              defaultValue=""
-              id="operator"
-              onChange={handlePurposeChange}
-              value={selectedPurpose}
-              disabled={!selectedPeriod}
+            <SearchableSelect
+              id="purpose"
               className="operator-select"
-            >
-              <option value="" disabled>
-                {!selectedPeriod ? "First select period" : "Select purpose"}
-              </option>
-
-              {metaData.data?.purposes?.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
+              value={selectedPurpose ?? ""}
+              onChange={(val) => handlePurposeChange({ target: { value: val } })}
+              disabled={!selectedPeriod}
+              placeholder={
+                !selectedPeriod ? "First select period" : "Select purpose"
+              }
+              options={(metaData.data?.purposes ?? []).map((s) => ({
+                value: s.id,
+                label: s.name,
+              }))}
+            />
           </div>
 
           {/* Authorization */}
@@ -467,21 +444,11 @@ export default function RequestProxyForm({ onSummaryChange }) {
           <div className="field">
             <div className="summary-col" bis_skin_checked="1">
               <label className="summary-label">Quantity</label>
-              <div className="qty-stepper" bis_skin_checked="1">
-                <button
-                  className="num-qty-btn"
-                  onClick={() => handleQuantity("minus")}
-                >
-                  −
-                </button>
-                <span className="qty-val">{quantityState.current}</span>
-                <button
-                  className="num-qty-btn"
-                  onClick={() => handleQuantity("plus")}
-                >
-                  +
-                </button>
-              </div>
+              <QuantityStepper
+                value={quantityState.current}
+                onChange={handleQuantityChange}
+                min={quantityState.min}
+              />
             </div>
           </div>
         </div>

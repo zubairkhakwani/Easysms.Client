@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { proxyIssueTypes } from "../../../../data/Static";
+import SearchableSelect from "../../../Shared/SearchableSelect/SearchableSelect";
 import "./ProxyIpConfirm.css";
 
 export function ProxyIpConfirm({ onClose, onConfirm, isSubmitting }) {
@@ -47,23 +48,19 @@ export function ProxyIpConfirm({ onClose, onConfirm, isSubmitting }) {
             <div
               className={`pim-select-wrap ${errors.issueType ? "pim-input-error" : ""}`}
             >
-              <select
+              <SearchableSelect
                 className="pim-select"
                 value={issueType}
-                onChange={(e) => {
-                  setIssueType(e.target.value);
+                onChange={(val) => {
+                  setIssueType(val);
                   setErrors((prev) => ({ ...prev, issueType: undefined }));
                 }}
-              >
-                <option value="" disabled>
-                  Select an issue...
-                </option>
-                {proxyIssueTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
+                placeholder="Select an issue..."
+                options={proxyIssueTypes.map((type) => ({
+                  value: type.value,
+                  label: type.label,
+                }))}
+              />
             </div>
             {errors.issueType && (
               <span className="pim-field-error">{errors.issueType}</span>

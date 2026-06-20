@@ -15,6 +15,7 @@ import { successTaost, errorToast } from "../../../../../helper/Toaster";
 
 //Paginations
 import Paginations from "../../../../Shared/Pagination";
+import SearchableSelect from "../../../../Shared/SearchableSelect/SearchableSelect";
 
 //Css
 import "./Categories.css";
@@ -61,22 +62,16 @@ function CategoryModal({ onClose, onConfirm, isSubmitting, platforms }) {
         </div>
         <div className="ph-filter-field">
           <label className="ph-filter-label">Platforms</label>
-          <select
+          <SearchableSelect
             className="ph-filter-input"
-            onChange={(e) => setPlatform(e.target.value)}
-            disabled={platforms.length == 0}
-          >
-            <option value="">
-              {platforms.length == 0
-                ? "No platform availble"
-                : "Select platform"}
-            </option>
-            {platforms.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            value={platform ?? ""}
+            onChange={setPlatform}
+            disabled={platforms.length === 0}
+            placeholder={
+              platforms.length === 0 ? "No platform availble" : "Select platform"
+            }
+            options={platforms.map((p) => ({ value: p.id, label: p.name }))}
+          />
         </div>
         <div className="um-modal-actions">
           <button className="um-btn ghost" onClick={onClose}>
@@ -228,18 +223,15 @@ export default function Categories() {
       <div className="ph-filters">
         <div className="ph-filter-field">
           <label className="ph-filter-label">Platforms</label>
-          <select
+          <SearchableSelect
             className="ph-filter-input"
             value={platform}
-            onChange={(e) => setPlatform(e.target.value)}
-          >
-            <option value={"0"}>All</option>
-            {platforms.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            onChange={setPlatform}
+            options={[
+              { value: "0", label: "All" },
+              ...platforms.map((p) => ({ value: p.id, label: p.name })),
+            ]}
+          />
         </div>
 
         <div className="ph-filter-actions">

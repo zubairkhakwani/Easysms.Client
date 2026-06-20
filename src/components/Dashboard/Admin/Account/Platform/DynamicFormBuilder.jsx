@@ -1,6 +1,8 @@
 //React
 import { useState, useCallback } from "react";
 
+import SearchableSelect from "../../../../Shared/SearchableSelect/SearchableSelect";
+
 //Static Data
 import { modalKeys } from "../../../../../data/Static";
 
@@ -155,12 +157,13 @@ function FieldPreview({ field }) {
             {field.label}
             {field.required && <span style={{ color: "#f87171" }}> *</span>}
           </span>
-          <select style={inputStyle} disabled>
-            <option>Select an option…</option>
-            {field.options.map((o, i) => (
-              <option key={i}>{o}</option>
-            ))}
-          </select>
+          <SearchableSelect
+            disabled
+            value=""
+            onChange={() => {}}
+            placeholder="Select an option…"
+            options={field.options.map((o) => ({ value: o, label: o }))}
+          />
         </div>
       );
     case "checkbox":

@@ -15,6 +15,7 @@ import { PhysicalNumberStatus } from "../../../../../data/Static";
 
 //Pagination
 import Paginations from "../../../../Shared/Pagination";
+import SearchableSelect from "../../../../Shared/SearchableSelect/SearchableSelect";
 
 export function PhysicalNumbers() {
   //Data
@@ -81,17 +82,15 @@ export function PhysicalNumbers() {
           <span className="nh-filters-heading">Filters</span>
           <div className="nh-filter-group">
             <label className="nh-filter-label">Status</label>
-            <select
-              className={`nh-filter-select`}
+            <SearchableSelect
+              className="nh-filter-select"
               value={filters.status}
-              onChange={(e) => setFilter("status", e.target.value)}
-            >
-              {PhysicalNumberStatus.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setFilter("status", val)}
+              options={PhysicalNumberStatus.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
+            />
           </div>
 
           <div className="nh-filter-group">

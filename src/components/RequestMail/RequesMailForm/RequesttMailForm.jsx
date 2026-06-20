@@ -29,7 +29,8 @@ import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions";
 
 //Skeltons
 import { PhysicalNumberSkelton } from "../../Skeltons/PhysicalNumberSkelton.jsx";
-import { NineKOutlined } from "@mui/icons-material";
+import SearchableSelect from "../../Shared/SearchableSelect/SearchableSelect.jsx";
+import QuantityStepper from "../../Shared/QuantityStepper/QuantityStepper.jsx";
 
 export default function RequestMailForm({ onNewTempMail }) {
   const { balanceDebit } = useContext(AuthContext);
@@ -133,21 +134,11 @@ export default function RequestMailForm({ onNewTempMail }) {
   };
 
   //Handle Quanity Change
-  const handleQuantity = (action) => {
-    if (action === "plus" && quantityState.current < quantityState.max) {
-      setQuantityState((prev) => ({
-        ...prev,
-        current: prev.current + 1,
-      }));
-    } else if (
-      action === "minus" &&
-      quantityState.current > quantityState.min
-    ) {
-      setQuantityState((prev) => ({
-        ...prev,
-        current: prev.current - 1,
-      }));
-    }
+  const handleQuantityChange = (next) => {
+    setQuantityState((prev) => ({
+      ...prev,
+      current: next,
+    }));
   };
 
   //Request Email
@@ -198,17 +189,21 @@ export default function RequestMailForm({ onNewTempMail }) {
             Service
           </label>
 
-          <select defaultValue="" onChange={handleServiceChange}>
-            <option value="" disabled>
-              Select service
-            </option>
-            {mailServices.map((s) => (
-              <option key={s.id} value={s.name}>
-                {s.name} {s.price ? `— From ${s.price}` : ""}{" "}
-                {s.qty ? `— Total ${s.qty} numbers` : ""}
-              </option>
-            ))}
-          </select>
+          <SearchableSelect
+            value={selectedService ?? ""}
+            onChange={(val) => handleServiceChange({ target: { value: val } })}
+            placeholder="Select service"
+            options={mailServices.map((s) => ({
+              value: s.name,
+              label: s.name,
+              sublabel: [
+                s.price ? `From ${s.price}` : null,
+                s.qty ? `${s.qty} available` : null,
+              ]
+                .filter(Boolean)
+                .join(" · "),
+            }))}
+          />
         </div>
 
         <div className="field">
@@ -217,26 +212,19 @@ export default function RequestMailForm({ onNewTempMail }) {
             Mail Type
           </label>
           {isEmailMetaDataLoading ? (
-            <div className="select-skeleton"></div>
+            <SearchableSelect isLoading placeholder="Select mail type" options={[]} />
           ) : (
-            <select
+            <SearchableSelect
               id="operator"
               className="operator-select"
               disabled={!selectedService}
-              defaultValue=""
-              onChange={handleEmailTypeChange}
-            >
-              <option value="" disabled>
-                {!selectedService
-                  ? "First select service"
-                  : "Select mail type"}
-              </option>
-              {emailTypes.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
+              value={selectedEmailType ?? ""}
+              onChange={(val) => handleEmailTypeChange({ target: { value: val } })}
+              placeholder={
+                !selectedService ? "First select service" : "Select mail type"
+              }
+              options={emailTypes.map((s) => ({ value: s, label: s }))}
+            />
           )}
         </div>
 
@@ -245,51 +233,37 @@ export default function RequestMailForm({ onNewTempMail }) {
             <i className="fa-solid fa-dollar-sign number-type-icon"></i>
             Pricing
           </label>
-          <select
-            id="operator"
+          <SearchableSelect
+            id="pricing"
             className="operator-select"
             disabled={!selectedEmailType}
             value={selecttedEmailCost ?? ""}
-            onChange={handlePricingChange}
-          >
-            <option value="">
-              {!selectedEmailType
-                ? "First select mail type"
-                : "Select pricing"}
-            </option>
-
-            {emailPricings.map((s, i) => (
-              <option key={i + 1} value={s.cost}>
-                {[
-                  s.name?.trim(),
-                  FormatterHelper.formatCurrency(s.cost),
-                  `(${s.count} available)`,
-                ]
-                  .filter(Boolean)
-                  .join(" • ")}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => handlePricingChange({ target: { value: val } })}
+            placeholder={
+              !selectedEmailType ? "First select mail type" : "Select pricing"
+            }
+            options={emailPricings.map((s) => ({
+              value: s.cost,
+              label: s.name?.trim() || FormatterHelper.formatCurrency(s.cost),
+              sublabel: [
+                s.name?.trim() ? FormatterHelper.formatCurrency(s.cost) : null,
+                `${s.count} available`,
+              ]
+                .filter(Boolean)
+                .join(" · "),
+            }))}
+          />
         </div>
 
         <div className="field">
           <div className="summary-col" bis_skin_checked="1">
             <label className="summary-label">Quantity</label>
-            <div className="qty-stepper" bis_skin_checked="1">
-              <button
-                className="num-qty-btn"
-                onClick={() => handleQuantity("minus")}
-              >
-                −
-              </button>
-              <span className="qty-val">{quantityState.current}</span>
-              <button
-                className="num-qty-btn"
-                onClick={() => handleQuantity("plus")}
-              >
-                +
-              </button>
-            </div>
+            <QuantityStepper
+              value={quantityState.current}
+              onChange={handleQuantityChange}
+              min={quantityState.min}
+              max={quantityState.max}
+            />
             <p className="qty-helper qty-helper--available">
               You can purchase up to <b>{quantityState.max}</b> mails.
             </p>

@@ -17,6 +17,7 @@ import { errorToast } from "../../../../helper/Toaster";
 
 //Paginations
 import Paginations from "../../../Shared/Pagination";
+import SearchableSelect from "../../../Shared/SearchableSelect/SearchableSelect";
 
 //Css
 import "./ProviderHistory.css";
@@ -181,33 +182,27 @@ export default function ProviderHistory() {
 
         <div className="ph-filter-field">
           <label className="ph-filter-label">Provider</label>
-          <select
+          <SearchableSelect
             className="ph-filter-input"
             value={provider}
-            onChange={(e) => setProvider(e.target.value)}
-          >
-            <option value={"0"}>All</option>
-            {providers.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            onChange={setProvider}
+            options={[
+              { value: "0", label: "All" },
+              ...providers.map((p) => ({ value: p.id, label: p.name })),
+            ]}
+          />
         </div>
         <div className="ph-filter-field">
           <label className="ph-filter-label">User</label>
-          <select
+          <SearchableSelect
             className="ph-filter-input"
             value={user}
-            onChange={(e) => setUser(e.target.value)}
-          >
-            <option value={0}>All</option>
-            {users.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            onChange={setUser}
+            options={[
+              { value: 0, label: "All" },
+              ...users.map((p) => ({ value: p.id, label: p.name })),
+            ]}
+          />
         </div>
 
         <div className="ph-filter-actions">

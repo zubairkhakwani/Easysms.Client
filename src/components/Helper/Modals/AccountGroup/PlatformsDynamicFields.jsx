@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 
+import SearchableSelect from "../../../Shared/SearchableSelect/SearchableSelect";
+
 export function PlatformDynamicFields({
   configuration,
   values = {},
@@ -164,18 +166,16 @@ export function PlatformDynamicFields({
 
             {/* ── select / dropdown ── */}
             {field.type === "select" && (
-              <select
+              <SearchableSelect
                 className={inputCls}
                 value={currentVal}
-                onChange={(e) => handleChange(key, e.target.value)}
-              >
-                <option value="">Select…</option>
-                {(field.options ?? []).map((opt, i) => (
-                  <option key={i} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => handleChange(key, val)}
+                placeholder="Select…"
+                options={(field.options ?? []).map((opt) => ({
+                  value: opt,
+                  label: opt,
+                }))}
+              />
             )}
 
             {/* ── single boolean checkbox ── */}

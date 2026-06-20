@@ -20,6 +20,7 @@ import { AdminStats } from "../../../../Helper/AdminStats/AdminStats";
 
 //Paginations
 import Paginations from "../../../../Shared/Pagination";
+import SearchableSelect from "../../../../Shared/SearchableSelect/SearchableSelect";
 
 //Css
 import "./UserManagement.css";
@@ -130,18 +131,16 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
             <label className="um-label">
               Correction Reason <span className="required">*</span>
             </label>
-            <select
+            <SearchableSelect
               className="um-input"
               value={correctionReason}
-              onChange={(e) => setCorrectionReason(e.target.value)}
-            >
-              <option value="">Select a reason</option>
-              {BalanceCorrectionReasons.map((reason) => (
-                <option key={reason.label} value={reason.value}>
-                  {reason.displayName}
-                </option>
-              ))}
-            </select>
+              onChange={setCorrectionReason}
+              placeholder="Select a reason"
+              options={BalanceCorrectionReasons.map((reason) => ({
+                value: reason.value,
+                label: reason.displayName,
+              }))}
+            />
 
             <label className="um-label">
               Explain in your own words:{" "}

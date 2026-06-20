@@ -21,6 +21,7 @@ import { DownloadPurchaseReceipt } from "../../helper/DownloadPurchaseReceipt";
 
 //Css
 import "./RequestAccount.css";
+import SearchableSelect from "../Shared/SearchableSelect/SearchableSelect";
 
 // Icons as React components
 const ShieldIcon = () => (
@@ -257,30 +258,26 @@ export default function RequestAccount() {
       <section className="filters-section">
         <div className="filters-row">
           <div className="filter-dropdown">
-            <select
+            <SearchableSelect
               value={platform}
-              onChange={(e) => handlePlatformChange(e.target.value)}
-            >
-              <option value="0">All Platforms</option>
-              {platforms.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              onChange={handlePlatformChange}
+              placeholder="All Platforms"
+              options={[
+                { value: "0", label: "All Platforms" },
+                ...platforms.map((p) => ({ value: p.id, label: p.name })),
+              ]}
+            />
           </div>
           <div className="filter-dropdown">
-            <select
+            <SearchableSelect
               value={category}
-              onChange={(e) => handleCategoryChange(e.target.value)}
-            >
-              <option value="0">All Categories</option>
-              {patformCategories.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              onChange={handleCategoryChange}
+              placeholder="All Categories"
+              options={[
+                { value: "0", label: "All Categories" },
+                ...patformCategories.map((p) => ({ value: p.id, label: p.name })),
+              ]}
+            />
           </div>
           {/* <div className="search-input">
             <input

@@ -6,6 +6,7 @@ import { modalKeys } from "../../../../data/Static";
 
 //Component
 import { PlatformDynamicFields } from "./PlatformsDynamicFields";
+import SearchableSelect from "../../../Shared/SearchableSelect/SearchableSelect";
 
 export function UpsertAccountGroupModal({
   onClose,
@@ -185,36 +186,40 @@ export function UpsertAccountGroupModal({
             <label className="um-label">
               Platform <span style={{ color: "red" }}>*</span>
             </label>
-            <select
+            <SearchableSelect
               className="um-input"
               value={formData.platformId}
               disabled={isEdit}
-              onChange={(e) => handlePlatformChange(e.target.value)}
-            >
-              <option value="0">Select platform...</option>
-              {lookups.platforms?.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              onChange={handlePlatformChange}
+              placeholder="Select platform..."
+              options={[
+                { value: "0", label: "Select platform...", disabled: true },
+                ...(lookups.platforms?.map((p) => ({
+                  value: p.id,
+                  label: p.name,
+                })) ?? []),
+              ]}
+            />
           </div>
           <div className="um-form-group">
             <label className="um-label">
               Category <span style={{ color: "red" }}>*</span>
             </label>
-            <select
+            <SearchableSelect
               className="um-input"
               value={formData.categoryId}
-              onChange={set("categoryId")}
-            >
-              <option value="">Select category...</option>
-              {lookups.categories?.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+              onChange={(val) =>
+                set("categoryId")({ target: { value: val, type: "text" } })
+              }
+              placeholder="Select category..."
+              options={[
+                { value: "", label: "Select category...", disabled: true },
+                ...(lookups.categories?.map((c) => ({
+                  value: c.id,
+                  label: c.name,
+                })) ?? []),
+              ]}
+            />
           </div>
         </div>
 

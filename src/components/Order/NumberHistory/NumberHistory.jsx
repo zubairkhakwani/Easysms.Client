@@ -14,6 +14,7 @@ import { errorToast } from "../../../helper/Toaster";
 
 //Pagination
 import Paginations from "../../Shared/Pagination";
+import SearchableSelect from "../../Shared/SearchableSelect/SearchableSelect";
 
 // CSS
 import "./NumberHistory.css";
@@ -183,31 +184,27 @@ export default function NumberHistory() {
           </div>
           <div className="nh-filter-group">
             <label className="nh-filter-label">Provider</label>
-            <select
-              className={`nh-filter-select `}
+            <SearchableSelect
+              className="nh-filter-select"
               value={filters.provider}
-              onChange={(e) => setFilter("provider", e.target.value)}
-            >
-              {Providers.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setFilter("provider", val)}
+              options={Providers.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
+            />
           </div>
           <div className="nh-filter-group">
             <label className="nh-filter-label">Status</label>
-            <select
-              className={`nh-filter-select `}
+            <SearchableSelect
+              className="nh-filter-select"
               value={filters.status}
-              onChange={(e) => setFilter("status", e.target.value)}
-            >
-              {NumberStatus.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setFilter("status", val)}
+              options={NumberStatus.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
+            />
           </div>
 
           <div className="nh-filter-group">

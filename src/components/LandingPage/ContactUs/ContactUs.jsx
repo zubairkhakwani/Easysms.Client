@@ -13,6 +13,7 @@ import { ContactUsSubjects } from "../../../data/Static";
 
 //Css
 import "./ContactUs.css";
+import SearchableSelect from "../../Shared/SearchableSelect/SearchableSelect";
 
 function validate(fields) {
   const errors = {};
@@ -259,22 +260,22 @@ export default function ContactUs() {
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
                 </span>
-                <select
+                <SearchableSelect
                   className={`cf-select${errors.subject ? " error" : ""}`}
                   name="subject"
                   value={fields.subject}
-                  onChange={handleChange}
-                >
-                  <option value="" disabled>
-                    Select a subject…
-                  </option>
-                  {ContactUsSubjects.map((s) => (
-                    <option key={s.value} value={s.value}>
-                      {s.label}
-                    </option>
-                  ))}
-                </select>
-                <span className="cf-select-arrow">▾</span>
+                  onChange={(val) => {
+                    setFields((prev) => ({ ...prev, subject: val }));
+                    if (errors.subject) {
+                      setErrors((prev) => ({ ...prev, subject: "" }));
+                    }
+                  }}
+                  placeholder="Select a subject…"
+                  options={ContactUsSubjects.map((s) => ({
+                    value: s.value,
+                    label: s.label,
+                  }))}
+                />
               </div>
               {errors.subject && (
                 <span className="cf-error-msg">⚠ {errors.subject}</span>
