@@ -38,11 +38,18 @@ export default function ProviderHistory() {
   const [endDate, setEndDate] = useState(toDS(today));
   const [provider, setProvider] = useState("0");
   const [user, setUser] = useState(0);
+  const [country, setCountry] = useState("");
 
   //Data
   const [providerHistory, setProviderHistory] = useState([]);
   const [users, setUsers] = useState([]);
   const [providers, setProviders] = useState([]);
+  const [systemStats, setSystemStats] = useState({
+    totalNumbers: 0,
+    totalActive: 0,
+    totalCompleted: 0,
+    totalCancelled: 0,
+  });
 
   //Loading
   const [applied, setApplied] = useState(null);
@@ -63,18 +70,25 @@ export default function ProviderHistory() {
         endDate,
         provider,
         user,
+        country,
       });
       var responseMessage = response.message;
-      var responseData = !response.data ? [] : response.data;
+      var responseData = response.data;
       if (!response.isSuccess) {
         errorToast(responseMessage);
       }
-      setProviderHistory(responseData?.items ?? []);
-      setCount(responseData.count);
+      setProviderHistory(responseData?.history?.items ?? []);
+      setCount(responseData?.history?.count ?? 0);
+      setSystemStats({
+        totalNumbers: responseData?.totalNumbers ?? 0,
+        totalActive: responseData?.totalActive ?? 0,
+        totalCompleted: responseData?.totalCompleted ?? 0,
+        totalCancelled: responseData?.totalCancelled ?? 0,
+      });
     } catch {
       errorToast("Failed to load activation history");
     } finally {
-      setApplied({ from: startDate, to: endDate, provider });
+      setApplied({ from: startDate, to: endDate, provider, country });
       setIsLoading(false);
     }
   }
@@ -109,6 +123,10 @@ export default function ProviderHistory() {
   }, []);
 
   const handleApply = async () => {
+    if (pageNo !== 0) {
+      setPageNo(0);
+      return;
+    }
     await getProviderHistoryData();
   };
 
@@ -117,6 +135,7 @@ export default function ProviderHistory() {
     setEndDate(toDS(today));
     setProvider("0");
     setUser(0);
+    setCountry("");
     setPageSize(10);
     setPageNo(0);
   };
@@ -129,6 +148,13 @@ export default function ProviderHistory() {
     setPageSize(parseInt(event.target.value, 10));
     setPageNo(0);
   };
+
+  const systemOverviewStats = [
+    { label: "Total Numbers", val: systemStats.totalNumbers },
+    { label: "Total Active", val: systemStats.totalActive },
+    { label: "Total Completed", val: systemStats.totalCompleted },
+    { label: "Total Cancelled", val: systemStats.totalCancelled },
+  ];
 
   const currentPageStats = [
     {
@@ -202,10 +228,26 @@ export default function ProviderHistory() {
             panelMinWidth={240}
             value={user}
             onChange={setUser}
+            searchPlaceholder="Search name or email…"
             options={[
               { value: 0, label: "All" },
-              ...users.map((p) => ({ value: p.id, label: p.name })),
+              ...users.map((p) => ({
+                value: p.id,
+                label: p.name,
+                sublabel: p.email ?? "",
+              })),
             ]}
+          />
+        </div>
+
+        <div className="ph-filter-field">
+          <label className="ph-filter-label">Country</label>
+          <input
+            type="text"
+            className="ph-filter-input"
+            placeholder="e.g. United Kingdom"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
           />
         </div>
 
@@ -237,6 +279,14 @@ export default function ProviderHistory() {
           </button>
         </div>
       </div>
+
+      {/* SYSTEM OVERVIEW */}
+      <AdminStats
+        title="System Overview"
+        titleIcon="📊"
+        subTitle="Statistics for all activations matching the current filters"
+        stats={systemOverviewStats}
+      />
 
       {/* CURRENT PAGE */}
       <AdminStats

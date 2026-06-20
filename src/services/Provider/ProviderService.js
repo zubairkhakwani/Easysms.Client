@@ -17,6 +17,7 @@ export const getProvidersHistory = async ({
   pageNo,
   pageSize,
   user,
+  country = "",
 }) => {
   const queryParams = new URLSearchParams({
     start: startDate,
@@ -25,6 +26,7 @@ export const getProvidersHistory = async ({
     pageNumber: pageNo,
     pageSize: pageSize,
     user: user,
+    country: country,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   }).toString();
 
