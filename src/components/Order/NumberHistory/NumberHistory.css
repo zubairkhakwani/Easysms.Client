@@ -214,7 +214,7 @@
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-3);
-  font-size: var(--text-ms);
+  font-size: var(--text-base);
   font-family: var(--font);
   font-weight: var(--fw-medium);
   color: var(--input-text);

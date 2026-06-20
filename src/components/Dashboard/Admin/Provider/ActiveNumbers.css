@@ -24,13 +24,14 @@
   color: var(--text-dim);
 }
 
-.ph-filter-input {
+.ph-filter-input,
+.ph-filter-input.ss-trigger {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: #fff;
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: var(--text-base);
   font-weight: 500;
   padding: 9px 13px;
   outline: none;
@@ -40,7 +41,8 @@
   min-width: 150px;
 }
 
-.ph-filter-input:focus {
+.ph-filter-input:focus,
+.ph-filter-input.ss-trigger:focus {
   border-color: var(--border-accent);
   background: rgba(0, 229, 255, 0.03);
 }
@@ -48,6 +50,18 @@
 .ph-filter-input option {
   background: #1a1a24;
   color: #fff;
+}
+
+.ph-filter-field--wide {
+  flex: 1 1 240px;
+  min-width: 240px;
+  max-width: 320px;
+}
+
+.ph-filter-field--wide .ss-wrap,
+.ph-filter-field--wide .ph-filter-input.ss-trigger {
+  width: 100%;
+  min-width: 100%;
 }
 
 .ph-filter-actions {

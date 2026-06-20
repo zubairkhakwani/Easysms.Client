@@ -31,6 +31,7 @@ import { PhysicalNumberOptions } from "../../Helper/PhysicalNumberOptions";
 import { PhysicalNumberSkelton } from "../../Skeltons/PhysicalNumberSkelton.jsx";
 import SearchableSelect from "../../Shared/SearchableSelect/SearchableSelect.jsx";
 import QuantityStepper from "../../Shared/QuantityStepper/QuantityStepper.jsx";
+import "../../RequestNumber/RequestNumberForm/RequestNumberForm.css";
 
 export default function RequestMailForm({ onNewTempMail }) {
   const { balanceDebit } = useContext(AuthContext);

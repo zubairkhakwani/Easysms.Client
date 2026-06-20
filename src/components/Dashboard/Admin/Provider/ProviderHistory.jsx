@@ -21,6 +21,7 @@ import SearchableSelect from "../../../Shared/SearchableSelect/SearchableSelect"
 
 //Css
 import "./ProviderHistory.css";
+import "./ActiveNumbers.css";
 
 const toDS = (d) => d.toISOString().slice(0, 10);
 const today = new Date();
@@ -79,7 +80,7 @@ export default function ProviderHistory() {
   }
   async function getUsersData() {
     try {
-      let response = await getAll();
+      let response = await getAll({ pageNo: 0, pageSize: 0 });
       var responseData = response.data?.users.items ?? [];
       setUsers(responseData);
       if (!response.isSuccess) {
@@ -192,10 +193,13 @@ export default function ProviderHistory() {
             ]}
           />
         </div>
-        <div className="ph-filter-field">
+        <div className="ph-filter-field ph-filter-field--wide">
           <label className="ph-filter-label">User</label>
           <SearchableSelect
             className="ph-filter-input"
+            wrapClassName="ph-filter-select-wide"
+            panelFitContent
+            panelMinWidth={240}
             value={user}
             onChange={setUser}
             options={[

@@ -180,9 +180,14 @@
   align-items: center;
 }
 
+.cf-input-wrap .ss-wrap {
+  width: 100%;
+}
+
 .cf-input,
 .cf-textarea,
-.cf-select {
+.cf-select,
+.cf-select.ss-trigger {
   width: 100%;
   background: var(--input-bg);
   border: 1px solid var(--input-border);
@@ -214,13 +219,15 @@
 
 .cf-input:hover,
 .cf-textarea:hover,
-.cf-select:hover {
+.cf-select:hover,
+.cf-select.ss-trigger:hover {
   border-color: var(--input-border-hover);
 }
 
 .cf-input:focus,
 .cf-textarea:focus,
-.cf-select:focus {
+.cf-select:focus,
+.cf-select.ss-trigger:focus {
   border-color: var(--input-border-focus);
   background: var(--input-bg-focus);
   box-shadow: var(--input-shadow-focus);
@@ -248,10 +255,15 @@
   position: relative;
 }
 
-.cf-select {
+.cf-select,
+.cf-select.ss-trigger {
   cursor: pointer;
   color: var(--text-mid);
   padding-left: 40px;
+}
+
+.cf-select.ss-trigger .ss-trigger-chevron {
+  display: none;
 }
 
 .cf-select option {

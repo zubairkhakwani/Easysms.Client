@@ -105,13 +105,14 @@
   flex-wrap: wrap;
 }
 
-.filter-dropdown select {
+.filter-dropdown select,
+.filter-dropdown .ss-trigger {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: #fff;
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: var(--text-base);
   font-weight: 500;
   padding: 9px 13px;
   outline: none;
@@ -120,7 +121,8 @@
   min-width: 150px;
 }
 
-.filter-dropdown select:focus {
+.filter-dropdown select:focus,
+.filter-dropdown .ss-trigger:focus {
   border-color: var(--border-accent);
 }
 
@@ -590,6 +592,7 @@
   }
 
   .filter-dropdown select,
+  .filter-dropdown .ss-trigger,
   .search-input {
     width: 100%;
   }

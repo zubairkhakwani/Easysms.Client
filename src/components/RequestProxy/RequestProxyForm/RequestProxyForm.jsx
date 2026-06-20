@@ -26,6 +26,7 @@ import QuantityStepper from "../../Shared/QuantityStepper/QuantityStepper.jsx";
 
 //Css
 import "./RequestProxyForm.css";
+import "../../RequestNumber/RequestNumberForm/RequestNumberForm.css";
 
 export default function RequestProxyForm({ onSummaryChange }) {
   const { balanceDebit } = useContext(AuthContext);

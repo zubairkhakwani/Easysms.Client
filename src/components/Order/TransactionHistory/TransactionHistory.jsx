@@ -15,7 +15,6 @@ import { errorToast } from "../../../helper/Toaster";
 
 //Pagination
 import Paginations from "../../Shared/Pagination";
-import SearchableSelect from "../../Shared/SearchableSelect/SearchableSelect";
 
 //Css
 import "./TransactionHistory.css";
@@ -237,15 +236,17 @@ export default function TransactionHistory() {
           </div>
           <div className="th-filter-group">
             <label className="th-filter-label">Type</label>
-            <SearchableSelect
+            <select
               className="th-filter-select"
               value={filters.type}
-              onChange={(val) => setFilter("type", val)}
-              options={WalletTransactionTypes.map((o) => ({
-                value: o.value,
-                label: o.label,
-              }))}
-            />
+              onChange={(e) => setFilter("type", e.target.value)}
+            >
+              {WalletTransactionTypes.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="th-filter-actions">

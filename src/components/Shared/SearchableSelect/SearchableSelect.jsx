@@ -38,22 +38,32 @@ export default function SearchableSelect({
   isLoading = false,
   emptyText = "No results found",
   className = "",
+  wrapClassName = "",
   name,
   id: idProp,
   disableSearch,
+  panelMinWidth,
+  panelFitContent = false,
 }) {
   const generatedId = useId();
   const listboxId = `${generatedId}-listbox`;
   const triggerId = idProp ?? `${generatedId}-trigger`;
 
   const wrapRef = useRef(null);
+  const triggerRef = useRef(null);
   const panelRef = useRef(null);
   const searchRef = useRef(null);
 
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [highlightIndex, setHighlightIndex] = useState(0);
-  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+  const [coords, setCoords] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+    fontSize: "",
+    lineHeight: "",
+  });
 
   const normalizedOptions = useMemo(() => normalizeOptions(options), [options]);
 
@@ -85,12 +95,16 @@ export default function SearchableSelect({
   const hasSelection = Boolean(selectedOption);
 
   const updateCoords = useCallback(() => {
-    if (!wrapRef.current) return;
-    const rect = wrapRef.current.getBoundingClientRect();
+    const el = triggerRef.current ?? wrapRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const style = window.getComputedStyle(el);
     setCoords({
       top: rect.bottom + window.scrollY + 4,
       left: rect.left + window.scrollX,
       width: rect.width,
+      fontSize: style.fontSize,
+      lineHeight: style.lineHeight,
     });
   }, []);
 
@@ -184,7 +198,7 @@ export default function SearchableSelect({
     if (e.key === "Escape") {
       e.preventDefault();
       close();
-      wrapRef.current?.querySelector(".ss-trigger")?.focus();
+      triggerRef.current?.focus();
       return;
     }
 
@@ -202,10 +216,31 @@ export default function SearchableSelect({
     }
   };
 
+  const triggerClassName = ["ss-trigger", open && "ss-trigger--open", className]
+    .filter(Boolean)
+    .join(" ");
+
+  const wrapClass = ["ss-wrap", wrapClassName].filter(Boolean).join(" ");
+
+  const panelMin = Math.max(coords.width, panelMinWidth ?? 0);
+  const panelStyle = {
+    position: "absolute",
+    top: coords.top,
+    left: coords.left,
+    minWidth: panelMin,
+    width: panelFitContent ? "max-content" : coords.width,
+    zIndex: 9999,
+    ...(coords.fontSize && { "--ss-font-size": coords.fontSize }),
+    ...(coords.lineHeight && { "--ss-line-height": coords.lineHeight }),
+    ...(panelFitContent && {
+      maxWidth: `min(420px, calc(100vw - ${coords.left}px - 16px))`,
+    }),
+  };
+
   if (isLoading) {
     return (
-      <div className={`ss-wrap ${className}`.trim()}>
-        <div className="ss-skeleton" aria-hidden />
+      <div className={wrapClass}>
+        <div className={`ss-skeleton ${className}`.trim()} aria-hidden />
       </div>
     );
   }
@@ -216,12 +251,13 @@ export default function SearchableSelect({
       : undefined;
 
   return (
-    <div className={`ss-wrap ${className}`.trim()} ref={wrapRef}>
+    <div className={wrapClass} ref={wrapRef}>
       <button
         type="button"
+        ref={triggerRef}
         id={triggerId}
         name={name}
-        className={`ss-trigger ${open ? "ss-trigger--open" : ""}`}
+        className={triggerClassName}
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -242,13 +278,7 @@ export default function SearchableSelect({
           <div
             ref={panelRef}
             className="ss-panel"
-            style={{
-              position: "absolute",
-              top: coords.top,
-              left: coords.left,
-              width: coords.width,
-              zIndex: 9999,
-            }}
+            style={panelStyle}
             onKeyDown={onPanelKeyDown}
           >
             {showSearch && (
@@ -302,6 +332,7 @@ export default function SearchableSelect({
                         disabled={opt.disabled}
                         className={[
                           "ss-option",
+                          opt.sublabel && "ss-option--has-sublabel",
                           isHighlighted && "ss-option--highlighted",
                           isSelected && "ss-option--selected",
                         ]

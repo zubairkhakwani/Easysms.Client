@@ -16,6 +16,7 @@ import { PhysicalNumberStatus } from "../../../../../data/Static";
 //Pagination
 import Paginations from "../../../../Shared/Pagination";
 import SearchableSelect from "../../../../Shared/SearchableSelect/SearchableSelect";
+import "../../../../Order/NumberHistory/NumberHistory.css";
 
 export function PhysicalNumbers() {
   //Data
