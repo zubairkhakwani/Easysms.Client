@@ -570,3 +570,40 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ── Form validation utilities (login, register, admin forms) ── */
+.input-error {
+  border-color: var(--input-border-error) !important;
+}
+
+.ss-trigger.input-error {
+  border-color: var(--input-border-error) !important;
+  box-shadow: 0 0 0 1px var(--error-border);
+}
+
+.error-msg {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--error);
+  margin-top: var(--space-2);
+  animation: errorFadeSlideIn 0.2s ease;
+}
+
+.error-msg svg {
+  flex-shrink: 0;
+  color: var(--error);
+}
+
+@keyframes errorFadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -11,6 +11,7 @@ import { successTaost, errorToast } from "../../../helper/Toaster.js";
 import {
   getProviders,
   getPhysicalProviderInfo,
+  getPhysicalCountries,
   getServices,
   getCountriesMetaData,
   requestNumber,
@@ -53,7 +54,7 @@ function PhysicalNumberModal({ numbersText, onClose }) {
         <button className="um-close-btn" onClick={onClose}>
           ✕
         </button>
-        <div className="um-modal-title">Requested Physical Numbers</div>
+        <div className="um-modal-title">Requested Premium Numbers</div>
 
         <div className="pn-list">
           {rows.map(({ number, url }, i) => (
@@ -87,7 +88,9 @@ export default function RequestNumberForm({ onNewNumber }) {
   const [quantity, setQuantity] = useState(1);
 
   const [physicalNumberInfo, setPhysicalNumberInfo] = useState(null);
-  const [isPhysicalNumberInfoLoading, setPhysicalNumberInfoLoading] =
+  const [physicalCountries, setPhysicalCountries] = useState([]);
+  const [isPhysicalSectionLoading, setPhysicalSectionLoading] = useState(false);
+  const [isPhysicalSummaryRefreshing, setPhysicalSummaryRefreshing] =
     useState(false);
 
   const [requestedNumber, setRequestedNumber] = useState({});
@@ -143,21 +146,38 @@ export default function RequestNumberForm({ onNewNumber }) {
     setSelectedProvider(providerId);
 
     if (providerId == 3) {
-      setPhysicalNumberInfoLoading(true);
-      let response = await getPhysicalProviderInfo();
-      setPhysicalNumberInfoLoading(false);
-
-      setSelectedService("Facebook");
-      setSelectedCountry("USA");
+      setPhysicalSectionLoading(true);
       setNumberType("virtual");
 
-      setPhysicalNumberInfo(response);
-      setPurchaseState(false);
-      if (response.count <= 0) {
+      try {
+        // Server is source of truth for which countries exist and how many are in stock.
+        const countries = await getPhysicalCountries();
+        setPhysicalCountries(countries ?? []);
+
+        const firstCountry = countries?.[0];
+        if (!firstCountry) {
+          setPhysicalNumberInfo({ count: 0, pricePerNumber: 0 });
+          setSelectedCountry(null);
+          setPurchaseState(true);
+          return;
+        }
+
+        setSelectedService("Facebook");
+        setSelectedCountry(firstCountry.countryId);
+
+        const info = await getPhysicalProviderInfo(firstCountry.countryId);
+        setPhysicalNumberInfo(info);
+        setPurchaseState(info.count <= 0);
+      } catch {
+        errorToast("Failed to load premium number countries.");
         setPurchaseState(true);
+      } finally {
+        setPhysicalSectionLoading(false);
       }
       return;
     }
+
+    setPhysicalCountries([]);
 
     setNumberType();
     setPhysicalNumberInfo(null);
@@ -181,6 +201,25 @@ export default function RequestNumberForm({ onNewNumber }) {
       errorToast("Failed to fetch services, please try later.");
     } finally {
       setServiceLoading(false);
+    }
+  };
+
+  const handlePhysicalCountryChange = async (countryId) => {
+    if (!countryId) return;
+
+    setSelectedCountry(countryId);
+    setPhysicalSummaryRefreshing(true);
+    setQuantity(1);
+
+    try {
+      const info = await getPhysicalProviderInfo(countryId);
+      setPhysicalNumberInfo(info);
+      setPurchaseState(info.count <= 0);
+    } catch {
+      errorToast("Failed to load availability for this country.");
+      setPurchaseState(true);
+    } finally {
+      setPhysicalSummaryRefreshing(false);
     }
   };
 
@@ -251,6 +290,11 @@ export default function RequestNumberForm({ onNewNumber }) {
   const handleRequestNumber = async () => {
     if (selectedProvider == 3 && !numberType) {
       errorToast("Please select one of the number types");
+      return;
+    }
+
+    if (selectedProvider == 3 && !selectedCountry) {
+      errorToast("Please select a country for premium numbers");
       return;
     }
 
@@ -356,21 +400,47 @@ export default function RequestNumberForm({ onNewNumber }) {
         </div>
       </div>
 
-      {isPhysicalNumberInfoLoading ? (
-        <PhysicalNumberSkelton />
+      {isPhysicalSectionLoading ? (
+        <PhysicalNumberSkelton variant="full" />
       ) : physicalNumberInfo ? (
         <>
+          <div className="fields">
+            <div className="field">
+              <label>
+                <i className="fa-solid fa-globe number-type-icon"></i>
+                Country
+              </label>
+              <SearchableSelect
+                value={selectedCountry ?? ""}
+                onChange={handlePhysicalCountryChange}
+                placeholder="Select country"
+                disabled={isPhysicalSummaryRefreshing}
+                options={physicalCountries.map((c) => ({
+                  value: c.countryId,
+                  label: c.countryName,
+                }))}
+              />
+            </div>
+          </div>
           <PhysicalNumberOptions
             numberType={numberType}
             setNumberType={setNumberType}
           />
-          <PhysicalNumberContainer
-            availability={physicalNumberInfo.count}
-            price={physicalNumberInfo.pricePerNumber}
-            quantity={quantity}
-            setQuantity={setQuantity}
-            numberType={numberType}
-          />
+          {isPhysicalSummaryRefreshing ? (
+            <PhysicalNumberSkelton variant="summary" numberType={numberType} />
+          ) : (
+            <PhysicalNumberContainer
+              availability={physicalNumberInfo.count}
+              price={physicalNumberInfo.pricePerNumber}
+              countryName={
+                physicalCountries.find((c) => c.countryId === selectedCountry)
+                  ?.countryName ?? physicalNumberInfo.countryName
+              }
+              quantity={quantity}
+              setQuantity={setQuantity}
+              numberType={numberType}
+            />
+          )}
         </>
       ) : (
         <div className="fields">

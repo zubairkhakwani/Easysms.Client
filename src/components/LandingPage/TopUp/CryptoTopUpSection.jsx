@@ -62,11 +62,14 @@ function NetworkWarning() {
         <strong>Important: use the correct network</strong>
       </div>
       <p>
-        When you pay, the <strong>blockchain network you select on the payment
-        page must exactly match the network you send from</strong> your wallet or
-        exchange (e.g. if you choose TRC20, send only via TRC20). Sending on
-        the wrong network can result in <strong>lost funds</strong> that we
-        cannot recover.
+        When you pay, the{" "}
+        <strong>
+          blockchain network you select on the payment page must exactly match
+          the network you send from
+        </strong>{" "}
+        your wallet or exchange (e.g. if you choose TRC20, send only via TRC20).
+        Sending on the wrong network can result in <strong>lost funds</strong>{" "}
+        that we cannot recover.
       </p>
       <p className="crypto-network-warning-foot">
         Double-check the coin, network, and amount before confirming the
@@ -183,7 +186,10 @@ export default function CryptoTopUpSection() {
     try {
       const response = await createCryptoInvoice({ amount: resolvedAmount });
       if (!response.isSuccess) {
-        errorToast(response.message);
+        errorToast(
+          response.message ||
+            "Failed to start crypto payment. Please try again.",
+        );
         return;
       }
 
@@ -194,8 +200,12 @@ export default function CryptoTopUpSection() {
       }
 
       window.location.href = url;
-    } catch {
-      errorToast("Failed to start crypto payment. Please try again.");
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.Message ||
+        "Failed to start crypto payment. Please try again.";
+      errorToast(message);
     } finally {
       setIsLoading(false);
     }
@@ -211,205 +221,210 @@ export default function CryptoTopUpSection() {
       />
 
       <div className="crypto-topup-section">
-      <div className="topup-hero">
-        <span className="topup-badge">
-          <i className="fa-brands fa-bitcoin" /> Instant Crypto Top-Up
-        </span>
-        <h2 className="topup-title crypto-section-title">
-          Fund Your Wallet <span className="topup-accent">Instantly</span>
-        </h2>
-        <p className="topup-subtitle crypto-hero-subtitle">
-          Pay with cryptocurrency through a secure checkout. Your balance
-          updates automatically after on-chain confirmation — no waiting for
-          support, no manual approval.
-        </p>
-      </div>
-
-      <div className="topup-features">
-        {BENEFITS.map((b) => (
-          <div className="topup-feature-card" key={b.title}>
-            <span className="topup-feature-icon">
-              <i className={b.icon} />
-            </span>
-            <h3>{b.title}</h3>
-            <p>{b.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="topup-card">
-        <div className="topup-card-header">
-          <span className="topup-card-icon">
-            <i className="fa-solid fa-list-ol" />
+        <div className="topup-hero">
+          <span className="topup-badge">
+            <i className="fa-brands fa-bitcoin" /> Instant Crypto Top-Up
           </span>
-          <h2>How It Works</h2>
+          <h2 className="topup-title crypto-section-title">
+            Fund Your Wallet <span className="topup-accent">Instantly</span>
+          </h2>
+          <p className="topup-subtitle crypto-hero-subtitle">
+            Pay with cryptocurrency through a secure checkout. Your balance
+            updates automatically after on-chain confirmation — no waiting for
+            support, no manual approval.
+          </p>
         </div>
-        <ol className="topup-steps">
-          <li>
-            <span className="topup-step-num">01</span>
-            <div>
-              <strong>Log in</strong>
-              <p>
-                Crypto top-up credits your account balance — sign in to get
-                started.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span className="topup-step-num">02</span>
-            <div>
-              <strong>Choose your amount</strong>
-              <p>
-                Select a preset or enter a custom amount. Minimum top-up is{" "}
-                <span className="topup-highlight">$5 USD</span>.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span className="topup-step-num">03</span>
-            <div>
-              <strong>Complete crypto payment</strong>
-              <p>
-                You will be redirected to a secure, encrypted payment page to
-                send your cryptocurrency.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span className="topup-step-num">04</span>
-            <div>
-              <strong>Balance updates automatically</strong>
-              <p>
-                No receipt upload, no admin queue — your wallet is credited as
-                soon as payment confirms on-chain.
-              </p>
-            </div>
-          </li>
-        </ol>
-      </div>
 
-      <NetworkWarning />
-
-      {isReturn && returnOrderId && (
-        <div
-          className={`crypto-return-banner topup-card ${returnStatus?.isCredited ? "success" : ""}`}
-        >
-          {checkingReturn ? (
-            <span>Checking payment status…</span>
-          ) : !isAuthenticated ? (
-            <span>
-              Payment return detected.{" "}
-              <Link
-                to={`/login?returnUrl=${encodeURIComponent(topUpReturnPath)}`}
-              >
-                Log in
-              </Link>{" "}
-              to view your payment status.
-            </span>
-          ) : (
-            <span>
-              {returnStatus?.message ??
-                "Thank you — we are confirming your payment."}
-            </span>
-          )}
+        <div className="topup-features">
+          {BENEFITS.map((b) => (
+            <div className="topup-feature-card" key={b.title}>
+              <span className="topup-feature-icon">
+                <i className={b.icon} />
+              </span>
+              <h3>{b.title}</h3>
+              <p>{b.desc}</p>
+            </div>
+          ))}
         </div>
-      )}
 
-      {!isAuthenticated && (
-        <div className="crypto-login-card topup-card">
+        <div className="topup-card">
           <div className="topup-card-header">
             <span className="topup-card-icon">
-              <i className="fa-solid fa-right-to-bracket" />
+              <i className="fa-solid fa-list-ol" />
             </span>
-            <h2>Log in to continue</h2>
+            <h2>How It Works</h2>
           </div>
-          <p>
-            Crypto top-up credits your account balance. Please sign in first to
-            create a payment.
-          </p>
-          <Link
-            to={`/login?returnUrl=${encodeURIComponent("/topup")}`}
-            className="crypto-primary-btn"
-          >
-            Log In →
-          </Link>
+          <ol className="topup-steps">
+            <li>
+              <span className="topup-step-num">01</span>
+              <div>
+                <strong>Log in</strong>
+                <p>
+                  Crypto top-up credits your account balance — sign in to get
+                  started.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span className="topup-step-num">02</span>
+              <div>
+                <strong>Choose your amount</strong>
+                <p>
+                  Select a preset or enter a custom amount. Minimum top-up is{" "}
+                  <span className="topup-highlight">$5 USD</span>.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span className="topup-step-num">03</span>
+              <div>
+                <strong>Complete crypto payment</strong>
+                <p>
+                  You will be redirected to a secure, encrypted payment page to
+                  send your cryptocurrency.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span className="topup-step-num">04</span>
+              <div>
+                <strong>Balance updates automatically</strong>
+                <p>
+                  No receipt upload, no admin queue — your wallet is credited as
+                  soon as payment confirms on-chain.
+                </p>
+              </div>
+            </li>
+          </ol>
         </div>
-      )}
 
-      {isAuthenticated && (
-        <div className="topup-card crypto-amount-card">
-          <div className="topup-card-header">
-            <span className="topup-card-icon">
-              <i className="fa-solid fa-wallet" />
-            </span>
-            <h2>Top Up Now</h2>
-          </div>
+        <NetworkWarning />
 
-          {currentUser && (
-            <p className="crypto-balance-line">
-              Current balance:{" "}
-              <strong>
-                {FormatterHelper.formatCurrency(currentUser.balance)}
-              </strong>
-            </p>
-          )}
-
-          <p className="crypto-fee-note">
-            Network fees are paid by you. The payment must be fully completed to
-            credit your balance.
-          </p>
-
-          <div className="crypto-presets">
-            {PRESETS.map((p) => (
-              <button
-                key={p}
-                type="button"
-                className={`crypto-preset-btn ${Number(customAmount) === p ? "active" : ""}`}
-                onClick={() => setCustomAmount(String(p))}
-              >
-                ${p}
-              </button>
-            ))}
-          </div>
-
-          <label className="crypto-custom-label">Custom amount (USD)</label>
-          <input
-            type="number"
-            min="5"
-            step="0.01"
-            className="crypto-custom-input"
-            placeholder="Minimum $5"
-            value={customAmount}
-            onChange={(e) => setCustomAmount(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className="crypto-pay-btn"
-            onClick={handlePay}
-            disabled={isLoading}
+        {isReturn && returnOrderId && (
+          <div
+            className={`crypto-return-banner topup-card ${returnStatus?.isCredited ? "success" : ""}`}
           >
-            <span className="crypto-pay-btn-icon">
-              {isLoading ? (
-                <span className="crypto-pay-btn-spinner" />
-              ) : (
-                <i className="fa-solid fa-shield-halved" />
-              )}
-            </span>
-            <span className="crypto-pay-btn-body">
-              <span className="crypto-pay-btn-title">
-                {isLoading ? "Creating payment…" : "Continue to Secure Payment"}
+            {checkingReturn ? (
+              <span>Checking payment status…</span>
+            ) : !isAuthenticated ? (
+              <span>
+                Payment return detected.{" "}
+                <Link
+                  to={`/login?returnUrl=${encodeURIComponent(topUpReturnPath)}`}
+                >
+                  Log in
+                </Link>{" "}
+                to view your payment status.
               </span>
-              <span className="crypto-pay-btn-sub">
-                You will be redirected to complete your crypto transfer
+            ) : (
+              <span>
+                {returnStatus?.message ??
+                  "Thank you — we are confirming your payment."}
               </span>
-            </span>
-            {!isLoading && (
-              <i className="fa-solid fa-arrow-right crypto-pay-btn-arrow" />
             )}
-          </button>
-        </div>
-      )}
+          </div>
+        )}
+
+        {!isAuthenticated && (
+          <div className="crypto-login-card topup-card">
+            <div className="topup-card-header">
+              <span className="topup-card-icon">
+                <i className="fa-solid fa-right-to-bracket" />
+              </span>
+              <h2>Log in to continue</h2>
+            </div>
+            <p>
+              Crypto top-up credits your account balance. Please sign in first
+              to create a payment.
+            </p>
+            <Link
+              to={`/login?returnUrl=${encodeURIComponent("/topup")}`}
+              className="crypto-primary-btn"
+            >
+              Log In →
+            </Link>
+          </div>
+        )}
+
+        {isAuthenticated && (
+          <div className="topup-card crypto-amount-card">
+            <div className="topup-card-header">
+              <span className="topup-card-icon">
+                <i className="fa-solid fa-wallet" />
+              </span>
+              <h2>Top Up Now</h2>
+            </div>
+
+            {currentUser && (
+              <p className="crypto-balance-line">
+                Current balance:{" "}
+                <strong>
+                  {FormatterHelper.formatCurrency(currentUser.balance)}
+                </strong>
+              </p>
+            )}
+
+            <p className="crypto-fee-note">
+              Network fees are paid by you. The payment must be fully completed
+              to credit your balance.
+            </p>
+
+            <div className="crypto-presets">
+              {PRESETS.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={`crypto-preset-btn ${Number(customAmount) === p ? "active" : ""}`}
+                  onClick={() => setCustomAmount(String(p))}
+                >
+                  ${p}
+                </button>
+              ))}
+            </div>
+
+            <label className="crypto-custom-label">Custom amount (USD)</label>
+            <input
+              type="number"
+              min="5"
+              step="0.01"
+              className="crypto-custom-input"
+              placeholder="Minimum $5"
+              value={customAmount}
+              onChange={(e) => setCustomAmount(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className="crypto-pay-btn"
+              onClick={handlePay}
+              disabled={isLoading}
+            >
+              <span className="crypto-pay-btn-icon">
+                <span
+                  className={`crypto-pay-btn-spinner ${isLoading ? "" : "is-hidden"}`}
+                />
+                <i
+                  className={`fa-solid fa-shield-halved ${isLoading ? "is-hidden" : ""}`}
+                  aria-hidden
+                />
+              </span>
+              <span className="crypto-pay-btn-body">
+                <span className="crypto-pay-btn-title">
+                  {isLoading
+                    ? "Creating payment…"
+                    : "Continue to Secure Payment"}
+                </span>
+                <span className="crypto-pay-btn-sub">
+                  You will be redirected to complete your crypto transfer
+                </span>
+              </span>
+              <i
+                className={`fa-solid fa-arrow-right crypto-pay-btn-arrow ${isLoading ? "is-hidden" : ""}`}
+                aria-hidden
+              />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,10 +1,16 @@
 import httpClient from "../Base/HttpClient";
 
 export const createCryptoInvoice = async ({ amount }) => {
-  const response = await httpClient.post("/api/payments/crypto/invoice", {
-    amount,
-    returnOrigin: window.location.origin,
-  });
+  const response = await httpClient.post(
+    "/api/payments/crypto/invoice",
+    {
+      amount,
+      returnOrigin: window.location.origin,
+    },
+    {
+      validateStatus: (status) => status < 500,
+    },
+  );
   return response.data;
 };
 

@@ -11,7 +11,7 @@ export default function Topbar({
     reports: { title: "Reports", sub: "Generate & export reports" },
     physicalNumber: {
       title: "Physical Numbers",
-      sub: "Manage USA/Canada physical numbers",
+      sub: "Manage physical numbers",
     },
     transactions: { title: "Transactions", sub: "Transaction history & logs" },
     "otp-logs": { title: "OTP Logs", sub: "Delivery logs & statuses" },

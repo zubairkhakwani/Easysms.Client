@@ -7,6 +7,7 @@ import { getDasboardOverview } from "../../../../services/Dashboard/DashboardSer
 
 //Helper
 import { FormatterHelper } from "../../../../helper/FormatterHelper";
+import { getAdminProviderLabel } from "../../../../helper/UtilityHelper";
 
 //Toaster
 import { errorToast } from "../../../../helper/Toaster";
@@ -458,7 +459,9 @@ export default function Overview() {
         </div>
 
         <div className="balances-grid">
-          {balances?.map((b, i) => (
+          {balances?.map((b, i) => {
+            const providerLabel = getAdminProviderLabel(b);
+            return (
             <div
               key={i}
               className={`balance-card${isRefreshing ? " refreshing" : ""}`}
@@ -474,7 +477,7 @@ export default function Overview() {
                 >
                   <img
                     src={b.avatar}
-                    alt={b.name}
+                    alt={providerLabel}
                     onError={(e) => {
                       e.target.style.display = "none";
                       e.target.nextSibling.style.display = "flex";
@@ -484,7 +487,7 @@ export default function Overview() {
                     className="balance-provider-avatar-fallback"
                     style={{ background: b.color + "22", color: b.color }}
                   >
-                    {b.name?.slice(0, 2).toUpperCase()}
+                    {providerLabel?.slice(0, 2).toUpperCase()}
                   </div>
                 </div>
                 <span className={`balance-status-dot ${b.status}`}>
@@ -494,7 +497,7 @@ export default function Overview() {
 
               {/* Body: name, message, balance */}
               <div className="balance-card-body">
-                <p className="balance-provider-name">{b.name}</p>
+                <p className="balance-provider-name">{providerLabel}</p>
                 <p className="balance-message">{b.message}</p>
                 <p className={`balance-amount ${getBalanceLevel(b.balance)}`}>
                   {b.balance}
@@ -515,7 +518,8 @@ export default function Overview() {
                 </span>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

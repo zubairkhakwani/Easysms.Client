@@ -11,6 +11,7 @@ export const PhysicalNumberContainer = ({
   numberType,
   quantity,
   setQuantity,
+  countryName,
 }) => {
   const getAvailabilityMessage = () => {
     if (availability === 0) {
@@ -56,7 +57,7 @@ export const PhysicalNumberContainer = ({
           <span className="summary-flag">
             <i className="fa-solid fa-globe number-type-icon"></i>
           </span>
-          <span className="summary-country-name">USA/Canada</span>
+          <span className="summary-country-name">{countryName || "—"}</span>
         </div>
       </div>
 
@@ -75,23 +76,24 @@ export const PhysicalNumberContainer = ({
         </div>
       </div>
 
-      <div className="summary-divider" />
-
       {numberType === "physical" && (
-        <div className="summary-bottom">
-          <div className="summary-col">
-            <label className="summary-label">Quantity</label>
+        <>
+          <div className="summary-divider" />
+          <div className="summary-bottom">
+            <div className="summary-col">
+              <label className="summary-label">Quantity</label>
 
-            <QuantityStepper
-              value={quantity}
-              onChange={setQuantity}
-              min={availability > 0 ? 1 : 0}
-              max={availability}
-              disabled={availability === 0}
-            />
-            {getAvailabilityMessage()}
+              <QuantityStepper
+                value={quantity}
+                onChange={setQuantity}
+                min={availability > 0 ? 1 : 0}
+                max={availability}
+                disabled={availability === 0}
+              />
+              {getAvailabilityMessage()}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

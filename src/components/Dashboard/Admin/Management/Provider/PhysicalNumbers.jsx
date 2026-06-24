@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 //Serives
 import { getAllPhysical } from "../../../../../services/Number/NumberService";
+import { getPhysicalCountries } from "../../../../../services/Provider/ProviderService";
 
 //Toaster
 import { errorToast } from "../../../../../helper/Toaster";
@@ -15,23 +16,24 @@ import { PhysicalNumberStatus } from "../../../../../data/Static";
 
 //Pagination
 import Paginations from "../../../../Shared/Pagination";
-import SearchableSelect from "../../../../Shared/SearchableSelect/SearchableSelect";
 import "../../../../Order/NumberHistory/NumberHistory.css";
 
-export function PhysicalNumbers() {
-  //Data
-  const [physicalNumbers, setPhysicalNumbers] = useState([]);
+const defaultFilters = {
+  status: "0",
+  orderByCancellationCountDesc: false,
+  countryId: "",
+};
 
-  //Loading
+export function PhysicalNumbers() {
+  const [physicalNumbers, setPhysicalNumbers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  //Filters
-  const [filters, setFilters] = useState({
-    status: "0",
-    orderByCancellationCountDesc: false,
-  });
+  // Draft filters — edited in the UI; applied only when user clicks Apply.
+  const [filters, setFilters] = useState(defaultFilters);
+  const [appliedFilters, setAppliedFilters] = useState(defaultFilters);
 
-  //Paginations
+  const [countryOptions, setCountryOptions] = useState([]);
+
   const [count, setCount] = useState(0);
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
@@ -39,17 +41,16 @@ export function PhysicalNumbers() {
   async function getPhysicalNumbersData() {
     setIsLoading(true);
     try {
-      let response = await getAllPhysical({
+      const response = await getAllPhysical({
         pageNo,
         pageSize,
-        filters,
+        filters: appliedFilters,
       });
-      var responseMessage = response.message;
       if (response.isSuccess) {
         setPhysicalNumbers(response.data.items ?? []);
         setCount(response.data.count);
       } else {
-        errorToast(responseMessage);
+        errorToast(response.message);
       }
     } catch {
       errorToast("Failed to fetch physical numbers");
@@ -59,8 +60,33 @@ export function PhysicalNumbers() {
   }
 
   useEffect(() => {
+    getPhysicalCountries()
+      .then((list) =>
+        setCountryOptions(
+          (list ?? []).map((c) => ({
+            value: c.countryId,
+            label: c.countryName,
+          })),
+        ),
+      )
+      .catch(() => {});
+  }, []);
+
+  // Fetch on pagination or after Apply (appliedFilters), not on every dropdown change.
+  useEffect(() => {
     getPhysicalNumbersData();
-  }, [pageNo, pageSize, filters]);
+  }, [pageNo, pageSize, appliedFilters]);
+
+  const handleApply = () => {
+    setAppliedFilters({ ...filters });
+    setPageNo(0);
+  };
+
+  const clearFilters = () => {
+    setFilters(defaultFilters);
+    setAppliedFilters(defaultFilters);
+    setPageNo(0);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPageNo(newPage);
@@ -77,26 +103,44 @@ export function PhysicalNumbers() {
 
   return (
     <div className="ph-page">
-      {/* ── FILTERS ── */}
       <div className="nh-filters-bar">
         <div className="nh-filters-left">
           <span className="nh-filters-heading">Filters</span>
+
           <div className="nh-filter-group">
             <label className="nh-filter-label">Status</label>
-            <SearchableSelect
+            <select
               className="nh-filter-select"
               value={filters.status}
-              onChange={(val) => setFilter("status", val)}
-              options={PhysicalNumberStatus.map((o) => ({
-                value: o.value,
-                label: o.label,
-              }))}
-            />
+              onChange={(e) => setFilter("status", e.target.value)}
+            >
+              {PhysicalNumberStatus.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="nh-filter-group">
+            <label className="nh-filter-label">Country</label>
+            <select
+              className="nh-filter-select"
+              value={filters.countryId}
+              onChange={(e) => setFilter("countryId", e.target.value)}
+            >
+              <option value="">All</option>
+              {countryOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="nh-filter-group">
             <label className="nh-filter-label">OTP</label>
-            <label className={`nh-filter-checkbox`}>
+            <label className="nh-filter-checkbox">
               <input
                 type="checkbox"
                 checked={filters.orderByCancellationCountDesc}
@@ -108,62 +152,87 @@ export function PhysicalNumbers() {
             </label>
           </div>
         </div>
+
+        <div className="nh-filter-actions">
+          <button type="button" className="nh-clear-btn" onClick={clearFilters}>
+            Reset
+          </button>
+          <button
+            type="button"
+            className="nh-apply-btn"
+            onClick={handleApply}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span
+                  className="btn-spinner"
+                  style={{
+                    width: 13,
+                    height: 13,
+                    borderTopColor: "#000",
+                    borderColor: "rgba(0,0,0,0.25)",
+                  }}
+                />{" "}
+                Fetching…
+              </>
+            ) : (
+              "✦ Apply"
+            )}
+          </button>
+        </div>
       </div>
-      {/* ── Table ── */}
+
       <div className="ph-table-panel">
         <div className="ph-table-header">
           <span className="ph-table-title">Physical Numbers</span>
         </div>
-        {/* Table */}
-        {!isLoading && (
-          <>
-            <div className="ph-table-wrap">
-              <table className="ph-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Id</th>
-                    <th>Number</th>
-                    <th>Url</th>
-                    <th>Token</th>
-                    <th>Purchased Price</th>
-                    <th>Cancelled Count</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Sold At</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {physicalNumbers.map((r, index) => (
-                    <tr key={r.id}>
-                      <td className="ph-col-id">{index + 1}</td>
-                      <td className="ph-col-id">{r.id}</td>
-                      <td className="ph-col-id">{r.number}</td>
-                      <td className="ph-col-id">{r.url}</td>
-                      <td className="ph-col-id">{r.token}</td>
-                      <td className="ph-col-id">
-                        {FormatterHelper.formatCurrency(r.purchasedPrice)}
-                      </td>
-                      <td className="ph-col-id">{r.cancelledCount}</td>
-                      <td className="ph-col-id">{r.status}</td>
-                      <td className="ph-col-date">
-                        {FormatterHelper.formatDateToLocal(r.createdAt)}
-                      </td>
 
-                      <td className="ph-col-date">
-                        {r.soldAt
-                          ? FormatterHelper.formatDateToLocal(r.soldAt)
-                          : "- "}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
+        {!isLoading && (
+          <div className="ph-table-wrap">
+            <table className="ph-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Id</th>
+                  <th>Country</th>
+                  <th>Number</th>
+                  <th>Url</th>
+                  <th>Purchased Price</th>
+                  <th>Cancelled Count</th>
+                  <th>Status</th>
+                  <th>Created At</th>
+                  <th>Sold At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {physicalNumbers.map((r, index) => (
+                  <tr key={r.id}>
+                    <td className="ph-col-id">{index + 1}</td>
+                    <td className="ph-col-id">{r.id}</td>
+                    <td className="ph-col-id">{r.countryName || r.countryId}</td>
+                    <td className="ph-col-id">{r.number}</td>
+                    <td className="ph-col-id">{r.url}</td>
+                    <td className="ph-col-id">
+                      {FormatterHelper.formatCurrency(r.purchasedPrice)}
+                    </td>
+                    <td className="ph-col-id">{r.cancelledCount}</td>
+                    <td className="ph-col-id">{r.status}</td>
+                    <td className="ph-col-date">
+                      {FormatterHelper.formatDateToLocal(r.createdAt)}
+                    </td>
+                    <td className="ph-col-date">
+                      {r.soldAt
+                        ? FormatterHelper.formatDateToLocal(r.soldAt)
+                        : "- "}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
-        {/* Loading */}
         {isLoading && (
           <div className="ph-state-row">
             <div className="ph-spinner" />
@@ -171,7 +240,6 @@ export function PhysicalNumbers() {
           </div>
         )}
 
-        {/* Empty result */}
         {!isLoading && physicalNumbers.length === 0 && (
           <div className="ph-state-row">
             <div className="ph-state-icon">⊟</div>
@@ -180,6 +248,7 @@ export function PhysicalNumbers() {
             </span>
           </div>
         )}
+
         {!isLoading && (
           <Paginations
             page={pageNo}

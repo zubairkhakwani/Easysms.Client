@@ -1,5 +1,9 @@
 import { successTaost, errorToast } from "./Toaster";
 
+/** Admin UI label for provider id 3 (users see "Premium Numbers" from the API). */
+export const getAdminProviderLabel = (provider) =>
+  provider?.id === 3 ? "Physical Numbers" : provider?.name;
+
 export const CopyToClipboard = async (type, text) => {
   try {
     await navigator.clipboard.writeText(text);

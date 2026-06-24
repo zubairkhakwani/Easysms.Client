@@ -12,8 +12,11 @@ export const addPhysical = async (numbers) => {
 };
 
 export const getAllPhysical = async (request) => {
+  const countryParam = request.filters.countryId
+    ? `&countryId=${encodeURIComponent(request.filters.countryId)}`
+    : "";
   const response = await httpClient.get(
-    `/api/numbers/physical?pageNumber=${request.pageNo}&pageSize=${request.pageSize}&status=${request.filters.status}&OrderByCancellationCountDesc=${request.filters.orderByCancellationCountDesc}`,
+    `/api/numbers/physical?pageNumber=${request.pageNo}&pageSize=${request.pageSize}&status=${request.filters.status}&OrderByCancellationCountDesc=${request.filters.orderByCancellationCountDesc}${countryParam}`,
   );
 
   return response.data;

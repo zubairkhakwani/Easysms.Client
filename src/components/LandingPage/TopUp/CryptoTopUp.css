@@ -212,6 +212,10 @@
   font-size: 1.1rem;
 }
 
+.is-hidden {
+  display: none;
+}
+
 .crypto-pay-btn-spinner {
   width: 1.1rem;
   height: 1.1rem;

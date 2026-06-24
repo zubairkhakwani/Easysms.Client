@@ -13,6 +13,7 @@ import { AdminStats } from "../../../Helper/AdminStats/AdminStats";
 
 //Helper
 import { FormatterHelper } from "../../../../helper/FormatterHelper";
+import { getAdminProviderLabel } from "../../../../helper/UtilityHelper";
 import { errorToast } from "../../../../helper/Toaster";
 
 //Paginations
@@ -215,7 +216,10 @@ export default function ProviderHistory() {
             onChange={setProvider}
             options={[
               { value: "0", label: "All" },
-              ...providers.map((p) => ({ value: p.id, label: p.name })),
+              ...providers.map((p) => ({
+                value: p.id,
+                label: getAdminProviderLabel(p),
+              })),
             ]}
           />
         </div>
@@ -312,6 +316,7 @@ export default function ProviderHistory() {
                   <th>User</th>
                   <th>Phone</th>
                   <th>Provider</th>
+                  <th>Physical link</th>
                   <th>Country</th>
                   <th>Code</th>
                   <th>Actual Cost</th>
@@ -334,6 +339,9 @@ export default function ProviderHistory() {
                     </td>
                     <td className="ph-col-phone">{r.phone}</td>
                     <td className="ph-col-phone">{r.provider}</td>
+                    <td className="ph-col-phone">
+                      {r.isPhysicalLink ? "Yes" : "No"}
+                    </td>
                     <td className="ph-col-phone">{r.country}</td>
                     <td className="ph-col-sms" title={r.verificationCode}>
                       {r.verificationCode ?? "-"}

@@ -175,6 +175,7 @@ export default function Deposits() {
                     <th>User</th>
                     <th>Admin</th>
                     <th>Amount</th>
+                    <th>Transaction Type</th>
                     <th>Date</th>
                   </tr>
                 </thead>
@@ -199,6 +200,7 @@ export default function Deposits() {
                       <td className="ph-col-id">
                         {FormatterHelper.formatCurrency(r.amount)}
                       </td>
+                      <td className="ph-col-id">{r.transactionType}</td>
                       <td className="ph-col-date">
                         {FormatterHelper.formatDateToLocal(r.depositedAt)}
                       </td>

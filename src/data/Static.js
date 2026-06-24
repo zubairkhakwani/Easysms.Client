@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-//export const Base_Url = "https://api.easyotps.com";
-export const Base_Url = "https://localhost:7265";
+export const Base_Url = "https://api.easyotps.com";
+//export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -285,7 +285,7 @@ export const Providers = [
     value: 4,
   },
   {
-    label: "USA/Canada Premium Numbers",
+    label: "Premium Numbers",
     value: 3,
   },
 ];

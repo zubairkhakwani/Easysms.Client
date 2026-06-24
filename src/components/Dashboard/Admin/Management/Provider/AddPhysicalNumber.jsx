@@ -1,8 +1,9 @@
 //React
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 //Serives
 import { addPhysical } from "../../../../../services/Number/NumberService";
+import { getPhysicalCountries } from "../../../../../services/Provider/ProviderService";
 
 //Components
 import { PhysicalNumbers } from "./PhysicalNumbers";
@@ -18,6 +19,8 @@ import { PhysicalNumberStatus } from "../../../../../data/Static";
 
 //Pagination
 import Paginations from "../../../../Shared/Pagination";
+import SearchableSelect from "../../../../Shared/SearchableSelect/SearchableSelect";
+import FormErrorMessage from "../../../../Shared/FormErrorMessage/FormErrorMessage";
 
 //Css
 import "./AddPhysicalNumber.css";
@@ -30,7 +33,7 @@ function parseLine(line) {
   const number = trimmed.slice(0, pipeIdx).trim();
   const url = trimmed.slice(pipeIdx + 1).trim();
   const valid =
-    number.length > 0 && /^https?:\/\/.+/.test(url) && url.includes("?token=");
+    number.length > 0 && /^https?:\/\/.+/.test(url);
   return { raw: trimmed, number, url, valid };
 }
 
@@ -120,8 +123,24 @@ function ResultModal({ result, onClose }) {
 export default function AddPhysicalNumber() {
   const [text, setText] = useState("");
   const [price, setPrice] = useState(0);
+  const [countryId, setCountryId] = useState("");
+  const [countryOptions, setCountryOptions] = useState([]);
   const [result, setResult] = useState(null);
   const [isAddingPhysicalNumbers, setIsAddingPhysicalNumbers] = useState(false);
+
+  // Countries come from the server (appsettings) — same list users see when purchasing.
+  useEffect(() => {
+    getPhysicalCountries()
+      .then((list) => {
+        const options = (list ?? []).map((c) => ({
+          value: c.countryId,
+          label: c.countryName,
+        }));
+        setCountryOptions(options);
+        // Leave countryId empty — admin must explicitly choose (no auto-select).
+      })
+      .catch(() => errorToast("Failed to load physical number countries."));
+  }, []);
 
   const lines = useMemo(
     () => text.split("\n").map(parseLine).filter(Boolean),
@@ -133,20 +152,40 @@ export default function AddPhysicalNumber() {
   const invalidLines = lines.filter((l) => !l.valid);
   const totalLines = lines.length;
 
+  // First occurrence wins; duplicate numbers in the same paste are not submitted.
+  const { uniqueValidLines, duplicateValidCount } = useMemo(() => {
+    const seen = new Set();
+    const unique = [];
+    let dupes = 0;
+    for (const line of validLines) {
+      if (seen.has(line.number)) {
+        dupes++;
+        continue;
+      }
+      seen.add(line.number);
+      unique.push(line);
+    }
+    return { uniqueValidLines: unique, duplicateValidCount: dupes };
+  }, [validLines]);
+
   const handleSubmit = async () => {
-    if (validLines.length === 0) return;
+    if (uniqueValidLines.length === 0) return;
+    if (!countryId) {
+      errorToast("Please select a country for this batch.");
+      return;
+    }
     setIsAddingPhysicalNumbers(true);
 
     try {
       const payload = {
-        Numbers: validLines.map((l) => l.raw).join("\n"),
+        Numbers: uniqueValidLines.map((l) => l.raw).join("\n"),
         price,
+        countryId,
       };
       let response = await addPhysical(payload);
 
       if (response.isSuccess) {
         setResult(response.data);
-        setText("");
       } else {
         errorToast(response.message);
       }
@@ -171,9 +210,9 @@ export default function AddPhysicalNumber() {
         <div className="add-numbers-banner">
           <div className="banner-icon">🇺🇸</div>
           <div className="banner-text">
-            <p className="banner-title">Add USA Physical Numbers</p>
+            <p className="banner-title">Add Physical Numbers</p>
             <p className="banner-sub">
-              Paste all numbers you want to add — one entry per line. Each line
+              Select a country, then paste numbers — one entry per line. Each line
               must follow the pattern below. Invalid lines are skipped on
               submit.
             </p>
@@ -185,16 +224,37 @@ export default function AddPhysicalNumber() {
           <span className="pattern-hint-label">Required Format</span>
           <div className="pattern-hint-box">
             <span className="pattern-code">
-              13104447990|https://sms222.us?token=j9u9Worj5y03101354
+              13104447990|https://example.com/inbox/abc123
             </span>
             <span className="pattern-hint-note">number | inbox URL</span>
           </div>
         </div>
 
+        {/* Country for entire batch — stored on every inserted PhysicalNumber row */}
+        <div className="textarea-section">
+          <div className="textarea-header">
+            <span className="textarea-label">
+              Country <span className="required">*</span>
+            </span>
+          </div>
+          <SearchableSelect
+            value={countryId}
+            onChange={setCountryId}
+            placeholder="Select a country"
+            options={countryOptions}
+            className={!countryId ? "input-error" : ""}
+          />
+          {!countryId && (
+            <FormErrorMessage>Country is required — select one before submitting</FormErrorMessage>
+          )}
+        </div>
+
         {/* Textarea */}
         <div className="textarea-section">
           <div className="textarea-header">
-            <span className="textarea-label">Numbers</span>
+            <span className="textarea-label">
+              Numbers <span className="required">*</span>
+            </span>
             <span
               className={`textarea-counter ${totalLines > 0 ? "has-entries" : ""}`}
             >
@@ -205,13 +265,13 @@ export default function AddPhysicalNumber() {
           </div>
 
           <textarea
-            className="numbers-textarea"
+            className={`numbers-textarea ${totalLines === 0 ? "input-error" : ""}`}
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder={
-              "13104447990|https://sms222.us?token=abc123\n" +
-              "13105557890|https://sms222.us?token=xyz456\n" +
-              "19175551234|https://sms222.us?token=def789\n" +
+              "13104447990|https://example.com/inbox/abc123\n" +
+              "13105557890|https://provider.example/sms/xyz456\n" +
+              "19175551234|https://another.example/page\n" +
               "...\n\nOne number per line."
             }
             spellCheck={false}
@@ -219,35 +279,42 @@ export default function AddPhysicalNumber() {
             autoCapitalize="off"
           />
 
-          <div className="validation-row">
-            {totalLines === 0 && (
-              <span className="validation-item neutral">
-                ⊙ Paste your numbers above to get started
-              </span>
-            )}
-            {totalLines > 0 && validLines.length > 0 && (
-              <span className="validation-item valid">
-                ✓ {validLines.length}{" "}
-                {validLines.length === 1 ? "entry" : "entries"} ready to submit
-              </span>
-            )}
-            {invalidLines.length > 0 && (
-              <span className="validation-item invalid">
-                ✕ {invalidLines.length}{" "}
-                {invalidLines.length === 1 ? "line" : "lines"} will be skipped
-                (wrong format)
-              </span>
-            )}
-          </div>
+          {totalLines === 0 && (
+            <FormErrorMessage>
+              Numbers are required — paste at least one line above
+            </FormErrorMessage>
+          )}
+          {totalLines > 0 && uniqueValidLines.length > 0 && (
+            <span className="validation-item valid">
+              ✓ {uniqueValidLines.length}{" "}
+              {uniqueValidLines.length === 1 ? "entry" : "entries"} ready to submit
+            </span>
+          )}
+          {duplicateValidCount > 0 && (
+            <FormErrorMessage>
+              {duplicateValidCount}{" "}
+              {duplicateValidCount === 1 ? "duplicate line" : "duplicate lines"}{" "}
+              in your paste will be ignored (same number)
+            </FormErrorMessage>
+          )}
+          {invalidLines.length > 0 && (
+            <FormErrorMessage>
+              {invalidLines.length}{" "}
+              {invalidLines.length === 1 ? "line has" : "lines have"} invalid
+              format and will be skipped
+            </FormErrorMessage>
+          )}
         </div>
 
         {/* Price */}
         <div className="textarea-section">
           <div className="textarea-header">
-            <span className="textarea-label">Price</span>
+            <span className="textarea-label">
+              Price <span className="required">*</span>
+            </span>
           </div>
           <input
-            className="price-input"
+            className={`price-input ${price <= 0 ? "input-error" : ""}`}
             type="number"
             min="0"
             step="0.01"
@@ -255,13 +322,9 @@ export default function AddPhysicalNumber() {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
-          <div className="validation-row">
-            {price <= 0 && (
-              <span className="validation-item neutral">
-                ⊙ Please enter valid price for these numbers
-              </span>
-            )}
-          </div>
+          {price <= 0 && (
+            <FormErrorMessage>Please enter a valid price greater than 0</FormErrorMessage>
+          )}
         </div>
 
         {/* Actions */}
@@ -270,7 +333,10 @@ export default function AddPhysicalNumber() {
             className="submit-btn"
             onClick={handleSubmit}
             disabled={
-              price <= 0 || validLines.length === 0 || isAddingPhysicalNumbers
+              price <= 0 ||
+              uniqueValidLines.length === 0 ||
+              !countryId ||
+              isAddingPhysicalNumbers
             }
           >
             {isAddingPhysicalNumbers ? (
@@ -280,9 +346,9 @@ export default function AddPhysicalNumber() {
             ) : (
               <>
                 ✦ Submit Numbers
-                {validLines.length > 0 && (
+                {uniqueValidLines.length > 0 && (
                   <span style={{ opacity: 0.7, fontWeight: 400 }}>
-                    ({validLines.length})
+                    ({uniqueValidLines.length})
                   </span>
                 )}
               </>

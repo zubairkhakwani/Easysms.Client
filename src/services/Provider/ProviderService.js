@@ -36,9 +36,16 @@ export const getProvidersHistory = async ({
   return response.data;
 };
 
-export const getPhysicalProviderInfo = async () => {
-  const response = await httpClient.get(`/api/providers/physical-info`);
+export const getPhysicalProviderInfo = async (countryId) => {
+  const params = countryId ? `?countryId=${encodeURIComponent(countryId)}` : "";
+  const response = await httpClient.get(`/api/providers/physical-info${params}`);
   return response.data.data;
+};
+
+/** Server-driven country list with per-country stock (physical provider only). */
+export const getPhysicalCountries = async () => {
+  const response = await httpClient.get(`/api/providers/physical-countries`);
+  return response.data.data ?? [];
 };
 
 export const getServices = async (providerId) => {

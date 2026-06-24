@@ -29,6 +29,13 @@ export default function TopUp() {
     return () => clearInterval(t);
   }, []);
 
+  const scrollToSection = (targetId) => {
+    document.getElementById(targetId)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <div className="topup-root">
       <div className="topup-bg-grid" />
@@ -36,9 +43,67 @@ export default function TopUp() {
       <div className="topup-glow topup-glow-2" />
 
       <div className="topup-container">
+        <div className="topup-chooser">
+          <div className="topup-chooser-header">
+            <span className="topup-chooser-eyebrow">Two ways to top up</span>
+            <h1 className="topup-chooser-title">
+              Choose your <span className="topup-accent">payment method</span>
+            </h1>
+            <p className="topup-chooser-intro">
+              Pick instant crypto or manual support — we&apos;ll take you right
+              there.
+            </p>
+          </div>
+          <div className="topup-chooser-grid">
+            <button
+              type="button"
+              className="topup-chooser-card topup-chooser-card--instant"
+              onClick={() => scrollToSection("crypto-topup")}
+            >
+              <span className="topup-chooser-card-icon">
+                <i className="fa-brands fa-bitcoin" aria-hidden />
+              </span>
+              <span className="topup-chooser-card-body">
+                <span className="topup-chooser-card-label">Option 1 — Instant</span>
+                <span className="topup-chooser-card-title">Pay with crypto</span>
+                <span className="topup-chooser-card-desc">
+                  Balance updates automatically after payment confirms
+                </span>
+              </span>
+              <span className="topup-chooser-card-action">
+                View instant top-up
+                <i className="fa-solid fa-arrow-down" aria-hidden />
+              </span>
+            </button>
+            <button
+              type="button"
+              className="topup-chooser-card topup-chooser-card--manual"
+              onClick={() => scrollToSection("manual-topup")}
+            >
+              <span className="topup-chooser-card-icon">
+                <i className="fa-solid fa-credit-card" aria-hidden />
+              </span>
+              <span className="topup-chooser-card-body">
+                <span className="topup-chooser-card-label">Option 2 — Manual</span>
+                <span className="topup-chooser-card-title">Contact support</span>
+                <span className="topup-chooser-card-desc">
+                  JazzCash, Easypaisa &amp; bank transfer via WhatsApp
+                </span>
+              </span>
+              <span className="topup-chooser-card-action">
+                View manual top-up
+                <i className="fa-solid fa-arrow-down" aria-hidden />
+              </span>
+            </button>
+          </div>
+        </div>
+
         <CryptoTopUpSection />
 
-        <section className="topup-option topup-option--manual">
+        <section
+          id="manual-topup"
+          className="topup-option topup-option--manual"
+        >
           <TopUpOptionHeader
             optionNumber="2"
             tag="Manual"
