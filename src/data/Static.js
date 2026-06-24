@@ -256,6 +256,7 @@ export const modalKeys = {
   extendProxy: "extend-proxy",
   providerProfit: "provider-profit",
   referralCommission: "referral-commission",
+  physicalNumberActive: "physical-number-active",
 };
 
 export const NumberStatus = [

@@ -36,3 +36,10 @@ export const getActiveNumbers = async () => {
   const response = await httpClient.get(`/api/numbers/active`);
   return response.data;
 };
+
+export const togglePhysicalNumberActive = async (id) => {
+  const response = await httpClient.post(
+    `/api/numbers/physical/${id}/toggle-active`,
+  );
+  return response.data;
+};

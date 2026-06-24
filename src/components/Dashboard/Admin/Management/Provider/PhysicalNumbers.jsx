@@ -2,17 +2,26 @@
 import { useState, useEffect } from "react";
 
 //Serives
-import { getAllPhysical } from "../../../../../services/Number/NumberService";
+import {
+  getAllPhysical,
+  togglePhysicalNumberActive,
+} from "../../../../../services/Number/NumberService";
 import { getPhysicalCountries } from "../../../../../services/Provider/ProviderService";
 
 //Toaster
-import { errorToast } from "../../../../../helper/Toaster";
+import { errorToast, successTaost } from "../../../../../helper/Toaster";
 
 //Helper
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
 
 //Static
-import { PhysicalNumberStatus } from "../../../../../data/Static";
+import { PhysicalNumberStatus, modalKeys } from "../../../../../data/Static";
+
+//DropDown
+import { PhysicalNumberActionDropdown } from "../../../../Helper/PhysicalNumber/DropDown/PhysicalNumberActionDropDown";
+
+//Modals
+import ToggleStatusModal from "../../../../Helper/ContactUs/Modal/ToggleStatusModal";
 
 //Pagination
 import Paginations from "../../../../Shared/Pagination";
@@ -27,6 +36,12 @@ const defaultFilters = {
 export function PhysicalNumbers() {
   const [physicalNumbers, setPhysicalNumbers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
+  const [modal, setModal] = useState("");
+  const [selectedNumber, setSelectedNumber] = useState({
+    id: "",
+    isActive: true,
+  });
 
   // Draft filters — edited in the UI; applied only when user clicks Apply.
   const [filters, setFilters] = useState(defaultFilters);
@@ -99,6 +114,44 @@ export function PhysicalNumbers() {
 
   function setFilter(key, value) {
     setFilters((prev) => ({ ...prev, [key]: value }));
+  }
+
+  const closeModal = () => setModal("");
+
+  const openModal = (key, physicalNumberId) => {
+    const row = physicalNumbers.find((obj) => obj.id === physicalNumberId);
+    setSelectedNumber({
+      id: physicalNumberId,
+      isActive: row?.isActive ?? true,
+    });
+    setModal(key);
+  };
+
+  async function handleTogglePhysicalNumberActive() {
+    setIsToggling(true);
+    try {
+      const response = await togglePhysicalNumberActive(selectedNumber.id);
+
+      if (response.isSuccess) {
+        const responseData = response.data;
+        setPhysicalNumbers((previous) =>
+          previous.map((item) =>
+            item.id === selectedNumber.id
+              ? { ...item, isActive: responseData.isActive }
+              : item,
+          ),
+        );
+
+        successTaost(response.message);
+        closeModal();
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to perform action");
+    } finally {
+      setIsToggling(false);
+    }
   }
 
   return (
@@ -201,8 +254,10 @@ export function PhysicalNumbers() {
                   <th>Purchased Price</th>
                   <th>Cancelled Count</th>
                   <th>Status</th>
+                  <th>Active</th>
                   <th>Created At</th>
                   <th>Sold At</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -218,6 +273,13 @@ export function PhysicalNumbers() {
                     </td>
                     <td className="ph-col-id">{r.cancelledCount}</td>
                     <td className="ph-col-id">{r.status}</td>
+                    <td>
+                      <span
+                        className={`ph-status ${r.isActive ? "Active" : "Cancelled"} `}
+                      >
+                        {r.isActive ? "Active for sale" : "Inactive"}
+                      </span>
+                    </td>
                     <td className="ph-col-date">
                       {FormatterHelper.formatDateToLocal(r.createdAt)}
                     </td>
@@ -225,6 +287,13 @@ export function PhysicalNumbers() {
                       {r.soldAt
                         ? FormatterHelper.formatDateToLocal(r.soldAt)
                         : "- "}
+                    </td>
+                    <td>
+                      <PhysicalNumberActionDropdown
+                        physicalNumberId={r.id}
+                        onAction={openModal}
+                        isActive={r.isActive}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -259,6 +328,23 @@ export function PhysicalNumbers() {
           />
         )}
       </div>
+
+      {modal === modalKeys.physicalNumberActive && (
+        <ToggleStatusModal
+          isActive={selectedNumber.isActive}
+          onClose={closeModal}
+          onConfirm={handleTogglePhysicalNumberActive}
+          isLoading={isToggling}
+          config={{
+            activeLabel: "Active for sale",
+            inactiveLabel: "Inactive",
+            activeIcon: "✅",
+            inactiveIcon: "🚫",
+            activeClass: "success",
+            inactiveClass: "warning",
+          }}
+        />
+      )}
     </div>
   );
 }
