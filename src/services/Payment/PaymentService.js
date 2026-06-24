@@ -1,5 +1,10 @@
 import httpClient from "../Base/HttpClient";
 
+export const getCryptoPaymentConfig = async () => {
+  const response = await httpClient.get("/api/payments/crypto/config");
+  return response.data;
+};
+
 export const createCryptoInvoice = async ({ amount }) => {
   const response = await httpClient.post(
     "/api/payments/crypto/invoice",

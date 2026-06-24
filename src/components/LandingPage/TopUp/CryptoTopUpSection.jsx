@@ -8,6 +8,7 @@ import { AuthContext } from "../../../context/AuthContext";
 //Services
 import {
   createCryptoInvoice,
+  getCryptoPaymentConfig,
   getCryptoPaymentStatus,
 } from "../../../services/Payment/PaymentService";
 
@@ -22,6 +23,7 @@ import "./TopUp.css";
 import TopUpOptionHeader from "./TopUpOptionHeader";
 
 const PRESETS = [5, 10, 25, 50];
+const DEFAULT_MIN_AMOUNT_USD = 1.5;
 const POLL_INTERVAL_MS = 5000;
 const MAX_POLL_ATTEMPTS = 24;
 const TERMINAL_STATUSES = new Set([
@@ -79,12 +81,17 @@ function NetworkWarning() {
   );
 }
 
+function formatMinAmountLabel(amount) {
+  return amount % 1 === 0 ? String(amount) : amount.toFixed(2);
+}
+
 export default function CryptoTopUpSection() {
   const { isAuthenticated, currentUser, balanceCredit } =
     useContext(AuthContext);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [customAmount, setCustomAmount] = useState("10");
+  const [minAmountUsd, setMinAmountUsd] = useState(DEFAULT_MIN_AMOUNT_USD);
   const [isLoading, setIsLoading] = useState(false);
   const [returnStatus, setReturnStatus] = useState(null);
   const [checkingReturn, setCheckingReturn] = useState(false);
@@ -98,6 +105,18 @@ export default function CryptoTopUpSection() {
     isReturn && returnOrderId
       ? `/topup?payment=return&orderId=${encodeURIComponent(returnOrderId)}`
       : "/topup";
+
+  const minAmountLabel = formatMinAmountLabel(minAmountUsd);
+
+  useEffect(() => {
+    getCryptoPaymentConfig()
+      .then((response) => {
+        if (response.isSuccess && response.data?.minAmountUsd > 0) {
+          setMinAmountUsd(response.data.minAmountUsd);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!isReturn || !returnOrderId) return;
@@ -177,8 +196,8 @@ export default function CryptoTopUpSection() {
       return;
     }
 
-    if (!resolvedAmount || resolvedAmount < 5) {
-      errorToast("Minimum top-up amount is $5.");
+    if (!resolvedAmount || resolvedAmount < minAmountUsd) {
+      errorToast(`Minimum top-up amount is $${minAmountLabel}.`);
       return;
     }
 
@@ -271,7 +290,7 @@ export default function CryptoTopUpSection() {
                 <strong>Choose your amount</strong>
                 <p>
                   Select a preset or enter a custom amount. Minimum top-up is{" "}
-                  <span className="topup-highlight">$5 USD</span>.
+                  <span className="topup-highlight">${minAmountLabel} USD</span>.
                 </p>
               </div>
             </li>
@@ -385,10 +404,10 @@ export default function CryptoTopUpSection() {
             <label className="crypto-custom-label">Custom amount (USD)</label>
             <input
               type="number"
-              min="5"
+              min={minAmountUsd}
               step="0.01"
               className="crypto-custom-input"
-              placeholder="Minimum $5"
+              placeholder={`Minimum $${minAmountLabel}`}
               value={customAmount}
               onChange={(e) => setCustomAmount(e.target.value)}
             />
