@@ -2,13 +2,22 @@ import { errorToast } from "../../../helper/Toaster";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { loginUser } from "../../../services/Auth/AuthService";
 
 import "./Login.css";
 
+function getSafeReturnPath(returnUrl) {
+  if (!returnUrl || !returnUrl.startsWith("/") || returnUrl.startsWith("//")) {
+    return "/get-number";
+  }
+  return returnUrl;
+}
+
 export default function Login() {
   var navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl");
 
   const { login } = useContext(AuthContext);
 
@@ -89,7 +98,7 @@ export default function Login() {
       if (response.isSuccess) {
         //Update authentication state
         await login(data.token);
-        navigate("/get-number");
+        navigate(getSafeReturnPath(returnUrl));
       } else {
         errorToast(responseMessage);
       }

@@ -7,8 +7,13 @@ import { features, punchlines, AdminConst } from "../../../data/Static";
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 
+//Components
+import CryptoTopUpSection from "./CryptoTopUpSection";
+import TopUpOptionHeader from "./TopUpOptionHeader";
+
 //Css
 import "./TopUp.css";
+import "./CryptoTopUp.css";
 
 export default function TopUp() {
   const [pulse, setPulse] = useState(0);
@@ -31,7 +36,17 @@ export default function TopUp() {
       <div className="topup-glow topup-glow-2" />
 
       <div className="topup-container">
-        {/* Hero */}
+        <CryptoTopUpSection />
+
+        <section className="topup-option topup-option--manual">
+          <TopUpOptionHeader
+            optionNumber="2"
+            tag="Manual"
+            tagVariant="manual"
+            description="JazzCash, Easypaisa & bank transfer via support"
+          />
+
+        {/* Manual top-up hero */}
         <div className="topup-hero">
           <span className="topup-badge">
             <i className="fa-solid fa-credit-card"></i> Balance Top-Up
@@ -156,6 +171,9 @@ export default function TopUp() {
 
         {/* CTA */}
         <div className="topup-cta">
+          <p className="topup-option-cta-label">
+            Option 2 — contact support to top up manually
+          </p>
           <p>
             Ready to top up? <strong>One message is all it takes.</strong>
           </p>
@@ -168,6 +186,7 @@ export default function TopUp() {
             Top Up Now →
           </a>
         </div>
+        </section>
       </div>
     </div>
   );

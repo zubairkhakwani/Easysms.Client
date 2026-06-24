@@ -298,9 +298,10 @@ export default function Navbar() {
             onItemClick={() => handleNavClick()}
             items={[
               {
-                label: "Topup",
+                label: "Top Up",
                 to: "/topup",
-                icon: "fa-solid fa-wallet",
+                icon: "fa-brands fa-bitcoin",
+                badge: "New",
               },
               {
                 label: "Buy Temp Number",

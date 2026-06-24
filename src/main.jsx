@@ -32,6 +32,7 @@ import VerifyOtp from "./components/Auth/VerifyOtp/VerifyOtp.jsx";
 import ResetPassword from "./components/Auth/ResetPassword/ResetPassword.jsx";
 import PrivateRoute from "./components/Route/PrivateRoute.jsx";
 import TopUp from "./components/LandingPage/TopUp/TopUp.jsx";
+import TopUpInstantRedirect from "./components/LandingPage/TopUp/TopUpInstantRedirect.jsx";
 import ThankYouPage from "./components/LandingPage/Thankyou/ThankyouPage.jsx";
 import WelcomePage from "./components/Auth/Welcome/WelcomePage.jsx";
 import ServicesHub from "./components/LandingPage/Services/ServicesHub.jsx";
@@ -108,6 +109,7 @@ createRoot(document.getElementById("root")).render(
                 </Route>
 
                 <Route path="/topup" element={<TopUp />} />
+                <Route path="/topup/instant" element={<TopUpInstantRedirect />} />
 
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
