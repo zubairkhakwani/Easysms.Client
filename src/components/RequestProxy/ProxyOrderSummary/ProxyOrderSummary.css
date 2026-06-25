@@ -95,3 +95,7 @@
   line-height: 1.5;
   max-width: 260px;
 }
+
+.is-hidden {
+  display: none;
+}
