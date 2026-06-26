@@ -26,10 +26,11 @@ export const FormatterHelper = {
 
   formatPhoneNumber: (number) => {
     try {
-      const phone = parsePhoneNumber("+" + number);
+      const normalized = number.startsWith("+") ? number : `+${number}`;
+      const phone = parsePhoneNumber(normalized);
       return phone.formatInternational();
     } catch {
-      return number; // fallback to raw if invalid
+      return number;
     }
   },
 

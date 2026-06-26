@@ -4,6 +4,9 @@
 
 .recent-card {
   width: 100%;
+  min-width: 0;
+  container-type: inline-size;
+  container-name: activeOrdersPanel;
   background: var(--card-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -129,20 +132,32 @@
 
 .order-row-top {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: var(--space-2);
   margin-bottom: var(--space-2);
+}
+
+.order-row-top > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
 
 .order-service {
   font-size: var(--text-sm);
   font-weight: var(--fw-bold);
   color: var(--text-heading);
+  word-break: break-word;
 }
 
 .order-country {
   font-size: var(--text-ms);
   color: var(--text-heading);
+  word-break: break-word;
 }
 
 .order-price {
@@ -359,4 +374,52 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
+}
+
+/* =========================
+   NARROW PANEL (container query)
+========================= */
+
+@container activeOrdersPanel (max-width: 420px) {
+  .order-row-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .order-row-top > div:last-child {
+    align-self: flex-start;
+  }
+
+  .order-number {
+    font-size: clamp(0.95rem, 5cqi, 1.125rem);
+    word-break: break-all;
+  }
+
+  .sms-waiting {
+    font-size: var(--text-xs);
+    line-height: 1.45;
+  }
+
+  .sms-code {
+    flex-wrap: wrap;
+  }
+
+  .btn-action {
+    min-height: 36px;
+    min-width: 36px;
+  }
+}
+
+/* =========================
+   SMALL VIEWPORT FALLBACK
+========================= */
+
+@media (max-width: 480px) {
+  .recent-card {
+    padding: var(--space-4);
+  }
+
+  .orders-list {
+    padding-right: 0;
+  }
 }
