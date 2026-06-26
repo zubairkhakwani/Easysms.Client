@@ -76,10 +76,7 @@ createRoot(document.getElementById("root")).render(
               <Route element={<UserLayout />}>
                 <Route path="/" element={<App />} />
                 <Route path="/services" element={<ServicesHub />} />
-                <Route
-                  path="/services/:slug"
-                  element={<ServiceDetailPage />}
-                />
+                <Route path="/services/:slug" element={<ServiceDetailPage />} />
 
                 <Route element={<PrivateRoute />}>
                   <Route
@@ -109,7 +106,10 @@ createRoot(document.getElementById("root")).render(
                 </Route>
 
                 <Route path="/topup" element={<TopUp />} />
-                <Route path="/topup/instant" element={<TopUpInstantRedirect />} />
+                <Route
+                  path="/topup/instant"
+                  element={<TopUpInstantRedirect />}
+                />
 
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
