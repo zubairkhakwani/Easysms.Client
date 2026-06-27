@@ -203,6 +203,10 @@
   position: relative;
 }
 
+.password-container input {
+  padding-right: 44px;
+}
+
 .eye {
   position: absolute;
   right: var(--space-3);

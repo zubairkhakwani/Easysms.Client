@@ -25,7 +25,14 @@ import FormErrorMessage from "../../../../Shared/FormErrorMessage/FormErrorMessa
 //Css
 import "./AddPhysicalNumber.css";
 
-function parseLine(line) {
+function isValidNationalNumber(number, nationalNumberLength) {
+  if (!number || number.includes("+")) return false;
+  if (!/^\d+$/.test(number)) return false;
+  if (!nationalNumberLength) return false;
+  return number.length === nationalNumberLength;
+}
+
+function parseLine(line, selectedCountry) {
   const trimmed = line.trim();
   if (!trimmed) return null;
   const pipeIdx = trimmed.indexOf("|");
@@ -33,7 +40,8 @@ function parseLine(line) {
   const number = trimmed.slice(0, pipeIdx).trim();
   const url = trimmed.slice(pipeIdx + 1).trim();
   const valid =
-    number.length > 0 && /^https?:\/\/.+/.test(url);
+    isValidNationalNumber(number, selectedCountry?.nationalNumberLength) &&
+    /^https?:\/\/.+/.test(url);
   return { raw: trimmed, number, url, valid };
 }
 
@@ -134,6 +142,7 @@ export default function AddPhysicalNumber() {
   const [countryId, setCountryId] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
   const [countryOptions, setCountryOptions] = useState([]);
+  const [countries, setCountries] = useState([]);
   const [result, setResult] = useState(null);
   const [isAddingPhysicalNumbers, setIsAddingPhysicalNumbers] = useState(false);
 
@@ -141,19 +150,33 @@ export default function AddPhysicalNumber() {
   useEffect(() => {
     getPhysicalCountries()
       .then((list) => {
-        const options = (list ?? []).map((c) => ({
-          value: c.countryId,
-          label: c.countryName,
-        }));
-        setCountryOptions(options);
+        const items = list ?? [];
+        setCountries(items);
+        setCountryOptions(
+          items.map((c) => ({
+            value: c.countryId,
+            label: c.countryName,
+          })),
+        );
         // Leave countryId empty — admin must explicitly choose (no auto-select).
       })
       .catch(() => errorToast("Failed to load physical number countries."));
   }, []);
 
+  const selectedCountry = useMemo(
+    () => countries.find((c) => c.countryId === countryId) ?? null,
+    [countries, countryId],
+  );
+
+  const nationalNumberLength = selectedCountry?.nationalNumberLength ?? 0;
+
   const lines = useMemo(
-    () => text.split("\n").map(parseLine).filter(Boolean),
-    [text],
+    () =>
+      text
+        .split("\n")
+        .map((line) => parseLine(line, selectedCountry))
+        .filter(Boolean),
+    [text, selectedCountry],
   );
 
   //Add Physical Numbers
@@ -226,8 +249,8 @@ export default function AddPhysicalNumber() {
           <div className="banner-text">
             <p className="banner-title">Add Physical Numbers</p>
             <p className="banner-sub">
-              Select a country, then paste numbers — one entry per line. Each line
-              must follow the pattern below. Invalid lines are skipped on
+              Select a country, then paste national numbers only — one entry per
+              line. No country code and no + sign. Invalid lines are skipped on
               submit.
             </p>
           </div>
@@ -238,29 +261,109 @@ export default function AddPhysicalNumber() {
           <span className="pattern-hint-label">Required Format</span>
           <div className="pattern-hint-box">
             <span className="pattern-code">
-              13104447990|https://example.com/inbox/abc123
+              3104447990|https://example.com/inbox/abc123
             </span>
-            <span className="pattern-hint-note">number | inbox URL</span>
+            <div className="pattern-hint-legend">
+              <span className="pattern-legend-part">
+                <span className="pattern-legend-key">National number</span>
+                <span className="pattern-legend-sep" aria-hidden>
+                  |
+                </span>
+                <span className="pattern-legend-key">Inbox URL</span>
+              </span>
+              {nationalNumberLength > 0 ? (
+                <span className="pattern-legend-badge">
+                  {nationalNumberLength} digits
+                </span>
+              ) : (
+                <span className="pattern-legend-badge pattern-legend-badge--muted">
+                  Select country first
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Country for entire batch — stored on every inserted PhysicalNumber row */}
-        <div className="textarea-section">
-          <div className="textarea-header">
-            <span className="textarea-label">
-              Country <span className="required">*</span>
+        {/* Batch settings — country, price, expiry for entire paste */}
+        <div className="batch-settings-card">
+          <div className="batch-settings-header">
+            <span className="batch-settings-title">Batch settings</span>
+            <span className="batch-settings-sub">
+              Applies to every number in this paste
             </span>
           </div>
-          <SearchableSelect
-            value={countryId}
-            onChange={setCountryId}
-            placeholder="Select a country"
-            options={countryOptions}
-            className={!countryId ? "input-error" : ""}
-          />
-          {!countryId && (
-            <FormErrorMessage>Country is required — select one before submitting</FormErrorMessage>
-          )}
+
+          <div className="batch-settings-grid">
+            <div className="batch-settings-field">
+              <span className="textarea-label">
+                Country <span className="required">*</span>
+              </span>
+              <SearchableSelect
+                value={countryId}
+                onChange={setCountryId}
+                placeholder="Select a country"
+                options={countryOptions}
+                className={!countryId ? "input-error" : ""}
+              />
+              {selectedCountry && (
+                <span className="batch-field-hint batch-field-hint--emphasis">
+                  {selectedCountry.nationalNumberLength}-digit national number
+                  {" · "}+{selectedCountry.phoneCode}
+                </span>
+              )}
+              {!countryId && (
+                <FormErrorMessage>
+                  Country is required — select one before submitting
+                </FormErrorMessage>
+              )}
+            </div>
+
+            <div className="batch-settings-field">
+              <span className="textarea-label">
+                Price <span className="required">*</span>
+              </span>
+              <div className="price-input-wrap">
+                <span className="price-input-prefix" aria-hidden>
+                  $
+                </span>
+                <input
+                  className={`price-input price-input--prefixed ${price <= 0 ? "input-error" : ""}`}
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+              {price <= 0 && (
+                <FormErrorMessage>
+                  Please enter a valid price greater than 0
+                </FormErrorMessage>
+              )}
+            </div>
+
+            <div className="batch-settings-field">
+              <span className="textarea-label">
+                Expiry Date <span className="required">*</span>
+              </span>
+              <input
+                className={`price-input ${!expiresAt || expiresAt < minExpiryDateString ? "input-error" : ""}`}
+                type="date"
+                min={minExpiryDateString}
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.target.value)}
+              />
+              <span className="batch-field-hint">
+                Expires on this date (inclusive)
+              </span>
+              {(!expiresAt || expiresAt < minExpiryDateString) && (
+                <FormErrorMessage>
+                  Expiry date is required and must be after today
+                </FormErrorMessage>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Textarea */}
@@ -283,10 +386,10 @@ export default function AddPhysicalNumber() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder={
-              "13104447990|https://example.com/inbox/abc123\n" +
-              "13105557890|https://provider.example/sms/xyz456\n" +
-              "19175551234|https://another.example/page\n" +
-              "...\n\nOne number per line."
+              "3104447990|https://example.com/inbox/abc123\n" +
+              "3105557890|https://provider.example/sms/xyz456\n" +
+              "9175551234|https://another.example/page\n" +
+              "...\n\nNational number only — no country code, no +. One per line."
             }
             spellCheck={false}
             autoCorrect="off"
@@ -316,48 +419,9 @@ export default function AddPhysicalNumber() {
               {invalidLines.length}{" "}
               {invalidLines.length === 1 ? "line has" : "lines have"} invalid
               format and will be skipped
-            </FormErrorMessage>
-          )}
-        </div>
-
-        {/* Price */}
-        <div className="textarea-section">
-          <div className="textarea-header">
-            <span className="textarea-label">
-              Price <span className="required">*</span>
-            </span>
-          </div>
-          <input
-            className={`price-input ${price <= 0 ? "input-error" : ""}`}
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="0.00"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-          {price <= 0 && (
-            <FormErrorMessage>Please enter a valid price greater than 0</FormErrorMessage>
-          )}
-        </div>
-
-        {/* Expiry */}
-        <div className="textarea-section">
-          <div className="textarea-header">
-            <span className="textarea-label">
-              Expiry Date <span className="required">*</span>
-            </span>
-          </div>
-          <input
-            className={`price-input ${!expiresAt || expiresAt < minExpiryDateString ? "input-error" : ""}`}
-            type="date"
-            min={minExpiryDateString}
-            value={expiresAt}
-            onChange={(e) => setExpiresAt(e.target.value)}
-          />
-          {(!expiresAt || expiresAt < minExpiryDateString) && (
-            <FormErrorMessage>
-              Expiry date is required and must be after today
+              {nationalNumberLength > 0
+                ? ` (must be exactly ${nationalNumberLength} digits, digits only, no + or country code)`
+                : ""}
             </FormErrorMessage>
           )}
         </div>

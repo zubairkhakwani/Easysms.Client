@@ -125,15 +125,7 @@ export default function EarnWithUs() {
                     className="earn-spotlight-copy-btn"
                     onClick={handleCopy}
                   >
-                    {copied ? (
-                      <>
-                        <i className="fa-solid fa-check" /> Copied
-                      </>
-                    ) : (
-                      <>
-                        <i className="fa-solid fa-copy" /> Copy
-                      </>
-                    )}
+                    {copied ? "✓ Copied" : "Copy"}
                   </button>
                 </div>
               </div>

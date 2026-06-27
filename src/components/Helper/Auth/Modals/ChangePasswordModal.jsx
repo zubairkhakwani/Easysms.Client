@@ -108,12 +108,11 @@ function ChangePasswordModal({ isLoading, onClose, onConfirm }) {
                 className="rp-toggle-btn"
                 onClick={() => toggleVisibility(key)}
                 type="button"
+                aria-label={showPasswords[key] ? "Hide password" : "Show password"}
               >
-                {showPasswords[key] ? (
-                  <i className="fa-solid fa-eye "></i>
-                ) : (
-                  <i className="fa-solid fa-eye-slash "></i>
-                )}
+                <i
+                  className={`fa-solid ${showPasswords[key] ? "fa-eye" : "fa-eye-slash"}`}
+                />
               </button>
             </div>
 

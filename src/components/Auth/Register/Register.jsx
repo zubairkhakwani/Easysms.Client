@@ -22,6 +22,7 @@ import PhoneNudgeModal from "../../Helper/Auth/Modals/PhoneNudgeModal";
 //Css
 import "./Register.css";
 import Tooltip from "../../../portal/Tooltip";
+import PasswordVisibilityToggle from "../../Shared/PasswordVisibilityToggle/PasswordVisibilityToggle";
 
 export default function Register() {
   var navigate = useNavigate();
@@ -293,17 +294,10 @@ export default function Register() {
                 }
                 autoComplete="new-password"
               />
-              {passwordVisible ? (
-                <i
-                  className="fa-solid fa-eye  eye show-password"
-                  onClick={handlePasswordVisibility}
-                ></i>
-              ) : (
-                <i
-                  className="fa-solid fa-eye-slash eye hide-password"
-                  onClick={handlePasswordVisibility}
-                ></i>
-              )}
+              <PasswordVisibilityToggle
+                visible={passwordVisible}
+                onToggle={handlePasswordVisibility}
+              />
             </div>
             {formData.password && <StrengthBar password={formData.password} />}
             {errors.password && touched.password && (

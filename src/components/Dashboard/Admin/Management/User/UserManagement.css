@@ -300,6 +300,7 @@
 
 .um-table {
   width: 100%;
+  min-width: 1180px;
   border-collapse: collapse;
 }
 
@@ -313,6 +314,7 @@
   padding: var(--space-3) var(--space-5);
   border-bottom: 1px solid var(--divider);
   background: var(--bg-secondary);
+  white-space: nowrap;
 }
 
 .um-td {
@@ -429,9 +431,19 @@
   font-size: var(--text-base);
 }
 
+.um-col-joined,
 .um-joined {
+  white-space: nowrap;
+  min-width: 150px;
+  font-size: var(--text-base);
+  font-variant-numeric: tabular-nums;
   color: var(--text-mid);
-  font-size: var(--text-ms);
+}
+
+.um-col-actions {
+  white-space: nowrap;
+  min-width: 100px;
+  width: 1%;
 }
 
 /* ─── Action Dropdown ───────────────────────────────────── */

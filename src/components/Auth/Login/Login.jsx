@@ -6,6 +6,7 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { loginUser } from "../../../services/Auth/AuthService";
 
 import "./Login.css";
+import PasswordVisibilityToggle from "../../Shared/PasswordVisibilityToggle/PasswordVisibilityToggle";
 
 function getSafeReturnPath(returnUrl) {
   if (!returnUrl || !returnUrl.startsWith("/") || returnUrl.startsWith("//")) {
@@ -167,17 +168,10 @@ export default function Login() {
                   className={errors.password ? "input-error" : ""}
                   autoComplete="current-password"
                 />
-                {passwordVisible ? (
-                  <i
-                    className="fa-solid fa-eye  eye show-password"
-                    onClick={handlePasswordVisibility}
-                  ></i>
-                ) : (
-                  <i
-                    className="fa-solid fa-eye-slash eye hide-password"
-                    onClick={handlePasswordVisibility}
-                  ></i>
-                )}
+                <PasswordVisibilityToggle
+                  visible={passwordVisible}
+                  onToggle={handlePasswordVisibility}
+                />
               </div>
               <div
                 style={{

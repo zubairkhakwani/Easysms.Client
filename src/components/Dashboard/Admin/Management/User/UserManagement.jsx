@@ -1,5 +1,8 @@
 //React
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
+
+//Portal
+import { DropdownPortal } from "../../../../../portal/DropDownPortal";
 
 //Context
 import { AuthContext } from "../../../../../context/AuthContext";
@@ -27,6 +30,7 @@ import "./UserManagement.css";
 
 function ActionDropdown({ user, onAction }) {
   const [open, setOpen] = useState(false);
+  const close = useCallback(() => setOpen(false), []);
 
   const items = [
     { key: "topup", label: "Top Up Balance", icon: "💰", color: "cyan" },
@@ -34,27 +38,30 @@ function ActionDropdown({ user, onAction }) {
   ];
 
   return (
-    <div className="um-dropdown-wrap">
-      <button className="um-action-btn" onClick={() => setOpen((v) => !v)}>
-        Actions <span className="um-action-down-arrow">▾</span>
-      </button>
-      {open && (
-        <div className="um-dropdown">
-          {items.map((item) => (
-            <div
-              key={item.key}
-              className={`um-drop-item ${item.color}`}
-              onClick={() => {
-                setOpen(false);
-                onAction(item.key, user);
-              }}
-            >
-              <span>{item.icon}</span> {item.label}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <DropdownPortal
+      open={open}
+      onClose={close}
+      trigger={
+        <button className="um-action-btn" onClick={() => setOpen((v) => !v)}>
+          Actions <span className="um-action-down-arrow">▾</span>
+        </button>
+      }
+    >
+      <div className="um-dropdown">
+        {items.map((item) => (
+          <div
+            key={item.key}
+            className={`um-drop-item ${item.color}`}
+            onClick={() => {
+              close();
+              onAction(item.key, user);
+            }}
+          >
+            <span>{item.icon}</span> {item.label}
+          </div>
+        ))}
+      </div>
+    </DropdownPortal>
   );
 }
 
@@ -613,7 +620,10 @@ export default function UserManagement() {
                   "Joined",
                   "Actions",
                 ].map((h) => (
-                  <th key={h} className="um-th">
+                  <th
+                    key={h}
+                    className={`um-th${h === "#" ? " um-col-id" : ""}${h === "Joined" ? " um-col-joined" : ""}${h === "Actions" ? " um-col-actions" : ""}`}
+                  >
                     {h}
                   </th>
                 ))}
@@ -682,10 +692,10 @@ export default function UserManagement() {
                       {user.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="um-td um-joined">
+                  <td className="um-td um-joined um-col-joined">
                     {FormatterHelper.formatDateToLocal(user.joinedAt)}
                   </td>
-                  <td className="um-td">
+                  <td className="um-td um-col-actions">
                     <ActionDropdown user={user} onAction={openModal} />
                   </td>
                 </tr>

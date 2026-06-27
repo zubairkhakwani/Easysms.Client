@@ -28,6 +28,7 @@ import UpdatePhysicalNumberExpiryModal from "../../../../Helper/PhysicalNumber/M
 //Pagination
 import Paginations from "../../../../Shared/Pagination";
 import "../../../../Order/NumberHistory/NumberHistory.css";
+import "../User/UserManagement.css";
 
 const defaultFilters = {
   status: "0",

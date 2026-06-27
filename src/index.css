@@ -19,6 +19,8 @@ a {
    ============================================================ */
 
 :root {
+  color-scheme: dark;
+
   /* ----------------------------------------------------------
      BRAND ACCENTS — Electric Cyan (primary)
   ---------------------------------------------------------- */
@@ -574,6 +576,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* ── Form validation utilities (login, register, admin forms) ── */
 .input-error {
   border-color: var(--input-border-error) !important;
+}
+
+/* Dark-theme autofill — browsers force a light fill without this */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--input-text) !important;
+  caret-color: var(--input-text);
+  box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+input:-webkit-autofill:focus {
+  box-shadow: 0 0 0 1000px var(--input-bg-focus) inset !important;
 }
 
 .ss-trigger.input-error {

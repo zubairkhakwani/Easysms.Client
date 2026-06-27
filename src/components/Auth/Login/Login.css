@@ -89,3 +89,49 @@
 .forgot-link-row a:hover {
   text-decoration: underline;
 }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.form-group label {
+  font-size: var(--text-sm);
+  color: var(--input-label);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+}
+
+.form-group input {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  color: var(--input-text);
+  font-size: var(--text-sm);
+  font-family: var(--font);
+  outline: none;
+  transition:
+    border var(--transition),
+    box-shadow var(--transition);
+  width: 100%;
+}
+
+.form-group input:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
+}
+
+.form-group input.input-error {
+  border-color: var(--border-error);
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 44px;
+}
