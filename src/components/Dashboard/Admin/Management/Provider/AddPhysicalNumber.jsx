@@ -119,11 +119,20 @@ function ResultModal({ result, onClose }) {
   );
 }
 
+function toDateString(date) {
+  return date.toLocaleDateString("en-CA");
+}
+
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+const minExpiryDateString = toDateString(tomorrow);
+
 /* ── Main Page ── */
 export default function AddPhysicalNumber() {
   const [text, setText] = useState("");
   const [price, setPrice] = useState(0);
   const [countryId, setCountryId] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
   const [countryOptions, setCountryOptions] = useState([]);
   const [result, setResult] = useState(null);
   const [isAddingPhysicalNumbers, setIsAddingPhysicalNumbers] = useState(false);
@@ -174,6 +183,10 @@ export default function AddPhysicalNumber() {
       errorToast("Please select a country for this batch.");
       return;
     }
+    if (!expiresAt || expiresAt < minExpiryDateString) {
+      errorToast("Please select an expiry date after today.");
+      return;
+    }
     setIsAddingPhysicalNumbers(true);
 
     try {
@@ -181,6 +194,7 @@ export default function AddPhysicalNumber() {
         Numbers: uniqueValidLines.map((l) => l.raw).join("\n"),
         price,
         countryId,
+        expiresAt,
       };
       let response = await addPhysical(payload);
 
@@ -327,6 +341,27 @@ export default function AddPhysicalNumber() {
           )}
         </div>
 
+        {/* Expiry */}
+        <div className="textarea-section">
+          <div className="textarea-header">
+            <span className="textarea-label">
+              Expiry Date <span className="required">*</span>
+            </span>
+          </div>
+          <input
+            className={`price-input ${!expiresAt || expiresAt < minExpiryDateString ? "input-error" : ""}`}
+            type="date"
+            min={minExpiryDateString}
+            value={expiresAt}
+            onChange={(e) => setExpiresAt(e.target.value)}
+          />
+          {(!expiresAt || expiresAt < minExpiryDateString) && (
+            <FormErrorMessage>
+              Expiry date is required and must be after today
+            </FormErrorMessage>
+          )}
+        </div>
+
         {/* Actions */}
         <div className="action-row">
           <button
@@ -336,6 +371,8 @@ export default function AddPhysicalNumber() {
               price <= 0 ||
               uniqueValidLines.length === 0 ||
               !countryId ||
+              !expiresAt ||
+              expiresAt < minExpiryDateString ||
               isAddingPhysicalNumbers
             }
           >

@@ -14,6 +14,12 @@ export function PhysicalNumberActionDropdown({ physicalNumberId, onAction, isAct
       icon: "",
       color: "cyan",
     },
+    {
+      key: modalKeys.physicalNumberExpiry,
+      label: "Update expiry date",
+      icon: "",
+      color: "cyan",
+    },
   ];
 
   return (

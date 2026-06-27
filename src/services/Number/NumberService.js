@@ -43,3 +43,11 @@ export const togglePhysicalNumberActive = async (id) => {
   );
   return response.data;
 };
+
+export const updatePhysicalNumberExpiry = async (id, expiresAt) => {
+  const response = await httpClient.patch(
+    `/api/numbers/physical/${id}/expiry`,
+    { expiresAt },
+  );
+  return response.data;
+};

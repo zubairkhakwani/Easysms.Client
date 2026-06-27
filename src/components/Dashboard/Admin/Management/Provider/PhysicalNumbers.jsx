@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import {
   getAllPhysical,
   togglePhysicalNumberActive,
+  updatePhysicalNumberExpiry,
 } from "../../../../../services/Number/NumberService";
 import { getPhysicalCountries } from "../../../../../services/Provider/ProviderService";
 
@@ -22,6 +23,7 @@ import { PhysicalNumberActionDropdown } from "../../../../Helper/PhysicalNumber/
 
 //Modals
 import ToggleStatusModal from "../../../../Helper/ContactUs/Modal/ToggleStatusModal";
+import UpdatePhysicalNumberExpiryModal from "../../../../Helper/PhysicalNumber/Modal/UpdatePhysicalNumberExpiryModal";
 
 //Pagination
 import Paginations from "../../../../Shared/Pagination";
@@ -37,10 +39,12 @@ export function PhysicalNumbers() {
   const [physicalNumbers, setPhysicalNumbers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
+  const [isUpdatingExpiry, setIsUpdatingExpiry] = useState(false);
   const [modal, setModal] = useState("");
   const [selectedNumber, setSelectedNumber] = useState({
     id: "",
     isActive: true,
+    expiresAt: "",
   });
 
   // Draft filters — edited in the UI; applied only when user clicks Apply.
@@ -123,6 +127,7 @@ export function PhysicalNumbers() {
     setSelectedNumber({
       id: physicalNumberId,
       isActive: row?.isActive ?? true,
+      expiresAt: row?.expiresAt ?? "",
     });
     setModal(key);
   };
@@ -151,6 +156,41 @@ export function PhysicalNumbers() {
       errorToast("Failed to perform action");
     } finally {
       setIsToggling(false);
+    }
+  }
+
+  async function handleUpdatePhysicalNumberExpiry(expiresAt) {
+    setIsUpdatingExpiry(true);
+    try {
+      const response = await updatePhysicalNumberExpiry(
+        selectedNumber.id,
+        expiresAt,
+      );
+
+      if (response.isSuccess) {
+        const responseData = response.data;
+        setPhysicalNumbers((previous) =>
+          previous.map((item) =>
+            item.id === selectedNumber.id
+              ? {
+                  ...item,
+                  expiresAt: responseData.expiresAt,
+                  isExpired: responseData.isExpired,
+                  daysRemaining: responseData.daysRemaining,
+                }
+              : item,
+          ),
+        );
+
+        successTaost(response.message);
+        closeModal();
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to update expiry date");
+    } finally {
+      setIsUpdatingExpiry(false);
     }
   }
 
@@ -255,6 +295,9 @@ export function PhysicalNumbers() {
                   <th>Cancelled Count</th>
                   <th>Status</th>
                   <th>Active</th>
+                  <th>Expiry Date</th>
+                  <th>Days Remaining</th>
+                  <th>Expired</th>
                   <th>Created At</th>
                   <th>Sold At</th>
                   <th>Actions</th>
@@ -278,6 +321,17 @@ export function PhysicalNumbers() {
                         className={`ph-status ${r.isActive ? "Active" : "Cancelled"} `}
                       >
                         {r.isActive ? "Active for sale" : "Inactive"}
+                      </span>
+                    </td>
+                    <td className="ph-col-date">
+                      {FormatterHelper.formatDateToLocal(r.expiresAt)}
+                    </td>
+                    <td className="ph-col-id">{r.daysRemaining ?? 0}</td>
+                    <td>
+                      <span
+                        className={`ph-status ${r.isExpired ? "Cancelled" : "Active"}`}
+                      >
+                        {r.isExpired ? "Expired" : "No"}
                       </span>
                     </td>
                     <td className="ph-col-date">
@@ -343,6 +397,15 @@ export function PhysicalNumbers() {
             activeClass: "success",
             inactiveClass: "warning",
           }}
+        />
+      )}
+
+      {modal === modalKeys.physicalNumberExpiry && (
+        <UpdatePhysicalNumberExpiryModal
+          expiresAt={selectedNumber.expiresAt}
+          onClose={closeModal}
+          onConfirm={handleUpdatePhysicalNumberExpiry}
+          isLoading={isUpdatingExpiry}
         />
       )}
     </div>

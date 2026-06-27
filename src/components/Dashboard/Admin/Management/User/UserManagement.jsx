@@ -350,17 +350,21 @@ export default function UserManagement() {
           hasSource: hasSourceFilter,
           hasReferrer: hasReferrerFilter,
         });
-        let responseData = res.data;
-        setUsers(responseData.users.items ?? []);
-        setCount(responseData.users.count ?? 0);
+        if (!res.isSuccess) {
+          errorToast(res.message || "Failed to fetch users");
+          return;
+        }
+        const responseData = res.data;
+        setUsers(responseData?.users?.items ?? []);
+        setCount(responseData?.users?.count ?? 0);
         setSystemStats({
-          totalUsers: responseData.totalUsers,
-          totalActive: responseData.totalActive,
-          totalInActive: responseData.totalInActive,
-          totalBalance: responseData.totalBalance,
+          totalUsers: responseData?.totalUsers ?? 0,
+          totalActive: responseData?.totalActive ?? 0,
+          totalInActive: responseData?.totalInActive ?? 0,
+          totalBalance: responseData?.totalBalance ?? 0,
         });
       } catch {
-        errorToast("Failed to fetch recent numbers");
+        errorToast("Failed to fetch users");
       } finally {
         setIsLoading(false);
       }
@@ -548,9 +552,10 @@ export default function UserManagement() {
                 >
                   <i className="fa-solid fa-tag um-filter-chip-icon" aria-hidden />
                   <span>With source</span>
-                  {hasSourceFilter && (
-                    <i className="fa-solid fa-check um-filter-chip-check" aria-hidden />
-                  )}
+                  <i
+                    className={`fa-solid fa-check um-filter-chip-check ${hasSourceFilter ? "" : "um-filter-chip-check--hidden"}`}
+                    aria-hidden
+                  />
                 </button>
                 <button
                   type="button"
@@ -560,24 +565,26 @@ export default function UserManagement() {
                 >
                   <i className="fa-solid fa-user-group um-filter-chip-icon" aria-hidden />
                   <span>Referred</span>
-                  {hasReferrerFilter && (
-                    <i className="fa-solid fa-check um-filter-chip-check" aria-hidden />
-                  )}
+                  <i
+                    className={`fa-solid fa-check um-filter-chip-check ${hasReferrerFilter ? "" : "um-filter-chip-check--hidden"}`}
+                    aria-hidden
+                  />
                 </button>
               </div>
-              {hasActiveFilters && (
-                <>
-                  <span className="um-filter-divider" aria-hidden />
-                  <button
-                    type="button"
-                    className="um-filter-clear"
-                    onClick={clearFilters}
-                  >
-                    <i className="fa-solid fa-xmark" aria-hidden />
-                    Clear filters
-                  </button>
-                </>
-              )}
+              <span
+                className={`um-filter-clear-wrap ${hasActiveFilters ? "" : "um-filter-clear-wrap--hidden"}`}
+                aria-hidden={!hasActiveFilters}
+              >
+                <span className="um-filter-divider" aria-hidden />
+                <button
+                  type="button"
+                  className="um-filter-clear"
+                  onClick={clearFilters}
+                  tabIndex={hasActiveFilters ? 0 : -1}
+                >
+                  ✕ Clear filters
+                </button>
+              </span>
             </div>
           </div>
           <input

@@ -37,12 +37,30 @@ export const FormatterHelper = {
   formatDateToLocal: (date) => {
     if (!date) return "-";
 
+    const trimmed = String(date).trim();
+
+    // DateOnly / date picker values: "2026-06-28" — local calendar date, no time
+    const isoDateOnly = /^(\d{4})-(\d{2})-(\d{2})$/;
+    const isoDateMatch = trimmed.match(isoDateOnly);
+
+    if (isoDateMatch) {
+      const [, year, month, day] = isoDateMatch;
+      const localDate = new Date(+year, +month - 1, +day);
+      if (isNaN(localDate.getTime())) return "-";
+
+      return localDate.toLocaleString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    }
+
     let localDate;
 
     // Try dd.MM.yyyy or dd.MM.yyyy HH:mm:ss format first
     const ddMmYyyy =
       /^(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?$/;
-    const match = String(date).trim().match(ddMmYyyy);
+    const match = trimmed.match(ddMmYyyy);
 
     if (match) {
       const [, day, month, year, hours = "0", minutes = "0", seconds = "0"] =

@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-export const Base_Url = "https://api.easyotps.com";
-//export const Base_Url = "https://localhost:7265";
+//export const Base_Url = "https://api.easyotps.com";
+export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -257,6 +257,7 @@ export const modalKeys = {
   providerProfit: "provider-profit",
   referralCommission: "referral-commission",
   physicalNumberActive: "physical-number-active",
+  physicalNumberExpiry: "physical-number-expiry",
 };
 
 export const NumberStatus = [
