@@ -336,9 +336,24 @@ export default function RequestNumberForm({ onNewNumber }) {
           activationCost += data.activationCost;
         });
 
-        //For physical numbers we display users the popup so the user can copy and use them links
+        // Decrement availability for all premium number purchases
+        if (selectedProvider == 3) {
+          const purchasedCount = responseData.length;
+          setPhysicalNumberInfo((prev) => {
+            const nextCount = Math.max(0, (prev?.count ?? 0) - purchasedCount);
+            setQuantity((q) =>
+              nextCount <= 0 ? 0 : Math.min(q, nextCount),
+            );
+            if (nextCount <= 0) {
+              setPurchaseState(true);
+            }
+            return { ...prev, count: nextCount };
+          });
+        }
+
+        // Non-refundable: copy modal with inbox links
         if (selectedProvider == 3 && numberType === "physical") {
-          handlePhysicalNumberRequest(responseData.length, phoneNumber_Url, {
+          handlePhysicalNumberRequest(phoneNumber_Url, {
             numbersText: phoneNumber_Url.trim(),
           });
         }
@@ -356,12 +371,7 @@ export default function RequestNumberForm({ onNewNumber }) {
     }
   };
 
-  function handlePhysicalNumberRequest(count, phoneNumber_Url, numbersText) {
-    setPhysicalNumberInfo((prev) => ({
-      ...prev,
-      count: Math.max(0, prev.count - count),
-    }));
-
+  function handlePhysicalNumberRequest(phoneNumber_Url, numbersText) {
     copyPhysicalNumbers(phoneNumber_Url);
     setModal(numbersText);
   }
@@ -388,7 +398,9 @@ export default function RequestNumberForm({ onNewNumber }) {
             </label>
             <SearchableSelect
               value={selectedProvider ?? ""}
-              onChange={(val) => handleProviderChange({ target: { value: val } })}
+              onChange={(val) =>
+                handleProviderChange({ target: { value: val } })
+              }
               disabled={providers.length === 0}
               placeholder="Select provider"
               options={providers.map((p) => ({
@@ -450,11 +462,17 @@ export default function RequestNumberForm({ onNewNumber }) {
               Service
             </label>
             {isServiceLoading ? (
-              <SearchableSelect isLoading placeholder="Select service" options={[]} />
+              <SearchableSelect
+                isLoading
+                placeholder="Select service"
+                options={[]}
+              />
             ) : (
               <SearchableSelect
                 value={selectedService ?? ""}
-                onChange={(val) => handleServiceChange({ target: { value: val } })}
+                onChange={(val) =>
+                  handleServiceChange({ target: { value: val } })
+                }
                 disabled={selectedProvider == null}
                 placeholder={
                   selectedProvider == null
@@ -480,12 +498,18 @@ export default function RequestNumberForm({ onNewNumber }) {
               Country
             </label>
             {isCountryLoadinig ? (
-              <SearchableSelect isLoading placeholder="Select country" options={[]} />
+              <SearchableSelect
+                isLoading
+                placeholder="Select country"
+                options={[]}
+              />
             ) : (
               <SearchableSelect
                 id="country"
                 value={selectedCountry ?? ""}
-                onChange={(val) => handleCountryChange({ target: { value: val } })}
+                onChange={(val) =>
+                  handleCountryChange({ target: { value: val } })
+                }
                 disabled={selectedService == null}
                 placeholder={
                   selectedService == null
@@ -531,7 +555,9 @@ export default function RequestNumberForm({ onNewNumber }) {
                   return {
                     value: s.id,
                     label: name ? name : `${price} (${count} available)`,
-                    ...(name ? { sublabel: `${price} · ${count} available` } : {}),
+                    ...(name
+                      ? { sublabel: `${price} · ${count} available` }
+                      : {}),
                   };
                 })}
               />
