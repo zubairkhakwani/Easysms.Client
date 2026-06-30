@@ -31,6 +31,11 @@ export const topUpBalance = async (httpRequest) => {
   return response.data;
 };
 
+export const getUsdPkrRate = async () => {
+  const response = await httpClient.get(`/api/users/usd-pkr-rate`);
+  return response.data;
+};
+
 export const commissionWithdraw = async (userId, httpRequest) => {
   const response = await httpClient.post(
     `/api/users/${userId}/commission-withdraw`,

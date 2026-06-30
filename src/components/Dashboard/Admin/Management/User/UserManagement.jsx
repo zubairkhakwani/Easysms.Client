@@ -13,6 +13,9 @@ import { getAll, topUpBalance, commissionWithdraw } from "../../../../../service
 //Toaster
 import { successTaost, errorToast } from "../../../../../helper/Toaster";
 
+//Components
+import { TopupCurrencyCalculator } from "./TopupCurrencyCalculator";
+
 //Helper
 import { FormatterHelper } from "../../../../../helper/FormatterHelper";
 import { BalanceCorrectionReasons } from "../../../../../data/Static";
@@ -69,6 +72,7 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
   const [amount, setAmount] = useState("");
   const [correctionReason, setCorrectionReason] = useState("");
   const [correctionReasonText, setCorrectionReasonText] = useState("");
+  const [showCalculator, setShowCalculator] = useState(false);
   const presets = [5, 10, 25, 50];
 
   const isNegative = Number(amount) < 0;
@@ -121,12 +125,30 @@ function TopupModal({ user, isTopUp, onClose, onConfirm }) {
           ))}
         </div>
 
+        <button
+          type="button"
+          className="um-calc-toggle"
+          onClick={() => setShowCalculator((v) => !v)}
+        >
+          {showCalculator
+            ? "Hide PKR ↔ USD calculator"
+            : "Open PKR ↔ USD calculator"}
+        </button>
+
+        {showCalculator && (
+          <TopupCurrencyCalculator
+            usdAmount={amount}
+            onUsdChange={setAmount}
+          />
+        )}
+
         <label className="um-label">
           Custom Amount ($) <span className="required">*</span>
         </label>
         <input
           className="um-input"
-          type="number"
+          type="text"
+          inputMode="decimal"
           placeholder="0.00"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}

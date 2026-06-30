@@ -10,8 +10,31 @@ export const FormatterHelper = {
     return new Intl.NumberFormat(locale).format(num);
   },
 
+  truncateDecimals(value, decimals = 4) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) return null;
+    const factor = 10 ** decimals;
+    return Math.trunc(num * factor) / factor;
+  },
+
+  formatDecimal(value, decimals = 4) {
+    const truncated = FormatterHelper.truncateDecimals(value, decimals);
+    if (truncated === null) return "";
+    return String(truncated);
+  },
+
   formatCurrency: (number, currency = "USD", locale = "en-US") => {
-    const truncated = Math.trunc(number * 10000) / 10000;
+    const truncated = FormatterHelper.truncateDecimals(number, 4);
+
+    if (truncated === null) {
+      return new Intl.NumberFormat(locale, {
+        style: "currency",
+        currencyDisplay: "symbol",
+        currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(0);
+    }
 
     const decimals = truncated % 1 === 0 ? 0 : 4;
 
