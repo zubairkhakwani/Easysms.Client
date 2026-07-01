@@ -82,6 +82,8 @@ export default function ContactUs() {
           message: "",
         });
         navigate("/thankyou");
+      } else {
+        errorToast(response.message);
       }
     } catch {
       errorToast("Failed to submit form, please try later.");
