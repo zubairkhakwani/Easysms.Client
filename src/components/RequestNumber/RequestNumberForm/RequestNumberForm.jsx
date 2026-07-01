@@ -341,9 +341,7 @@ export default function RequestNumberForm({ onNewNumber }) {
           const purchasedCount = responseData.length;
           setPhysicalNumberInfo((prev) => {
             const nextCount = Math.max(0, (prev?.count ?? 0) - purchasedCount);
-            setQuantity((q) =>
-              nextCount <= 0 ? 0 : Math.min(q, nextCount),
-            );
+            setQuantity((q) => (nextCount <= 0 ? 0 : Math.min(q, nextCount)));
             if (nextCount <= 0) {
               setPurchaseState(true);
             }
