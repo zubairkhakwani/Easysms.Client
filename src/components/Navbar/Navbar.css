@@ -26,12 +26,6 @@
   transform: rotate(180deg);
 }
 
-.nav-dropdown-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 99;
-}
-
 .nav-dropdown {
   position: absolute;
   top: calc(100% + 8px);
@@ -287,6 +281,11 @@
   padding: 7px 14px 7px 8px;
   cursor: pointer;
   transition: background 0.2s;
+  font: inherit;
+  color: inherit;
+  width: auto;
+  max-width: 100%;
+  text-align: left;
 }
 
 .nav-user-badge:hover {
@@ -313,6 +312,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
 .nav-user-name {
@@ -321,6 +321,10 @@
   color: var(--text-heading);
   line-height: 1;
   margin-bottom: var(--space-1);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nav-user-balance {
@@ -448,6 +452,15 @@
     opacity: 1;
     transform: translateY(0);
     transition-delay: 0.61s;
+  }
+
+  .nav-user-name {
+    max-width: 140px;
+  }
+
+  .nav-dropdown {
+    max-height: min(70vh, 420px);
+    overflow-y: auto;
   }
 }
 

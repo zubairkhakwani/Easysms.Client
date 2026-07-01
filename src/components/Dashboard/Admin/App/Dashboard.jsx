@@ -2,10 +2,12 @@ import { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import Topbar from "../Topbar/Topbar";
 import { Outlet } from "react-router-dom";
+import "./AdminShared.css";
+import "../Overview/Overview.css";
 
 export default function AdminDashobard() {
   const [activePage, setActivePage] = useState("overview");
-  const [isSideBarOpen, setSidebarOpen] = useState(false);
+  const [isSideBarOpen, setSidebarOpen] = useState(true);
 
   function handleSideBarClosed() {
     setSidebarOpen(true);

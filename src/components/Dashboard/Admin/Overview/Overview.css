@@ -26,7 +26,7 @@
   background: var(--card);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
-  padding: var(--space-5) var(--space-8) var(--space-5) 110px;
+  padding: var(--space-5) var(--space-8) var(--space-5) var(--space-8);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -261,17 +261,6 @@
   gap: var(--space-4);
 }
 
-@media (max-width: 1400px) {
-  .stats-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (max-width: 900px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
 .stat-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -453,12 +442,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-5);
-}
-
-@media (max-width: 1100px) {
-  .bottom-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ── Info Panel ── */
@@ -771,17 +754,6 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--space-4);
-}
-
-@media (max-width: 1400px) {
-  .balances-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-@media (max-width: 900px) {
-  .balances-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 .balance-card {

@@ -1,5 +1,5 @@
 //React
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 
 //Context
@@ -36,6 +36,7 @@ export default function Navbar() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [actionOpen, setActionOpen] = useState(false);
+  const userMenuRef = useRef(null);
   const [modal, setModal] = useState("");
   const [isPasswordChanging, setIsPasswordChanging] = useState(false);
 
@@ -103,6 +104,25 @@ export default function Navbar() {
     setMenuOpen((prev) => !prev);
   };
 
+  const closeUserMenu = () => setActionOpen(false);
+
+  useEffect(() => {
+    if (!actionOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setActionOpen(false);
+    };
+    const onPointerDown = (e) => {
+      if (userMenuRef.current?.contains(e.target)) return;
+      closeUserMenu();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onPointerDown);
+    };
+  }, [actionOpen]);
+
   if (!isAuthenticated) {
     authButtons = (
       <>
@@ -124,10 +144,13 @@ export default function Navbar() {
         {!currentUser ? (
           <UserBadgeSkeleton />
         ) : (
-          <div className="nav-user-wrapper">
-            <div
+          <div className="nav-user-wrapper" ref={userMenuRef}>
+            <button
+              type="button"
               className="nav-user-badge"
               onClick={() => setActionOpen((prev) => !prev)}
+              aria-expanded={actionOpen}
+              aria-haspopup="menu"
             >
               <div className="nav-user-avatar">{currentUser.avatar}</div>
               <div className="nav-user-info">
@@ -140,31 +163,45 @@ export default function Navbar() {
               <span className={`nav-user-arrow ${actionOpen ? "open" : ""}`}>
                 ▾
               </span>
-            </div>
+            </button>
 
             {actionOpen && (
-              <>
-                {/* <div
-                  className="nav-dropdown-overlay"
-                  // onClick={() => setActionOpen(false)}
-                /> */}
-                <div className="nav-dropdown">
+              <div className="nav-dropdown" role="menu">
                   {/* History Section */}
                   <span className="nav-dropdown-section-label">History</span>
-                  <Link className="nav-dropdown-item" to="/history/numbers">
+                  <Link
+                    className="nav-dropdown-item"
+                    to="/history/numbers"
+                    onClick={() => {
+                      closeUserMenu();
+                      handleNavClick();
+                    }}
+                  >
                     <i className="fa-solid fa-phone-volume"></i>
-                    <span onClick={() => handleNavClick()}>Number History</span>
+                    Number History
                   </Link>
-                  <Link className="nav-dropdown-item" to="/history/accounts">
+                  <Link
+                    className="nav-dropdown-item"
+                    to="/history/accounts"
+                    onClick={closeUserMenu}
+                  >
                     <i className="fa-solid fa-user-clock"></i>
                     Account History
                   </Link>
-                  <Link className="nav-dropdown-item" to="/history/mails">
+                  <Link
+                    className="nav-dropdown-item"
+                    to="/history/mails"
+                    onClick={closeUserMenu}
+                  >
                     <i className="fa-solid fa-envelope-open-text"></i>
                     Mail History
                   </Link>
 
-                  <Link className="nav-dropdown-item" to="/history/proxy">
+                  <Link
+                    className="nav-dropdown-item"
+                    to="/history/proxy"
+                    onClick={closeUserMenu}
+                  >
                     <i className="fa-solid fa-network-wired"></i>
                     My Active Proxies
                   </Link>
@@ -176,7 +213,7 @@ export default function Navbar() {
                   <Link
                     className="nav-dropdown-item"
                     to="/history/transactions"
-                    onClick={() => setActionOpen(false)}
+                    onClick={closeUserMenu}
                   >
                     <i className="fa-solid fa-receipt"></i>
                     Transaction History
@@ -184,31 +221,35 @@ export default function Navbar() {
                   <Link
                     className="nav-dropdown-item"
                     to="/referral-stats"
-                    onClick={() => setActionOpen(false)}
+                    onClick={closeUserMenu}
                   >
                     <i className="fa-solid fa-chart-pie"></i>
                     Referral Stats
                   </Link>
-                  <span
+                  <button
+                    type="button"
                     className="nav-dropdown-item"
-                    onClick={() => handleOpenModal(modalKeys.changePassword)}
+                    onClick={() => {
+                      closeUserMenu();
+                      handleOpenModal(modalKeys.changePassword);
+                    }}
                   >
                     <i className="fa-solid fa-lock"></i>
                     Change Password
-                  </span>
+                  </button>
 
                   <div className="nav-dropdown-divider" />
 
                   {/* Danger Zone */}
                   <button
+                    type="button"
                     className="nav-dropdown-item danger"
                     onClick={handleLogout}
                   >
                     <i className="fa-solid fa-right-from-bracket"></i>
                     Logout
                   </button>
-                </div>
-              </>
+              </div>
             )}
           </div>
         )}

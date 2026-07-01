@@ -1,0 +1,309 @@
+/* =========================
+   ADMIN SHARED RESPONSIVE
+   All admin @media rules live here.
+========================= */
+
+/* ── Shell desktop (861px+) ── */
+@media (min-width: 861px) {
+  .adm-hamburger,
+  .adm-close {
+    display: none !important;
+  }
+
+  .topbar {
+    padding-left: var(--space-8);
+  }
+
+  .sidebar,
+  .sidebar.hidden {
+    transform: none !important;
+  }
+
+  .dashboard-main.collapsed {
+    margin-left: var(--sidebar-w);
+    max-width: calc(100% - var(--sidebar-w));
+  }
+}
+
+/* ── Shell (860px) ── */
+@media (max-width: 860px) {
+  .dashboard-main {
+    margin-left: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .topbar {
+    position: relative;
+    align-items: center;
+    padding: var(--space-5) var(--space-4);
+    padding-left: calc(var(--space-4) + 40px + var(--space-5));
+    min-height: 60px;
+    gap: var(--space-4);
+  }
+
+  .adm-hamburger {
+    display: flex;
+    left: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: var(--space-2);
+    margin: calc(var(--space-2) * -1);
+    box-sizing: content-box;
+  }
+
+  .topbar-left {
+    min-width: 0;
+    flex: 1;
+    padding-right: var(--space-2);
+  }
+
+  .topbar-title {
+    font-size: var(--text-base);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .topbar-subtitle {
+    display: none;
+  }
+
+  .topbar-right {
+    flex-shrink: 0;
+    gap: var(--space-3);
+    margin-left: var(--space-2);
+  }
+
+  .sidebar {
+    inset: 0;
+    width: auto;
+    z-index: calc(var(--z-sticky) + 1);
+    transition: transform var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar.hidden {
+    transform: translateX(-100%);
+  }
+
+  .sidebar:not(.hidden) {
+    transform: translateX(0);
+  }
+
+  .adm-close {
+    display: none;
+  }
+
+  .sidebar:not(.hidden) .adm-close {
+    display: flex;
+  }
+}
+
+/* ── Shell (480px) ── */
+@media (max-width: 480px) {
+  .topbar {
+    padding: var(--space-5) var(--space-3);
+    padding-left: calc(var(--space-3) + 40px + var(--space-4));
+    min-height: 56px;
+  }
+
+  .adm-hamburger {
+    left: var(--space-3);
+  }
+
+  .topbar-right .topbar-date {
+    display: none;
+  }
+}
+
+/* ── Page wrappers (600px) ── */
+@media (max-width: 600px) {
+  .ph-page,
+  .pp-page,
+  .add-numbers-page,
+  .overview-page {
+    padding: var(--space-4);
+    min-width: 0;
+  }
+}
+
+/* ── Shared filters (640px) ── */
+@media (max-width: 640px) {
+  .ph-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ph-filter-field,
+  .ph-filter-field--wide {
+    width: 100%;
+  }
+
+  .ph-filter-input,
+  .ph-filter-field--wide .ss-wrap,
+  .ph-filter-field--wide .ph-filter-input.ss-trigger {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .ph-filter-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .ph-apply-btn,
+  .ph-reset-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* ── Summary grids ── */
+@media (max-width: 1100px) {
+  .ph-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .ph-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Overview grids ── */
+/* !important overrides inline gridTemplateColumns on stats-grid in Overview.jsx */
+@media (max-width: 1400px) {
+  .stats-grid,
+  .balances-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .stats-grid,
+  .balances-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .balances-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-card {
+    padding: var(--space-4) var(--space-5);
+    min-width: 0;
+  }
+
+  .stat-card-body {
+    min-width: 0;
+  }
+
+  .stat-card-value {
+    font-size: var(--text-3xl);
+    overflow-wrap: anywhere;
+  }
+
+  .section-header-title {
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid,
+  .balances-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .balances-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card-value {
+    font-size: var(--text-2xl);
+  }
+
+  .stat-card-label {
+    word-break: break-word;
+  }
+
+  .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-divider {
+    display: none;
+  }
+
+  .filters-group {
+    width: 100%;
+  }
+
+  .filter-field {
+    width: 100%;
+  }
+}
+
+/* ── User management ── */
+@media (max-width: 640px) {
+  .um-header {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .um-table-header .adm-search-input {
+    width: 100%;
+  }
+
+  .um-filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .um-filter-divider {
+    display: none;
+  }
+
+  .um-filter-group {
+    width: 100%;
+  }
+
+  .um-filter-chip {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .um-filter-clear {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .um-calc-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Add physical numbers ── */
+@media (max-width: 640px) {
+  .batch-settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-numbers-banner {
+    flex-direction: column;
+  }
+
+  .pattern-hint-legend {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

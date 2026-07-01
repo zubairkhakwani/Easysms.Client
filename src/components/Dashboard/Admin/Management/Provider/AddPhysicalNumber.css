@@ -254,12 +254,6 @@
   min-width: 0;
 }
 
-@media (max-width: 640px) {
-  .batch-settings-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* ── Textarea section ── */
 .textarea-section {
   display: flex;

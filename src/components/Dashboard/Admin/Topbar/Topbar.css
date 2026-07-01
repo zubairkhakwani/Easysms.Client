@@ -1,5 +1,5 @@
 .adm-hamburger {
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: space-between;
   width: 40px;
@@ -45,14 +45,4 @@
 
 .adm-close {
   display: none;
-}
-
-@media (max-width: 860px) {
-  .adm-close {
-    display: flex;
-  }
-  .sidebar {
-    inset: 0;
-    width: auto;
-  }
 }

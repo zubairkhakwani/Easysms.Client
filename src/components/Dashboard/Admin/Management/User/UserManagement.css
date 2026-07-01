@@ -262,36 +262,6 @@
   border-color: var(--error-border);
 }
 
-@media (max-width: 640px) {
-  .um-table-header .adm-search-input {
-    width: 100%;
-  }
-
-  .um-filter-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-2);
-  }
-
-  .um-filter-divider {
-    display: none;
-  }
-
-  .um-filter-group {
-    width: 100%;
-  }
-
-  .um-filter-chip {
-    flex: 1;
-    justify-content: center;
-  }
-
-  .um-filter-clear {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
 .um-table-title {
   font-size: var(--text-base);
   font-weight: var(--fw-bold);
@@ -947,10 +917,4 @@
   font-size: var(--text-xs);
   color: var(--text-dim);
   line-height: 1.4;
-}
-
-@media (max-width: 480px) {
-  .um-calc-row {
-    grid-template-columns: 1fr;
-  }
 }
