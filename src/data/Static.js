@@ -347,41 +347,41 @@ export const BalanceCorrectionReasons = [
   {
     displayName: "Incorrect Amount Entry",
     label: "IncorrectAmountEntry",
-    value: 1,
+    value: "1",
   },
   {
     displayName: "Duplicate Transaction Entry",
     label: "DuplicateTransactionEntry",
-    value: 2,
+    value: "2",
   },
   {
     displayName: "Credited To Wrong User",
     label: "CreditedToWrongUser",
-    value: 3,
-  },
-  {
-    displayName: "Service Not Delivered",
-    label: "ServiceNotDelivered",
-    value: 4,
+    value: "3",
   },
   {
     displayName: "Overcharge Correction",
     label: "OverchargeCorrection",
-    value: 5,
+    value: "4",
   },
   {
     displayName: "Test Entry Reversal",
     label: "TestEntryReversal",
-    value: 5,
+    value: "5",
   },
   {
     displayName: "Admin Manual Adjustment",
     label: "AdminManualAdjustment",
-    value: 6,
+    value: "6",
   },
   {
     displayName: "Withdraw",
     label: "Withdraw",
-    value: 7,
+    value: "7",
+  },
+  {
+    displayName: "Wrong Value",
+    label: "Wronggg",
+    value: "8",
   },
 ];
