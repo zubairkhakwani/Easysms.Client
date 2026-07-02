@@ -1,3 +1,80 @@
+/* ── Topbar base ── */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-5) var(--space-8) var(--space-5) var(--space-8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.topbar-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar-title {
+  font-size: var(--text-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-heading);
+  letter-spacing: var(--ls-tight);
+}
+
+.topbar-subtitle {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  font-weight: var(--fw-regular);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.topbar-date {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  font-weight: var(--fw-regular);
+  white-space: nowrap;
+}
+
+.topbar-notification {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: var(--text-base);
+  position: relative;
+  transition: background var(--transition);
+}
+
+.topbar-notification:hover {
+  background: var(--card-hover);
+}
+
+.notif-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--bg);
+  animation: pulse-glow 2.5s infinite;
+}
+
 .adm-hamburger {
   display: none;
   flex-direction: column;
@@ -45,4 +122,79 @@
 
 .adm-close {
   display: none;
+}
+
+/* ── Topbar desktop (861px+) ── */
+@media (min-width: 861px) {
+  .adm-hamburger,
+  .adm-close {
+    display: none !important;
+  }
+
+  .topbar {
+    padding-left: var(--space-8);
+  }
+}
+
+/* ── Topbar mobile (860px) ── */
+@media (max-width: 860px) {
+  .topbar {
+    position: relative;
+    align-items: center;
+    padding: var(--space-5) var(--space-4);
+    padding-left: calc(var(--space-4) + 40px + var(--space-5));
+    min-height: 60px;
+    gap: var(--space-4);
+  }
+
+  .adm-hamburger {
+    display: flex;
+    left: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: var(--space-2);
+    margin: calc(var(--space-2) * -1);
+    box-sizing: content-box;
+  }
+
+  .topbar-left {
+    min-width: 0;
+    flex: 1;
+    padding-right: var(--space-2);
+  }
+
+  .topbar-title {
+    font-size: var(--text-base);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .topbar-subtitle {
+    display: none;
+  }
+
+  .topbar-right {
+    flex-shrink: 0;
+    gap: var(--space-3);
+    margin-left: var(--space-2);
+  }
+}
+
+/* ── Topbar compact (480px) ── */
+@media (max-width: 480px) {
+  .topbar {
+    padding: var(--space-5) var(--space-3);
+    padding-left: calc(var(--space-3) + 40px + var(--space-4));
+    min-height: 56px;
+  }
+
+  .adm-hamburger {
+    left: var(--space-3);
+  }
+
+  .topbar-right .topbar-date {
+    display: none;
+  }
 }

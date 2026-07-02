@@ -48,6 +48,7 @@ import AddPhysicalNumber from "./components/Dashboard/Admin/Management/Provider/
 import ProviderHistory from "./components/Dashboard/Admin/Provider/ProviderHistory.jsx";
 import ActiveNumbers from "./components/Dashboard/Admin/Provider/ActiveNumbers.jsx";
 import AdminActiveProxies from "./components/Dashboard/Admin/Provider/AdminActiveProxies.jsx";
+import AdminIpReplacementLedger from "./components/Dashboard/Admin/Provider/AdminIpReplacementLedger.jsx";
 import Deposits from "./components/Dashboard/Admin/Management/Deposit/Deposits.jsx";
 import ContactUs from "./components/Dashboard/Admin/Management/ContactUs/ContactUs.jsx";
 import Platforms from "./components/Dashboard/Admin/Account/Platform/Platforms.jsx";
@@ -205,6 +206,10 @@ createRoot(document.getElementById("root")).render(
                       <Route
                         path="active-proxies"
                         element={<AdminActiveProxies />}
+                      />
+                      <Route
+                        path="ip-replacement-ledger"
+                        element={<AdminIpReplacementLedger />}
                       />
                     </Route>
 

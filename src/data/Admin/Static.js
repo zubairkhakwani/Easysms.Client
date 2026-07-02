@@ -94,6 +94,13 @@ export const navItems = [
         url: "active-proxies",
         permission: Permissions.ViewActiveProxies,
       },
+      {
+        icon: "↻",
+        label: "IP Replacement Ledger",
+        id: "ipReplacementLedger",
+        url: "ip-replacement-ledger",
+        permission: Permissions.ViewActiveProxies,
+      },
     ],
   },
   {

@@ -33,6 +33,13 @@ export const getAllActiveProxies = async (httpRequest) => {
   return response.data;
 };
 
+export const getProxyIpReplacements = async (httpRequest) => {
+  const response = await httpClient.get(
+    `/api/orders/proxy/ip-replacements?pageNumber=${httpRequest.pageNo}&pageSize=${httpRequest.pageSize}&keyword=${httpRequest.filters?.keyword ?? ""}`,
+  );
+  return response.data;
+};
+
 export const changeAuth = async (httpRequest) => {
   const response = await httpClient.post(`/api/proxy/change-auth`, httpRequest);
   return response.data;

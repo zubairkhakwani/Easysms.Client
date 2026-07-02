@@ -134,6 +134,7 @@
   align-items: center;
   gap: var(--space-3);
   flex: 1;
+  flex-wrap: wrap;
 }
 .map__order-meta-item {
   display: flex;
@@ -149,6 +150,10 @@
   font-size: var(--text-sm);
   color: var(--text);
   font-weight: var(--fw-semibold);
+}
+.map__order-meta-val--email {
+  font-size: var(--text-xs);
+  word-break: break-all;
 }
 .map__order-meta-sep {
   width: 1px;

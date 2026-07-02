@@ -460,10 +460,11 @@ export default function RequestProxyForm({ onSummaryChange }) {
           disabled={!purchaseState}
           onClick={handleRequestProxy}
         >
-          <span
-            className={`ph-spinner ph-spinner-thick ph-spinner--light ${isRequestingProxy ? "" : "is-hidden"}`}
-          />
-          <span className={isRequestingProxy ? "is-hidden" : ""}>⚡ Get Proxy</span>
+          {isRequestingProxy ? (
+            <div className="ph-spinner ph-spinner-thick ph-spinner--light" />
+          ) : (
+            "⚡ Get Proxy"
+          )}
         </button>
       </div>
 

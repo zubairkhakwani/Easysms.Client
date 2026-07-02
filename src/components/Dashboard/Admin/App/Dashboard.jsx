@@ -3,7 +3,6 @@ import Sidebar from "../Sidebar/Sidebar";
 import Topbar from "../Topbar/Topbar";
 import { Outlet } from "react-router-dom";
 import "./AdminShared.css";
-import "../Overview/Overview.css";
 
 export default function AdminDashobard() {
   const [activePage, setActivePage] = useState("overview");

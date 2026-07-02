@@ -4,7 +4,7 @@ import { ProxyOrderActionDropdown } from "../ProxyHistory/DropwDown/ProxyOrderAc
 import { ProxyActionDropdown } from "../ProxyHistory/DropwDown/ProxyActionDropDown";
 import { CopyableCell } from "./CopyableCell";
 
-export function ProxyOrderGroup({ order, onAction }) {
+export function ProxyOrderGroup({ order, onAction, showUserInfo = false }) {
   const [open, setOpen] = useState(true);
   const proxies = order.proxies ?? [];
 
@@ -37,6 +37,22 @@ export function ProxyOrderGroup({ order, onAction }) {
                 <span className="map__order-meta-item">
                   <span className="map__order-meta-label">Country</span>
                   <span className="map__order-meta-val">{first.country}</span>
+                </span>
+              </>
+            )}
+            {showUserInfo && (order.userName || order.userEmail) && (
+              <>
+                <span className="map__order-meta-sep" />
+                <span className="map__order-meta-item">
+                  <span className="map__order-meta-label">User</span>
+                  <span className="map__order-meta-val">{order.userName || "—"}</span>
+                </span>
+                <span className="map__order-meta-sep" />
+                <span className="map__order-meta-item">
+                  <span className="map__order-meta-label">Email</span>
+                  <span className="map__order-meta-val map__order-meta-val--email">
+                    {order.userEmail || "—"}
+                  </span>
                 </span>
               </>
             )}

@@ -39,6 +39,7 @@ export default function ProxyHistory({
   fetchActiveProxies = getMyActiveProxies,
   pageTitle = "My Active Proxies",
   pageSubtitle = "View your purchased active proxies",
+  showUserInfo = false,
 }) {
   //Data
   const [myActiveProxies, setMyActiveProxies] = useState([]);
@@ -51,6 +52,7 @@ export default function ProxyHistory({
   });
 
   const [IpIds, setIpIds] = useState([]);
+  const [replaceTarget, setReplaceTarget] = useState(null);
 
   //Loading
   const [isLoading, setIsLoading] = useState(false);
@@ -126,7 +128,16 @@ export default function ProxyHistory({
     } else if (key === modalKeys.proxyAuthChange) {
       populateProxyAuthChange(orderNumber);
     } else if (key === modalKeys.replaceIp) {
-      setIpIds([orderNumber]);
+      const proxy = myActiveProxies
+        .flatMap((x) => x.proxies)
+        .find((p) => p.id === orderNumber);
+
+      if (!proxy?.ip) {
+        errorToast("Cannot replace IP: proxy IP is missing.");
+        return;
+      }
+
+      setReplaceTarget({ id: orderNumber, oldIp: proxy.ip });
     } else if (key === modalKeys.extendProxy) {
       setIpIds([orderNumber]);
 
@@ -261,9 +272,15 @@ ${text}`;
 
   //Handle Replace IP
   async function handleReplaceIp(request) {
+    if (!replaceTarget?.id || !replaceTarget?.oldIp) {
+      errorToast("Cannot replace IP: proxy details are missing.");
+      return;
+    }
+
     const payload = {
-      ...{ ids: IpIds },
-      ...{ ...request },
+      id: replaceTarget.id,
+      oldIp: replaceTarget.oldIp,
+      ...request,
     };
 
     setIsReplacingIps(true);
@@ -359,6 +376,7 @@ ${text}`;
                 key={order.orderNumber}
                 order={order}
                 onAction={handleActions}
+                showUserInfo={showUserInfo}
               />
             ))}
 
