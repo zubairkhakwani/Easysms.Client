@@ -45,8 +45,10 @@ export const changeAuth = async (httpRequest) => {
   return response.data;
 };
 
-export const replaceIps = async (httpRequest) => {
-  const response = await httpClient.post(`/api/proxy/replace`, httpRequest);
+export const replaceIps = async (formData) => {
+  const response = await httpClient.post(`/api/proxy/replace`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };
 

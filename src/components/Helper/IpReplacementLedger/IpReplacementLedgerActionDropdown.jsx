@@ -84,15 +84,21 @@ export function buildProxySellerSupportEmailUrl(row) {
   return buildGmailComposeUrl(subject, body);
 }
 
-export function IpReplacementLedgerActionDropdown({ row, onViewJson }) {
+export function IpReplacementLedgerActionDropdown({ row, onViewJson, onViewAttachments }) {
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
   const showSendMail = canSendSupportMail(row.status);
+  const showAttachments = (row.attachments?.length ?? 0) > 0;
   const gmailUrl = showSendMail ? buildProxySellerSupportEmailUrl(row) : "";
 
   const handleViewJson = () => {
     close();
     onViewJson(row);
+  };
+
+  const handleViewAttachments = () => {
+    close();
+    onViewAttachments(row);
   };
 
   return (
@@ -123,6 +129,26 @@ export function IpReplacementLedgerActionDropdown({ row, onViewJson }) {
           </span>{" "}
           View JSON
         </div>
+
+        {showAttachments && (
+          <div
+            className="um-drop-item cyan"
+            onClick={handleViewAttachments}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleViewAttachments();
+              }
+            }}
+          >
+            <span>
+              <i className="fa-solid fa-paperclip" />
+            </span>{" "}
+            View Attachments
+          </div>
+        )}
 
         {showSendMail && (
           <a

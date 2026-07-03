@@ -23,6 +23,7 @@ import { modalKeys } from "../../../data/Static";
 //Modals
 import { ProxyAuthChangeModal } from "../../Helper/Modals/Proxy/ProxyAuthChangeModal";
 import { ProxyIpConfirm } from "../../Helper/Modals/Proxy/ProxyIpConfirm";
+import AttachmentNudgeModal from "../../Helper/Modals/Proxy/AttachmentNudgeModal";
 import { ProxyExtendModal } from "../../Helper/Modals/Proxy/ProxyExtendModal";
 
 //Components
@@ -72,6 +73,9 @@ export default function ProxyHistory({
 
   //Modals
   const [modals, setModals] = useState(null);
+  const [showAttachmentNudge, setShowAttachmentNudge] = useState(false);
+  const [pendingReplaceRequest, setPendingReplaceRequest] = useState(null);
+  const [attachmentGuideSignal, setAttachmentGuideSignal] = useState(0);
 
   //Fetch active proxies
   const fetchMyActiveProxies = async () => {
@@ -231,6 +235,9 @@ ${text}`;
   //Close Modal
   function closeModal() {
     setModals(null);
+    setShowAttachmentNudge(false);
+    setPendingReplaceRequest(null);
+    setAttachmentGuideSignal(0);
   }
 
   //Handle Change Auth
@@ -271,24 +278,35 @@ ${text}`;
   }
 
   //Handle Replace IP
-  async function handleReplaceIp(request) {
+  function buildReplaceFormData(request) {
+    const formData = new FormData();
+    formData.append("Id", replaceTarget.id);
+    formData.append("OldIp", replaceTarget.oldIp);
+    formData.append("IssueType", request.issueType);
+    formData.append("Comment", request.comment ?? "");
+
+    (request.attachments ?? []).forEach((file) => {
+      formData.append("Attachments", file);
+    });
+
+    return formData;
+  }
+
+  async function submitReplaceIp(request) {
     if (!replaceTarget?.id || !replaceTarget?.oldIp) {
       errorToast("Cannot replace IP: proxy details are missing.");
       return;
     }
 
-    const payload = {
-      id: replaceTarget.id,
-      oldIp: replaceTarget.oldIp,
-      ...request,
-    };
-
     setIsReplacingIps(true);
 
     try {
-      let response = await replaceIps(payload);
+      const response = await replaceIps(buildReplaceFormData(request));
       if (response.isSuccess) {
         setModals(null);
+        setShowAttachmentNudge(false);
+        setPendingReplaceRequest(null);
+        setAttachmentGuideSignal(0);
         successTaost(response.message);
       } else {
         errorToast(response.message);
@@ -298,6 +316,36 @@ ${text}`;
     } finally {
       setIsReplacingIps(false);
     }
+  }
+
+  function handleReplaceIp(request) {
+    if (!replaceTarget?.id || !replaceTarget?.oldIp) {
+      errorToast("Cannot replace IP: proxy details are missing.");
+      return;
+    }
+
+    const files = request.attachments ?? [];
+    if (files.length === 0) {
+      setPendingReplaceRequest(request);
+      setShowAttachmentNudge(true);
+      return;
+    }
+
+    submitReplaceIp(request);
+  }
+
+  function handleAddAttachments() {
+    setShowAttachmentNudge(false);
+    setAttachmentGuideSignal((n) => n + 1);
+  }
+
+  async function handleSkipAttachments() {
+    if (!pendingReplaceRequest) {
+      setShowAttachmentNudge(false);
+      return;
+    }
+
+    await submitReplaceIp(pendingReplaceRequest);
   }
 
   //Handle Exptend Proxy
@@ -405,6 +453,14 @@ ${text}`;
           onClose={closeModal}
           onConfirm={handleReplaceIp}
           isSubmitting={isReplacingIps}
+          attachmentGuideSignal={attachmentGuideSignal}
+        />
+      )}
+
+      {showAttachmentNudge && (
+        <AttachmentNudgeModal
+          onAddAttachments={handleAddAttachments}
+          onSkip={handleSkipAttachments}
         />
       )}
 

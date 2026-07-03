@@ -4,6 +4,7 @@ import { FormatterHelper } from "../../../../helper/FormatterHelper";
 import { errorToast } from "../../../../helper/Toaster";
 import Paginations from "../../../Shared/Pagination";
 import { IpReplacementLedgerActionDropdown } from "../../../Helper/IpReplacementLedger/IpReplacementLedgerActionDropdown";
+import { IpReplacementAttachmentsModal } from "../../../Helper/IpReplacementLedger/IpReplacementAttachmentsModal";
 import "../Management/Deposit/Deposits.css";
 import "../Management/User/UserManagement.css";
 import "./IpReplacementLedger.css";
@@ -29,6 +30,7 @@ export default function IpReplacementLedger() {
   const [keyword, setKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedJson, setSelectedJson] = useState(null);
+  const [selectedAttachments, setSelectedAttachments] = useState(null);
 
   async function fetchRecords() {
     setIsLoading(true);
@@ -151,6 +153,7 @@ export default function IpReplacementLedger() {
                           <IpReplacementLedgerActionDropdown
                             row={row}
                             onViewJson={setSelectedJson}
+                            onViewAttachments={setSelectedAttachments}
                           />
                         </td>
                       </tr>
@@ -170,6 +173,13 @@ export default function IpReplacementLedger() {
           )}
         </div>
       </div>
+
+      {selectedAttachments && (
+        <IpReplacementAttachmentsModal
+          row={selectedAttachments}
+          onClose={() => setSelectedAttachments(null)}
+        />
+      )}
 
       {selectedJson && (
         <div className="irl-modal-overlay" onClick={() => setSelectedJson(null)}>
