@@ -563,9 +563,6 @@ body {
   color: var(--text-mid);
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
 .title-cell {
   max-width: 350px;
   white-space: nowrap;

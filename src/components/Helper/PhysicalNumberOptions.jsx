@@ -1,7 +1,16 @@
 //Css
 import "./PhysicalNumberOptions.css";
 
-export function PhysicalNumberOptions({ numberType, setNumberType }) {
+export function PhysicalNumberOptions({
+  numberType,
+  setNumberType,
+  physicalLinksActive = false,
+  premiumNumberLinksActive = false,
+}) {
+  // Per-country off => hide the "Number with link" card. Master switch off => show it but disabled.
+  const showPhysicalCard = physicalLinksActive;
+  const physicalDisabled = !premiumNumberLinksActive;
+
   return (
     <div className="number-type-section">
       <label className="field-label">
@@ -25,22 +34,34 @@ export function PhysicalNumberOptions({ numberType, setNumberType }) {
           </p>
         </div>
 
-        <div
-          className={`number-type-card ${numberType === "physical" ? "active" : ""}`}
-          onClick={() => setNumberType("physical")}
-        >
-          <div className="number-type-card-top">
-            <span className="number-type-title">Number with link</span>
-            <div
-              className={`number-type-dot ${numberType === "physical" ? "checked" : ""}`}
-            />
+        {showPhysicalCard && (
+          <div
+            className={`number-type-card ${numberType === "physical" ? "active" : ""} ${
+              physicalDisabled ? "number-type-card--disabled" : ""
+            }`}
+            onClick={
+              physicalDisabled ? undefined : () => setNumberType("physical")
+            }
+            aria-disabled={physicalDisabled}
+          >
+            <div className="number-type-card-top">
+              <span className="number-type-title">Number with link</span>
+              <div
+                className={`number-type-dot ${numberType === "physical" ? "checked" : ""}`}
+              />
+            </div>
+            <span className="number-type-badge badge-amber">Non-refundable</span>
+            <p className="number-type-desc">
+              Premium number with inbox link. you can access OTP via the provided
+              URL.
+            </p>
+            {physicalDisabled && (
+              <span className="number-type-unavailable">
+                Temporarily unavailable
+              </span>
+            )}
           </div>
-          <span className="number-type-badge badge-amber">Non-refundable</span>
-          <p className="number-type-desc">
-            Premium number with inbox link. you can access OTP via the provided
-            URL.
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );

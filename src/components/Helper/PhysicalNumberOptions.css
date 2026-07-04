@@ -52,6 +52,25 @@
   background: var(--accent-subtle);
 }
 
+/* Global physical-links switch is off: shown but not selectable */
+.number-type-card--disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.number-type-card--disabled:hover {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+.number-type-unavailable {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-warning);
+}
+
 /* =========================
    CARD HEADER
 ========================= */

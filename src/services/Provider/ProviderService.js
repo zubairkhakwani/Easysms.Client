@@ -118,3 +118,16 @@ export const configureProvidersProfit = async (httpRequest) => {
   const response = await httpClient.post("/api/providers/profit", httpRequest);
   return response.data;
 };
+
+export const getPhysicalNumberStatus = async () => {
+  const response = await httpClient.get("/api/providers/physical-status");
+  return response.data;
+};
+
+export const configurePhysicalNumberStatus = async (httpRequest) => {
+  const response = await httpClient.post(
+    "/api/providers/physical-status",
+    httpRequest,
+  );
+  return response.data;
+};

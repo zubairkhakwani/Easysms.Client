@@ -176,6 +176,14 @@ export const navItems = [
         badge: "New",
         permission: Permissions.ViewReferralCommission,
       },
+      {
+        icon: "⊞",
+        label: "Physical Number Status",
+        id: "physicalNumberStatus",
+        url: "physical-number-status",
+        badge: "New",
+        permission: Permissions.AddPhysicalNumbers,
+      },
     ],
   },
 ];

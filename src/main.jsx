@@ -56,6 +56,7 @@ import Categories from "./components/Dashboard/Admin/Account/Category/Categories
 import AccountGroups from "./components/Dashboard/Admin/Account/AccountGroup/AccountGroups.jsx";
 import ProviderProfit from "./components/Dashboard/Admin/Settings/ProviderProfit/ProviderProfit.jsx";
 import ReferralCommission from "./components/Dashboard/Admin/Settings/ReferralCommission/ReferralCommission.jsx";
+import PhysicalNumberStatus from "./components/Dashboard/Admin/Settings/PhysicalNumberStatus/PhysicalNumberStatus.jsx";
 
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -286,6 +287,19 @@ createRoot(document.getElementById("root")).render(
                       <Route
                         path="referral-commission"
                         element={<ReferralCommission />}
+                      />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermission={[Permissions.AddPhysicalNumbers]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="physical-number-status"
+                        element={<PhysicalNumberStatus />}
                       />
                     </Route>
                   </Route>

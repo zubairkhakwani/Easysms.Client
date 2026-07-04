@@ -124,6 +124,19 @@ export default function RequestNumberForm({ onNewNumber }) {
     fetchProviders();
   }, []);
 
+  // If physical-links is hidden (country off) or disabled (master switch off), don't keep it selected.
+  useEffect(() => {
+    if (selectedProvider != 3 || !physicalNumberInfo) return;
+
+    const canPickPhysical =
+      physicalNumberInfo.physicalLinksActive &&
+      physicalNumberInfo.premiumNumberLinksActive;
+
+    if (!canPickPhysical && numberType === "physical") {
+      setNumberType("virtual");
+    }
+  }, [physicalNumberInfo, selectedProvider, numberType]);
+
   function resetServices() {
     setServices([]);
     setSelectedService(null);
@@ -435,6 +448,8 @@ export default function RequestNumberForm({ onNewNumber }) {
           <PhysicalNumberOptions
             numberType={numberType}
             setNumberType={setNumberType}
+            physicalLinksActive={physicalNumberInfo.physicalLinksActive}
+            premiumNumberLinksActive={physicalNumberInfo.premiumNumberLinksActive}
           />
           {isPhysicalSummaryRefreshing ? (
             <PhysicalNumberSkelton variant="summary" numberType={numberType} />
