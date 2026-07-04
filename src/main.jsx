@@ -46,6 +46,7 @@ import Overview from "./components/Dashboard/Admin/Overview/Overview.jsx";
 import UserManagement from "./components/Dashboard/Admin/Management/User/UserManagement.jsx";
 import AddPhysicalNumber from "./components/Dashboard/Admin/Management/Provider/AddPhysicalNumber.jsx";
 import ProviderHistory from "./components/Dashboard/Admin/Provider/ProviderHistory.jsx";
+import UserActivationSummary from "./components/Dashboard/Admin/Provider/UserActivationSummary.jsx";
 import ActiveNumbers from "./components/Dashboard/Admin/Provider/ActiveNumbers.jsx";
 import AdminActiveProxies from "./components/Dashboard/Admin/Provider/AdminActiveProxies.jsx";
 import AdminIpReplacementLedger from "./components/Dashboard/Admin/Provider/AdminIpReplacementLedger.jsx";
@@ -250,13 +251,17 @@ createRoot(document.getElementById("root")).render(
                     <Route
                       element={
                         <PrivateRoute
-                          requiredPermission={[Permissions.ViewProviderHistory]}
+                          requiredPermissions={[Permissions.ViewProviderHistory]}
                         />
                       }
                     >
                       <Route
                         path="provider-history"
                         element={<ProviderHistory />}
+                      />
+                      <Route
+                        path="user-activation-summary"
+                        element={<UserActivationSummary />}
                       />
                     </Route>
 

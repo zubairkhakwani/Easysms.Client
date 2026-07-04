@@ -81,6 +81,13 @@ export const navItems = [
         permission: Permissions.ViewProviderHistory,
       },
       {
+        icon: "▤",
+        label: "User Activation History",
+        id: "userActivationSummary",
+        url: "user-activation-summary",
+        permission: Permissions.ViewProviderHistory,
+      },
+      {
         icon: "◈",
         label: "Active numbers",
         id: "activeNumbers",
@@ -96,7 +103,7 @@ export const navItems = [
       },
       {
         icon: "↻",
-        label: "IP Replacement Ledger",
+        label: "IP Ledger",
         id: "ipReplacementLedger",
         url: "ip-replacement-ledger",
         permission: Permissions.ViewActiveProxies,
@@ -173,7 +180,6 @@ export const navItems = [
         label: "Referral Commission",
         id: "referralCommission",
         url: "referral-commission",
-        badge: "New",
         permission: Permissions.ViewReferralCommission,
       },
       {

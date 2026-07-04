@@ -1,12 +1,29 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import Topbar from "../Topbar/Topbar";
 import { Outlet } from "react-router-dom";
+import { getUnresolvedIpReplacementCount } from "../../../../services/Proxy/ProxyService";
 import "./AdminShared.css";
 
 export default function AdminDashobard() {
   const [activePage, setActivePage] = useState("overview");
   const [isSideBarOpen, setSidebarOpen] = useState(true);
+  const [unresolvedLedgerCount, setUnresolvedLedgerCount] = useState(0);
+
+  const refreshUnresolvedLedgerCount = useCallback(async () => {
+    try {
+      const response = await getUnresolvedIpReplacementCount();
+      if (response.isSuccess) {
+        setUnresolvedLedgerCount(response.data?.count ?? 0);
+      }
+    } catch {
+      // Sidebar badge is non-critical; fail silently.
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshUnresolvedLedgerCount();
+  }, [refreshUnresolvedLedgerCount]);
 
   function handleSideBarClosed() {
     setSidebarOpen(true);
@@ -31,6 +48,7 @@ export default function AdminDashobard() {
         setActivePage={handleActivePage}
         isBarClosed={isSideBarOpen}
         onSideBarClosed={handleSideBarClosed}
+        unresolvedLedgerCount={unresolvedLedgerCount}
       />
       <div className={`dashboard-main ${isSideBarOpen ? "collapsed" : ""}`}>
         <Topbar
@@ -38,7 +56,7 @@ export default function AdminDashobard() {
           isSideBarOpened={isSideBarOpen}
           setSideBarOpened={handleSideBarOpen}
         />
-        <Outlet></Outlet>
+        <Outlet context={{ refreshUnresolvedLedgerCount }} />
       </div>
     </div>
   );

@@ -84,11 +84,17 @@ export function buildProxySellerSupportEmailUrl(row) {
   return buildGmailComposeUrl(subject, body);
 }
 
-export function IpReplacementLedgerActionDropdown({ row, onViewJson, onViewAttachments }) {
+export function IpReplacementLedgerActionDropdown({
+  row,
+  onViewJson,
+  onViewAttachments,
+  onToggleResolution,
+}) {
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
   const showSendMail = canSendSupportMail(row.status);
   const showAttachments = (row.attachments?.length ?? 0) > 0;
+  const isResolved = (row.resolutionStatus ?? "").toLowerCase() === "resolved";
   const gmailUrl = showSendMail ? buildProxySellerSupportEmailUrl(row) : "";
 
   const handleViewJson = () => {
@@ -99,6 +105,11 @@ export function IpReplacementLedgerActionDropdown({ row, onViewJson, onViewAttac
   const handleViewAttachments = () => {
     close();
     onViewAttachments(row);
+  };
+
+  const handleToggleResolution = () => {
+    close();
+    onToggleResolution(row);
   };
 
   return (
@@ -164,6 +175,24 @@ export function IpReplacementLedgerActionDropdown({ row, onViewJson, onViewAttac
             Send Mail
           </a>
         )}
+
+        <div
+          className="um-drop-item cyan"
+          onClick={handleToggleResolution}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleToggleResolution();
+            }
+          }}
+        >
+          <span>
+            <i className={`fa-solid ${isResolved ? "fa-clock" : "fa-check"}`} />
+          </span>{" "}
+          Mark as {isResolved ? "Unresolved" : "Resolved"}
+        </div>
       </div>
     </DropdownPortal>
   );

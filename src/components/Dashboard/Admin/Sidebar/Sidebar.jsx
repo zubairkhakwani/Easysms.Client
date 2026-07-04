@@ -18,6 +18,7 @@ export default function Sidebar({
   setActivePage,
   isBarClosed,
   onSideBarClosed,
+  unresolvedLedgerCount = 0,
 }) {
   return (
     <aside className={`sidebar ${isBarClosed ? "hidden" : ""}`}>
@@ -56,24 +57,38 @@ export default function Sidebar({
             <div key={section.section}>
               <p className="nav-section-label">{section.section}</p>
 
-              {visibleItems.map((item) => (
+              {visibleItems.map((item) => {
+                const showPendingBadge =
+                  item.id === "ipReplacementLedger" && unresolvedLedgerCount > 0;
+
+                return (
                 <Link key={item.id} to={item.url}>
                   <span
                     className={`nav-item ${
                       activePage === item.id ? "active" : ""
-                    }`}
+                    } ${showPendingBadge ? "nav-item--pending" : ""}`}
                     onClick={() => setActivePage(item.id)}
                   >
                     <span className="nav-item-icon">{item.icon}</span>
 
-                    {item.label}
+                    <span className="nav-item-label">{item.label}</span>
 
-                    {item.badge && (
+                    {showPendingBadge && (
+                      <span
+                        className="nav-item-badge nav-item-badge--pending"
+                        title={`${unresolvedLedgerCount} unresolved`}
+                      >
+                        {unresolvedLedgerCount > 99 ? "99+" : unresolvedLedgerCount}
+                      </span>
+                    )}
+
+                    {item.id !== "ipReplacementLedger" && item.badge && (
                       <span className="nav-item-badge">{item.badge}</span>
                     )}
                   </span>
                 </Link>
-              ))}
+              );
+              })}
             </div>
           );
         })}

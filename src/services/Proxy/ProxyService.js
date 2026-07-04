@@ -40,6 +40,20 @@ export const getProxyIpReplacements = async (httpRequest) => {
   return response.data;
 };
 
+export const getUnresolvedIpReplacementCount = async () => {
+  const response = await httpClient.get(
+    "/api/proxy/ip-replacements/unresolved-count",
+  );
+  return response.data;
+};
+
+export const toggleProxyIpReplacementResolved = async (id) => {
+  const response = await httpClient.post(
+    `/api/proxy/ip-replacements/${id}/toggle-resolved`,
+  );
+  return response.data;
+};
+
 export const changeAuth = async (httpRequest) => {
   const response = await httpClient.post(`/api/proxy/change-auth`, httpRequest);
   return response.data;

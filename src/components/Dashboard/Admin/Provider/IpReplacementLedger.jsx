@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
-import { getProxyIpReplacements } from "../../../../services/Proxy/ProxyService";
+import { useOutletContext } from "react-router-dom";
+import {
+  getProxyIpReplacements,
+  toggleProxyIpReplacementResolved,
+} from "../../../../services/Proxy/ProxyService";
 import { FormatterHelper } from "../../../../helper/FormatterHelper";
-import { errorToast } from "../../../../helper/Toaster";
+import { errorToast, successTaost } from "../../../../helper/Toaster";
+import { modalKeys } from "../../../../data/Static";
 import Paginations from "../../../Shared/Pagination";
 import { IpReplacementLedgerActionDropdown } from "../../../Helper/IpReplacementLedger/IpReplacementLedgerActionDropdown";
 import { IpReplacementAttachmentsModal } from "../../../Helper/IpReplacementLedger/IpReplacementAttachmentsModal";
+import ToggleStatusModal from "../../../Helper/ContactUs/Modal/ToggleStatusModal";
 import "../Management/Deposit/Deposits.css";
 import "../Management/User/UserManagement.css";
 import "./IpReplacementLedger.css";
@@ -22,15 +28,23 @@ function statusClass(status) {
   return `irl-status irl-status--${(status ?? "").toLowerCase()}`;
 }
 
+function resolutionClass(status) {
+  return `irl-status irl-status--${(status ?? "unresolved").toLowerCase()}`;
+}
+
 export default function IpReplacementLedger() {
+  const { refreshUnresolvedLedgerCount } = useOutletContext() ?? {};
   const [records, setRecords] = useState([]);
   const [count, setCount] = useState(0);
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [keyword, setKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isToggling, setIsToggling] = useState(false);
   const [selectedJson, setSelectedJson] = useState(null);
   const [selectedAttachments, setSelectedAttachments] = useState(null);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [modal, setModal] = useState("");
 
   async function fetchRecords() {
     setIsLoading(true);
@@ -57,6 +71,10 @@ export default function IpReplacementLedger() {
     fetchRecords();
   }, [pageNo, pageSize, keyword]);
 
+  useEffect(() => {
+    refreshUnresolvedLedgerCount?.();
+  }, [refreshUnresolvedLedgerCount]);
+
   const handleChangePage = (_event, newPage) => {
     setPageNo(newPage);
   };
@@ -65,6 +83,51 @@ export default function IpReplacementLedger() {
     setPageSize(parseInt(event.target.value, 10));
     setPageNo(0);
   };
+
+  const openResolutionModal = (row) => {
+    setSelectedRow(row);
+    setModal(modalKeys.ipReplacementResolution);
+  };
+
+  const closeModal = () => {
+    setModal("");
+    setSelectedRow(null);
+  };
+
+  async function handleToggleResolution() {
+    if (!selectedRow) return;
+
+    setIsToggling(true);
+    try {
+      const response = await toggleProxyIpReplacementResolved(selectedRow.id);
+
+      if (response.isSuccess) {
+        const responseData = response.data;
+        setRecords((previous) =>
+          previous.map((item) =>
+            item.id === selectedRow.id
+              ? {
+                  ...item,
+                  resolutionStatus: responseData.resolutionStatus,
+                  resolvedByName: responseData.resolvedByName,
+                  resolvedByEmail: responseData.resolvedByEmail,
+                  resolvedAt: responseData.resolvedAt,
+                }
+              : item,
+          ),
+        );
+        successTaost(response.message);
+        refreshUnresolvedLedgerCount?.();
+        closeModal();
+      } else {
+        errorToast(response.message);
+      }
+    } catch {
+      errorToast("Failed to update resolution status.");
+    } finally {
+      setIsToggling(false);
+    }
+  }
 
   return (
     <>
@@ -106,6 +169,9 @@ export default function IpReplacementLedger() {
                       <th>New IP</th>
                       <th>IP Type</th>
                       <th>Status</th>
+                      <th>Resolution</th>
+                      <th>Resolved By</th>
+                      <th>Resolved At</th>
                       <th>Issue</th>
                       <th>Comment</th>
                       <th>Created At</th>
@@ -134,6 +200,26 @@ export default function IpReplacementLedger() {
                         <td>
                           <span className={statusClass(row.status)}>{row.status}</span>
                         </td>
+                        <td>
+                          <span className={resolutionClass(row.resolutionStatus)}>
+                            {row.resolutionStatus || "Unresolved"}
+                          </span>
+                        </td>
+                        <td className="um-user-cell">
+                          {row.resolvedByName ? (
+                            <div>
+                              <div className="um-user-name">{row.resolvedByName}</div>
+                              <div className="um-user-email">{row.resolvedByEmail}</div>
+                            </div>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                        <td className="irl-date">
+                          {row.resolvedAt
+                            ? FormatterHelper.formatDateToLocal(row.resolvedAt)
+                            : "—"}
+                        </td>
                         <td>{row.issueType || "—"}</td>
                         <td className="irl-comment" title={row.comment || undefined}>
                           {row.comment || "—"}
@@ -154,6 +240,7 @@ export default function IpReplacementLedger() {
                             row={row}
                             onViewJson={setSelectedJson}
                             onViewAttachments={setSelectedAttachments}
+                            onToggleResolution={openResolutionModal}
                           />
                         </td>
                       </tr>
@@ -200,6 +287,25 @@ export default function IpReplacementLedger() {
             </pre>
           </div>
         </div>
+      )}
+
+      {modal === modalKeys.ipReplacementResolution && selectedRow && (
+        <ToggleStatusModal
+          isActive={
+            (selectedRow.resolutionStatus ?? "").toLowerCase() === "resolved"
+          }
+          onClose={closeModal}
+          onConfirm={handleToggleResolution}
+          isLoading={isToggling}
+          config={{
+            activeLabel: "Resolved",
+            inactiveLabel: "Unresolved",
+            activeIcon: "✅",
+            inactiveIcon: "⏳",
+            activeClass: "success",
+            inactiveClass: "warning",
+          }}
+        />
       )}
     </>
   );

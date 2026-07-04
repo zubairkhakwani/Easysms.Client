@@ -36,6 +36,32 @@ export const getProvidersHistory = async ({
   return response.data;
 };
 
+export const getUserActivationSummary = async ({
+  startDate,
+  endDate,
+  provider,
+  pageNo,
+  pageSize,
+  user,
+  country = "",
+}) => {
+  const queryParams = new URLSearchParams({
+    start: startDate,
+    end: endDate,
+    provider: provider,
+    pageNumber: pageNo,
+    pageSize: pageSize,
+    user: user,
+    country: country,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  }).toString();
+
+  const response = await httpClient.get(
+    `/api/providers/user-activation-summary?${queryParams}`,
+  );
+  return response.data;
+};
+
 export const getPhysicalProviderInfo = async (countryId) => {
   const params = countryId ? `?countryId=${encodeURIComponent(countryId)}` : "";
   const response = await httpClient.get(`/api/providers/physical-info${params}`);

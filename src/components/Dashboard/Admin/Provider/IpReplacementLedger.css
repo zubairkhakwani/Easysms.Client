@@ -60,6 +60,18 @@
   border: 1px solid var(--success);
 }
 
+.irl-status--resolved {
+  color: var(--text-success);
+  background: var(--accent-green-subtle);
+  border: 1px solid var(--accent-green-border);
+}
+
+.irl-status--unresolved {
+  color: var(--text-warning);
+  background: var(--accent-orange-subtle);
+  border: 1px solid var(--accent-orange-border);
+}
+
 .irl-col-actions {
   white-space: nowrap;
   min-width: 100px;
