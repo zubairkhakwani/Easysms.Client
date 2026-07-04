@@ -54,6 +54,11 @@ export const toggleProxyIpReplacementResolved = async (id) => {
   return response.data;
 };
 
+export const getIpReplacementAttachment = async (url) => {
+  const response = await httpClient.get(url, { responseType: "blob" });
+  return response.data;
+};
+
 export const changeAuth = async (httpRequest) => {
   const response = await httpClient.post(`/api/proxy/change-auth`, httpRequest);
   return response.data;
