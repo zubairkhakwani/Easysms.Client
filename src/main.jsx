@@ -58,6 +58,7 @@ import AccountGroups from "./components/Dashboard/Admin/Account/AccountGroup/Acc
 import ProviderProfit from "./components/Dashboard/Admin/Settings/ProviderProfit/ProviderProfit.jsx";
 import ReferralCommission from "./components/Dashboard/Admin/Settings/ReferralCommission/ReferralCommission.jsx";
 import PhysicalNumberStatus from "./components/Dashboard/Admin/Settings/PhysicalNumberStatus/PhysicalNumberStatus.jsx";
+import AdminSystemIntegrity from "./components/Dashboard/Admin/Integrity/AdminSystemIntegrity.jsx";
 
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -141,6 +142,19 @@ createRoot(document.getElementById("root")).render(
                       }
                     >
                       <Route path="overview" element={<Overview />} />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewSystemIntegrity]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="system-integrity"
+                        element={<AdminSystemIntegrity />}
+                      />
                     </Route>
 
                     <Route

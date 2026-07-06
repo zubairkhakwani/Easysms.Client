@@ -50,6 +50,12 @@ a {
   --error-hover: #f47070;
   --error-subtle: rgba(242, 92, 92, 0.1);
   --error-border: rgba(242, 92, 92, 0.28);
+
+  --success: var(--accent-green);
+  --success-hover: var(--accent-green-hover);
+  --success-subtle: var(--accent-green-subtle);
+  --success-border: var(--accent-green-border);
+
   --accent-logout: #ef4444;
   --accent-logout-border: rgba(242, 92, 92, 0.3);
 

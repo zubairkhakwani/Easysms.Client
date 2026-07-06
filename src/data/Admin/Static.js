@@ -20,6 +20,7 @@ export const Permissions = Object.freeze({
   UpsertProviderProfit: "UpsertProviderProfit",
   ViewReferralCommission: "ViewReferralCommission",
   UpsertReferralCommission: "UpsertReferralCommission",
+  ViewSystemIntegrity: "ViewSystemIntegrity",
 });
 
 export const navItems = [
@@ -32,6 +33,13 @@ export const navItems = [
         id: "overview",
         active: true,
         url: "overview",
+      },
+      {
+        icon: "✓",
+        label: "System Integrity",
+        id: "systemIntegrity",
+        url: "system-integrity",
+        permission: Permissions.ViewSystemIntegrity,
       },
     ],
   },

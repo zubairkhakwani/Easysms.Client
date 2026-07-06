@@ -7,6 +7,10 @@ export default function Topbar({
 }) {
   const pageTitles = {
     overview: { title: "Overview", sub: "Real-time insights & key metrics" },
+    systemIntegrity: {
+      title: "System Integrity",
+      sub: "Monitor platform data consistency and detect financial or operational drift",
+    },
     analytics: { title: "Analytics", sub: "Detailed performance analytics" },
     reports: { title: "Reports", sub: "Generate & export reports" },
     physicalNumber: {

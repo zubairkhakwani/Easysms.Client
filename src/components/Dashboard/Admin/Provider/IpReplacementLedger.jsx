@@ -152,7 +152,9 @@ export default function IpReplacementLedger() {
           {!isLoading && records.length === 0 && (
             <div className="ph-state-row">
               <div className="ph-state-icon">⊟</div>
-              <span className="ph-state-text">No IP replacement records found</span>
+              <span className="ph-state-text">
+                No IP replacement records found
+              </span>
             </div>
           )}
 
@@ -167,6 +169,7 @@ export default function IpReplacementLedger() {
                       <th>Order ID</th>
                       <th>Old IP</th>
                       <th>New IP</th>
+                      <th>Elapsed</th>
                       <th>IP Type</th>
                       <th>Status</th>
                       <th>Resolution</th>
@@ -174,8 +177,8 @@ export default function IpReplacementLedger() {
                       <th>Resolved At</th>
                       <th>Issue</th>
                       <th>Comment</th>
+                      <th>Proxy Purchased At</th>
                       <th>Created At</th>
-                      <th>Elapsed</th>
                       <th>Updated At</th>
                       <th className="irl-col-actions">Actions</th>
                     </tr>
@@ -185,31 +188,49 @@ export default function IpReplacementLedger() {
                       <tr key={row.id}>
                         <td>
                           <div className="um-user-cell">
-                            <div className="um-avatar">{row.userAvatar || "?"}</div>
+                            <div className="um-avatar">
+                              {row.userAvatar || "?"}
+                            </div>
                             <div>
-                              <div className="um-user-name">{row.userName || "—"}</div>
-                              <div className="um-user-email">{row.userEmail || "—"}</div>
+                              <div className="um-user-name">
+                                {row.userName || "—"}
+                              </div>
+                              <div className="um-user-email">
+                                {row.userEmail || "—"}
+                              </div>
                             </div>
                           </div>
                         </td>
                         <td className="ph-col-id">{row.proxyId}</td>
                         <td className="ph-col-id">{row.providerOrderId}</td>
+
                         <td className="irl-mono">{row.oldIp || "—"}</td>
                         <td className="irl-mono">{row.newIp || "—"}</td>
+                        <td className="irl-elapsed">
+                          {FormatterHelper.formatElapsedSince(row.createdAt)}
+                        </td>
                         <td>{row.proxyType || "—"}</td>
                         <td>
-                          <span className={statusClass(row.status)}>{row.status}</span>
+                          <span className={statusClass(row.status)}>
+                            {row.status}
+                          </span>
                         </td>
                         <td>
-                          <span className={resolutionClass(row.resolutionStatus)}>
+                          <span
+                            className={resolutionClass(row.resolutionStatus)}
+                          >
                             {row.resolutionStatus || "Unresolved"}
                           </span>
                         </td>
                         <td className="um-user-cell">
                           {row.resolvedByName ? (
                             <div>
-                              <div className="um-user-name">{row.resolvedByName}</div>
-                              <div className="um-user-email">{row.resolvedByEmail}</div>
+                              <div className="um-user-name">
+                                {row.resolvedByName}
+                              </div>
+                              <div className="um-user-email">
+                                {row.resolvedByEmail}
+                              </div>
                             </div>
                           ) : (
                             "—"
@@ -221,15 +242,21 @@ export default function IpReplacementLedger() {
                             : "—"}
                         </td>
                         <td>{row.issueType || "—"}</td>
-                        <td className="irl-comment" title={row.comment || undefined}>
+                        <td
+                          className="irl-comment"
+                          title={row.comment || undefined}
+                        >
                           {row.comment || "—"}
+                        </td>
+                        <td className="irl-date">
+                          {FormatterHelper.formatDateToLocal(
+                            row.proxyPurchasedAt,
+                          )}
                         </td>
                         <td className="irl-date">
                           {FormatterHelper.formatDateToLocal(row.createdAt)}
                         </td>
-                        <td className="irl-elapsed">
-                          {FormatterHelper.formatElapsedSince(row.createdAt)}
-                        </td>
+
                         <td className="irl-date">
                           {row.updatedAt
                             ? FormatterHelper.formatDateToLocal(row.updatedAt)
@@ -269,7 +296,10 @@ export default function IpReplacementLedger() {
       )}
 
       {selectedJson && (
-        <div className="irl-modal-overlay" onClick={() => setSelectedJson(null)}>
+        <div
+          className="irl-modal-overlay"
+          onClick={() => setSelectedJson(null)}
+        >
           <div className="irl-modal" onClick={(e) => e.stopPropagation()}>
             <div className="irl-modal-header">
               <span>Provider response — Proxy #{selectedJson.proxyId}</span>

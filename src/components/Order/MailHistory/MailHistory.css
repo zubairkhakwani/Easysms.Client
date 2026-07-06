@@ -1,0 +1,17 @@
+.um-mail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.um-action-row {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+}
+
+.um-drop-item--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}

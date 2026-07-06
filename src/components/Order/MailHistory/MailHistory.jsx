@@ -8,12 +8,28 @@ import { reorderTempMail } from "../../../services/TempMail/TempMailService";
 //Helper
 import { FormatterHelper } from "../../../helper/FormatterHelper";
 import { CopyToClipboard } from "../../../helper/UtilityHelper";
+import { MailHistoryActionDropdown } from "../../Helper/MailHistory/MailHistoryActionDropdown";
 
 //Toaster
 import { errorToast, successTaost } from "../../../helper/Toaster";
 
 //Paginations
 import Paginations from "../../Shared/Pagination";
+
+//Css
+import "../AccountHistory/AccountHistory.css";
+import "../../Dashboard/Admin/Management/User/UserManagement.css";
+import "./MailHistory.css";
+
+const TABLE_HEADERS = [
+  "#",
+  "Mails",
+  "Service",
+  "Domain",
+  "Total Cost",
+  "Ordered At",
+  "Actions",
+];
 
 export default function MailHistory() {
   //Data
@@ -126,15 +142,11 @@ export default function MailHistory() {
         <table className="um-table">
           <thead>
             <tr>
-              {[
-                "#",
-                "Mails",
-                "Service",
-                "Domain",
-                "Total Cost",
-                "Ordered At",
-              ].map((h) => (
-                <th key={h} className="um-th">
+              {TABLE_HEADERS.map((h) => (
+                <th
+                  key={h}
+                  className={`um-th${h === "Actions" ? " um-col-actions" : ""}`}
+                >
                   {h}
                 </th>
               ))}
@@ -159,6 +171,7 @@ export default function MailHistory() {
                               </span>
 
                               <button
+                                type="button"
                                 className="um-copy-btn"
                                 onClick={() =>
                                   CopyToClipboard("Mail", item.mail)
@@ -166,17 +179,6 @@ export default function MailHistory() {
                               >
                                 📋
                               </button>
-
-                              {item.hasCode && (
-                                <button
-                                  className="um-copy-btn"
-                                  disabled={reorderingId === item.id}
-                                  onClick={() => handleReorder(item.id)}
-                                  title="Re-order this mail"
-                                >
-                                  {reorderingId === item.id ? "…" : "↻"}
-                                </button>
-                              )}
                             </div>
                           ))}
                         </div>
@@ -195,6 +197,28 @@ export default function MailHistory() {
 
                     <td className="um-td">
                       {FormatterHelper.formatDateToLocal(mail.orderedAt)}
+                    </td>
+
+                    <td className="um-td um-col-actions">
+                      {mailItems.length > 0 ? (
+                        <div className="um-mail-list">
+                          {mailItems.map((item) => (
+                            <div key={item.id} className="um-action-row">
+                              {item.hasCode ? (
+                                <MailHistoryActionDropdown
+                                  mailId={item.id}
+                                  onReorder={handleReorder}
+                                  disabled={reorderingId === item.id}
+                                />
+                              ) : (
+                                "—"
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        "—"
+                      )}
                     </td>
                   </tr>
                 );
