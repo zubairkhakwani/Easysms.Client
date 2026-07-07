@@ -10,6 +10,11 @@ export const getAllContactUs = async () => {
   return response.data;
 };
 
+export const getUnreadContactUsCount = async () => {
+  const response = await httpClient.get("/api/contactus/unread-count");
+  return response.data;
+};
+
 export const toggleContactUsMessage = async (id) => {
   const response = await httpClient.post(`/api/contactus/${id}/toggle-read`);
   return response.data;

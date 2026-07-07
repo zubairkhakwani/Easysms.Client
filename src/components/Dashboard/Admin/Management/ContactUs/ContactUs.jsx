@@ -1,5 +1,6 @@
 //React
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 //Services
 import {
@@ -27,6 +28,7 @@ import Paginations from "../../../../Shared/Pagination";
 import "./ContactUs.css";
 
 export default function ContactUs() {
+  const { refreshUnreadContactUsCount } = useOutletContext() ?? {};
   //Data
   const [contactUs, setContactUs] = useState([]);
   const [message, setMessage] = useState({
@@ -101,6 +103,7 @@ export default function ContactUs() {
 
         successTaost(response.message);
         setModal();
+        refreshUnreadContactUsCount?.();
       } else {
         errorToast(response.message);
       }
@@ -127,6 +130,10 @@ export default function ContactUs() {
                   replyByName: responseData.replyByName,
                   replyByEmail: responseData.replyByEmail,
                   replyAt: responseData.replyAt,
+                  isRead: responseData.isRead,
+                  readyByName: responseData.readyByName,
+                  readyByEmail: responseData.readyByEmail,
+                  readAt: responseData.readAt,
                 }
               : item,
           ),
@@ -134,6 +141,7 @@ export default function ContactUs() {
 
         successTaost(response.message);
         setModal();
+        refreshUnreadContactUsCount?.();
       } else {
         errorToast(response.message);
       }

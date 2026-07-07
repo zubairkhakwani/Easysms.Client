@@ -19,6 +19,7 @@ export default function Sidebar({
   isBarClosed,
   onSideBarClosed,
   unresolvedLedgerCount = 0,
+  unreadContactUsCount = 0,
 }) {
   return (
     <aside className={`sidebar ${isBarClosed ? "hidden" : ""}`}>
@@ -58,8 +59,13 @@ export default function Sidebar({
               <p className="nav-section-label">{section.section}</p>
 
               {visibleItems.map((item) => {
-                const showPendingBadge =
-                  item.id === "ipReplacementLedger" && unresolvedLedgerCount > 0;
+                const pendingCount =
+                  item.id === "ipReplacementLedger"
+                    ? unresolvedLedgerCount
+                    : item.id === "contactUs"
+                      ? unreadContactUsCount
+                      : 0;
+                const showPendingBadge = pendingCount > 0;
 
                 return (
                 <Link key={item.id} to={item.url}>
@@ -76,13 +82,13 @@ export default function Sidebar({
                     {showPendingBadge && (
                       <span
                         className="nav-item-badge nav-item-badge--pending"
-                        title={`${unresolvedLedgerCount} unresolved`}
+                        title={`${pendingCount} pending`}
                       >
-                        {unresolvedLedgerCount > 99 ? "99+" : unresolvedLedgerCount}
+                        {pendingCount > 99 ? "99+" : pendingCount}
                       </span>
                     )}
 
-                    {item.id !== "ipReplacementLedger" && item.badge && (
+                    {!showPendingBadge && item.badge && (
                       <span className="nav-item-badge">{item.badge}</span>
                     )}
                   </span>
