@@ -20,6 +20,7 @@ export default function Sidebar({
   onSideBarClosed,
   unresolvedLedgerCount = 0,
   unreadContactUsCount = 0,
+  myOpenTaskCount = 0,
 }) {
   return (
     <aside className={`sidebar ${isBarClosed ? "hidden" : ""}`}>
@@ -64,7 +65,9 @@ export default function Sidebar({
                     ? unresolvedLedgerCount
                     : item.id === "contactUs"
                       ? unreadContactUsCount
-                      : 0;
+                      : item.id === "myTasks"
+                        ? myOpenTaskCount
+                        : 0;
                 const showPendingBadge = pendingCount > 0;
 
                 return (

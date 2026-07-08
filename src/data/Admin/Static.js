@@ -21,6 +21,10 @@ export const Permissions = Object.freeze({
   ViewReferralCommission: "ViewReferralCommission",
   UpsertReferralCommission: "UpsertReferralCommission",
   ViewSystemIntegrity: "ViewSystemIntegrity",
+  ViewMyTasks: "ViewMyTasks",
+  ViewAllTasks: "ViewAllTasks",
+  ManageTasks: "ManageTasks",
+  UpdateTaskStatus: "UpdateTaskStatus",
 });
 
 export const navItems = [
@@ -40,6 +44,20 @@ export const navItems = [
         id: "systemIntegrity",
         url: "system-integrity",
         permission: Permissions.ViewSystemIntegrity,
+      },
+      {
+        icon: "☑",
+        label: "My Tasks",
+        id: "myTasks",
+        url: "my-tasks",
+        permission: Permissions.ViewMyTasks,
+      },
+      {
+        icon: "☰",
+        label: "All Tasks",
+        id: "allTasks",
+        url: "all-tasks",
+        permission: Permissions.ViewAllTasks,
       },
     ],
   },

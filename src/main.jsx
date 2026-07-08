@@ -59,6 +59,8 @@ import ProviderProfit from "./components/Dashboard/Admin/Settings/ProviderProfit
 import ReferralCommission from "./components/Dashboard/Admin/Settings/ReferralCommission/ReferralCommission.jsx";
 import PhysicalNumberStatus from "./components/Dashboard/Admin/Settings/PhysicalNumberStatus/PhysicalNumberStatus.jsx";
 import AdminSystemIntegrity from "./components/Dashboard/Admin/Integrity/AdminSystemIntegrity.jsx";
+import MyTasks from "./components/Dashboard/Admin/Management/Tasks/MyTasks.jsx";
+import AllTasks from "./components/Dashboard/Admin/Management/Tasks/AllTasks.jsx";
 
 //Context
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -155,6 +157,26 @@ createRoot(document.getElementById("root")).render(
                         path="system-integrity"
                         element={<AdminSystemIntegrity />}
                       />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewMyTasks]}
+                        />
+                      }
+                    >
+                      <Route path="my-tasks" element={<MyTasks />} />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermissions={[Permissions.ViewAllTasks]}
+                        />
+                      }
+                    >
+                      <Route path="all-tasks" element={<AllTasks />} />
                     </Route>
 
                     <Route

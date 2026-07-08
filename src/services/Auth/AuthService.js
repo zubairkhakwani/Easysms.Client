@@ -74,3 +74,14 @@ export const getRolePermissions = () => {
     return [];
   }
 };
+
+export const getUserRole = () => {
+  try {
+    const token = TokenService.getToken();
+    if (!token) return "";
+    const decoded = jwtDecode(token);
+    return decoded.role || "";
+  } catch {
+    return "";
+  }
+};

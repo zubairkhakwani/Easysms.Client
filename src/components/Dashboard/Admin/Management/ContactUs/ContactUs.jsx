@@ -28,7 +28,8 @@ import Paginations from "../../../../Shared/Pagination";
 import "./ContactUs.css";
 
 export default function ContactUs() {
-  const { refreshUnreadContactUsCount } = useOutletContext() ?? {};
+  const { refreshUnreadContactUsCount, refreshMyOpenTaskCount } =
+    useOutletContext() ?? {};
   //Data
   const [contactUs, setContactUs] = useState([]);
   const [message, setMessage] = useState({
@@ -104,6 +105,7 @@ export default function ContactUs() {
         successTaost(response.message);
         setModal();
         refreshUnreadContactUsCount?.();
+        refreshMyOpenTaskCount?.();
       } else {
         errorToast(response.message);
       }
@@ -142,6 +144,7 @@ export default function ContactUs() {
         successTaost(response.message);
         setModal();
         refreshUnreadContactUsCount?.();
+        refreshMyOpenTaskCount?.();
       } else {
         errorToast(response.message);
       }

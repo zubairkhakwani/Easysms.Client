@@ -4,6 +4,7 @@ import Topbar from "../Topbar/Topbar";
 import { Outlet } from "react-router-dom";
 import { getUnresolvedIpReplacementCount } from "../../../../services/Proxy/ProxyService";
 import { getUnreadContactUsCount } from "../../../../services/ContactUs/ContactUsService";
+import { getMyOpenTaskCount } from "../../../../services/Task/TaskService";
 import "./AdminShared.css";
 
 export default function AdminDashobard() {
@@ -11,6 +12,7 @@ export default function AdminDashobard() {
   const [isSideBarOpen, setSidebarOpen] = useState(true);
   const [unresolvedLedgerCount, setUnresolvedLedgerCount] = useState(0);
   const [unreadContactUsCount, setUnreadContactUsCount] = useState(0);
+  const [myOpenTaskCount, setMyOpenTaskCount] = useState(0);
 
   const refreshUnresolvedLedgerCount = useCallback(async () => {
     try {
@@ -34,10 +36,22 @@ export default function AdminDashobard() {
     }
   }, []);
 
+  const refreshMyOpenTaskCount = useCallback(async () => {
+    try {
+      const response = await getMyOpenTaskCount();
+      if (response.isSuccess) {
+        setMyOpenTaskCount(response.data?.count ?? 0);
+      }
+    } catch {
+      // Sidebar badge is non-critical; fail silently.
+    }
+  }, []);
+
   useEffect(() => {
     refreshUnresolvedLedgerCount();
     refreshUnreadContactUsCount();
-  }, [refreshUnresolvedLedgerCount, refreshUnreadContactUsCount]);
+    refreshMyOpenTaskCount();
+  }, [refreshUnresolvedLedgerCount, refreshUnreadContactUsCount, refreshMyOpenTaskCount]);
 
   function handleSideBarClosed() {
     setSidebarOpen(true);
@@ -64,6 +78,7 @@ export default function AdminDashobard() {
         onSideBarClosed={handleSideBarClosed}
         unresolvedLedgerCount={unresolvedLedgerCount}
         unreadContactUsCount={unreadContactUsCount}
+        myOpenTaskCount={myOpenTaskCount}
       />
       <div className={`dashboard-main ${isSideBarOpen ? "collapsed" : ""}`}>
         <Topbar
@@ -71,7 +86,13 @@ export default function AdminDashobard() {
           isSideBarOpened={isSideBarOpen}
           setSideBarOpened={handleSideBarOpen}
         />
-        <Outlet context={{ refreshUnresolvedLedgerCount, refreshUnreadContactUsCount }} />
+        <Outlet
+          context={{
+            refreshUnresolvedLedgerCount,
+            refreshUnreadContactUsCount,
+            refreshMyOpenTaskCount,
+          }}
+        />
       </div>
     </div>
   );

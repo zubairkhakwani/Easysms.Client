@@ -33,7 +33,8 @@ function resolutionClass(status) {
 }
 
 export default function IpReplacementLedger() {
-  const { refreshUnresolvedLedgerCount } = useOutletContext() ?? {};
+  const { refreshUnresolvedLedgerCount, refreshMyOpenTaskCount } =
+    useOutletContext() ?? {};
   const [records, setRecords] = useState([]);
   const [count, setCount] = useState(0);
   const [pageNo, setPageNo] = useState(0);
@@ -118,6 +119,9 @@ export default function IpReplacementLedger() {
         );
         successTaost(response.message);
         refreshUnresolvedLedgerCount?.();
+        if ((responseData.resolutionStatus ?? "").toLowerCase() === "resolved") {
+          refreshMyOpenTaskCount?.();
+        }
         closeModal();
       } else {
         errorToast(response.message);
