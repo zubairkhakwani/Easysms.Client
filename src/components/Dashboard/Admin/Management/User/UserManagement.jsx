@@ -365,8 +365,9 @@ export default function UserManagement() {
   const [keyword, setKeyword] = useState("");
   const [hasSourceFilter, setHasSourceFilter] = useState(false);
   const [hasReferrerFilter, setHasReferrerFilter] = useState(false);
+  const [hasNoWalletHistoryFilter, setHasNoWalletHistoryFilter] = useState(false);
 
-  const hasActiveFilters = hasSourceFilter || hasReferrerFilter;
+  const hasActiveFilters = hasSourceFilter || hasReferrerFilter || hasNoWalletHistoryFilter;
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -378,6 +379,7 @@ export default function UserManagement() {
           keyword,
           hasSource: hasSourceFilter,
           hasReferrer: hasReferrerFilter,
+          hasNoWalletHistory: hasNoWalletHistoryFilter,
         });
         if (!res.isSuccess) {
           errorToast(res.message || "Failed to fetch users");
@@ -399,11 +401,12 @@ export default function UserManagement() {
       }
     };
     fetchAllUsers();
-  }, [pageNo, pageSize, keyword, hasSourceFilter, hasReferrerFilter]);
+  }, [pageNo, pageSize, keyword, hasSourceFilter, hasReferrerFilter, hasNoWalletHistoryFilter]);
 
   function clearFilters() {
     setHasSourceFilter(false);
     setHasReferrerFilter(false);
+    setHasNoWalletHistoryFilter(false);
     setPageNo(0);
   }
 
@@ -414,6 +417,11 @@ export default function UserManagement() {
 
   function toggleReferrerFilter() {
     setHasReferrerFilter((v) => !v);
+    setPageNo(0);
+  }
+
+  function toggleNoWalletHistoryFilter() {
+    setHasNoWalletHistoryFilter((v) => !v);
     setPageNo(0);
   }
 
@@ -596,6 +604,19 @@ export default function UserManagement() {
                   <span>Referred</span>
                   <i
                     className={`fa-solid fa-check um-filter-chip-check ${hasReferrerFilter ? "" : "um-filter-chip-check--hidden"}`}
+                    aria-hidden
+                  />
+                </button>
+                <button
+                  type="button"
+                  className={`um-filter-chip ${hasNoWalletHistoryFilter ? "um-filter-chip--active" : ""}`}
+                  onClick={toggleNoWalletHistoryFilter}
+                  aria-pressed={hasNoWalletHistoryFilter}
+                >
+                  <i className="fa-solid fa-wallet um-filter-chip-icon" aria-hidden />
+                  <span>Never deposited</span>
+                  <i
+                    className={`fa-solid fa-check um-filter-chip-check ${hasNoWalletHistoryFilter ? "" : "um-filter-chip-check--hidden"}`}
                     aria-hidden
                   />
                 </button>

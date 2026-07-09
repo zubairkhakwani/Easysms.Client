@@ -10,14 +10,10 @@ export const getAll = async (httpRequest) => {
     pageNumber: String(httpRequest?.pageNo ?? 0),
     pageSize: String(httpRequest?.pageSize ?? 10),
     keyword: httpRequest?.keyword ?? "",
+    hasSource: String(!!httpRequest?.hasSource),
+    hasReferrer: String(!!httpRequest?.hasReferrer),
+    hasNoWalletHistory: String(!!httpRequest?.hasNoWalletHistory),
   });
-
-  if (httpRequest?.hasSource) {
-    params.append("hasSource", "true");
-  }
-  if (httpRequest?.hasReferrer) {
-    params.append("hasReferrer", "true");
-  }
 
   const response = await httpClient.get(`/api/users?${params}`);
   return response.data;
