@@ -293,6 +293,7 @@ export default function UserActivationSummary() {
                   <th>#</th>
                   <th>User</th>
                   <th>Country</th>
+                  <th>Provider</th>
                   <th>Total Purchased</th>
                   <th>Completed</th>
                   <th>Cancelled</th>
@@ -302,7 +303,7 @@ export default function UserActivationSummary() {
               </thead>
               <tbody>
                 {summaryRows.map((r, index) => (
-                  <tr key={`${r.userId}-${r.countryId}-${index}`}>
+                  <tr key={`${r.userId}-${r.countryId}-${r.providerName}-${index}`}>
                     <td className="ph-col-id">{pageNo * pageSize + index + 1}</td>
                     <td className="um-user-cell">
                       <div>
@@ -311,6 +312,7 @@ export default function UserActivationSummary() {
                       </div>
                     </td>
                     <td className="ph-col-phone">{r.countryName}</td>
+                    <td className="ph-col-phone">{r.providerName}</td>
                     <td className="ph-col-cost">{r.totalPurchased}</td>
                     <td className="ph-col-cost">{r.totalCompleted}</td>
                     <td className="ph-col-cost">{r.totalCancelled}</td>

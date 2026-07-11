@@ -152,6 +152,13 @@ export default function AllTasks() {
     fetchTasks({ pageNo: 0 });
   }
 
+  const handleChangePage = (_event, newPage) => setPageNo(newPage);
+
+  const handleChangeRowsPerPage = (event) => {
+    setPageSize(parseInt(event.target.value, 10));
+    setPageNo(0);
+  };
+
   const isEmpty = !isLoading && tasks.length === 0;
 
   return (
@@ -315,11 +322,8 @@ export default function AllTasks() {
               count={count}
               page={pageNo}
               rowsPerPage={pageSize}
-              onPageChange={(_, p) => setPageNo(p)}
-              onRowsPerPageChange={(e) => {
-                setPageSize(parseInt(e.target.value, 10));
-                setPageNo(0);
-              }}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
             />
           </>
         )}
