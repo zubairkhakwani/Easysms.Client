@@ -20,6 +20,11 @@ import Paginations from "../../../../Shared/Pagination";
 
 //Css
 import "./Deposits.css";
+import "../User/UserManagement.css";
+
+const DEPOSIT_TYPE_ALL = "";
+const DEPOSIT_TYPE_MANUAL = "manual";
+const DEPOSIT_TYPE_AUTO = "auto";
 
 const toDS = (d) => d.toISOString().slice(0, 10);
 
@@ -44,6 +49,7 @@ export default function Deposits() {
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [keyword, setKeyword] = useState("");
+  const [depositType, setDepositType] = useState(DEPOSIT_TYPE_ALL);
 
   async function getDepositsData(overrides = {}) {
     setIsLoading(true);
@@ -54,17 +60,19 @@ export default function Deposits() {
         pageNo: overrides.pageNo ?? pageNo,
         pageSize,
         keyword: overrides.keyword ?? keyword,
+        depositType: overrides.depositType ?? depositType,
       });
       var responseMessage = response.message;
-      if (response.isSuccess) {
-        setDeposits(response.data.deposits.items ?? []);
-        setCount(response.data.deposits.count);
+      if (response.isSuccess && response.data) {
+        const depositPage = response.data.deposits;
+        setDeposits(depositPage?.items ?? []);
+        setCount(depositPage?.count ?? 0);
         setSystemStats({
-          totalDepositCount: response.data.totalDepositCount,
-          totalDepositAmount: response.data.totalDepositAmount,
+          totalDepositCount: response.data.totalDepositCount ?? 0,
+          totalDepositAmount: response.data.totalDepositAmount ?? 0,
         });
       } else {
-        errorToast(responseMessage);
+        errorToast(responseMessage ?? "Failed to fetch deposits");
       }
     } catch {
       errorToast("Failed to fetch deposits");
@@ -75,7 +83,12 @@ export default function Deposits() {
 
   useEffect(() => {
     getDepositsData();
-  }, [pageNo, pageSize, keyword]);
+  }, [pageNo, pageSize, keyword, depositType]);
+
+  const handleDepositTypeChange = (type) => {
+    setDepositType(type);
+    setPageNo(0);
+  };
 
   const handleApply = async () => {
     if (pageNo !== 0) {
@@ -88,6 +101,7 @@ export default function Deposits() {
     setStartDate(toDS(twoWeeks));
     setEndDate(toDS(today));
     setKeyword("");
+    setDepositType(DEPOSIT_TYPE_ALL);
     setPageNo(0);
   };
 
@@ -154,8 +168,46 @@ export default function Deposits() {
 
       {/* ── Table ── */}
       <div className="ph-table-panel">
-        <div className="ph-table-header">
-          <span className="ph-table-title">Deposit History</span>
+        <div className="ph-table-header deposits-table-header">
+          <div className="deposits-table-header-left">
+            <span className="ph-table-title">Deposit History</span>
+            <div className="um-filter-bar">
+              <span className="um-filter-label">Payment type</span>
+              <div
+                className="um-filter-group"
+                role="group"
+                aria-label="Deposit payment type"
+              >
+                <button
+                  type="button"
+                  className={`um-filter-chip ${depositType === DEPOSIT_TYPE_ALL ? "um-filter-chip--active" : ""}`}
+                  onClick={() => handleDepositTypeChange(DEPOSIT_TYPE_ALL)}
+                  aria-pressed={depositType === DEPOSIT_TYPE_ALL}
+                >
+                  <i className="fa-solid fa-list um-filter-chip-icon" aria-hidden />
+                  <span>All</span>
+                </button>
+                <button
+                  type="button"
+                  className={`um-filter-chip ${depositType === DEPOSIT_TYPE_MANUAL ? "um-filter-chip--active" : ""}`}
+                  onClick={() => handleDepositTypeChange(DEPOSIT_TYPE_MANUAL)}
+                  aria-pressed={depositType === DEPOSIT_TYPE_MANUAL}
+                >
+                  <i className="fa-solid fa-user-shield um-filter-chip-icon" aria-hidden />
+                  <span>Manual</span>
+                </button>
+                <button
+                  type="button"
+                  className={`um-filter-chip ${depositType === DEPOSIT_TYPE_AUTO ? "um-filter-chip--active" : ""}`}
+                  onClick={() => handleDepositTypeChange(DEPOSIT_TYPE_AUTO)}
+                  aria-pressed={depositType === DEPOSIT_TYPE_AUTO}
+                >
+                  <i className="fa-solid fa-bolt um-filter-chip-icon" aria-hidden />
+                  <span>Auto</span>
+                </button>
+              </div>
+            </div>
+          </div>
           <input
             className="adm-search-input"
             placeholder="🔍  Search deposits..."

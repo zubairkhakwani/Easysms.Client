@@ -188,6 +188,22 @@
   flex-wrap: wrap;
 }
 
+.deposits-table-header {
+  align-items: flex-start;
+}
+
+.deposits-table-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.deposits-table-header .um-filter-bar {
+  margin: 0;
+}
+
 .ph-table-title {
   font-size: 0.72rem;
   font-weight: 700;

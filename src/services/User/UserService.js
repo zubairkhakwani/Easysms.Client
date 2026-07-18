@@ -54,6 +54,10 @@ export const getDeposts = async (httpRequest) => {
     params.append("keyword", httpRequest.keyword);
   }
 
+  if (httpRequest.depositType) {
+    params.append("depositType", httpRequest.depositType);
+  }
+
   const response = await httpClient.post(`/api/users/deposits?${params}`);
   return response.data;
 };

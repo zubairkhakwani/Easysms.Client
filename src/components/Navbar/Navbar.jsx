@@ -59,6 +59,7 @@ export default function Navbar() {
       let responseMessage = response.message;
       if (response.isSuccess) {
         successTaost(responseMessage);
+        handleCloseModal();
       } else {
         errorToast(responseMessage);
       }
@@ -73,7 +74,7 @@ export default function Navbar() {
     setModal(key);
   }
   function handleCloseModal() {
-    setModal();
+    setModal("");
   }
 
   const handleNavClick = (sectionId = null) => {

@@ -1,7 +1,8 @@
 //React
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
-import StrengthBar from "../../Auth/StrengthBar";
+import StrengthBar from "../StrengthBar";
 
 //Css
 import "./ChangePasswordModal.css";
@@ -82,33 +83,43 @@ function ChangePasswordModal({ isLoading, onClose, onConfirm }) {
     },
   ];
 
-  return (
-    <div className="rp-overlay" onClick={onClose}>
-      <div className="rp-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="rp-close-btn" onClick={onClose}>
+  const modal = (
+    <div className="cpw-overlay" onClick={onClose}>
+      <div className="cpw-modal" onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          className="cpw-close-btn"
+          onClick={onClose}
+          aria-label="Close"
+        >
           ✕
         </button>
 
-        <div className="rp-header">
-          <div className="rp-title">🔐 Change Password</div>
+        <div className="cpw-header">
+          <div className="cpw-title">🔐 Change Password</div>
         </div>
 
         {inputFields.map(({ key, label, placeholder }) => (
-          <div className="rp-field" key={key}>
-            <label className="rp-label">{label}</label>
-            <div className="rp-input-wrap">
+          <div className="cpw-field" key={key}>
+            <label className="cpw-label" htmlFor={`cpw-${key}`}>
+              {label}
+            </label>
+            <div className="cpw-input-wrap">
               <input
-                className={`rp-input ${errors[key] ? "error" : ""}`}
+                id={`cpw-${key}`}
+                className={`cpw-input ${errors[key] ? "error" : ""}`}
                 type={showPasswords[key] ? "text" : "password"}
                 placeholder={placeholder}
                 value={fields[key]}
                 onChange={(e) => handleChange(key, e.target.value)}
               />
               <button
-                className="rp-toggle-btn"
+                className="cpw-toggle-btn"
                 onClick={() => toggleVisibility(key)}
                 type="button"
-                aria-label={showPasswords[key] ? "Hide password" : "Show password"}
+                aria-label={
+                  showPasswords[key] ? "Hide password" : "Show password"
+                }
               >
                 <i
                   className={`fa-solid ${showPasswords[key] ? "fa-eye" : "fa-eye-slash"}`}
@@ -121,7 +132,7 @@ function ChangePasswordModal({ isLoading, onClose, onConfirm }) {
             )}
 
             {errors[key] && (
-              <div className="rp-error">
+              <div className="cpw-error">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                   <circle
                     cx="6"
@@ -144,21 +155,24 @@ function ChangePasswordModal({ isLoading, onClose, onConfirm }) {
           </div>
         ))}
 
-        <div className="rp-actions">
-          <button className="rp-btn ghost" onClick={onClose}>
+        <div className="cpw-actions">
+          <button type="button" className="cpw-btn ghost" onClick={onClose}>
             Cancel
           </button>
           <button
-            className="rp-btn primary"
+            type="button"
+            className="cpw-btn primary"
             disabled={isLoading}
             onClick={handleSubmit}
           >
-            {isLoading ? <div className="rp-spinner" /> : "Change Password"}
+            {isLoading ? <div className="cpw-spinner" /> : "Change Password"}
           </button>
         </div>
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }
 
 export default ChangePasswordModal;
