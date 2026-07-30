@@ -340,11 +340,7 @@ ${text}`;
   }
 
   async function handleSkipAttachments() {
-    if (!pendingReplaceRequest) {
-      setShowAttachmentNudge(false);
-      return;
-    }
-
+    setShowAttachmentNudge(false);
     await submitReplaceIp(pendingReplaceRequest);
   }
 
