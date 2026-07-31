@@ -11,6 +11,7 @@ import ActiveOrdersSkelton from "../../Skeltons/ActiveOrdersSkelton";
 import {
   cancelNumber,
   completeNumber,
+  retryTempNumberSms,
 } from "../../../services/Number/NumberService";
 
 //Context
@@ -23,6 +24,7 @@ import {
   CopyToClipboard,
   FormatRemainingTime,
   CanMakeCancelRequest,
+  CanRetrySms,
   GetCancelTooltip,
 } from "../../../helper/UtilityHelper";
 
@@ -41,6 +43,7 @@ export default function ActiveOrders({
   const { balanceCredit } = useContext(AuthContext);
   const [cancel, setCancel] = useState([]);
   const [complete, setComplete] = useState([]);
+  const [retry, setRetry] = useState([]);
 
   async function handleCancel(id) {
     setCancel((prev) => [...prev, id]);
@@ -90,7 +93,27 @@ export default function ActiveOrders({
     } catch {
       errorToast("Failed to complete number, please try later.");
     } finally {
-      setComplete((prev) => prev.filter((id) => id !== id));
+      setComplete((prev) => prev.filter((itemId) => itemId !== id));
+    }
+  }
+
+  async function handleRetry(id) {
+    setRetry((prev) => [...prev, id]);
+
+    try {
+      var response = await retryTempNumberSms(id);
+
+      var responseMessage = response.message;
+
+      if (response.isSuccess) {
+        successTaost(responseMessage);
+      } else {
+        errorToast(responseMessage);
+      }
+    } catch {
+      errorToast("Failed to request another SMS, please try later.");
+    } finally {
+      setRetry((prev) => prev.filter((itemId) => itemId !== id));
     }
   }
 
@@ -222,6 +245,21 @@ export default function ActiveOrders({
                       </button>
                     }
                   />
+
+                  {CanRetrySms(order) && (
+                    <Tooltip
+                      tooltip="Request another SMS on this number"
+                      btn={
+                        <button
+                          disabled={retry.includes(order.id)}
+                          className="btn-action btn-retry"
+                          onClick={() => handleRetry(order.id)}
+                        >
+                          ↻
+                        </button>
+                      }
+                    />
+                  )}
 
                   <Tooltip
                     tooltip={GetCancelTooltip(order.provider)}

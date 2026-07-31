@@ -356,6 +356,17 @@
   opacity: 0.9;
 }
 
+.btn-retry {
+  background: var(--accent-blue-subtle);
+  border: 1px solid var(--accent-blue-border);
+  color: var(--text-info);
+}
+
+.btn-retry:hover:not(:disabled) {
+  background: var(--accent-blue-subtle);
+  opacity: 0.9;
+}
+
 .btn-action:disabled,
 .btn-cancel:disabled {
   opacity: 0.5;

@@ -8,6 +8,9 @@ import { ToastContainer } from "react-toastify";
 
 import { Permissions } from "./data/Admin/Static.js";
 
+//Icons
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 //Layouts
 import UserLayout from "./components/Layout/UserLayout.jsx";
 import AdminLayout from "./components/Layout/AdminLayout.jsx";
@@ -67,8 +70,16 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import { SmsProvider } from "./context/SmsContext.jsx";
 import { NumberProvider } from "./context/NumberContext.jsx";
 
+//Hooks
+import { useNetworkStatus } from "./hooks/useNetworkStatus.js";
+
 //Css
 import "./index.css";
+
+function NetworkStatusListener() {
+  useNetworkStatus();
+  return null;
+}
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -149,7 +160,9 @@ createRoot(document.getElementById("root")).render(
                     <Route
                       element={
                         <PrivateRoute
-                          requiredPermissions={[Permissions.ViewSystemIntegrity]}
+                          requiredPermissions={[
+                            Permissions.ViewSystemIntegrity,
+                          ]}
                         />
                       }
                     >
@@ -287,7 +300,9 @@ createRoot(document.getElementById("root")).render(
                     <Route
                       element={
                         <PrivateRoute
-                          requiredPermissions={[Permissions.ViewProviderHistory]}
+                          requiredPermissions={[
+                            Permissions.ViewProviderHistory,
+                          ]}
                         />
                       }
                     >
@@ -348,6 +363,8 @@ createRoot(document.getElementById("root")).render(
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
+
+            <NetworkStatusListener />
             <ToastContainer />
           </BrowserRouter>
         </NumberProvider>

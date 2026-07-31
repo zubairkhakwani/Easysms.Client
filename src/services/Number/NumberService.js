@@ -32,6 +32,11 @@ export const completeNumber = async (id) => {
   return response.data;
 };
 
+export const retryTempNumberSms = async (id) => {
+  const response = await httpClient.get(`/api/numbers/${id}/retry-sms`);
+  return response.data;
+};
+
 export const getActiveNumbers = async () => {
   const response = await httpClient.get(`/api/numbers/active`);
   return response.data;

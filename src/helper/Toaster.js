@@ -1,43 +1,25 @@
 import { toast, Slide } from "react-toastify";
 
-export function successTaost(message) {
-  toast(message, {
-    position: "top-right",
-    autoClose: 2500,
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Slide,
-  });
+const defaultOptions = {
+  position: "top-right",
+  autoClose: 2500,
+  hideProgressBar: false,
+  closeOnClick: false,
+  pauseOnHover: true,
+  draggable: false,
+  progress: undefined,
+  theme: "dark",
+  transition: Slide,
+};
+
+export function successTaost(message, options = {}) {
+  toast.success(message, { ...defaultOptions, ...options });
 }
 
-export function errorToast(message) {
-  toast.error(message, {
-    position: "top-right",
-    autoClose: 2500,
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Slide,
-  });
+export function errorToast(message, options = {}) {
+  toast.error(message, { ...defaultOptions, ...options });
 }
 
-export function warnTaost(message) {
-  toast.warn(message, {
-    position: "top-right",
-    autoClose: 2500,
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Slide,
-  });
+export function warnTaost(message, options = {}) {
+  toast.warn(message, { ...defaultOptions, ...options });
 }

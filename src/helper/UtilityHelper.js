@@ -106,6 +106,16 @@ function getNumberCancelWaitMinutes(provider) {
   return 3;
 }
 
+export const CanRetrySms = (order) => {
+  if (!order?.hasSms) {
+    return false;
+  }
+
+  const name = order.provider?.toLowerCase();
+
+  return name?.includes("provider a") || name?.includes("provider b");
+}
+
 
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
