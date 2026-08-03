@@ -4,7 +4,10 @@ import {
   getMyTasks,
   updateTaskStatus,
 } from "../../../../../services/Task/TaskService";
-import { getUserRole, getRolePermissions } from "../../../../../services/Auth/AuthService";
+import {
+  getUserRole,
+  getRolePermissions,
+} from "../../../../../services/Auth/AuthService";
 import { Permissions } from "../../../../../data/Admin/Static";
 import {
   TaskStatusOptions,
@@ -30,9 +33,9 @@ const defaultEndDate = toDS(today);
 function TaskPanelStatus({ isLoading, isEmpty }) {
   if (isLoading) {
     return (
-      <div className="at-panel-status">
-        <span className="btn-spinner" />
-        <span>Loading tasks…</span>
+      <div className="ph-state-row">
+        <div className="ph-spinner ph-spinner--lg ph-spinner-thick ph-spinner--light" />
+        <span className="ph-state-text">Loading your tasks...</span>
       </div>
     );
   }
@@ -184,7 +187,11 @@ export default function MyTasks() {
           </div>
 
           <div className="ph-filter-actions">
-            <button type="button" className="ph-reset-btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="ph-reset-btn"
+              onClick={handleReset}
+            >
               Reset
             </button>
             <button
@@ -245,7 +252,9 @@ export default function MyTasks() {
                           {task.referenceType} #{task.referenceId}
                         </span>
                       </td>
-                      <td>{FormatterHelper.formatDateToLocal(task.createdAt)}</td>
+                      <td>
+                        {FormatterHelper.formatDateToLocal(task.createdAt)}
+                      </td>
                       <td>
                         {task.completedAt
                           ? FormatterHelper.formatDateToLocal(task.completedAt)

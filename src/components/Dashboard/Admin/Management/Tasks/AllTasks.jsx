@@ -31,9 +31,9 @@ const defaultEndDate = toDS(today);
 function TaskPanelStatus({ isLoading, isEmpty }) {
   if (isLoading) {
     return (
-      <div className="at-panel-status">
-        <span className="btn-spinner" />
-        <span>Loading tasks…</span>
+      <div className="ph-state-row">
+        <div className="ph-spinner ph-spinner--lg ph-spinner-thick ph-spinner--light" />
+        <span className="ph-state-text">Loading tasks...</span>
       </div>
     );
   }
@@ -222,7 +222,11 @@ export default function AllTasks() {
           </div>
 
           <div className="ph-filter-actions">
-            <button type="button" className="ph-reset-btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="ph-reset-btn"
+              onClick={handleReset}
+            >
               Reset
             </button>
             <button
@@ -277,8 +281,12 @@ export default function AllTasks() {
                       <td>
                         {task.assignedToName ? (
                           <div>
-                            <div className="um-user-name">{task.assignedToName}</div>
-                            <div className="um-user-email">{task.assignedToEmail}</div>
+                            <div className="um-user-name">
+                              {task.assignedToName}
+                            </div>
+                            <div className="um-user-email">
+                              {task.assignedToEmail}
+                            </div>
                           </div>
                         ) : (
                           "Unassigned"
@@ -294,7 +302,9 @@ export default function AllTasks() {
                           {task.referenceType} #{task.referenceId}
                         </span>
                       </td>
-                      <td>{FormatterHelper.formatDateToLocal(task.createdAt)}</td>
+                      <td>
+                        {FormatterHelper.formatDateToLocal(task.createdAt)}
+                      </td>
                       <td>
                         {task.completedAt
                           ? FormatterHelper.formatDateToLocal(task.completedAt)
