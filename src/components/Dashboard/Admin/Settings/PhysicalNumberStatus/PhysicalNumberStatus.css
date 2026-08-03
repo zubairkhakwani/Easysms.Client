@@ -7,7 +7,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: var(--space-5);
-  max-width: 860px;
+  max-width: 1200 px;
 }
 
 .pns-panel-header {
@@ -88,7 +88,8 @@
     var(--accent-green-subtle),
     transparent 70%
   );
-  box-shadow: 0 0 0 1px var(--accent-green-border),
+  box-shadow:
+    0 0 0 1px var(--accent-green-border),
     0 8px 30px rgba(34, 211, 160, 0.12);
 }
 
