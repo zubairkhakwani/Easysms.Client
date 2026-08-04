@@ -15,6 +15,7 @@ import { ActionDropdown } from "../../../../Helper/ContactUs/DropDown/ActionDrop
 //Modals
 import ToggleStatusModal from "../../../../Helper/ContactUs/Modal/ToggleStatusModal";
 import ContactUsReplyModal from "../../../../Helper/ContactUs/Modal/ContactUsReplyModal";
+import ContactUsMessageViewModal from "../../../../Helper/ContactUs/Modal/ContactUsMessageViewModal";
 
 //Helper
 import { errorToast, successTaost } from "../../../../../helper/Toaster";
@@ -169,6 +170,19 @@ export default function ContactUs() {
     setModal(key);
   };
 
+  const openViewMessageModal = (row) => {
+    setMessage({
+      id: row.id,
+      isRead: row.isRead,
+      email: row.email,
+      name: `${row.firstName} ${row.lastName}`,
+      subject: row.subject,
+      message: row.message,
+    });
+
+    setModal(modalKeys.contactUsViewMessage);
+  };
+
   const closeModal = () => setModal("");
 
   return (
@@ -219,8 +233,33 @@ export default function ContactUs() {
                       </td>
                       <td className="ph-col-phone">{r.subject}</td>
 
-                      <td className="ph-col-sms" title={r.message}>
-                        {r.message}
+                      <td className="ph-col-sms">
+                        <div className="cu-message-cell">
+                          <span className="cu-message-preview" title={r.message}>
+                            {r.message}
+                          </span>
+                          <button
+                            type="button"
+                            className="cu-message-view-btn"
+                            aria-label="View full message"
+                            onClick={() => openViewMessageModal(r)}
+                          >
+                            <svg
+                              width="15"
+                              height="15"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                            >
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                          </button>
+                        </div>
                       </td>
 
                       <td>
@@ -343,6 +382,10 @@ export default function ContactUs() {
           onConfirm={handleContactUsReply}
           onClose={closeModal}
         />
+      )}
+
+      {modal === modalKeys.contactUsViewMessage && (
+        <ContactUsMessageViewModal query={message} onClose={closeModal} />
       )}
     </div>
   );

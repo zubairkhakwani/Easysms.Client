@@ -1,0 +1,225 @@
+.cum-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  animation: cum-fade-in 0.2s ease;
+  padding: var(--space-5);
+}
+
+@keyframes cum-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cum-modal {
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-8) var(--space-7);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--modal-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: cum-slide-up var(--transition-spring);
+}
+
+@keyframes cum-slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cum-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.cum-icon-wrap {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cum-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.cum-title {
+  font-family: var(--font);
+  font-size: var(--text-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-heading);
+  margin: 0 0 3px;
+  letter-spacing: var(--ls-tight);
+}
+
+.cum-subtitle {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  margin: 0;
+  line-height: var(--lh-normal);
+}
+
+.cum-recipient {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+}
+
+.cum-recipient-label {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+.cum-recipient-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.cum-recipient-name {
+  font-family: var(--font);
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-heading);
+}
+
+.cum-recipient-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.cum-recipient-email {
+  font-family: var(--font);
+  font-size: var(--text-base);
+  color: var(--accent);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cum-reference {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cum-reference-subject,
+.cum-reference-message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cum-ref-label {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wider);
+}
+
+.cum-ref-value {
+  font-family: var(--font);
+  font-size: var(--text-base);
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.cum-ref-body {
+  font-family: var(--font);
+  font-size: var(--text-ms);
+  color: var(--text-mid);
+  line-height: var(--lh-relaxed);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--space-3);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.cum-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-2);
+}
+
+.cum-btn {
+  padding: 11px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  border: none;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.cum-btn.ghost {
+  background: var(--btn-ghost-bg);
+  border: 1px solid var(--btn-ghost-border);
+  color: var(--btn-ghost-text);
+}
+
+.cum-btn.ghost:hover {
+  background: var(--btn-ghost-bg-hover);
+  color: var(--btn-ghost-text-hover);
+}
+
+@media (max-width: 520px) {
+  .cum-modal {
+    padding: var(--space-6) var(--space-5);
+  }
+}

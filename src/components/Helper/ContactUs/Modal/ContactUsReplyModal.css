@@ -204,10 +204,10 @@
   color: var(--text-mid);
   line-height: var(--lh-relaxed);
   margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
   font-style: italic;
 }
 
