@@ -122,6 +122,13 @@ export const navItems = [
       },
       {
         icon: "◈",
+        label: "Active mails",
+        id: "activeMails",
+        url: "active-mails",
+        permission: Permissions.ViewActiveNumbers,
+      },
+      {
+        icon: "◈",
         label: "Active proxies",
         id: "activeProxies",
         url: "active-proxies",

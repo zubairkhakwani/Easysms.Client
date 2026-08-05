@@ -19,3 +19,8 @@ export const reorderTempMail = async (id) => {
   const response = await httpClient.post(`/api/mails/${id}/reorder`);
   return response.data;
 };
+
+export const getActiveMails = async () => {
+  const response = await httpClient.get(`/api/mails/active`);
+  return response.data;
+};

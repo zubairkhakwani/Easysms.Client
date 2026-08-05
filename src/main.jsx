@@ -51,6 +51,7 @@ import AddPhysicalNumber from "./components/Dashboard/Admin/Management/Provider/
 import ProviderHistory from "./components/Dashboard/Admin/Provider/ProviderHistory.jsx";
 import UserActivationSummary from "./components/Dashboard/Admin/Provider/UserActivationSummary.jsx";
 import ActiveNumbers from "./components/Dashboard/Admin/Provider/ActiveNumbers.jsx";
+import ActiveMails from "./components/Dashboard/Admin/Provider/ActiveMails.jsx";
 import AdminActiveProxies from "./components/Dashboard/Admin/Provider/AdminActiveProxies.jsx";
 import AdminIpReplacementLedger from "./components/Dashboard/Admin/Provider/AdminIpReplacementLedger.jsx";
 import Deposits from "./components/Dashboard/Admin/Management/Deposit/Deposits.jsx";
@@ -245,6 +246,7 @@ createRoot(document.getElementById("root")).render(
                         path="active-numbers"
                         element={<ActiveNumbers />}
                       />
+                      <Route path="active-mails" element={<ActiveMails />} />
                     </Route>
 
                     <Route

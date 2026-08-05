@@ -29,6 +29,10 @@ export default function Topbar({
       title: "Active Numbers",
       sub: "View all active numbers in real-time. Numbers appear here when purchased and are removed if cancelled.",
     },
+    activeMails: {
+      title: "Active Mails",
+      sub: "View all active temp mails across the platform. Refresh the page to see the latest list.",
+    },
     activeProxies: {
       title: "Active Proxies",
       sub: "View all active proxies across the platform",
