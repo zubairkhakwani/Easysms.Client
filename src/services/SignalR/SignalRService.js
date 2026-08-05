@@ -15,6 +15,8 @@ export const connectSignalR = async ({
   setReconnected,
   OnNewNumbers,
   OnRemoveNumber,
+  OnNewMails,
+  OnRemoveMail,
 }) => {
   try {
     // Disconnect from the previous connection if connected and we have the hubConnection
@@ -40,6 +42,8 @@ export const connectSignalR = async ({
       setReconnected,
       OnNewNumbers,
       OnRemoveNumber,
+      OnNewMails,
+      OnRemoveMail,
     );
   } catch (err) {
     console.log("Connection failed:", err);
@@ -63,6 +67,8 @@ function addEventListeners(
   setReconnected,
   OnNewNumbers,
   OnRemoveNumber,
+  OnNewMails,
+  OnRemoveMail,
 ) {
   if (setReconnected) {
     hubConnection.onclose(async () => {
@@ -90,6 +96,18 @@ function addEventListeners(
   if (OnRemoveNumber) {
     hubConnection.on("NumberRemoved", (id) => {
       OnRemoveNumber(id);
+    });
+  }
+
+  if (OnNewMails) {
+    hubConnection.on("MailAdded", (newMails) => {
+      OnNewMails(newMails);
+    });
+  }
+
+  if (OnRemoveMail) {
+    hubConnection.on("MailRemoved", (id) => {
+      OnRemoveMail(id);
     });
   }
 }

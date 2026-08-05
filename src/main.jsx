@@ -70,6 +70,7 @@ import AllTasks from "./components/Dashboard/Admin/Management/Tasks/AllTasks.jsx
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { SmsProvider } from "./context/SmsContext.jsx";
 import { NumberProvider } from "./context/NumberContext.jsx";
+import { MailProvider } from "./context/MailContext.jsx";
 
 //Hooks
 import { useNetworkStatus } from "./hooks/useNetworkStatus.js";
@@ -87,7 +88,8 @@ createRoot(document.getElementById("root")).render(
     <AuthProvider>
       <SmsProvider>
         <NumberProvider>
-          <BrowserRouter>
+          <MailProvider>
+            <BrowserRouter>
             <Routes>
               {/* <Route path="/" element={<MaintenancePage />}></Route> */}
               {/* User Layout */}
@@ -368,7 +370,8 @@ createRoot(document.getElementById("root")).render(
 
             <NetworkStatusListener />
             <ToastContainer />
-          </BrowserRouter>
+            </BrowserRouter>
+          </MailProvider>
         </NumberProvider>
       </SmsProvider>
     </AuthProvider>

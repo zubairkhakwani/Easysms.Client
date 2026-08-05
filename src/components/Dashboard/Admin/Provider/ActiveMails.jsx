@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { SmsContext } from "../../../../context/SmsContext";
+import { MailContext } from "../../../../context/MailContext";
 import { getActiveMails } from "../../../../services/TempMail/TempMailService";
 import { errorToast } from "../../../../helper/Toaster";
 import { FormatterHelper } from "../../../../helper/FormatterHelper";
@@ -10,6 +12,10 @@ export default function ActiveMails() {
   const [filteredMails, setFilteredMails] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [removingId, setRemovingId] = useState(null);
+
+  const { latestMail } = useContext(SmsContext);
+  const { newMails, removeMailId } = useContext(MailContext);
 
   async function getActiveMailsData() {
     setIsLoading(true);
@@ -73,6 +79,44 @@ export default function ActiveMails() {
     );
   }, [activeMails, searchKeyword]);
 
+  useEffect(() => {
+    if (!latestMail) {
+      return;
+    }
+
+    setActiveMails((current) =>
+      current.map((mail) => {
+        if (mail.id === latestMail.id) {
+          return { ...mail, code: latestMail.code };
+        }
+        return mail;
+      }),
+    );
+  }, [latestMail]);
+
+  useEffect(() => {
+    if (!newMails) {
+      return;
+    }
+    setActiveMails((current) => [...newMails, ...current]);
+  }, [newMails]);
+
+  useEffect(() => {
+    if (!removeMailId) {
+      return;
+    }
+    setRemovingId(removeMailId);
+
+    const timer = setTimeout(() => {
+      setActiveMails((current) =>
+        current.filter((mail) => mail.id !== removeMailId),
+      );
+      setRemovingId(null);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [removeMailId]);
+
   return (
     <div className="ph-page">
       <div className="ph-table-panel">
@@ -108,7 +152,10 @@ export default function ActiveMails() {
                 </thead>
                 <tbody>
                   {filteredMails.map((r, index) => (
-                    <tr key={r.id}>
+                    <tr
+                      key={r.id}
+                      className={removingId === r.id ? "row-removing" : ""}
+                    >
                       <td className="ph-col-id">{index + 1}</td>
                       <td className="ph-col-id">{r.activationId}</td>
                       <td className="ph-col-phone">{r.email}</td>
