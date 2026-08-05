@@ -172,7 +172,6 @@
 }
 
 .nav-links .hvr-undr {
-  margin-top: 1.5rem;
   cursor: pointer;
   color: var(--text-mid);
   position: relative;
@@ -349,6 +348,10 @@
 
 /* ── Mobile: hide by default ── */
 @media (max-width: 679px) {
+  .nav-links .hvr-undr {
+    margin-top: 1.5rem;
+  }
+
   .nav-links,
   .nav-auth {
     max-height: 0;
