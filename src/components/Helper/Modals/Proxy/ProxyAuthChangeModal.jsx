@@ -47,6 +47,7 @@ export function ProxyAuthChangeModal({
     if (!validate()) return;
     onConfirm?.({
       orderNumber: myProxyAuth.orderNumber,
+      baseOrderNumber: myProxyAuth.baseOrderNumber,
       login: login.trim(),
       password,
       ip: ip.trim(),

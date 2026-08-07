@@ -47,6 +47,7 @@ export default function ProxyHistory({
   const [metaData, setMetaData] = useState([]);
   const [myProxyAuth, setMyProxyAuth] = useState({
     orderNumber: "",
+    baseOrderNumber: "",
     login: "",
     password: "",
     authIp: "",
@@ -213,7 +214,8 @@ ${text}`;
 
     if (proxy) {
       setMyProxyAuth({
-        orderNumber: orderNumber,
+        orderNumber: order.orderNumber ?? orderNumber,
+        baseOrderNumber: order.baseOrderNumber ?? "",
         login: proxy.login,
         password: proxy.password,
         authIp: proxy.authIp,
@@ -221,6 +223,7 @@ ${text}`;
     } else {
       setMyProxyAuth({
         orderNumber: "",
+        baseOrderNumber: "",
         login: "",
         password: "",
         authIp: "",
@@ -252,7 +255,11 @@ ${text}`;
         successTaost(response.message);
         setMyActiveProxies((prev) =>
           prev.map((order) => {
-            if (order.orderNumber !== responseData?.orderNumber) return order;
+            const matchesOrder =
+              order.orderNumber === responseData?.orderNumber ||
+              order.baseOrderNumber === responseData?.baseOrderNumber;
+
+            if (!matchesOrder) return order;
 
             return {
               ...order,
@@ -262,7 +269,9 @@ ${text}`;
                 ...(responseData.password && {
                   password: responseData.password,
                 }),
-                ...(responseData.ip && { authIp: responseData.ip }),
+                ...(responseData.ip !== undefined && responseData.ip !== null
+                  ? { authIp: responseData.ip }
+                  : {}),
               })),
             };
           }),
