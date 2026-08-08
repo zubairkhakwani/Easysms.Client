@@ -392,8 +392,7 @@ ${text}`;
             <div className="map__panel-header-left">
               <span className="map__panel-title">Active Proxies</span>
               <span className="map__panel-count">
-                {myActiveProxies.length} order
-                {myActiveProxies.length !== 1 ? "s" : ""}
+                {count} order{count !== 1 ? "s" : ""}
               </span>
             </div>
             <input
@@ -417,7 +416,9 @@ ${text}`;
             <div className="ph-state-row">
               <div className="ph-state-icon">⊟</div>
               <span className="ph-state-text">
-                No records found for the selected filters
+                {filters.keyword?.trim()
+                  ? "No proxies match your search"
+                  : "No active proxies yet"}
               </span>
             </div>
           )}

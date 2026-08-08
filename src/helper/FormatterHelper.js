@@ -131,4 +131,72 @@ export const FormatterHelper = {
     }
     return "<1m";
   },
+
+  /** Parse common API date strings into a local Date, or null. */
+  parseLocalDate: (date) => {
+    if (!date) return null;
+
+    const trimmed = String(date).trim();
+    const isoDateOnly = /^(\d{4})-(\d{2})-(\d{2})$/;
+    const isoDateMatch = trimmed.match(isoDateOnly);
+
+    if (isoDateMatch) {
+      const [, year, month, day] = isoDateMatch;
+      const localDate = new Date(+year, +month - 1, +day);
+      return isNaN(localDate.getTime()) ? null : localDate;
+    }
+
+    const ddMmYyyy =
+      /^(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?$/;
+    const match = trimmed.match(ddMmYyyy);
+
+    let localDate;
+    if (match) {
+      const [, day, month, year, hours = "0", minutes = "0", seconds = "0"] =
+        match;
+      localDate = new Date(+year, +month - 1, +day, +hours, +minutes, +seconds);
+    } else {
+      localDate = new Date(date);
+    }
+
+    return isNaN(localDate.getTime()) ? null : localDate;
+  },
+
+  /**
+   * Relative expiry for proxies.
+   * tone: "ok" | "soon" | "expired"
+   * soon = within 3 days
+   */
+  getExpiryInfo: (date, soonDays = 3) => {
+    const end = FormatterHelper.parseLocalDate(date);
+    if (!end) {
+      return { daysLeft: null, label: null, tone: "ok" };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const endDay = new Date(end);
+    endDay.setHours(0, 0, 0, 0);
+
+    const daysLeft = Math.round((endDay - today) / 86400000);
+
+    if (daysLeft < 0) {
+      const ago = Math.abs(daysLeft);
+      return {
+        daysLeft,
+        label: ago === 1 ? "Expired yesterday" : `Expired ${ago}d ago`,
+        tone: "expired",
+      };
+    }
+    if (daysLeft === 0) {
+      return { daysLeft, label: "Expires today", tone: "soon" };
+    }
+    if (daysLeft === 1) {
+      return { daysLeft, label: "Expires tomorrow", tone: "soon" };
+    }
+    if (daysLeft <= soonDays) {
+      return { daysLeft, label: `Expires in ${daysLeft}d`, tone: "soon" };
+    }
+    return { daysLeft, label: `${daysLeft}d left`, tone: "ok" };
+  },
 };
