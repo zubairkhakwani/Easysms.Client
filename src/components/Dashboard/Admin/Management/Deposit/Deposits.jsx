@@ -1,8 +1,11 @@
 //React
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 //Services
 import { getDeposts } from "../../../../../services/User/UserService";
+
+//Hooks
+import { useDebouncedValue } from "../../../../../hooks/useDebouncedValue";
 
 //Components
 import { AdminPage } from "../../../../Helper/AdminPage/AdminPage";
@@ -49,6 +52,8 @@ export default function Deposits() {
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [keyword, setKeyword] = useState("");
+  const debouncedKeyword = useDebouncedValue(keyword, 350);
+  const isFirstDebouncedKeyword = useRef(true);
   const [depositType, setDepositType] = useState(DEPOSIT_TYPE_ALL);
 
   async function getDepositsData(overrides = {}) {
@@ -59,7 +64,7 @@ export default function Deposits() {
         endDate,
         pageNo: overrides.pageNo ?? pageNo,
         pageSize,
-        keyword: overrides.keyword ?? keyword,
+        keyword: overrides.keyword ?? debouncedKeyword,
         depositType: overrides.depositType ?? depositType,
       });
       var responseMessage = response.message;
@@ -82,8 +87,16 @@ export default function Deposits() {
   }
 
   useEffect(() => {
+    if (isFirstDebouncedKeyword.current) {
+      isFirstDebouncedKeyword.current = false;
+      return;
+    }
+    setPageNo(0);
+  }, [debouncedKeyword]);
+
+  useEffect(() => {
     getDepositsData();
-  }, [pageNo, pageSize, keyword, depositType]);
+  }, [pageNo, pageSize, debouncedKeyword, depositType]);
 
   const handleDepositTypeChange = (type) => {
     setDepositType(type);

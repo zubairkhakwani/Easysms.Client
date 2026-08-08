@@ -1,5 +1,5 @@
 //React
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 //Services
 import {
@@ -32,6 +32,9 @@ import { ProxyOrderGroup } from "../../Helper/Proxy/ProxyOrderGroup";
 //Paginations
 import Paginations from "../../Shared/Pagination";
 
+//Hooks
+import { useDebouncedValue } from "../../../hooks/useDebouncedValue";
+
 //Css
 import "./ProxyHistory.css";
 import Modal from "@mui/material/Modal";
@@ -41,6 +44,8 @@ export default function ProxyHistory({
   pageTitle = "My Active Proxies",
   pageSubtitle = "View your purchased active proxies",
   showUserInfo = false,
+  showActions = true,
+  searchPlaceholder = "Search IP, order, login…",
 }) {
   //Data
   const [myActiveProxies, setMyActiveProxies] = useState([]);
@@ -67,10 +72,12 @@ export default function ProxyHistory({
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
-  //filter
+  //filter — input updates immediately; API uses debounced value
   const [filters, setFilters] = useState({
     keyword: "",
   });
+  const debouncedKeyword = useDebouncedValue(filters.keyword, 350);
+  const isFirstDebouncedKeyword = useRef(true);
 
   //Modals
   const [modals, setModals] = useState(null);
@@ -82,7 +89,11 @@ export default function ProxyHistory({
   const fetchMyActiveProxies = async () => {
     setIsLoading(true);
     try {
-      const res = await fetchActiveProxies({ pageNo, pageSize, filters });
+      const res = await fetchActiveProxies({
+        pageNo,
+        pageSize,
+        filters: { ...filters, keyword: debouncedKeyword },
+      });
       setMyActiveProxies(res.data.items ?? []);
       setCount(res.data.count ?? 0);
     } catch {
@@ -105,9 +116,18 @@ export default function ProxyHistory({
     }
   };
 
+  // After user stops typing, return to first page (skip initial mount)
+  useEffect(() => {
+    if (isFirstDebouncedKeyword.current) {
+      isFirstDebouncedKeyword.current = false;
+      return;
+    }
+    setPageNo(0);
+  }, [debouncedKeyword]);
+
   useEffect(() => {
     fetchMyActiveProxies();
-  }, [pageNo, pageSize, filters.keyword]);
+  }, [pageNo, pageSize, debouncedKeyword]);
 
   //Set Filter
   function setFilter(key, value) {
@@ -397,7 +417,7 @@ ${text}`;
             </div>
             <input
               className="adm-search-input map__panel-search"
-              placeholder="Search IP, order, login…"
+              placeholder={searchPlaceholder}
               value={filters.keyword}
               onChange={(e) => setFilter("keyword", e.target.value)}
             />
@@ -416,7 +436,7 @@ ${text}`;
             <div className="ph-state-row">
               <div className="ph-state-icon">⊟</div>
               <span className="ph-state-text">
-                {filters.keyword?.trim()
+                {debouncedKeyword?.trim()
                   ? "No proxies match your search"
                   : "No active proxies yet"}
               </span>
@@ -431,6 +451,7 @@ ${text}`;
                 order={order}
                 onAction={handleActions}
                 showUserInfo={showUserInfo}
+                showActions={showActions}
               />
             ))}
 

@@ -19,11 +19,28 @@ export function ProxyOrderGroup({
   order,
   onAction,
   showUserInfo = false,
+  showActions = true,
 }) {
   const [open, setOpen] = useState(true);
   const proxies = order.proxies ?? [];
 
   const first = proxies[0];
+
+  const columns = [
+    "#",
+    "IP",
+    "Whitelist IP",
+    "Port HTTP",
+    "Port SOCKS",
+    "Username",
+    "Password",
+    "Country",
+    "Proxy type",
+    "Status",
+    "End Date",
+    "Days Left",
+    ...(showActions ? ["Actions"] : []),
+  ];
 
   return (
     <div className={`map__order ${open ? "map__order--open" : ""}`}>
@@ -82,15 +99,17 @@ export function ProxyOrderGroup({
           </span>
         </button>
 
-        <div
-          className="map__order-actions"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <ProxyOrderActionDropdown
-            orderNumber={order.orderNumber}
-            onAction={onAction}
-          />
-        </div>
+        {showActions && (
+          <div
+            className="map__order-actions"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ProxyOrderActionDropdown
+              orderNumber={order.orderNumber}
+              onAction={onAction}
+            />
+          </div>
+        )}
       </div>
 
       {/* ── Collapsible proxy table ── */}
@@ -99,21 +118,7 @@ export function ProxyOrderGroup({
           <table className="map__table">
             <thead>
               <tr>
-                {[
-                  "#",
-                  "IP",
-                  "Whitelist IP",
-                  "Port HTTP",
-                  "Port SOCKS",
-                  "Username",
-                  "Password",
-                  "Country",
-                  "Proxy type",
-                  "Status",
-                  "End Date",
-                  "Days Left",
-                  "Actions",
-                ].map((h) => (
+                {columns.map((h) => (
                   <th key={h} className="map__th">
                     {h}
                   </th>
@@ -237,9 +242,11 @@ export function ProxyOrderGroup({
                         <span className="map__empty">—</span>
                       )}
                     </td>
-                    <td className="map__td">
-                      <ProxyActionDropdown id={item.id} onAction={onAction} />
-                    </td>
+                    {showActions && (
+                      <td className="map__td">
+                        <ProxyActionDropdown id={item.id} onAction={onAction} />
+                      </td>
+                    )}
                   </tr>
                 );
               })}

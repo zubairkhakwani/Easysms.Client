@@ -1,11 +1,14 @@
 //React
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useContext, useCallback, useRef } from "react";
 
 //Portal
 import { DropdownPortal } from "../../../../../portal/DropDownPortal";
 
 //Context
 import { AuthContext } from "../../../../../context/AuthContext";
+
+//Hooks
+import { useDebouncedValue } from "../../../../../hooks/useDebouncedValue";
 
 //Services
 import { getAll, topUpBalance, commissionWithdraw } from "../../../../../services/User/UserService";
@@ -361,13 +364,23 @@ export default function UserManagement() {
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
-  //Filter
+  //Filter — input updates immediately; API uses debounced value
   const [keyword, setKeyword] = useState("");
+  const debouncedKeyword = useDebouncedValue(keyword, 350);
+  const isFirstDebouncedKeyword = useRef(true);
   const [hasSourceFilter, setHasSourceFilter] = useState(false);
   const [hasReferrerFilter, setHasReferrerFilter] = useState(false);
   const [hasNoWalletHistoryFilter, setHasNoWalletHistoryFilter] = useState(false);
 
   const hasActiveFilters = hasSourceFilter || hasReferrerFilter || hasNoWalletHistoryFilter;
+
+  useEffect(() => {
+    if (isFirstDebouncedKeyword.current) {
+      isFirstDebouncedKeyword.current = false;
+      return;
+    }
+    setPageNo(0);
+  }, [debouncedKeyword]);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -376,7 +389,7 @@ export default function UserManagement() {
         const res = await getAll({
           pageNo,
           pageSize,
-          keyword,
+          keyword: debouncedKeyword,
           hasSource: hasSourceFilter,
           hasReferrer: hasReferrerFilter,
           hasNoWalletHistory: hasNoWalletHistoryFilter,
@@ -401,7 +414,7 @@ export default function UserManagement() {
       }
     };
     fetchAllUsers();
-  }, [pageNo, pageSize, keyword, hasSourceFilter, hasReferrerFilter, hasNoWalletHistoryFilter]);
+  }, [pageNo, pageSize, debouncedKeyword, hasSourceFilter, hasReferrerFilter, hasNoWalletHistoryFilter]);
 
   function clearFilters() {
     setHasSourceFilter(false);
@@ -640,10 +653,8 @@ export default function UserManagement() {
           <input
             className="adm-search-input"
             placeholder="🔍  Search by name, email, phone, or source..."
-            onChange={(e) => {
-              setKeyword(e.target.value);
-              setPageNo(0);
-            }}
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
           />
         </div>
         {!isLoading && (
