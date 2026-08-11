@@ -62,6 +62,7 @@ import AccountGroups from "./components/Dashboard/Admin/Account/AccountGroup/Acc
 import ProviderProfit from "./components/Dashboard/Admin/Settings/ProviderProfit/ProviderProfit.jsx";
 import ReferralCommission from "./components/Dashboard/Admin/Settings/ReferralCommission/ReferralCommission.jsx";
 import PhysicalNumberStatus from "./components/Dashboard/Admin/Settings/PhysicalNumberStatus/PhysicalNumberStatus.jsx";
+import UsdPkrRateSettings from "./components/Dashboard/Admin/Settings/UsdPkrRate/UsdPkrRateSettings.jsx";
 import AdminSystemIntegrity from "./components/Dashboard/Admin/Integrity/AdminSystemIntegrity.jsx";
 import MyTasks from "./components/Dashboard/Admin/Management/Tasks/MyTasks.jsx";
 import AllTasks from "./components/Dashboard/Admin/Management/Tasks/AllTasks.jsx";
@@ -347,6 +348,19 @@ createRoot(document.getElementById("root")).render(
                       <Route
                         path="referral-commission"
                         element={<ReferralCommission />}
+                      />
+                    </Route>
+
+                    <Route
+                      element={
+                        <PrivateRoute
+                          requiredPermission={[Permissions.TopupUserBalance]}
+                        />
+                      }
+                    >
+                      <Route
+                        path="usd-pkr-rate"
+                        element={<UsdPkrRateSettings />}
                       />
                     </Route>
 

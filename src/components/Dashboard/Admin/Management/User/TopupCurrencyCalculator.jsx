@@ -16,6 +16,7 @@ export function TopupCurrencyCalculator({ usdAmount, onUsdChange }) {
   const [isLoadingRate, setIsLoadingRate] = useState(true);
   const [showFallbackBanner, setShowFallbackBanner] = useState(false);
   const [fallbackRate, setFallbackRate] = useState(DEFAULT_RATE);
+  const [fallbackSource, setFallbackSource] = useState("");
   const skipParentSync = useRef(false);
 
   useEffect(() => {
@@ -27,19 +28,29 @@ export function TopupCurrencyCalculator({ usdAmount, onUsdChange }) {
         const response = await getUsdPkrRate();
         if (cancelled) return;
 
-        const data = response?.data;
-        const fetchedRate = data?.rate ?? DEFAULT_RATE;
+        if (!response?.isSuccess || !response?.data) {
+          setRate(String(DEFAULT_RATE));
+          setFallbackRate(DEFAULT_RATE);
+          setFallbackSource("error");
+          setShowFallbackBanner(true);
+          return;
+        }
+
+        const data = response.data;
+        const fetchedRate = data.rate ?? DEFAULT_RATE;
 
         setRate(String(fetchedRate));
         setFallbackRate(fetchedRate);
+        setFallbackSource(data.source ?? "");
 
-        if (!data?.isLive) {
+        if (!data.isLive) {
           setShowFallbackBanner(true);
         }
       } catch {
         if (!cancelled) {
           setRate(String(DEFAULT_RATE));
           setFallbackRate(DEFAULT_RATE);
+          setFallbackSource("error");
           setShowFallbackBanner(true);
         }
       } finally {
@@ -140,17 +151,31 @@ export function TopupCurrencyCalculator({ usdAmount, onUsdChange }) {
         <>
           <div className="ph-spinner ph-spinner--sm ph-spinner--accent um-calc-rate-spinner" />
           <span className="um-calc-rate-loading-text">
-            Fetching exchange rate…
+            Loading exchange rate…
           </span>
         </>
       ) : (
         <>
           {showFallbackBanner && (
-            <div className="um-calc-banner">
+            <div
+              className={`um-calc-banner${
+                fallbackSource !== "default" ? " um-calc-banner--error" : ""
+              }`}
+            >
               <span>
-                Could not fetch the latest USD/PKR rate. Using default{" "}
-                <strong>{fallbackRate} PKR = 1 USD</strong>. You can change the
-                rate below.
+                {fallbackSource === "default" ? (
+                  <>
+                    No USD/PKR rate configured. Using default{" "}
+                    <strong>{fallbackRate} PKR = 1 USD</strong>. Configure the
+                    rate under Settings → USD / PKR Rate, or change it below.
+                  </>
+                ) : (
+                  <>
+                    Could not load the USD/PKR rate. Using default{" "}
+                    <strong>{fallbackRate} PKR = 1 USD</strong>. You can change
+                    the rate below.
+                  </>
+                )}
               </span>
               <button
                 type="button"

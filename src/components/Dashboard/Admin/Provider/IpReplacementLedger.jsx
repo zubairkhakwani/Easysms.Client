@@ -10,6 +10,7 @@ import { modalKeys } from "../../../../data/Static";
 import Paginations from "../../../Shared/Pagination";
 import { IpReplacementLedgerActionDropdown } from "../../../Helper/IpReplacementLedger/IpReplacementLedgerActionDropdown";
 import { IpReplacementAttachmentsModal } from "../../../Helper/IpReplacementLedger/IpReplacementAttachmentsModal";
+import IpReplacementCommentViewModal from "../../../Helper/IpReplacementLedger/IpReplacementCommentViewModal";
 import ToggleStatusModal from "../../../Helper/ContactUs/Modal/ToggleStatusModal";
 import "../Management/Deposit/Deposits.css";
 import "../Management/User/UserManagement.css";
@@ -44,6 +45,7 @@ export default function IpReplacementLedger() {
   const [isToggling, setIsToggling] = useState(false);
   const [selectedJson, setSelectedJson] = useState(null);
   const [selectedAttachments, setSelectedAttachments] = useState(null);
+  const [selectedComment, setSelectedComment] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [modal, setModal] = useState("");
 
@@ -90,9 +92,15 @@ export default function IpReplacementLedger() {
     setModal(modalKeys.ipReplacementResolution);
   };
 
+  const openCommentModal = (row) => {
+    setSelectedComment(row);
+    setModal(modalKeys.ipReplacementCommentView);
+  };
+
   const closeModal = () => {
     setModal("");
     setSelectedRow(null);
+    setSelectedComment(null);
   };
 
   async function handleToggleResolution() {
@@ -246,11 +254,38 @@ export default function IpReplacementLedger() {
                             : "—"}
                         </td>
                         <td>{row.issueType || "—"}</td>
-                        <td
-                          className="irl-comment"
-                          title={row.comment || undefined}
-                        >
-                          {row.comment || "—"}
+                        <td className="ph-col-sms">
+                          <div className="irl-comment-cell">
+                            <span
+                              className="irl-comment-preview"
+                              title={row.comment || undefined}
+                            >
+                              {row.comment || "—"}
+                            </span>
+                            {row.comment && (
+                              <button
+                                type="button"
+                                className="irl-comment-view-btn"
+                                aria-label="View full comment"
+                                onClick={() => openCommentModal(row)}
+                              >
+                                <svg
+                                  width="15"
+                                  height="15"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  aria-hidden="true"
+                                >
+                                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                  <circle cx="12" cy="12" r="3" />
+                                </svg>
+                              </button>
+                            )}
+                          </div>
                         </td>
                         <td className="irl-date">
                           {FormatterHelper.formatDateToLocal(
@@ -296,6 +331,13 @@ export default function IpReplacementLedger() {
         <IpReplacementAttachmentsModal
           row={selectedAttachments}
           onClose={() => setSelectedAttachments(null)}
+        />
+      )}
+
+      {modal === modalKeys.ipReplacementCommentView && selectedComment && (
+        <IpReplacementCommentViewModal
+          row={selectedComment}
+          onClose={closeModal}
         />
       )}
 

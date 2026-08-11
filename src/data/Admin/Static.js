@@ -217,6 +217,13 @@ export const navItems = [
       },
       {
         icon: "⊞",
+        label: "USD / PKR Rate",
+        id: "usdPkrRate",
+        url: "usd-pkr-rate",
+        permission: Permissions.TopupUserBalance,
+      },
+      {
+        icon: "⊞",
         label: "Physical Number Status",
         id: "physicalNumberStatus",
         url: "physical-number-status",

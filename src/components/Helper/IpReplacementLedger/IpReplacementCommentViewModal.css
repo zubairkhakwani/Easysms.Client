@@ -1,0 +1,225 @@
+.irlc-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  animation: irlc-fade-in 0.2s ease;
+  padding: var(--space-5);
+}
+
+@keyframes irlc-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.irlc-modal {
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-8) var(--space-7);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--modal-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: irlc-slide-up var(--transition-spring);
+}
+
+@keyframes irlc-slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.irlc-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.irlc-icon-wrap {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.irlc-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.irlc-title {
+  font-family: var(--font);
+  font-size: var(--text-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-heading);
+  margin: 0 0 3px;
+  letter-spacing: var(--ls-tight);
+}
+
+.irlc-subtitle {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  margin: 0;
+  line-height: var(--lh-normal);
+}
+
+.irlc-recipient {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+}
+
+.irlc-recipient-label {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+.irlc-recipient-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.irlc-recipient-name {
+  font-family: var(--font);
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-heading);
+}
+
+.irlc-recipient-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.irlc-recipient-email {
+  font-family: var(--font);
+  font-size: var(--text-base);
+  color: var(--accent);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.irlc-reference {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.irlc-reference-subject,
+.irlc-reference-message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.irlc-ref-label {
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wider);
+}
+
+.irlc-ref-value {
+  font-family: var(--font);
+  font-size: var(--text-base);
+  color: var(--text);
+  font-weight: var(--fw-medium);
+}
+
+.irlc-ref-body {
+  font-family: var(--font);
+  font-size: var(--text-ms);
+  color: var(--text-mid);
+  line-height: var(--lh-relaxed);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--space-3);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.irlc-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-2);
+}
+
+.irlc-btn {
+  padding: 11px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  border: none;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.irlc-btn.ghost {
+  background: var(--btn-ghost-bg);
+  border: 1px solid var(--btn-ghost-border);
+  color: var(--btn-ghost-text);
+}
+
+.irlc-btn.ghost:hover {
+  background: var(--btn-ghost-bg-hover);
+  color: var(--btn-ghost-text-hover);
+}
+
+@media (max-width: 520px) {
+  .irlc-modal {
+    padding: var(--space-6) var(--space-5);
+  }
+}

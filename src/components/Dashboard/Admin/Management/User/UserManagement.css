@@ -883,6 +883,16 @@
   line-height: 1.45;
 }
 
+.um-calc-banner--error {
+  background: rgba(255, 95, 126, 0.1);
+  border-color: rgba(255, 95, 126, 0.4);
+  color: #ff8fa3;
+}
+
+.um-calc-banner--error strong {
+  color: #ffb3c0;
+}
+
 .um-calc-banner strong {
   color: var(--text-primary, #fff);
 }

@@ -157,3 +157,11 @@ export const configurePhysicalNumberStatus = async (httpRequest) => {
   );
   return response.data;
 };
+
+export const configureUsdPkrRateSettings = async (httpRequest) => {
+  const response = await httpClient.post(
+    "/api/providers/usd-pkr-rate",
+    httpRequest,
+  );
+  return response.data;
+};
