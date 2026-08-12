@@ -56,7 +56,7 @@ export default function ContactUs() {
   async function getContactUsData() {
     setIsLoading(true);
     try {
-      let response = await getAllContactUs();
+      let response = await getAllContactUs({ pageNo, pageSize });
       var responseMessage = response.message;
       var responseData = !response.data ? [] : response.data;
       if (!response.isSuccess) {

@@ -5,8 +5,13 @@ export const submit = async (httpRequest) => {
   return response.data;
 };
 
-export const getAllContactUs = async () => {
-  const response = await httpClient.get(`/api/contactus`);
+export const getAllContactUs = async (httpRequest) => {
+  const params = new URLSearchParams({
+    pageNumber: String(httpRequest?.pageNo ?? 0),
+    pageSize: String(httpRequest?.pageSize ?? 10),
+  });
+
+  const response = await httpClient.get(`/api/contactus?${params}`);
   return response.data;
 };
 
