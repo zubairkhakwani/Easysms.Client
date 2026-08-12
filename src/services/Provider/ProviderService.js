@@ -44,6 +44,8 @@ export const getUserActivationSummary = async ({
   pageSize,
   user,
   country = "",
+  sortBy = "Purchased",
+  sortDir = "Desc",
 }) => {
   const queryParams = new URLSearchParams({
     start: startDate,
@@ -54,6 +56,8 @@ export const getUserActivationSummary = async ({
     user: user,
     country: country,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    sortBy,
+    sortDir,
   }).toString();
 
   const response = await httpClient.get(

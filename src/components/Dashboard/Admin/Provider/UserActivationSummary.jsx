@@ -54,6 +54,10 @@ export default function UserActivationSummary() {
   const [pageNo, setPageNo] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
+  //Sorting
+  const [sortBy, setSortBy] = useState("Purchased");
+  const [sortDir, setSortDir] = useState("Desc");
+
   async function getSummaryData() {
     setIsLoading(true);
     try {
@@ -65,6 +69,8 @@ export default function UserActivationSummary() {
         provider,
         user,
         country,
+        sortBy,
+        sortDir,
       });
       const responseData = response.data;
       if (!response.isSuccess) {
@@ -104,7 +110,7 @@ export default function UserActivationSummary() {
 
   useEffect(() => {
     getSummaryData();
-  }, [pageNo, pageSize]);
+  }, [pageNo, pageSize, sortBy, sortDir]);
 
   useEffect(() => {
     getUsersData();
@@ -128,6 +134,8 @@ export default function UserActivationSummary() {
     setProvider("0");
     setUser(0);
     setCountry("");
+    setSortBy("Purchased");
+    setSortDir("Desc");
     setPageSize(10);
     setPageNo(0);
   };
@@ -139,6 +147,25 @@ export default function UserActivationSummary() {
   const handleChangeRowsPerPage = (event) => {
     setPageSize(parseInt(event.target.value, 10));
     setPageNo(0);
+  };
+
+  const handleSort = (field) => {
+    if (sortBy === field) {
+      setSortDir((prev) => (prev === "Desc" ? "Asc" : "Desc"));
+    } else {
+      setSortBy(field);
+      setSortDir("Desc");
+    }
+    setPageNo(0);
+  };
+
+  const sortIndicator = (field) => {
+    if (sortBy !== field) return null;
+    return (
+      <span className="ph-sort-arrow" aria-hidden="true">
+        {sortDir === "Asc" ? "↑" : "↓"}
+      </span>
+    );
   };
 
   const systemOverviewStats = [
@@ -294,11 +321,35 @@ export default function UserActivationSummary() {
                   <th>User</th>
                   <th>Country</th>
                   <th>Provider</th>
-                  <th>Total Purchased</th>
+                  <th>
+                    <button
+                      type="button"
+                      className={`ph-sort-th${sortBy === "Purchased" ? " ph-sort-th--active" : ""}`}
+                      onClick={() => handleSort("Purchased")}
+                    >
+                      Total Purchased{sortIndicator("Purchased")}
+                    </button>
+                  </th>
                   <th>Completed</th>
                   <th>Cancelled</th>
-                  <th>Success %</th>
-                  <th>Failure %</th>
+                  <th>
+                    <button
+                      type="button"
+                      className={`ph-sort-th${sortBy === "SuccessRate" ? " ph-sort-th--active" : ""}`}
+                      onClick={() => handleSort("SuccessRate")}
+                    >
+                      Success %{sortIndicator("SuccessRate")}
+                    </button>
+                  </th>
+                  <th>
+                    <button
+                      type="button"
+                      className={`ph-sort-th${sortBy === "FailureRate" ? " ph-sort-th--active" : ""}`}
+                      onClick={() => handleSort("FailureRate")}
+                    >
+                      Failure %{sortIndicator("FailureRate")}
+                    </button>
+                  </th>
                 </tr>
               </thead>
               <tbody>
