@@ -22,6 +22,7 @@ import RequestAccount from "./components/RequestAccount/RequestAccount.jsx";
 import RequestMailContainer from "./components/RequestMail/Container/RequestMailContainer.jsx";
 import RequestProxyContainer from "./components/RequestProxy/Contaner/RequestProxyContainer.jsx";
 import NumberHistory from "./components/Order/NumberHistory/NumberHistory.jsx";
+import ProviderPerformance from "./components/Order/ProviderPerformance/ProviderPerformance.jsx";
 import AccountHistory from "./components/Order/AccountHistory/AccountHistory.jsx";
 import MailHistory from "./components/Order/MailHistory/MailHistory.jsx";
 import TransactionHistory from "./components/Order/TransactionHistory/TransactionHistory.jsx";
@@ -112,6 +113,10 @@ createRoot(document.getElementById("root")).render(
                   />
 
                   <Route path="/history/numbers" element={<NumberHistory />} />
+                  <Route
+                    path="/history/provider-performance"
+                    element={<ProviderPerformance />}
+                  />
                   <Route
                     path="/history/accounts"
                     element={<AccountHistory />}

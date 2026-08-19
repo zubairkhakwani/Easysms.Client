@@ -66,6 +66,30 @@ export const getUserActivationSummary = async ({
   return response.data;
 };
 
+export const getProviderPerformance = async ({
+  provider,
+  pageNo,
+  pageSize,
+  country = "",
+  sortBy = "SuccessRate",
+  sortDir = "Desc",
+}) => {
+  const queryParams = new URLSearchParams({
+    provider: provider,
+    pageNumber: pageNo,
+    pageSize: pageSize,
+    country: country,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    sortBy,
+    sortDir,
+  }).toString();
+
+  const response = await httpClient.get(
+    `/api/providers/performance?${queryParams}`,
+  );
+  return response.data;
+};
+
 export const getPhysicalProviderInfo = async (countryId) => {
   const params = countryId ? `?countryId=${encodeURIComponent(countryId)}` : "";
   const response = await httpClient.get(`/api/providers/physical-info${params}`);

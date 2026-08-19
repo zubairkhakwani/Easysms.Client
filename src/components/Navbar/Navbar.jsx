@@ -183,6 +183,17 @@ export default function Navbar() {
                   </Link>
                   <Link
                     className="nav-dropdown-item"
+                    to="/history/provider-performance"
+                    onClick={() => {
+                      closeUserMenu();
+                      handleNavClick();
+                    }}
+                  >
+                    <i className="fa-solid fa-chart-line"></i>
+                    Provider Performance
+                  </Link>
+                  <Link
+                    className="nav-dropdown-item"
                     to="/history/accounts"
                     onClick={closeUserMenu}
                   >
