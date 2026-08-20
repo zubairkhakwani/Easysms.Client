@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import { getSystemIntegrity } from "../../../../services/Dashboard/IntegrityService";
+import {
+  getSystemIntegrity,
+  skipIntegrityCheck,
+  refundIntegrityActivation,
+  completeIntegrityActivation,
+} from "../../../../services/Dashboard/IntegrityService";
 import { FormatterHelper } from "../../../../helper/FormatterHelper";
-import { errorToast } from "../../../../helper/Toaster";
+import { errorToast, successTaost } from "../../../../helper/Toaster";
 import "../Management/User/UserManagement.css";
 import "../Management/Deposit/Deposits.css";
 import "../Provider/IpReplacementLedger.css";
@@ -40,6 +45,151 @@ function issueBadge(check) {
   return "All clear";
 }
 
+function entityTypeFromCategory(category) {
+  if (category === "Temp Numbers") return "number";
+  if (category === "Temp Mail") return "mail";
+  return null;
+}
+
+function isActiveExpiredCheck(check) {
+  return check.id === "number-active-expired" || check.id === "mail-active-expired";
+}
+
+function formatIssueCell(column, value) {
+  if (!value || value === "—") return "—";
+  if (column === "Purchased At" || column === "Activation End" || column === "Completed At") {
+    return FormatterHelper.formatDateToLocal(value);
+  }
+  return value;
+}
+
+function issueHasVerificationCode(check, issue) {
+  const codeColIdx = check.issueColumns?.indexOf("Verification Code") ?? -1;
+  if (codeColIdx < 0) return false;
+  const code = issue[`col${codeColIdx}`];
+  return Boolean(code && code !== "—");
+}
+
+function DrillDownPanel({ check, actionKey, onRunAction }) {
+  if (!check) return null;
+
+  const entityType = entityTypeFromCategory(check.category);
+  const showActions = Boolean(entityType);
+  const showResolveActions = isActiveExpiredCheck(check);
+  const columns = showActions ? [...(check.issueColumns ?? []), "Actions"] : check.issueColumns ?? [];
+
+  return (
+    <div className="ph-table-panel si-drilldown">
+      <div className="ph-table-header">
+        <div className="si-drilldown-header-text">
+          <div className="ph-table-title">{check.title}</div>
+          <div className="si-drilldown-desc-label">What this checks</div>
+          <p className="si-drilldown-desc">{check.description}</p>
+        </div>
+        <span className={statusClass(check.status)}>
+          {normalizeStatus(check.status)}
+          {check.issueCount > 0 && ` · ${check.issueCount} issues`}
+        </span>
+      </div>
+
+      {check.issues?.length > 0 ? (
+        <div className="ph-table-wrap">
+          <table className="ph-table">
+            <thead>
+              <tr>
+                {columns.map((col) => (
+                  <th key={col}>{col}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {check.issues.map((issue, idx) => {
+                const id = Number(issue.col0);
+                const busy = actionKey?.startsWith(`${entityType}-${id}-`);
+                const hasCode = showResolveActions && issueHasVerificationCode(check, issue);
+
+                return (
+                  <tr key={idx}>
+                    {(check.issueColumns ?? []).map((col, colIdx) => (
+                      <td key={col}>{formatIssueCell(col, issue[`col${colIdx}`])}</td>
+                    ))}
+                    {showActions && (
+                      <td>
+                        <div className="si-row-actions">
+                          <button
+                            type="button"
+                            className="si-action-btn"
+                            disabled={busy}
+                            onClick={() =>
+                              onRunAction({
+                                action: "skip",
+                                entityType,
+                                id,
+                                confirmText:
+                                  "Skip this item in future integrity checks?",
+                              })
+                            }
+                          >
+                            {actionKey === `${entityType}-${id}-skip` ? "Skipping…" : "Skip"}
+                          </button>
+                          {showResolveActions && (
+                            <>
+                              {!hasCode && (
+                                <button
+                                  type="button"
+                                  className="si-action-btn si-action-btn--refund"
+                                  disabled={busy}
+                                  onClick={() =>
+                                    onRunAction({
+                                      action: "refund",
+                                      entityType,
+                                      id,
+                                      confirmText:
+                                        "Cancel this activation, credit the user, and write a refund wallet entry? No provider will be contacted.",
+                                    })
+                                  }
+                                >
+                                  {actionKey === `${entityType}-${id}-refund` ? "Refunding…" : "Refund"}
+                                </button>
+                              )}
+                              {hasCode && (
+                                <button
+                                  type="button"
+                                  className="si-action-btn si-action-btn--complete"
+                                  disabled={busy}
+                                  onClick={() =>
+                                    onRunAction({
+                                      action: "complete",
+                                      entityType,
+                                      id,
+                                      confirmText:
+                                        "Mark this activation as completed? No provider will be contacted.",
+                                    })
+                                  }
+                                >
+                                  {actionKey === `${entityType}-${id}-complete` ? "Completing…" : "Complete"}
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="ph-state-row si-all-clear">
+          ✓ No issues found — this check passed.
+        </div>
+      )}
+    </div>
+  );
+}
+
 function CheckCard({ check, isSelected, onSelect }) {
   const diff = formatDifference(check.differenceAmount);
   const statusKey = normalizeStatus(check.status).toLowerCase();
@@ -65,53 +215,6 @@ function CheckCard({ check, isSelected, onSelect }) {
       <p className="si-check-desc">{check.description}</p>
       {diff && <div className="si-check-diff">{diff}</div>}
     </button>
-  );
-}
-
-function DrillDownPanel({ check }) {
-  if (!check) return null;
-
-  return (
-    <div className="ph-table-panel si-drilldown">
-      <div className="ph-table-header">
-        <div className="si-drilldown-header-text">
-          <div className="ph-table-title">{check.title}</div>
-          <div className="si-drilldown-desc-label">What this checks</div>
-          <p className="si-drilldown-desc">{check.description}</p>
-        </div>
-        <span className={statusClass(check.status)}>
-          {normalizeStatus(check.status)}
-          {check.issueCount > 0 && ` · ${check.issueCount} issues`}
-        </span>
-      </div>
-
-      {check.issues?.length > 0 ? (
-        <div className="ph-table-wrap">
-          <table className="ph-table">
-            <thead>
-              <tr>
-                {check.issueColumns.map((col) => (
-                  <th key={col}>{col}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {check.issues.map((issue, idx) => (
-                <tr key={idx}>
-                  {check.issueColumns.map((_, colIdx) => (
-                    <td key={colIdx}>{issue[`col${colIdx}`] ?? "—"}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="ph-state-row si-all-clear">
-          ✓ No issues found — this check passed.
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -201,6 +304,7 @@ export default function SystemIntegrity() {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedCheckId, setSelectedCheckId] = useState(null);
+  const [actionKey, setActionKey] = useState(null);
 
   async function fetchIntegrity() {
     setIsLoading(true);
@@ -220,6 +324,34 @@ export default function SystemIntegrity() {
       errorToast("Failed to run system integrity checks.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleRunAction({ action, entityType, id, confirmText }) {
+    if (!window.confirm(confirmText)) return;
+
+    const key = `${entityType}-${id}-${action}`;
+    setActionKey(key);
+
+    try {
+      const api =
+        action === "skip"
+          ? skipIntegrityCheck
+          : action === "refund"
+            ? refundIntegrityActivation
+            : completeIntegrityActivation;
+
+      const res = await api(entityType, id);
+      if (res.isSuccess) {
+        successTaost(res.message);
+        await fetchIntegrity();
+      } else {
+        errorToast(res.message);
+      }
+    } catch {
+      errorToast("Failed to apply the integrity action.");
+    } finally {
+      setActionKey(null);
     }
   }
 
@@ -274,7 +406,13 @@ export default function SystemIntegrity() {
               ))}
             </div>
 
-            {isSelectedCategory && <DrillDownPanel check={selectedCheck} />}
+            {isSelectedCategory && (
+              <DrillDownPanel
+                check={selectedCheck}
+                actionKey={actionKey}
+                onRunAction={handleRunAction}
+              />
+            )}
           </section>
         );
       })}

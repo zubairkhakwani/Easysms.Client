@@ -368,6 +368,45 @@
   font-weight: var(--fw-semibold);
 }
 
+.si-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.si-action-btn {
+  background: var(--btn-ghost-bg);
+  border: 1px solid var(--btn-ghost-border);
+  color: var(--btn-ghost-text);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  font-size: var(--text-xs);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  font-family: var(--font);
+  white-space: nowrap;
+}
+
+.si-action-btn:hover:not(:disabled) {
+  background: var(--btn-ghost-bg-hover);
+  color: var(--btn-ghost-text-hover);
+}
+
+.si-action-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.si-action-btn--refund {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+}
+
+.si-action-btn--complete {
+  border-color: var(--success);
+  color: var(--success);
+}
+
 /* ── Skeleton loading ── */
 .si-skeleton {
   background: linear-gradient(
