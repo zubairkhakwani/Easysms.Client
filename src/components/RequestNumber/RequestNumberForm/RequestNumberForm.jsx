@@ -313,10 +313,21 @@ export default function RequestNumberForm({ onNewNumber }) {
 
     setIsRequestingNumber(true);
 
+    const isPhysical = selectedProvider == 3;
+    const countryName = isPhysical
+      ? (physicalCountries.find((c) => c.countryId === selectedCountry)
+          ?.countryName ?? "")
+      : (countries.find((c) => c.id === selectedCountry)?.name ?? "");
+    const serviceName = isPhysical
+      ? (selectedService ?? "")
+      : (services.find((s) => s.id === selectedService)?.name ?? "");
+
     const updatedRequestedNumber = {
       ...requestedNumber,
       quantity,
       isPhysicalLinks: numberType === "physical",
+      country: countryName,
+      serviceName,
     };
 
     setPurchaseState(true);
