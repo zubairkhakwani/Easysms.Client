@@ -18,6 +18,7 @@ import AdminLayout from "./components/Layout/AdminLayout.jsx";
 //Components
 import App from "./App.jsx";
 import RequestNumberContainer from "./components/RequestNumber/Container/RequestNumberContainer.jsx";
+import FacebookSmartBuyContainer from "./components/FacebookSmartBuy/FacebookSmartBuyContainer.jsx";
 import RequestAccount from "./components/RequestAccount/RequestAccount.jsx";
 import RequestMailContainer from "./components/RequestMail/Container/RequestMailContainer.jsx";
 import RequestProxyContainer from "./components/RequestProxy/Contaner/RequestProxyContainer.jsx";
@@ -104,6 +105,10 @@ createRoot(document.getElementById("root")).render(
                   <Route
                     path="/get-number"
                     element={<RequestNumberContainer />}
+                  />
+                  <Route
+                    path="/facebook-number"
+                    element={<FacebookSmartBuyContainer />}
                   />
                   <Route path="/get-account" element={<RequestAccount />} />
                   <Route path="/get-mail" element={<RequestMailContainer />} />

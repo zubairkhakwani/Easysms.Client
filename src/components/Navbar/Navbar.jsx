@@ -168,99 +168,99 @@ export default function Navbar() {
 
             {actionOpen && (
               <div className="nav-dropdown" role="menu">
-                  {/* History Section */}
-                  <span className="nav-dropdown-section-label">History</span>
-                  <Link
-                    className="nav-dropdown-item"
-                    to="/history/numbers"
-                    onClick={() => {
-                      closeUserMenu();
-                      handleNavClick();
-                    }}
-                  >
-                    <i className="fa-solid fa-phone-volume"></i>
-                    Number History
-                  </Link>
-                  <Link
-                    className="nav-dropdown-item"
-                    to="/history/provider-performance"
-                    onClick={() => {
-                      closeUserMenu();
-                      handleNavClick();
-                    }}
-                  >
-                    <i className="fa-solid fa-chart-line"></i>
-                    Provider Performance
-                  </Link>
-                  <Link
-                    className="nav-dropdown-item"
-                    to="/history/accounts"
-                    onClick={closeUserMenu}
-                  >
-                    <i className="fa-solid fa-user-clock"></i>
-                    Account History
-                  </Link>
-                  <Link
-                    className="nav-dropdown-item"
-                    to="/history/mails"
-                    onClick={closeUserMenu}
-                  >
-                    <i className="fa-solid fa-envelope-open-text"></i>
-                    Mail History
-                  </Link>
+                {/* History Section */}
+                <span className="nav-dropdown-section-label">History</span>
+                <Link
+                  className="nav-dropdown-item"
+                  to="/history/numbers"
+                  onClick={() => {
+                    closeUserMenu();
+                    handleNavClick();
+                  }}
+                >
+                  <i className="fa-solid fa-phone-volume"></i>
+                  Number History
+                </Link>
+                <Link
+                  className="nav-dropdown-item"
+                  to="/history/provider-performance"
+                  onClick={() => {
+                    closeUserMenu();
+                    handleNavClick();
+                  }}
+                >
+                  <i className="fa-solid fa-chart-line"></i>
+                  Provider Performance
+                </Link>
+                <Link
+                  className="nav-dropdown-item"
+                  to="/history/accounts"
+                  onClick={closeUserMenu}
+                >
+                  <i className="fa-solid fa-user-clock"></i>
+                  Account History
+                </Link>
+                <Link
+                  className="nav-dropdown-item"
+                  to="/history/mails"
+                  onClick={closeUserMenu}
+                >
+                  <i className="fa-solid fa-envelope-open-text"></i>
+                  Mail History
+                </Link>
 
-                  <Link
-                    className="nav-dropdown-item"
-                    to="/history/proxy"
-                    onClick={closeUserMenu}
-                  >
-                    <i className="fa-solid fa-network-wired"></i>
-                    My Active Proxies
-                  </Link>
+                <Link
+                  className="nav-dropdown-item"
+                  to="/history/proxy"
+                  onClick={closeUserMenu}
+                >
+                  <i className="fa-solid fa-network-wired"></i>
+                  My Active Proxies
+                </Link>
 
-                  <div className="nav-dropdown-divider" />
+                <div className="nav-dropdown-divider" />
 
-                  {/* Account Section */}
-                  <span className="nav-dropdown-section-label">Account</span>
-                  <Link
-                    className="nav-dropdown-item"
-                    to="/history/transactions"
-                    onClick={closeUserMenu}
-                  >
-                    <i className="fa-solid fa-receipt"></i>
-                    Transaction History
-                  </Link>
-                  <Link
-                    className="nav-dropdown-item"
-                    to="/referral-stats"
-                    onClick={closeUserMenu}
-                  >
-                    <i className="fa-solid fa-chart-pie"></i>
-                    Referral Stats
-                  </Link>
-                  <button
-                    type="button"
-                    className="nav-dropdown-item"
-                    onClick={() => {
-                      closeUserMenu();
-                      handleOpenModal(modalKeys.changePassword);
-                    }}
-                  >
-                    <i className="fa-solid fa-lock"></i>
-                    Change Password
-                  </button>
+                {/* Account Section */}
+                <span className="nav-dropdown-section-label">Account</span>
+                <Link
+                  className="nav-dropdown-item"
+                  to="/history/transactions"
+                  onClick={closeUserMenu}
+                >
+                  <i className="fa-solid fa-receipt"></i>
+                  Transaction History
+                </Link>
+                <Link
+                  className="nav-dropdown-item"
+                  to="/referral-stats"
+                  onClick={closeUserMenu}
+                >
+                  <i className="fa-solid fa-chart-pie"></i>
+                  Referral Stats
+                </Link>
+                <button
+                  type="button"
+                  className="nav-dropdown-item"
+                  onClick={() => {
+                    closeUserMenu();
+                    handleOpenModal(modalKeys.changePassword);
+                  }}
+                >
+                  <i className="fa-solid fa-lock"></i>
+                  Change Password
+                </button>
 
-                  <div className="nav-dropdown-divider" />
+                <div className="nav-dropdown-divider" />
 
-                  {/* Danger Zone */}
-                  <button
-                    type="button"
-                    className="nav-dropdown-item danger"
-                    onClick={handleLogout}
-                  >
-                    <i className="fa-solid fa-right-from-bracket"></i>
-                    Logout
-                  </button>
+                {/* Danger Zone */}
+                <button
+                  type="button"
+                  className="nav-dropdown-item danger"
+                  onClick={handleLogout}
+                >
+                  <i className="fa-solid fa-right-from-bracket"></i>
+                  Logout
+                </button>
               </div>
             )}
           </div>
@@ -309,7 +309,11 @@ export default function Navbar() {
 
         <ul className="nav-links">
           <li>
-            <Link to="/services" className="hvr-undr" onClick={handleHamburgerClick}>
+            <Link
+              to="/services"
+              className="hvr-undr"
+              onClick={handleHamburgerClick}
+            >
               Services
             </Link>
           </li>
@@ -354,7 +358,6 @@ export default function Navbar() {
                 label: "Top Up",
                 to: "/topup",
                 icon: "fa-brands fa-bitcoin",
-                badge: "New",
               },
               {
                 label: "Buy Temp Number",
@@ -362,10 +365,15 @@ export default function Navbar() {
                 icon: "fa-solid fa-sim-card",
               },
               {
+                label: "Smart Facebook Number",
+                to: "/facebook-number",
+                icon: "fa-brands fa-facebook",
+                badge: "New",
+              },
+              {
                 label: "Buy Proxy",
                 to: "/get-proxy",
                 icon: "fa-solid fa-shield-halved",
-                badge: "New",
               },
               {
                 label: "Rent Mail",

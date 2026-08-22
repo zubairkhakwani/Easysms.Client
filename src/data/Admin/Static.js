@@ -153,6 +153,12 @@ export const navItems = [
         url: "/get-number",
       },
       {
+        icon: "📘",
+        label: "Facebook Number",
+        id: "facebookNumber",
+        url: "/facebook-number",
+      },
+      {
         icon: "⊞",
         label: "Buy Account",
         id: "getAccount",
