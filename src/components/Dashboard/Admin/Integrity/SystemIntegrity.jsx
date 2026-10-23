@@ -48,11 +48,17 @@ function issueBadge(check) {
 function entityTypeFromCategory(category) {
   if (category === "Temp Numbers") return "number";
   if (category === "Temp Mail") return "mail";
+  if (category === "Financial Core") return "user";
   return null;
 }
 
 function isActiveExpiredCheck(check) {
   return check.id === "number-active-expired" || check.id === "mail-active-expired";
+}
+
+/** System-wide drift has no per-user id in col0 — Skip only on per-user financial rows. */
+function canSkipIntegrityIssue(check) {
+  return check?.id !== "system-balance-drift";
 }
 
 function formatIssueCell(column, value) {
@@ -74,7 +80,7 @@ function DrillDownPanel({ check, actionKey, onRunAction }) {
   if (!check) return null;
 
   const entityType = entityTypeFromCategory(check.category);
-  const showActions = Boolean(entityType);
+  const showActions = Boolean(entityType) && canSkipIntegrityIssue(check);
   const showResolveActions = isActiveExpiredCheck(check);
   const columns = showActions ? [...(check.issueColumns ?? []), "Actions"] : check.issueColumns ?? [];
 

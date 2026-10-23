@@ -106,10 +106,10 @@ createRoot(document.getElementById("root")).render(
                     path="/get-number"
                     element={<RequestNumberContainer />}
                   />
-                  <Route
+                  {/* <Route
                     path="/facebook-number"
                     element={<FacebookSmartBuyContainer />}
-                  />
+                  /> */}
                   <Route path="/get-account" element={<RequestAccount />} />
                   <Route path="/get-mail" element={<RequestMailContainer />} />
                   <Route

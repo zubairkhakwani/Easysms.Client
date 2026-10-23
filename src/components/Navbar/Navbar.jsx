@@ -364,12 +364,12 @@ export default function Navbar() {
                 to: "/get-number",
                 icon: "fa-solid fa-sim-card",
               },
-              {
-                label: "Smart Facebook Number",
-                to: "/facebook-number",
-                icon: "fa-brands fa-facebook",
-                badge: "New",
-              },
+              // {
+              //   label: "Smart Facebook Number",
+              //   to: "/facebook-number",
+              //   icon: "fa-brands fa-facebook",
+              //   badge: "New",
+              // },
               {
                 label: "Buy Proxy",
                 to: "/get-proxy",
