@@ -1,71 +1,190 @@
 .proxy-order-summary .price-summary-box {
-  background: var(--accent-blue-subtle);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    165deg,
+    var(--accent-blue-subtle) 0%,
+    var(--card) 100%
+  );
   border: 1px solid var(--accent-blue-border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-4);
+  border-radius: var(--radius-md, var(--radius-sm));
+  padding: var(--space-5) var(--space-4);
   width: 100%;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  transition: border-color 0.25s ease;
+}
+
+.proxy-order-summary .price-summary-box.is-refreshing {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--accent-blue-border));
+}
+
+.proxy-order-summary .price-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .proxy-order-summary .price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-1) 0;
-  font-size: var(--text-sm);
+  gap: var(--space-3);
+  position: relative;
+  z-index: 1;
 }
 
 .proxy-order-summary .price-label {
   font-size: var(--text-xs);
   color: var(--text-dim);
-  font-weight: var(--fw-light);
+  font-weight: var(--fw-medium, var(--fw-light));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.proxy-order-summary .price-label--total {
+  font-size: var(--text-sm);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+  font-weight: var(--fw-semibold);
 }
 
 .proxy-order-summary .price-value {
   font-size: var(--text-sm);
   font-weight: var(--fw-semibold);
   color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-height: 1.25em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  transition: opacity 0.25s ease, filter 0.25s ease;
 }
 
-.proxy-order-summary .price-divider {
-  border: none;
-  border-top: 1px dashed var(--accent-blue-border);
-  margin: var(--space-2) 0;
+.proxy-order-summary .price-value--muted {
+  color: var(--text);
+  font-weight: var(--fw-medium, 500);
 }
 
-.proxy-order-summary .total-row {
-  margin-top: var(--space-1);
+.proxy-order-summary .price-value.is-updating {
+  opacity: 0.45;
+  filter: blur(0.4px);
+  animation: proxy-value-pulse 1.4s ease-in-out infinite;
 }
 
 .proxy-order-summary .total-value {
   font-size: var(--text-xl);
   font-weight: var(--fw-extrabold);
   color: var(--accent);
+  letter-spacing: -0.02em;
 }
 
-.proxy-summary-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  min-height: 148px;
-  padding: var(--space-8) var(--space-4);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--card);
-  text-align: center;
+.proxy-order-summary .total-value.is-updating {
+  opacity: 0.55;
+  filter: none;
 }
 
-.proxy-summary-spinner {
-  margin: 0;
-  flex-shrink: 0;
+/* Soft sweep — same idea as dashboard balance cards */
+.proxy-order-summary .price-summary-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 40%,
+    color-mix(in srgb, var(--accent) 12%, transparent) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: none;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 0;
 }
 
-.proxy-summary-loading-text {
-  margin: 0;
-  font-size: var(--text-sm);
-  line-height: 1.4;
-  color: var(--text-dim);
+.proxy-order-summary .price-summary-box.is-refreshing .price-summary-shimmer {
+  opacity: 1;
+  animation: proxy-summary-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.proxy-order-summary .price-divider {
+  position: relative;
+  z-index: 1;
+  border: none;
+  border-top: 1px solid var(--accent-blue-border);
+  margin: var(--space-4) 0 var(--space-3);
+  opacity: 0.85;
+  overflow: hidden;
+}
+
+.proxy-order-summary .price-divider-progress {
+  position: absolute;
+  left: 0;
+  top: -1px;
+  height: 2px;
+  width: 40%;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent),
+    transparent
+  );
+  animation: proxy-divider-slide 1.2s ease-in-out infinite;
+}
+
+/* First-load placeholders (values only) */
+.proxy-order-summary .price-value-placeholder {
+  display: inline-block;
+  width: 72px;
+  height: 12px;
+  border-radius: var(--radius-xs, 4px);
+  background: color-mix(in srgb, var(--accent) 22%, var(--border));
+  animation: proxy-value-pulse 1.4s ease-in-out infinite;
+}
+
+.proxy-order-summary .price-value-placeholder--sm {
+  width: 36px;
+}
+
+.proxy-order-summary .price-value-placeholder--lg {
+  width: 96px;
+  height: 18px;
+}
+
+@keyframes proxy-summary-sweep {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes proxy-value-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+@keyframes proxy-divider-slide {
+  0% {
+    transform: translateX(-30%);
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(280%);
+    opacity: 0.35;
+  }
 }
 
 .proxy-summary-empty {
@@ -74,7 +193,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: 148px;
+  min-height: 168px;
   padding: var(--space-8) var(--space-4);
   border: 1px dashed var(--border);
   border-radius: var(--radius-sm);

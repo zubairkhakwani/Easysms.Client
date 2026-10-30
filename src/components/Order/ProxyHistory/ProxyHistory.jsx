@@ -58,7 +58,7 @@ export default function ProxyHistory({
     authIp: "",
   });
 
-  const [IpIds, setIpIds] = useState([]);
+  const [extendTarget, setExtendTarget] = useState(null);
   const [replaceTarget, setReplaceTarget] = useState(null);
 
   //Loading
@@ -144,37 +144,53 @@ export default function ProxyHistory({
     setPageNo(0);
   };
 
-  //Handle Actions
-  function handleActions(key, orderNumber) {
-    //when replacing ip or extending proxy here we will recieve id with underscore e.g 123456_2 for order number
+  //Handle Actions — row actions pass proxyId; order-level actions pass orderNumber.
+  function handleActions(key, idOrOrderNumber) {
     if (key === modalKeys.exportProxy) {
-      handleExport(orderNumber);
+      handleExport(idOrOrderNumber);
       return;
     } else if (key === modalKeys.proxyAuthChange) {
-      populateProxyAuthChange(orderNumber);
+      const order = myActiveProxies.find(
+        (x) =>
+          x.orderNumber === idOrOrderNumber ||
+          x.baseOrderNumber === idOrOrderNumber,
+      );
+      if (order?.proxies?.some((p) => p.isUptime)) {
+        errorToast(
+          "Authorization cannot be changed for 100% Uptime proxies.",
+        );
+        return;
+      }
+      populateProxyAuthChange(idOrOrderNumber);
     } else if (key === modalKeys.replaceIp) {
       const proxy = myActiveProxies
         .flatMap((x) => x.proxies)
-        .find((p) => p.id === orderNumber);
+        .find((p) => p.id === idOrOrderNumber);
 
-      if (!proxy?.ip) {
-        errorToast("Cannot replace IP: proxy IP is missing.");
+      if (!proxy?.ip || !proxy?.id || !proxy?.proxyType) {
+        errorToast("Cannot replace IP: proxy details are missing.");
         return;
       }
 
-      setReplaceTarget({ id: orderNumber, oldIp: proxy.ip });
+      setReplaceTarget({
+        proxyId: proxy.id,
+        proxyType: proxy.proxyType,
+        oldIp: proxy.ip,
+      });
     } else if (key === modalKeys.extendProxy) {
-      setIpIds([orderNumber]);
-
       const proxy = myActiveProxies
         .flatMap((x) => x.proxies)
-        .find((p) => p.id === orderNumber);
+        .find((p) => p.id === idOrOrderNumber);
 
-      if (!proxy) {
+      if (!proxy?.id || !proxy?.proxyType) {
         errorToast("Cannot load periods, please contact support team.");
         return;
       }
 
+      setExtendTarget({
+        proxyId: proxy.id,
+        proxyType: proxy.proxyType,
+      });
       fetchProxyMetaData(proxy.proxyType);
     }
     openModal(key);
@@ -309,7 +325,8 @@ ${text}`;
   //Handle Replace IP
   function buildReplaceFormData(request) {
     const formData = new FormData();
-    formData.append("Id", replaceTarget.id);
+    formData.append("ProxyId", replaceTarget.proxyId);
+    formData.append("ProxyType", replaceTarget.proxyType);
     formData.append("OldIp", replaceTarget.oldIp);
     formData.append("IssueType", request.issueType);
     formData.append("Comment", request.comment ?? "");
@@ -322,7 +339,7 @@ ${text}`;
   }
 
   async function submitReplaceIp(request) {
-    if (!replaceTarget?.id || !replaceTarget?.oldIp) {
+    if (!replaceTarget?.proxyId || !replaceTarget?.proxyType || !replaceTarget?.oldIp) {
       errorToast("Cannot replace IP: proxy details are missing.");
       return;
     }
@@ -348,7 +365,7 @@ ${text}`;
   }
 
   function handleReplaceIp(request) {
-    if (!replaceTarget?.id || !replaceTarget?.oldIp) {
+    if (!replaceTarget?.proxyId || !replaceTarget?.proxyType || !replaceTarget?.oldIp) {
       errorToast("Cannot replace IP: proxy details are missing.");
       return;
     }
@@ -375,9 +392,15 @@ ${text}`;
 
   //Handle Exptend Proxy
   async function handleExtendProxy(request) {
+    if (!extendTarget?.proxyId || !extendTarget?.proxyType) {
+      errorToast("Cannot extend proxy: proxy details are missing.");
+      return;
+    }
+
     const payload = {
-      ...{ ids: IpIds },
-      ...{ ...request },
+      proxyId: extendTarget.proxyId,
+      proxyType: extendTarget.proxyType,
+      ...request,
     };
 
     setIsExtedingProxy(true);
@@ -494,7 +517,8 @@ ${text}`;
       {modals === modalKeys.extendProxy && (
         <ProxyExtendModal
           metaData={metaData}
-          ids={IpIds}
+          proxyId={extendTarget?.proxyId ?? ""}
+          proxyType={extendTarget?.proxyType ?? ""}
           isSubmitting={isExtendingProxy}
           isLoadingPeriods={!metaData}
           onClose={closeModal}

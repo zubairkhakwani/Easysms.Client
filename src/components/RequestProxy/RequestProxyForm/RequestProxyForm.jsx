@@ -23,6 +23,7 @@ import { ProxyOrderConfirmationModal } from "../../Helper/Modals/Proxy/ProxyOrde
 //Shared
 import SearchableSelect from "../../Shared/SearchableSelect/SearchableSelect.jsx";
 import QuantityStepper from "../../Shared/QuantityStepper/QuantityStepper.jsx";
+import Tooltip from "../../../portal/Tooltip";
 
 //Css
 import "./RequestProxyForm.css";
@@ -35,6 +36,7 @@ export default function RequestProxyForm({ onSummaryChange }) {
   const [metaData, setMetaData] = useState([]);
   const [authType, setAuthType] = useState("namePassword");
   const [staticIp, setStaticIp] = useState(["", "", "", ""]);
+  const [uptime, setUptime] = useState(false);
 
   //Calculate the order price
   const [priceData, setPriceData] = useState(null);
@@ -47,6 +49,29 @@ export default function RequestProxyForm({ onSummaryChange }) {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedPeriod, setSelectedPeriod] = useState(null);
   const [selectedPurpose, setSelectedPurpose] = useState(null);
+  const [selectedPurposeId, setSelectedPurposeId] = useState(0);
+
+  const supportsUptime =
+    selectedService === "ipv4" || selectedService === "isp";
+
+  const selectedLocationName =
+    metaData.data?.countries?.find((c) => c.id === selectedLocation)?.name ??
+    null;
+  const selectedPeriodName =
+    metaData.data?.periods?.find((p) => p.id === selectedPeriod)?.name ?? null;
+
+  const buildOrderPayload = () => ({
+    service: selectedService,
+    location: selectedLocation,
+    locationName: selectedLocationName,
+    period: selectedPeriod,
+    periodName: selectedPeriodName,
+    purpose: selectedPurpose,
+    purposeId: selectedPurposeId,
+    staticIp: getValidStaticIp(),
+    quantity: quantityState.current,
+    uptime: supportsUptime && uptime,
+  });
 
   //Loading
   const [isRequestingProxy, setIsRequestingProxy] = useState(false);
@@ -70,6 +95,7 @@ export default function RequestProxyForm({ onSummaryChange }) {
   };
 
   const getValidStaticIp = () => {
+    if (uptime || authType !== "staticIp") return null;
     if (staticIp.some((octet) => octet === "")) {
       return null;
     }
@@ -116,17 +142,7 @@ export default function RequestProxyForm({ onSummaryChange }) {
 
     setIsFetchingPrice(true);
     try {
-      let response = await calculateProxyOrder(
-        {
-          service: selectedService,
-          location: selectedLocation,
-          period: selectedPeriod,
-          purpose: selectedPurpose,
-          staticIp: getValidStaticIp(),
-          quantity: quantityState.current,
-        },
-        signal,
-      );
+      let response = await calculateProxyOrder(buildOrderPayload(), signal);
 
       if (signal.aborted) return;
 
@@ -161,6 +177,8 @@ export default function RequestProxyForm({ onSummaryChange }) {
     selectedLocation,
     selectedPeriod,
     selectedPurpose,
+    uptime,
+    authType,
   ]);
 
   useEffect(() => {
@@ -181,6 +199,8 @@ export default function RequestProxyForm({ onSummaryChange }) {
     setSelectedLocation("");
     setSelectedPeriod("");
     setSelectedPurpose("");
+    setSelectedPurposeId(0);
+    setUptime(false);
     setPriceData(null);
   };
 
@@ -188,18 +208,25 @@ export default function RequestProxyForm({ onSummaryChange }) {
   const handleLocationChange = (e) => {
     let value = e.target.value;
     setSelectedLocation(value);
+    setSelectedPeriod("");
+    setSelectedPurpose("");
+    setSelectedPurposeId(0);
   };
 
   //Handle Period Change
   const handlePeriodChange = (e) => {
     let value = e.target.value;
     setSelectedPeriod(value);
+    setSelectedPurpose("");
+    setSelectedPurposeId(0);
   };
 
   //Handle Purpose Change
   const handlePurposeChange = (e) => {
     let value = e.target.value;
     setSelectedPurpose(value);
+    const match = (metaData.data?.purposes ?? []).find((p) => p.name === value);
+    setSelectedPurposeId(match?.id ? Number(match.id) : 0);
   };
 
   const handleQuantityChange = (next) => {
@@ -254,14 +281,7 @@ export default function RequestProxyForm({ onSummaryChange }) {
     setIsRequestingProxy(true);
 
     try {
-      let response = await requestProxy({
-        service: selectedService,
-        location: selectedLocation,
-        period: selectedPeriod,
-        purpose: selectedPurpose,
-        staticIp: getValidStaticIp(),
-        quantity: quantityState.current,
-      });
+      let response = await requestProxy(buildOrderPayload());
 
       let responseMessage = response.message;
 
@@ -372,15 +392,67 @@ export default function RequestProxyForm({ onSummaryChange }) {
               value={selectedPurpose ?? ""}
               onChange={(val) => handlePurposeChange({ target: { value: val } })}
               disabled={!selectedPeriod}
+              allowCustom
+              searchPlaceholder="Search or type a custom purpose…"
               placeholder={
                 !selectedPeriod ? "First select period" : "Select purpose"
               }
               options={(metaData.data?.purposes ?? []).map((s) => ({
-                value: s.id,
+                value: s.name,
                 label: s.name,
               }))}
             />
           </div>
+
+          {/* 100% Uptime */}
+          {supportsUptime && (
+            <div className="field">
+              <div className="uptime-row">
+                <label className="auth-option uptime-option">
+                  <input
+                    type="checkbox"
+                    checked={uptime}
+                    onChange={(e) => {
+                      const next = e.target.checked;
+                      setUptime(next);
+                      if (next) {
+                        setAuthType("namePassword");
+                        setStaticIp(["", "", "", ""]);
+                      }
+                    }}
+                  />
+                  <span>100% Uptime</span>
+                </label>
+                <Tooltip
+                  tooltip={
+                    <ul className="tooltip-list">
+                      <li>
+                        <strong>Auto IP replacement</strong>
+                        <span>
+                          If the server goes offline, your IP is replaced
+                          automatically at no extra cost. Login stays the same;
+                          the IP may change.
+                        </span>
+                      </li>
+                      <li>
+                        <strong>No auth changes</strong>
+                        <span>
+                          You cannot change login or password later.
+                        </span>
+                      </li>
+                      <li>
+                        <strong>No IP whitelist</strong>
+                        <span>
+                          You cannot whitelist an IP address. Only available for
+                          selected countries and periods.
+                        </span>
+                      </li>
+                    </ul>
+                  }
+                />
+              </div>
+            </div>
+          )}
 
           {/* Authorization */}
           <div className="field">
@@ -402,13 +474,19 @@ export default function RequestProxyForm({ onSummaryChange }) {
                 />
                 <span>Name & Password</span>
               </label>
-              <label className="auth-option">
+              <label
+                className={`auth-option ${uptime ? "auth-option--disabled" : ""}`}
+              >
                 <input
                   type="radio"
                   name="authType"
                   value="staticIp"
                   checked={authType === "staticIp"}
-                  onChange={() => setAuthType("staticIp")}
+                  disabled={uptime}
+                  onChange={() => {
+                    setUptime(false);
+                    setAuthType("staticIp");
+                  }}
                 />
                 <span>Static IP</span>
               </label>
@@ -416,7 +494,7 @@ export default function RequestProxyForm({ onSummaryChange }) {
           </div>
 
           {/* Static IP Input */}
-          {authType === "staticIp" && (
+          {authType === "staticIp" && !uptime && (
             <div className="field">
               <label>
                 <i className="fa-solid fa-network-wired number-type-icon"></i>

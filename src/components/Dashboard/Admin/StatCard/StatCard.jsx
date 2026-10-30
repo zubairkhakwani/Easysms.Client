@@ -148,6 +148,7 @@ export default function StatCard({
       style={{ animationDelay: `${delay}ms` }}
       key={internalKey}
     >
+      <div className="stat-card-shimmer" aria-hidden="true" />
       <div className="stat-card-bg-glow" />
 
       {/* ── Body: value + label ── */}

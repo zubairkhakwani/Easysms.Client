@@ -25,6 +25,7 @@ export function ProxyOrderGroup({
   const proxies = order.proxies ?? [];
 
   const first = proxies[0];
+  const isUptimeOrder = proxies.some((p) => p.isUptime);
 
   const columns = [
     "#",
@@ -36,6 +37,7 @@ export function ProxyOrderGroup({
     "Password",
     "Country",
     "Proxy type",
+    "Uptime",
     "Status",
     "End Date",
     "Days Left",
@@ -107,6 +109,7 @@ export function ProxyOrderGroup({
             <ProxyOrderActionDropdown
               orderNumber={order.orderNumber}
               onAction={onAction}
+              canChangeAuth={!isUptimeOrder}
             />
           </div>
         )}
@@ -219,6 +222,18 @@ export function ProxyOrderGroup({
                     </td>
                     <td className="map__td">
                       <span className="map__country-tag">{item.proxyType}</span>
+                    </td>
+                    <td className="map__td">
+                      {item.isUptime ? (
+                        <Tooltip
+                          tooltip="100% Uptime — auth and Static IP cannot be changed"
+                          btn={
+                            <span className="map__country-tag">Yes</span>
+                          }
+                        />
+                      ) : (
+                        <span className="map__empty-none">—</span>
+                      )}
                     </td>
                     <td className="map__td">
                       <span

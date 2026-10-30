@@ -4,7 +4,11 @@ import { useState } from "react";
 //Helper
 import { modalKeys } from "../../../../data/Static";
 
-export function ProxyOrderActionDropdown({ orderNumber, onAction }) {
+export function ProxyOrderActionDropdown({
+  orderNumber,
+  onAction,
+  canChangeAuth = true,
+}) {
   const [open, setOpen] = useState(false);
 
   const items = [
@@ -14,12 +18,16 @@ export function ProxyOrderActionDropdown({ orderNumber, onAction }) {
       icon: <i className="fa-solid fa-download" />,
       color: "cyan",
     },
-    {
-      key: modalKeys.proxyAuthChange,
-      label: "Change Auth",
-      icon: <i className="fa-solid fa-user-shield" />,
-      color: "cyan",
-    },
+    ...(canChangeAuth
+      ? [
+          {
+            key: modalKeys.proxyAuthChange,
+            label: "Change Auth",
+            icon: <i className="fa-solid fa-user-shield" />,
+            color: "cyan",
+          },
+        ]
+      : []),
   ];
 
   return (

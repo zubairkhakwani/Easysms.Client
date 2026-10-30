@@ -183,7 +183,7 @@ export default function Overview() {
           </span>
         </div>
         <div
-          className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
+          className={`stats-grid${isOverviewLoading ? " refreshing" : ""}`}
           style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
         >
           <StatCard
@@ -227,7 +227,7 @@ export default function Overview() {
           </span>
         </div>
         <div
-          className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
+          className={`stats-grid${isOverviewLoading ? " refreshing" : ""}`}
           style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
         >
           <StatCard
@@ -271,7 +271,7 @@ export default function Overview() {
           </span>
         </div>
         <div
-          className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
+          className={`stats-grid${isOverviewLoading ? " refreshing" : ""}`}
           style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
         >
           <StatCard
@@ -315,7 +315,7 @@ export default function Overview() {
           </span>
         </div>
         <div
-          className={`stats-grid${isRefreshing ? " refreshing" : ""}`}
+          className={`stats-grid${isOverviewLoading ? " refreshing" : ""}`}
           style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
         >
           <StatCard
@@ -361,7 +361,7 @@ export default function Overview() {
             </span>
           </div>
           <div
-            className="stats-grid"
+            className={`stats-grid${isOverviewLoading ? " refreshing" : ""}`}
             style={{ gridTemplateColumns: "repeat(4, 1fr)" }}
           >
             <StatCard

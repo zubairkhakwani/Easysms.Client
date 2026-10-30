@@ -1,0 +1,78 @@
+.info-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+}
+
+.info-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--text-mid, #9ca3af);
+  transition: color 0.2s;
+  display: block;
+}
+
+.info-icon-wrapper:hover .info-icon {
+  color: var(--accent, #14b8a6);
+}
+
+.tooltip {
+  background: var(--card, #1f2937);
+  border: 1px solid var(--border, #374151);
+  border-radius: var(--radius-sm, 8px);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-lg, 0 10px 24px rgba(0, 0, 0, 0.35));
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-mid, #e5e7eb);
+  white-space: normal;
+  max-width: 280px;
+  width: max-content;
+  line-height: 1.5;
+  pointer-events: none;
+  z-index: var(--z-tooltip, 10000);
+  animation: tooltipFadeIn 0.15s ease;
+}
+
+.tooltip-list {
+  margin: 0;
+  padding-left: 1.1em;
+  list-style: disc;
+}
+
+.tooltip-list li + li {
+  margin-top: 8px;
+}
+
+.tooltip-list strong {
+  display: block;
+  font-weight: 700;
+  color: var(--text, #f9fafb);
+  margin-bottom: 2px;
+}
+
+.tooltip-list span {
+  display: block;
+  font-weight: 500;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.tooltip-arrow {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: var(--card, #1f2937);
+  border-right: 1px solid var(--border, #374151);
+  border-bottom: 1px solid var(--border, #374151);
+}

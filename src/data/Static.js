@@ -1,6 +1,6 @@
 export const TOKEN_KEY = "auth_token";
-// export const Base_Url = "https://api.easyotps.com";
-export const Base_Url = "https://localhost:7265";
+export const Base_Url = "https://api.easyotps.com";
+// export const Base_Url = "https://localhost:7265";
 
 export const services = [
   {
@@ -311,12 +311,12 @@ export const WalletTransactionTypes = [
 export const ProxyTypes = [
   {
     displayName: "IPV4 (Data Center)",
-    label: "Ipv4",
+    label: "ipv4",
     value: "1",
   },
   {
     displayName: "ISP (Static Residential)",
-    label: "Isp",
+    label: "isp",
     value: "2",
   },
 ];

@@ -6,6 +6,7 @@ import { calculateRenewProxyOrder } from "../../../../services/Proxy/ProxyServic
 
 //Toaster
 import { errorToast } from "../../../../helper/Toaster";
+import { FormatterHelper } from "../../../../helper/FormatterHelper";
 
 //Css
 import "./ProxyExtendModal.css";
@@ -17,45 +18,53 @@ export function ProxyExtendModal({
   isSubmitting,
   isLoadingPeriods,
   metaData,
-  ids,
+  proxyId,
+  proxyType,
 }) {
   const [periodId, setPeriodId] = useState("");
   const [price, setPrice] = useState(null);
+  const [discount, setDiscount] = useState(0);
   const [isFetchingPrice, setIsFetchingPrice] = useState(false);
   const [errors, setErrors] = useState({});
 
   const periods = metaData?.data?.periods ?? [];
+  const showSaving = discount > 0;
 
   // Fetch price whenever periodId changes
   useEffect(() => {
     if (!periodId) {
       setPrice(null);
+      setDiscount(0);
       return;
     }
 
     async function fetchPrice() {
       setIsFetchingPrice(true);
       setPrice(null);
+      setDiscount(0);
       try {
         const response = await calculateRenewProxyOrder({
-          ids,
+          proxyId,
+          proxyType,
           periodId,
         });
 
         if (response.isSuccess) {
           setPrice(response.data.totalCost);
+          setDiscount(response.data.discount ?? 0);
         } else {
           errorToast(response.message);
         }
       } catch {
         setPrice(null);
+        setDiscount(0);
       } finally {
         setIsFetchingPrice(false);
       }
     }
 
     fetchPrice();
-  }, [periodId]);
+  }, [periodId, proxyId, proxyType]);
 
   function validate() {
     const e = {};
@@ -124,14 +133,26 @@ export function ProxyExtendModal({
           {/* ── Price ── */}
           {periodId && (
             <div className="pem-price-box">
-              <span className="pem-price-label">Total Price</span>
               {isFetchingPrice ? (
                 <div className="pem-price-loading">
                   <div className="pem-price-spinner" />
                   <span>Calculating...</span>
                 </div>
               ) : price !== null ? (
-                <span className="pem-price-value">${price}</span>
+                <div className="pem-price-breakdown">
+                  {showSaving ? (
+                    <div className="pem-price-row">
+                      <span className="pem-price-label">Discount</span>
+                      <span className="pem-price-value pem-price-value--saving">
+                        {FormatterHelper.formatCurrency(discount)}
+                      </span>
+                    </div>
+                  ) : null}
+                  <div className="pem-price-row">
+                    <span className="pem-price-label">Total Price</span>
+                    <span className="pem-price-value">${price}</span>
+                  </div>
+                </div>
               ) : (
                 <span className="pem-price-error">Unable to fetch price</span>
               )}

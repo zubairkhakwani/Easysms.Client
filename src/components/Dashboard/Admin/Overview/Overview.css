@@ -316,6 +316,7 @@
   color: var(--text-heading);
   letter-spacing: var(--ls-tight);
   line-height: var(--lh-tight);
+  transition: opacity 0.25s ease;
 }
 
 .stat-card-label {
@@ -324,7 +325,63 @@
   font-weight: var(--fw-regular);
 }
 
+.stat-card-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 40%,
+    color-mix(in srgb, var(--accent) 12%, transparent) 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: none;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 0;
+}
+
+.stats-grid.refreshing .stat-card {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
+.stats-grid.refreshing .stat-card-shimmer {
+  opacity: 1;
+  animation: dash-card-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.stats-grid.refreshing .stat-card-value {
+  opacity: 0.5;
+  animation: dash-value-pulse 1.4s ease-in-out infinite;
+}
+
+.stats-grid.refreshing .stat-card-sub {
+  overflow: hidden;
+}
+
+.stats-grid.refreshing .stat-card-sub::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  height: 2px;
+  width: 40%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: dash-divider-slide 1.2s ease-in-out infinite;
+}
+
+.stat-card-body,
+.stat-card-sub,
+.stat-card-header {
+  position: relative;
+  z-index: 1;
+}
+
 .stat-card-sub {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -682,23 +739,36 @@
   background: var(--card-hover);
 }
 
+.balance-card.refreshing {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+
 .balance-card-shimmer {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    90deg,
+    105deg,
     transparent 0%,
-    var(--bg-secondary) 50%,
+    transparent 40%,
+    color-mix(in srgb, var(--accent) 12%, transparent) 50%,
+    transparent 60%,
     transparent 100%
   );
-  background-size: 200% 100%;
-  animation: shimmer-base 2.5s infinite;
+  background-size: 220% 100%;
+  animation: none;
   pointer-events: none;
   opacity: 0;
+  z-index: 0;
 }
 
 .balance-card.refreshing .balance-card-shimmer {
   opacity: 1;
+  animation: dash-card-sweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.balance-card > *:not(.balance-card-shimmer) {
+  position: relative;
+  z-index: 1;
 }
 
 .balance-card-top {
@@ -800,6 +870,12 @@
   color: var(--text-heading);
   line-height: var(--lh-tight);
   margin-top: var(--space-2);
+  transition: opacity 0.25s ease;
+}
+
+.balance-card.refreshing .balance-amount {
+  opacity: 0.5;
+  animation: dash-value-pulse 1.4s ease-in-out infinite;
 }
 
 .balance-amount.low {
@@ -810,11 +886,25 @@
 }
 
 .balance-footer {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-top: var(--space-3);
   border-top: 1px solid var(--divider);
+  overflow: hidden;
+}
+
+.balance-card.refreshing .balance-footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  height: 2px;
+  width: 40%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: dash-divider-slide 1.2s ease-in-out infinite;
 }
 
 .balance-id-tag {
@@ -937,4 +1027,38 @@
 
 .active-filter-remove:hover {
   opacity: 1;
+}
+
+/* Shared refresh animations (match proxy order summary) */
+@keyframes dash-card-sweep {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes dash-value-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+@keyframes dash-divider-slide {
+  0% {
+    transform: translateX(-30%);
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(280%);
+    opacity: 0.35;
+  }
 }

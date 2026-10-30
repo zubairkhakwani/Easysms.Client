@@ -1,10 +1,11 @@
 import { createPortal } from "react-dom";
 import { useRef, useState } from "react";
+import "./Tooltip.css";
 
 export default function Tooltip({ tooltip, btn }) {
   const ref = useRef(null);
 
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   const handleMouseEnter = () => {

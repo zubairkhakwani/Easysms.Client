@@ -44,6 +44,7 @@ export default function SearchableSelect({
   disableSearch,
   panelMinWidth,
   panelFitContent = false,
+  allowCustom = false,
 }) {
   const generatedId = useId();
   const listboxId = `${generatedId}-listbox`;
@@ -69,27 +70,60 @@ export default function SearchableSelect({
 
   const showSearch =
     disableSearch === false ||
+    allowCustom ||
     (disableSearch !== true && normalizedOptions.length > SEARCH_THRESHOLD);
 
   const filteredOptions = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return normalizedOptions;
-    return normalizedOptions.filter(
+    const matched = !q
+      ? normalizedOptions
+      : normalizedOptions.filter(
+          (opt) =>
+            opt.label.toLowerCase().includes(q) ||
+            opt.sublabel.toLowerCase().includes(q),
+        );
+
+    if (!allowCustom) return matched;
+
+    const raw = search.trim();
+    if (!raw) return matched;
+
+    const exists = normalizedOptions.some(
       (opt) =>
-        opt.label.toLowerCase().includes(q) ||
-        opt.sublabel.toLowerCase().includes(q),
+        opt.label.toLowerCase() === raw.toLowerCase() ||
+        String(opt.value ?? "").toLowerCase() === raw.toLowerCase(),
     );
-  }, [normalizedOptions, search]);
+    if (exists) return matched;
+
+    return [
+      {
+        value: raw,
+        label: `Use "${raw}"`,
+        sublabel: "Custom",
+        disabled: false,
+      },
+      ...matched,
+    ];
+  }, [normalizedOptions, search, allowCustom]);
 
   const selectableOptions = useMemo(
     () => filteredOptions.filter((opt) => !opt.disabled),
     [filteredOptions],
   );
 
-  const selectedOption = useMemo(
-    () => normalizedOptions.find((opt) => valuesEqual(opt.value, value)),
-    [normalizedOptions, value],
-  );
+  const selectedOption = useMemo(() => {
+    const found = normalizedOptions.find((opt) => valuesEqual(opt.value, value));
+    if (found) return found;
+    if (allowCustom && value != null && String(value).trim() !== "") {
+      return {
+        value,
+        label: String(value),
+        sublabel: "",
+        disabled: false,
+      };
+    }
+    return undefined;
+  }, [normalizedOptions, value, allowCustom]);
 
   const displayLabel = selectedOption?.label ?? placeholder;
   const hasSelection = Boolean(selectedOption);

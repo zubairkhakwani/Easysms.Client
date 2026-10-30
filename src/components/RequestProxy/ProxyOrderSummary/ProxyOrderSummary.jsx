@@ -8,9 +8,17 @@ export default function ProxyOrderSummary({
   isFetchingPrice,
   quantity,
 }) {
-  const showLoading = isFetchingPrice && !priceData;
-  const showPrice = Boolean(priceData);
   const showEmpty = !priceData && !isFetchingPrice;
+  const showPriceBox = Boolean(priceData) || isFetchingPrice;
+  const isRefreshing = isFetchingPrice;
+
+  const unitPrice = priceData?.unitPrice;
+  const period = priceData?.period ?? 1;
+  const qty = priceData?.quantity ?? quantity ?? 1;
+  const totalCost = priceData?.totalCost;
+  const discount = Number(priceData?.discount) || 0;
+  const hasQuote = Boolean(priceData);
+  const showSaving = hasQuote && discount > 0;
 
   return (
     <div className="recent-card proxy-order-summary">
@@ -21,41 +29,86 @@ export default function ProxyOrderSummary({
           </span>
           <div>
             <div className="card-title">Order Summary</div>
-            <div className="card-sub">Pricing for your current selection</div>
+            <div className="card-sub">Transparent pricing for your selection</div>
           </div>
         </div>
       </div>
 
-      <div
-        className={`proxy-summary-loading ${showLoading ? "" : "is-hidden"}`}
-        aria-hidden={!showLoading}
-      >
-        <div className="ph-spinner ph-spinner--sm proxy-summary-spinner" />
-        <span className="proxy-summary-loading-text">Calculating price…</span>
-      </div>
+      {showPriceBox ? (
+        <div
+          className={`price-summary-box ${isRefreshing ? "is-refreshing" : ""}`}
+          aria-busy={isRefreshing}
+        >
+          <div className="price-summary-shimmer" aria-hidden="true" />
 
-      <div
-        className={`price-summary-box ${showPrice ? "" : "is-hidden"}`}
-        aria-hidden={!showPrice}
-      >
-        <div className="price-row">
-          <span className="price-label">Unit Price</span>
-          <span className="price-value">
-            {FormatterHelper.formatCurrency(priceData?.unitPrice)}
-          </span>
+          <div className="price-breakdown">
+            <div className="price-row">
+              <span className="price-label">Unit price</span>
+              <span
+                className={`price-value ${isRefreshing ? "is-updating" : ""}`}
+              >
+                {hasQuote ? (
+                  FormatterHelper.formatCurrency(unitPrice)
+                ) : (
+                  <span className="price-value-placeholder" />
+                )}
+              </span>
+            </div>
+
+            <div className="price-row">
+              <span className="price-label">Quantity</span>
+              <span
+                className={`price-value price-value--muted ${isRefreshing ? "is-updating" : ""}`}
+              >
+                × {qty}
+              </span>
+            </div>
+
+            <div className="price-row">
+              <span className="price-label">Period</span>
+              <span
+                className={`price-value price-value--muted ${isRefreshing ? "is-updating" : ""}`}
+              >
+                {hasQuote ? (
+                  `× ${period}`
+                ) : (
+                  <span className="price-value-placeholder price-value-placeholder--sm" />
+                )}
+              </span>
+            </div>
+
+            {showSaving ? (
+              <div className="price-row">
+                <span className="price-label">Discount</span>
+                <span
+                  className={`price-value ${isRefreshing ? "is-updating" : ""}`}
+                >
+                  {FormatterHelper.formatCurrency(discount)}
+                </span>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="price-divider">
+            {isRefreshing ? (
+              <span className="price-divider-progress" aria-hidden="true" />
+            ) : null}
+          </div>
+
+          <div className="price-row total-row">
+            <span className="price-label price-label--total">Total cost</span>
+            <span
+              className={`price-value total-value ${isRefreshing ? "is-updating" : ""}`}
+            >
+              {hasQuote ? (
+                FormatterHelper.formatCurrency(totalCost)
+              ) : (
+                <span className="price-value-placeholder price-value-placeholder--lg" />
+              )}
+            </span>
+          </div>
         </div>
-        <div className="price-row">
-          <span className="price-label">Quantity</span>
-          <span className="price-value">× {quantity}</span>
-        </div>
-        <div className="price-divider" />
-        <div className="price-row total-row">
-          <span className="price-label">Total Cost</span>
-          <span className="price-value total-value">
-            {FormatterHelper.formatCurrency(priceData?.totalCost)}
-          </span>
-        </div>
-      </div>
+      ) : null}
 
       <div
         className={`proxy-summary-empty ${showEmpty ? "" : "is-hidden"}`}
