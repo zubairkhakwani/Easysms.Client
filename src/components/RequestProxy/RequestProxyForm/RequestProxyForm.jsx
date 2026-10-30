@@ -442,9 +442,12 @@ export default function RequestProxyForm({ onSummaryChange }) {
                       </li>
                       <li>
                         <strong>No IP whitelist</strong>
+                        <span>You cannot whitelist an IP address.</span>
+                      </li>
+                      <li>
+                        <strong>Limited availability</strong>
                         <span>
-                          You cannot whitelist an IP address. Only available for
-                          selected countries and periods.
+                          Only available for selected countries and periods.
                         </span>
                       </li>
                     </ul>
